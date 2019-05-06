@@ -1,0 +1,27 @@
+/**
+ * 
+ */
+/**
+ * @author jpragey
+ *
+ */
+module org.sirius.frontend {
+	requires org.sirius.common;
+	
+	requires org.antlr.antlr4.runtime;
+
+	//requires org.testng;
+	// java -cp 
+		/*	lib/antlr4-4.0.jar:
+		 * 	lib/antlr4-runtime-4.0.jar:
+		 * 	lib/stringtemplate-3.2.1.jar:
+		 * 	lib/ST4-4.0.7.jar:
+		 * 	lib/antlr-runtime-3.5.jar 
+		 * 	org.antlr.v4.Tool
+		 * 
+		 */
+	exports org.sirius.frontend;
+	
+	
+	//exports org.sirius.frontend.parser to testng;
+}
