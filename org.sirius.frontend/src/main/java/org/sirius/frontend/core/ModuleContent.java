@@ -1,17 +1,16 @@
 package org.sirius.frontend.core;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.ModuleDeclaration;
 import org.sirius.frontend.ast.PackageDeclaration;
 
 public class ModuleContent {
 
 	private Reporter reporter;
-	private List<PackageContent> packageContents;
+	private List<PackageDeclaration> packageContents = new ArrayList<>();
 	private ModuleDeclaration moduleDeclaration;
 	
 	// cache, from module declaration
@@ -25,24 +24,20 @@ public class ModuleContent {
 		
 		this.modulePath = new PhysicalPath(moduleDeclaration.getqName().getStringElements());
 		
-		this.packageContents = moduleDeclaration
-				.getPackageDeclarations()
-				.stream()
-				.map(pd -> new PackageContent(pd))
-				.collect(Collectors.toList());
+		this.packageContents.addAll(moduleDeclaration.getPackageDeclarations());
 	}
 	
-	public List<PackageContent> getPackageContents() {
+	public List<PackageDeclaration> getPackageContents() {
 		return packageContents;
 	}
 	
-	public void addPackageContents(List<PackageContent> packageContents) {
-		for(PackageContent pc: packageContents)
+	public void addPackageContents(List<PackageDeclaration> packageContents) {
+		for(PackageDeclaration pc: packageContents)
 			addPackage(pc);
 	}
 	
-	public void addPackage(PackageContent packageContent) {
-		this.moduleDeclaration.addPackageDeclaration(packageContent.getPackageDeclaration());
+	public void addPackage(PackageDeclaration packageContent) {
+		this.moduleDeclaration.addPackageDeclaration(packageContent);
 		this.packageContents.add(packageContent);
 	}
 	
@@ -51,8 +46,8 @@ public class ModuleContent {
 	 */
 	public void createDefaultPackageIfNeeded() {
 		if(packageContents.isEmpty()) {
-			PackageContent pc = new PackageContent(new PackageDeclaration(reporter));
-			pc.setPackageQName(moduleDeclaration.getqName().getElements());
+			
+			PackageDeclaration pc = new PackageDeclaration(reporter, moduleDeclaration.getqName().getElements());
 			packageContents.add(pc);
 		}
 	}

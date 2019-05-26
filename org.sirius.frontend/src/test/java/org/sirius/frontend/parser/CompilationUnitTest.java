@@ -1,22 +1,15 @@
 package org.sirius.frontend.parser;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.sirius.frontend.ast.ClassDeclaration;
-import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.PackageDeclaration;
-import org.sirius.frontend.ast.ReturnStatement;
 import org.sirius.frontend.ast.ShebangDeclaration;
-import org.sirius.frontend.ast.Statement;
-import org.sirius.frontend.ast.StringConstantExpression;
 import org.sirius.frontend.core.ModuleContent;
-import org.sirius.frontend.core.PackageContent;
 import org.sirius.frontend.core.ScriptSession;
 import org.testng.annotations.Test;
 
@@ -40,18 +33,16 @@ public class CompilationUnitTest {
 				.getModuleContents();
 		assertEquals(modules.size(), 1);
 				
-		List<PackageContent> packageContents = modules
+		List<PackageDeclaration> packageDeclarations = modules
 				.get(0)
 				.getPackageContents();
-		assertEquals(packageContents.size(), 1);
+		assertEquals(packageDeclarations.size(), 1);
 				
-		List<FunctionDeclaration> fds = packageContents
+		List<FunctionDeclaration> fds = packageDeclarations
 				.get(0)
-				.getPackageDeclaration()
 				.getFunctionDeclarations();
 		
-		PackageContent packageContent = packageContents.get(0);
-		PackageDeclaration pd = packageContent.getPackageDeclaration();
+		PackageDeclaration pd = packageDeclarations.get(0);
 		
 		
 		assertEquals(fds.size(), 2);

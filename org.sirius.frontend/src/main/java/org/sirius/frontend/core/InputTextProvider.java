@@ -23,6 +23,9 @@ public interface InputTextProvider {
 	String getPackagePhysicalName();
 	
 	
+	default LogicalPath getPackageLogicalPath() {
+		return LogicalPath.fromPhysical(getPackagePhysicalPath());
+	}
 	default PhysicalPath getPackagePhysicalPath() {
 		return PhysicalPath.parse(getPackagePhysicalName());
 	}

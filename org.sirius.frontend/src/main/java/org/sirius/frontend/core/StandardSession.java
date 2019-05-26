@@ -76,23 +76,7 @@ public class StandardSession implements Session {
 		return ctxt.declaration;
 	}
 	
-	private List<ModuleDeclaration> parseInput(InputTextProvider input) {
-//		String sourceCode = input.getText();
-//		
-//		CharStream stream = CharStreams.fromString(sourceCode); 
-//		
-//		SiriusLexer lexer = new SiriusLexer(stream);
-//		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-//		
-//		SiriusParser parser = new SiriusParser(tokenStream);
-//
-//		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
-//		parser.factory = astFactory;
-//		
-//		parser.currentModule = new ModuleDeclaration(reporter);
-//		
-//		parser.removeErrorListeners();
-//		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
+	private void parseInput(InputTextProvider input) {
 
 		SiriusParser parser = createParser(input, new AstFactory(reporter, globalSymbolTable));
 		// -- Parsing
@@ -129,17 +113,9 @@ public class StandardSession implements Session {
 		
 		List<ModuleDeclaration> moduleDeclarations = compilationUnit.getModuleDeclarations();
 		for(ModuleDeclaration moduleDeclaration: moduleDeclarations) {
-			
-			List<PackageContent> packageContent = moduleDeclaration
-					.getPackageDeclarations()
-					.stream()
-					.map(pd -> new PackageContent(pd))
-					.collect(Collectors.toList());
-			
 			ModuleContent moduleContent = new ModuleContent(reporter, moduleDeclaration);
 			this.moduleContents.add(moduleContent);
 		}
-		return moduleDeclarations;
 	}
 	
 	private List<ModuleDeclaration> parseModuleDescriptors(List<InputTextProvider> inputs) {
@@ -147,8 +123,6 @@ public class StandardSession implements Session {
 		for(InputTextProvider input: inputs) {
 			if(input.isModuleDescriptor()) {
 				ModuleDeclaration md = parseModuleDescriptor(input);
-
-//				List<ModuleDeclaration> md = parseInput(input);	// TODO: should be unique
 				moduleDeclarations.add(md);
 			}
 		}
@@ -157,9 +131,8 @@ public class StandardSession implements Session {
 
 	private PackageDeclaration parsePackageDescriptor(InputTextProvider input) {
 		SiriusParser parser = createParser(input, new AstFactory(reporter, globalSymbolTable));
-		PackageDeclaration d = parser.packageDescriptorCompilationUnit().packageDeclaration.declaration;
-//		ModuleContent mc = new ModuleContent(reporter, ctxt.declaration);
-		return d;
+		PackageDeclaration pd = parser.packageDescriptorCompilationUnit().packageDeclaration.declaration;
+		return pd;
 	}
 
 	/** Parse package declarations for a module.
@@ -168,8 +141,8 @@ public class StandardSession implements Session {
 	 * @param moduleContent
 	 * @return
 	 */
-	private /*List<PackageContent> */void parsePackagesDescriptors(List<InputTextProvider> inputs, ModuleContent moduleContent) {
-		List<PackageContent> packageContents = new ArrayList<>();
+	private void parsePackagesDescriptors(List<InputTextProvider> inputs, ModuleContent moduleContent) {
+		List<PackageDeclaration> packageDeclarations = new ArrayList<>();
 
 
 		for(InputTextProvider input: inputs) {
@@ -178,26 +151,23 @@ public class StandardSession implements Session {
 				PhysicalPath packagePPath = input.getPackagePhysicalPath();
 				if(packagePPath.startWith(modulePPath)) {
 					PackageDeclaration pd = parsePackageDescriptor(input);
-					PackageContent pc = new PackageContent(pd);
-					packageContents.add(pc);
+//					PackageContent pc = new PackageContent(pd);
+					packageDeclarations.add(pd);
 				}
 			}
 		}
 		
-		if(packageContents.isEmpty()) {
+		if(packageDeclarations.isEmpty()) {
 			// -- Add initial unnamed package
-			PackageContent unnamedPackage = new PackageContent(new PackageDeclaration (reporter));
-			packageContents.add(unnamedPackage);
+			PackageDeclaration unnamedPackage = new PackageDeclaration (reporter);
+			packageDeclarations.add(unnamedPackage);
 		}
 		
-		moduleContent.addPackageContents(packageContents);
-//		return packageContents;
+		moduleContent.addPackageContents(packageDeclarations);
 	}
 	
-	void parseCodeInput(InputTextProvider input, PackageContent packageContent, ModuleContent  moduleContent) {
-		List<ModuleDeclaration> moduleDeclarations = parseInput(input);
-//		packageContent.a
-
+	void parseCodeInput(InputTextProvider input, PackageDeclaration packageContent, ModuleContent  moduleContent) {
+		parseInput(input);
 	}
 	
 //	@Override
@@ -222,8 +192,8 @@ public class StandardSession implements Session {
 				continue;
 			
 			for(ModuleContent mc: this.moduleContents) {
-				for(PackageContent pc: mc.getPackageContents()) {
-					if(input.getPackagePhysicalPath() .equals(pc.getPhysicalPath())) {
+				for(PackageDeclaration pc: mc.getPackageContents()) {
+					if(input.getPackageLogicalPath().matchQName(pc.getQname())) {
 						parseCodeInput(input, pc, mc);
 						break;
 					}

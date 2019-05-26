@@ -1,6 +1,7 @@
 package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,9 @@ public class QName {
 	public void add(AstToken element) {
 		this.elements.add(element);
 	}
+	public void addAll(Collection<AstToken> elements) {
+		this.elements.addAll(elements);
+	}
 	
 	public void add(Token element) {
 		this.elements.add(new AstToken(element));
@@ -78,5 +82,9 @@ public class QName {
 	@Override
 	public String toString() {
 		return dotSeparated();
+	}
+	
+	public boolean isEmpty() {
+		return this.elements.isEmpty();
 	}
 }

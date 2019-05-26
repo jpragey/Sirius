@@ -1,6 +1,7 @@
 package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ import org.sirius.frontend.symbols.SymbolTable;
  */
 public class PackageDeclaration implements Scoped, Visitable {
 
-	private List<AstToken> qname = new ArrayList<>();
+	private QName qname = new QName();
 	private String qnameString = null;
 	
 	private Reporter reporter;
@@ -32,10 +33,15 @@ public class PackageDeclaration implements Scoped, Visitable {
 	private LocalSymbolTable symbolTable; 
 
 	
-	public PackageDeclaration(Reporter reporter) {
+	public PackageDeclaration(Reporter reporter,List<AstToken> qname) {
 		super();
 		this.reporter = reporter;
+		this.qname.addAll(qname);
 		this.symbolTable = new LocalSymbolTable(reporter); 
+	}
+
+	public PackageDeclaration(Reporter reporter) {
+		this(reporter, Collections.emptyList());
 	}
 
 	public void addNamePart(AstToken partName) {
@@ -50,23 +56,17 @@ public class PackageDeclaration implements Scoped, Visitable {
 
 	public String getQnameString() {
 		if(qnameString == null) {
-			StringBuilder sb = new StringBuilder();
-			for(AstToken tk: qname) {
-				if(sb.length() > 0)
-					sb.append('.');
-				sb.append(tk.getText());
-			}
-			qnameString = sb.toString();
+			qnameString = qname.dotSeparated();
 		}
 		return qnameString;
 	}
 
 
-	public List<AstToken> getQname() {
+	public QName getQname() {
 		return qname;
 	}
-	public List<String> getPathElements() { // TODO: cache
-		return qname.stream().map(tk -> tk.getText()).collect(Collectors.toList());
+	public List<String> getPathElements() { // TODO: cache (?)
+		return qname.getStringElements();
 	}
 
 	public void addFunctionDeclaration(FunctionDeclaration declaration) {

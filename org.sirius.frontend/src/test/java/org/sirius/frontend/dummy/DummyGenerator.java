@@ -56,7 +56,7 @@ public class DummyGenerator {
 			 * This method should only be used for an object or array type.
 			 */
 			StringBuilder sb = new StringBuilder();
-			for(AstToken tk: classDeclaration.getPackageDeclaration().getQname()) {
+			for(AstToken tk: classDeclaration.getPackageDeclaration().getQname().getElements()) {
 				sb.append(tk.getText());
 				sb.append('/');
 			}
