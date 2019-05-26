@@ -11,19 +11,12 @@ import org.sirius.frontend.symbols.SymbolTable;
 
 public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable, Scoped {
 
-	/** List of visitable children, in the order they are appended to this object. */
-	private List<Visitable> visitables = new ArrayList<>();
 	
 	
 	private Optional<ShebangDeclaration> shebangDeclaration = Optional.empty();
 
-	private List<FunctionDeclaration> functionDeclarations = new ArrayList<>();
-	private List<ClassDeclaration> classDeclarations = new ArrayList<>();
-	
-	private Optional<ModuleDeclaration> moduleDeclaration = Optional.empty();
-	
-	private List<PackageDeclaration> packagesDeclarations = new ArrayList<>();
-	private PackageDeclaration currentPackage;
+	private ArrayList<ModuleDeclaration> moduleDeclarations = new ArrayList<>();
+	private ModuleDeclaration currentModule;
 	
 	private Reporter reporter; 
 	
@@ -34,29 +27,16 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		super();
 		this.reporter = reporter;
 		this.symbolTable = new LocalSymbolTable(reporter);
-		this.currentPackage = new PackageDeclaration(reporter);
+	
+		this.addModuleDeclaration(new ModuleDeclaration(reporter));
 	}
 
 	public void setShebang(ShebangDeclaration declaration) {
 		this.shebangDeclaration = Optional.of(declaration);
-		this.visitables.add(declaration);
 	}
 	
 	public Optional<ShebangDeclaration> getShebangDeclaration() {
 		return shebangDeclaration;
-	}
-	
-	public void addFunctionDeclaration(FunctionDeclaration declaration) {
-		this.functionDeclarations.add(declaration);
-		this.visitables.add(declaration);
-	}
-
-//	public void clearFunctionDeclarations() {
-//		functionDeclarations.clear();
-//	}
-	
-	public List<FunctionDeclaration> getFunctionDeclarations() {
-		return functionDeclarations;
 	}
 	
 	@Override
@@ -74,33 +54,30 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	}
 	
 	
-	public Optional<ModuleDeclaration> getModuleDeclaration() {
-		return moduleDeclaration;
+	public List<ModuleDeclaration> getModuleDeclarations() {
+		return moduleDeclarations;
 	}
 
-	public void setModuleDeclaration(ModuleDeclaration moduleDeclaration) {
-		this.moduleDeclaration = Optional.of(moduleDeclaration);
-		this.visitables.add(moduleDeclaration);
+	public void addModuleDeclaration(ModuleDeclaration moduleDeclaration) {
+		this.currentModule = moduleDeclaration;
+		this.moduleDeclarations.add(moduleDeclaration);
 	}
 
-	public void addClassDeclaration(ClassDeclaration classDeclaration) {
-		this.classDeclarations.add(classDeclaration);
-		this.visitables.add(classDeclaration);
-	}
-
-	public List<ClassDeclaration> getClassDeclarations() {
-		return classDeclarations;
-	}
-	
 	public void setSymbolTableParent(SymbolTable newParent) {
 		this.symbolTable.setParentSymbolTable(newParent);
 	}
 	
 	public void addPackageDeclaration(PackageDeclaration declaration) {
-		this.packagesDeclarations.add(declaration);
-		this.currentPackage = declaration;
-		this.visitables.add(declaration);
+		this.currentModule.addPackageDeclaration(declaration);
 	}
+
+	public void addFunctionDeclaration(FunctionDeclaration d) {
+		this.currentModule.addFunctionDeclaration(d);
+	}
+	public void addClassDeclaration(ClassDeclaration d) {
+		this.currentModule.addClassDeclaration(d);
+	}
+	
 	
 	@Override
 	public SymbolTable getSymbolTable() {

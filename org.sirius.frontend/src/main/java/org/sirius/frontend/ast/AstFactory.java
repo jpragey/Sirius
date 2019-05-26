@@ -44,14 +44,14 @@ public class AstFactory {
 		return new FunctionDeclaration(reporter, new AstToken(name), returnType);
 	}
 
-	public CompilationUnit createCompilationUnit() {
-		return new CompilationUnit(reporter, globalSymbolTable);
+	public StandardCompilationUnit createStandardCompilationUnit() {
+		return new StandardCompilationUnit(reporter, globalSymbolTable);
 	}
-//	public ScriptCompilationUnit createScriptCompilationUnit() {
-//		return new ScriptCompilationUnit(reporter);
-//	}
-	public ModuleDescriptorCompilationUnit createModuleDescriptorCompilationUnit(ModuleDeclaration moduleDeclaration) {
-		return new ModuleDescriptorCompilationUnit(reporter, moduleDeclaration);
+	public ScriptCompilationUnit createScriptCompilationUnit() {
+		return new ScriptCompilationUnit(reporter);
+	}
+	public ModuleDescriptor createModuleDescriptorCompilationUnit(ModuleDeclaration moduleDeclaration) {
+		return new ModuleDescriptor(reporter, moduleDeclaration);
 	}
 	public PackageDescriptorCompilationUnit createPackageDescriptorCompilationUnit(PackageDeclaration packageDeclaration) {
 		return new PackageDescriptorCompilationUnit(reporter, packageDeclaration);
@@ -64,7 +64,7 @@ public class AstFactory {
 	}
 
 	public ModuleDeclaration createModuleDeclaration() {
-		return new ModuleDeclaration();
+		return new ModuleDeclaration(reporter);
 	}
 	
 	public ImportDeclaration createImportDeclaration(QName pack) {

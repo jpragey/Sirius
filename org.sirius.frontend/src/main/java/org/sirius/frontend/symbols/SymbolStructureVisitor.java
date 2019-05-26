@@ -6,7 +6,7 @@ import java.util.Stack;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ClassDeclaration;
-import org.sirius.frontend.ast.CompilationUnit;
+import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ImportDeclarationElement;
@@ -46,7 +46,7 @@ public class SymbolStructureVisitor implements AstVisitor {
 //	}
 	
 	@Override
-	public void startCompilationUnit(CompilationUnit compilationUnit) {
+	public void startCompilationUnit(StandardCompilationUnit compilationUnit) {
 		SymbolTable st = startScope0(compilationUnit);
 		stack.push(st);
 		
@@ -61,7 +61,7 @@ public class SymbolStructureVisitor implements AstVisitor {
 	}
 
 	@Override
-	public void endCompilationUnit(CompilationUnit compilationUnit) {
+	public void endCompilationUnit(StandardCompilationUnit compilationUnit) {
 		stack.pop();
 //		endScope(compilationUnit);
 	}

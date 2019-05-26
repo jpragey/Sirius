@@ -20,6 +20,9 @@ public class PhysicalPath {
 				Optional.empty() : 
 					Optional.of(new PhysicalPath(elements.subList(0, elements.size()-1))); 
 	}
+	public PhysicalPath(String... elements) {
+		this(Arrays.asList(elements));
+	}
 	
 	public final static PhysicalPath empty = new PhysicalPath(Collections.emptyList());
 
@@ -61,7 +64,8 @@ public class PhysicalPath {
 		
 		Iterator<String> current = elements.iterator();
 		for(String e: other.elements) {
-			if(current.next() != e)
+			String n = current.next(); 
+			if(!n.equals(e))
 				return false;
 		}
 		return true;
@@ -75,4 +79,8 @@ public class PhysicalPath {
 		return parent;
 	}
 	
+	@Override
+	public String toString() {
+		return String.join("/", this.elements);
+	}
 }

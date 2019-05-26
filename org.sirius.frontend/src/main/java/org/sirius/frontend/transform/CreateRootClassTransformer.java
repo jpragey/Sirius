@@ -4,7 +4,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ClassDeclaration;
-import org.sirius.frontend.ast.CompilationUnit;
+import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.PackageDeclaration;
 
@@ -47,7 +47,7 @@ public class CreateRootClassTransformer implements /*Transformer*/ AstVisitor {
 //	}
 	
 	@Override
-	public void startCompilationUnit(CompilationUnit compilationUnit) {
+	public void startCompilationUnit(StandardCompilationUnit compilationUnit) {
 //		AstToken name = new AstToken(0, 0, 0, 0, rootClassName, "<unknown>");
 //		
 //		ClassDeclaration rootClass = new ClassDeclaration(reporter, false /*is interface*/, name /*, rootPackageDeclaration /*PackageDeclaration.root*/ /*TODO: ???*/);

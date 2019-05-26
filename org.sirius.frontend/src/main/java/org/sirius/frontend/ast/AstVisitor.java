@@ -2,14 +2,14 @@ package org.sirius.frontend.ast;
 
 public interface AstVisitor {
 
-	public default void startCompilationUnit (CompilationUnit compilationUnit) {}
-	public default void endCompilationUnit (CompilationUnit compilationUnit) {}
+	public default void startCompilationUnit (StandardCompilationUnit compilationUnit) {}
+	public default void endCompilationUnit (StandardCompilationUnit compilationUnit) {}
 
 //	public default void startScriptCompilationUnit (ScriptCompilationUnit compilationUnit) {}
 //	public default void endScriptCompilationUnit (ScriptCompilationUnit compilationUnit) {}
 
-	public default void startModuleDescriptorCompilationUnit (ModuleDescriptorCompilationUnit compilationUnit) {}
-	public default void endModuleDescriptorCompilationUnit (ModuleDescriptorCompilationUnit compilationUnit) {}
+	public default void startModuleDescriptorCompilationUnit (ModuleDescriptor compilationUnit) {}
+	public default void endModuleDescriptorCompilationUnit (ModuleDescriptor compilationUnit) {}
 
 	public default void startPackageDescriptorCompilationUnit (PackageDescriptorCompilationUnit compilationUnit) {}
 	public default void endPackageDescriptorCompilationUnit(PackageDescriptorCompilationUnit compilationUnit) {}

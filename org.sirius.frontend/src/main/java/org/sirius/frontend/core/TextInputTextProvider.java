@@ -35,4 +35,8 @@ public class TextInputTextProvider implements InputTextProvider {
 		return content;
 	}
 
+	@Override
+	public String toString() {
+		return packagePhysicalName + "(" + inputLocation + ") \"" + content.substring(0, 60) + "...\"";
+	}
 }

@@ -11,7 +11,7 @@ import org.sirius.frontend.symbols.GlobalSymbolTable;
 import org.sirius.frontend.symbols.LocalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
-public class CompilationUnit implements AbstractCompilationUnit, Visitable, Scoped {
+public class StandardCompilationUnit implements AbstractCompilationUnit, Visitable, Scoped {
 
 	private Optional<ShebangDeclaration> shebangDeclaration = Optional.empty();
 
@@ -27,7 +27,7 @@ public class CompilationUnit implements AbstractCompilationUnit, Visitable, Scop
 	private AliasingSymbolTable symbolTable; 
 	
 	
-	public CompilationUnit(Reporter reporter, GlobalSymbolTable globalSymbolTable) {
+	public StandardCompilationUnit(Reporter reporter, GlobalSymbolTable globalSymbolTable) {
 		super();
 		this.reporter = reporter;
 		this.symbolTable = new AliasingSymbolTable(reporter, globalSymbolTable);

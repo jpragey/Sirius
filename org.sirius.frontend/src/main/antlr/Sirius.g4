@@ -5,13 +5,12 @@ grammar Sirius;
 
 @lexer::header {
   package org.sirius.frontend.parser;
-  //import org.sirius.frontend.sirius.lang.SiriusLangPackage;
   import org.sirius.frontend.ast.AstFactory;
+  import org.sirius.frontend.ast.ModuleDeclaration;
 }
 @parser::header {
   package org.sirius.frontend.parser;
   import org.sirius.frontend.ast.*;
-  //import org.sirius.frontend.sirius.lang.SiriusLangPackage;
   import org.sirius.frontend.ast.AstFactory;
   import org.sirius.frontend.ast.AstFactory;
     
@@ -21,47 +20,50 @@ grammar Sirius;
 @members {
 	//public SiriusLangPackage languagePackage; 
 	public AstFactory factory;
+	public ModuleDeclaration currentModule;
 }
 
 
 // -------------------- COMPILATION UNITS
 
 /** Usual compilation unit */
-compilationUnit returns [CompilationUnit unit]
+standardCompilationUnit returns [StandardCompilationUnit stdUnit]
 locals[
 	PackageDeclaration currentPackage
 ]
 @init {     
 	$currentPackage = factory.createPackageDeclaration();
-	$unit = factory.createCompilationUnit();
+	$stdUnit = factory.createStandardCompilationUnit();
 }
     : 						
-    ( d=shebangDeclaration 	{ $unit.setShebang($d.declaration); } )?
-    ( importDeclaration 		{ $unit.addImport($importDeclaration.declaration);  })*
+    ( shebangDeclaration 		{ $stdUnit.setShebang($shebangDeclaration.declaration); } )?
+    ( importDeclaration 		{ $stdUnit.addImport($importDeclaration.declaration);  })*
     (
-    	  moduleDeclaration 	{ $unit.addModuleDeclaration($moduleDeclaration.declaration);    } 
-    	| functionDeclaration	{ $unit.addFunctionDeclaration($functionDeclaration.declaration); }
+    	  moduleDeclaration 	{ $stdUnit.addModuleDeclaration($moduleDeclaration.declaration);    } 
     	| packageDeclaration	{ $currentPackage = $packageDeclaration.declaration; }
-    	| classDeclaration /*[$currentPackage]*/	{ $unit.addClassDeclaration($classDeclaration.declaration); }
+    	| functionDeclaration	{ $stdUnit.addFunctionDeclaration($functionDeclaration.declaration); }
+    	| classDeclaration 		{ $stdUnit.addClassDeclaration($classDeclaration.declaration); }
     )*
 	EOF
 	;
 
-///** CompilationUnit from script */
-//scriptCompilationUnit returns [ScriptCompilationUnit unit]
-//@init {     
-//	$unit = factory.createScriptCompilationUnit();
-//}
-//	: shebangDeclaration			{$unit.setShebang($shebangDeclaration.declaration); }
-//	( moduleDeclaration 			{$unit.setModuleDeclaration($moduleDeclaration.declaration);    } )?
-//	( packageDeclaration 			{$unit.addPackageDeclaration($packageDeclaration.declaration);	} )?
-//	( 	 functionDeclaration 		{$unit.addFunctionDeclaration($functionDeclaration.declaration);	}
-//		| classDeclaration 			{$unit.addClassDeclaration($classDeclaration.declaration);	}
-//	)*
-//	;
+/** CompilationUnit from script */
+scriptCompilationUnit returns [ScriptCompilationUnit unit]
+@init {     
+	$unit = factory.createScriptCompilationUnit();
+}
+	: shebangDeclaration			{$unit.setShebang($shebangDeclaration.declaration); }
+	(
+		  moduleDeclaration 			{$unit.addModuleDeclaration($moduleDeclaration.declaration);    } 
+		| packageDeclaration 			{$unit.addPackageDeclaration($packageDeclaration.declaration);	} 
+		| functionDeclaration 		{$unit.addFunctionDeclaration($functionDeclaration.declaration);	}
+		| classDeclaration 			{$unit.addClassDeclaration($classDeclaration.declaration);	}
+	)*
+	
+	;
 
 /** CompilationUnit from module descriptor */
-moduleDescriptorCompilationUnit returns [ModuleDescriptorCompilationUnit unit]
+moduleDescriptorCompilationUnit returns [ModuleDescriptor unit]
 @init {
 }
 	: moduleDeclaration		{ $unit = factory.createModuleDescriptorCompilationUnit($moduleDeclaration.declaration);} 

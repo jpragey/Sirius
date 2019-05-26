@@ -116,4 +116,8 @@ public class FunctionDeclaration implements Scoped, Visitable {
 		return Optional.of(cd);
 	}
 
+	@Override
+	public String toString() {
+		return name.getText() + "(" + formalArguments.size() + " args)";
+	}
 }

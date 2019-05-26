@@ -43,9 +43,6 @@ public class ModuleDeclaration implements Visitable {
 		public void setOrigin(Token origin) {
 			this.origin = Optional.of(new AstToken(origin));
 		}
-//		public AstToken getGroupId() {
-//			return groupId;
-//		}
 		public void setGroupId(Token groupId) {
 			this.groupId = new AstToken(groupId);
 			this.setGroupIdString(groupId.getText());
@@ -55,15 +52,6 @@ public class ModuleDeclaration implements Visitable {
 			assert(this.groupId != null);
 			this.setGroupIdString(groupId.dotSeparated());
 		}
-//		public AstToken getArtefactId() {
-//			return artefactId;
-//		}
-//		public void setArtefactId(AstToken artefactId) {
-//			this.artefactId = artefactId;
-//		}
-//		public void setArtefactId(Token artefactId) {
-//			this.artefactId = new AstToken(artefactId);
-//		}
 		public AstToken getVersion() {
 			return version;
 		}
@@ -93,9 +81,52 @@ public class ModuleDeclaration implements Visitable {
 	
 	private List<ModuleImport> moduleImports = new ArrayList<>(); 
 	
+	private List<PackageDeclaration> packageDeclarations = new ArrayList<>();
+	private Optional<PackageDeclaration> currentPackage = Optional.empty();
+	
+	public ModuleDeclaration(Reporter reporter) {
+		super();
+		this.reporter = reporter;
+//		this.addPackageDeclaration(new PackageDeclaration(reporter));
+	}
+
+	
+	public List<PackageDeclaration> getPackageDeclarations() {
+		return packageDeclarations;
+	}
+
+
 	public void addQNameElement(Token element) {
 		this.qName.add(element);
 	}
+	
+	/** Check there's a current package (otherwise create it) and return it.
+	 * 
+	 * @return
+	 */
+	private PackageDeclaration assertCurrentPackage() {
+		if(currentPackage.isEmpty()) {
+			addPackageDeclaration(new PackageDeclaration(reporter));
+		}
+		return currentPackage.get();
+	}
+	
+	/** Add a new package, update current package reference
+	 * 
+	 * @param packageDeclaration
+	 */
+	public void addPackageDeclaration(PackageDeclaration packageDeclaration) {
+		this.currentPackage = Optional.of(packageDeclaration);
+		this.packageDeclarations.add(packageDeclaration);
+	}
+	
+	public void addFunctionDeclaration(FunctionDeclaration d) {
+		this.assertCurrentPackage().addFunctionDeclaration(d);
+	}
+	public void addClassDeclaration(ClassDeclaration d) {
+		this.assertCurrentPackage().addClassDeclaration(d);
+	}
+
 	
 	public void setVersion(Token version) {
 		this.version = new AstToken(version); 
@@ -139,4 +170,8 @@ public class ModuleDeclaration implements Visitable {
 		
 	}
 	
+	@Override
+	public String toString() {
+		return qName.toString();
+	}
 }

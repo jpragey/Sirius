@@ -3,6 +3,7 @@ package org.sirius.frontend.ast;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.AbstractCompilationUnit;
 
+/** CompilationUnit from package descriptor */
 public class PackageDescriptorCompilationUnit implements AbstractCompilationUnit, Visitable {
 
 	private PackageDeclaration packageDeclaration;

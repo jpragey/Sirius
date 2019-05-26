@@ -50,9 +50,21 @@ test {
 	useTestNG {}
 }
 
-task generateParser(type:JavaExec) {
-   main = 'org.antlr.v4.Tool'
-   classpath = sourceSets.main.runtimeClasspath
-   args = ['-Dlanguage=Java', 'src/main/antlr/Sirius.g4', '-o', 'build/generated-sources/sirius']
+//final GENERATED_MAIN = "$buildDir/generated-source/antlr/org/sirius/frontend/parser"
+final GENERATED_MAIN = "$buildDir/generated-source/antlr"
+
+sourceSets {
+    main {
+         java {
+            srcDirs = ['src/main/java', GENERATED_MAIN]
+         }
+    }
 }
+
+generateGrammarSource {
+    maxHeapSize = "64m"
+    arguments += ["-visitor", "-long-messages"]
+    outputDirectory = file(GENERATED_MAIN + "/org/sirius/frontend/parser")
+}
+
 

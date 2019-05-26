@@ -1,7 +1,5 @@
 package org.sirius.frontend.core;
 
-import java.util.List;
-
 /** Provide text for 1 compilation unit (ie for 1 input file)
  * 
  * @author jpragey

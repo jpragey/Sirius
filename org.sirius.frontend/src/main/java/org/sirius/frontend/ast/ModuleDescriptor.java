@@ -3,12 +3,13 @@ package org.sirius.frontend.ast;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.AbstractCompilationUnit;
 
-public class ModuleDescriptorCompilationUnit implements AbstractCompilationUnit, Visitable {
+/** CompilationUnit from module descriptor */
+public class ModuleDescriptor implements AbstractCompilationUnit, Visitable {
 
 	private ModuleDeclaration moduleDeclaration;
 	private Reporter reporter; 
 	
-	public ModuleDescriptorCompilationUnit(Reporter reporter, ModuleDeclaration moduleDeclaration) {
+	public ModuleDescriptor(Reporter reporter, ModuleDeclaration moduleDeclaration) {
 		super();
 		this.reporter = reporter;
 		this.moduleDeclaration = moduleDeclaration;
