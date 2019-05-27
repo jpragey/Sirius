@@ -17,6 +17,7 @@ import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ClassDeclaration;
 import org.sirius.frontend.ast.ModuleDeclaration;
 import org.sirius.frontend.ast.PackageDeclaration;
+import org.sirius.frontend.ast.QName;
 import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
@@ -158,8 +159,9 @@ public class StandardSession implements Session {
 		}
 		
 		if(packageDeclarations.isEmpty()) {
-			// -- Add initial unnamed package
-			PackageDeclaration unnamedPackage = new PackageDeclaration (reporter);
+			// -- Add initial package (name is module qname)
+			QName name = moduleContent.getModuleDeclaration().getqName();
+			PackageDeclaration unnamedPackage = new PackageDeclaration (reporter, name.getElements());
 			packageDeclarations.add(unnamedPackage);
 		}
 		

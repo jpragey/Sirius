@@ -30,7 +30,7 @@ public class FrontEndTest {
 		assertEquals(moduleContents.get(0).getModulePath().getElements(), Arrays.asList("a", "b"));
 	}
 	
-	@Test(enabled = false)
+	@Test(enabled = true)
 	public void moduleWithoutExplicitPackageHasADefautltPackage() {
 		Reporter reporter = new AccumulatingReporter(new ShellReporter());
  
