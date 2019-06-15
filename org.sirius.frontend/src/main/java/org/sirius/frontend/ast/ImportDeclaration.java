@@ -13,11 +13,11 @@ import org.sirius.common.error.Reporter;
 public class ImportDeclaration implements Visitable {
 	
 	private Reporter reporter;
-	private QName pack;
+	private QualifiedName pack;
 	
 	private List<ImportDeclarationElement> elements = new ArrayList<>();
 
-	public ImportDeclaration(Reporter reporter, QName pack) {
+	public ImportDeclaration(Reporter reporter, QualifiedName pack) {
 		super();
 		this.reporter = reporter;
 		this.pack = pack;
@@ -28,7 +28,7 @@ public class ImportDeclaration implements Visitable {
 	}
 
 	
-	public QName getPack() {
+	public QualifiedName getPack() {
 		return pack;
 	}
 

@@ -11,7 +11,7 @@ import org.sirius.common.error.Reporter;
 
 public class ModuleDeclaration implements Visitable {
 
-	private QName qName = new QName();
+	private QualifiedName qName = new QualifiedName();
 	private AstToken version = new AstToken(0,0,0,0,"","");
 	
 	private Reporter reporter; 
@@ -47,10 +47,10 @@ public class ModuleDeclaration implements Visitable {
 			this.groupId = new AstToken(groupId);
 			this.setGroupIdString(groupId.getText());
 		}
-		public void setGroupId(QName groupId) {
-			this.groupId = groupId.getElements().get(0);
+		public void setGroupId(QualifiedName groupId) {
+			this.groupId = groupId.getTokenElements().get(0);
 			assert(this.groupId != null);
-			this.setGroupIdString(groupId.dotSeparated());
+			this.setGroupIdString(groupId.toQName().dotSeparated());
 		}
 		public AstToken getVersion() {
 			return version;
@@ -95,10 +95,12 @@ public class ModuleDeclaration implements Visitable {
 		return packageDeclarations;
 	}
 
-
-	public void addQNameElement(Token element) {
-		this.qName.add(element);
+	public void setQName(QualifiedName qualifiedName) {
+		this.qName = qualifiedName;
 	}
+//	public void addQNameElement(Token element) {
+//		this.qName.add(element);
+//	}
 	
 	/** Check there's a current package (otherwise create it) and return it.
 	 * 
@@ -156,7 +158,7 @@ public class ModuleDeclaration implements Visitable {
 		this.equivalents = equivalents;
 	}
 
-	public QName getqName() {
+	public QualifiedName getqName() {
 		return qName;
 	}
 

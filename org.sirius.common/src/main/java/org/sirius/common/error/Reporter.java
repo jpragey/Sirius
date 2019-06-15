@@ -2,6 +2,8 @@ package org.sirius.common.error;
 
 import java.util.Optional;
 
+import org.sirius.common.core.Token;
+
 public interface Reporter {
 	
 //	class Message {

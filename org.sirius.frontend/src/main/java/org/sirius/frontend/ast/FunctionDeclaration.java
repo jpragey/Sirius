@@ -23,12 +23,15 @@ public class FunctionDeclaration implements Scoped, Visitable {
 	private Type returnType = new VoidType();
 
 	private Reporter reporter;
+	
+	private AnnotationList annotationList;
 
 	private LocalSymbolTable symbolTable; 
 
-	public FunctionDeclaration(Reporter reporter, AstToken name, Type returnType) {
+	public FunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, Type returnType) {
 		super();
 		this.reporter = reporter;
+		this.annotationList = annotationList;
 		this.name = name;
 		this.returnType = returnType;
 		this.symbolTable = new LocalSymbolTable(reporter); 
@@ -105,7 +108,7 @@ public class FunctionDeclaration implements Scoped, Visitable {
 			return Optional.empty();
 		}
 		
-		FunctionDeclaration cd = new FunctionDeclaration(reporter, name, returnType);
+		FunctionDeclaration cd = new FunctionDeclaration(reporter, annotationList, name, returnType);
 		
 		cd.typeParameters.addAll(typeParameters.subList(1, typeParameters.size()));
 	

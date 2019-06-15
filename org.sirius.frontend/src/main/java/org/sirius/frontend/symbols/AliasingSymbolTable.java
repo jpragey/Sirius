@@ -9,7 +9,7 @@ import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.ClassDeclaration;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionFormalArgument;
-import org.sirius.frontend.ast.QName;
+import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.ast.TypeFormalParameterDeclaration;
 
 /** Symbol table that supports aliases, as in import statements.
@@ -28,9 +28,9 @@ public class AliasingSymbolTable implements SymbolTable {
 	public static class ImportedSymbol {
 		/** Local alias, same as name if there's no alias */
 //		private String alias;
-		private QName pkqQname;
+		private QualifiedName pkqQname;
 		private AstToken name;
-		public ImportedSymbol(/*String alias, */QName pkqQname, AstToken name) {
+		public ImportedSymbol(/*String alias, */QualifiedName pkqQname, AstToken name) {
 			super();
 //			this.alias = alias;
 			this.pkqQname = pkqQname;
@@ -39,7 +39,7 @@ public class AliasingSymbolTable implements SymbolTable {
 		//	public String getAlias() {
 		//		return alias;
 		//	}
-		public QName getPkqQname() {
+		public QualifiedName getPkqQname() {
 			return pkqQname;
 		}
 		public AstToken getName() {
@@ -104,7 +104,7 @@ public class AliasingSymbolTable implements SymbolTable {
 		}
 	}
 	
-	public void addGlobalSymbol(QName pkqQname, AstToken simpleName, Optional<AstToken> alias) {
+	public void addGlobalSymbol(QualifiedName pkqQname, AstToken simpleName, Optional<AstToken> alias) {
 //		String nameText = simpleName.getText();
 		
 		ImportedSymbol importedSymbol = new ImportedSymbol(pkqQname, simpleName);
@@ -123,7 +123,7 @@ public class AliasingSymbolTable implements SymbolTable {
 	
 	
 	
-	public void addImportSymbol(QName pkqQname, AstToken simpleName, Optional<AstToken> aliasName) {
+	public void addImportSymbol(QualifiedName pkqQname, AstToken simpleName, Optional<AstToken> aliasName) {
 		// Name local to the CU
 		AstToken localName = aliasName.isPresent() ? aliasName.get() : simpleName;
 		

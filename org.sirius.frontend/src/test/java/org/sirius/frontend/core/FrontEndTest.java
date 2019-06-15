@@ -46,7 +46,7 @@ public class FrontEndTest {
 		PackageDeclaration pd = mc.getPackageContents().get(0);
 		
 //		assertEquals(pc.getPackageDeclaration().getPathElements(), Arrays.asList("a", "b"));
-		assertEquals(pd.getPathElements(), Arrays.asList("a", "b"));
+		assertEquals(pd.getQname().getStringElements(), Arrays.asList("a", "b"));
 	}
 	
 	@Test(enabled = true)
@@ -66,7 +66,7 @@ public class FrontEndTest {
 		assertEquals(mc.getPackageContents().size(), 1);
 		PackageDeclaration pc = mc.getPackageContents().get(0);
 		
-		assertEquals(pc.getPathElements(), Arrays.asList("a", "b"));
+		assertEquals(pc.getQname().getStringElements(), Arrays.asList("a", "b"));
 	}
 	
 	

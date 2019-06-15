@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.sirius.common.core.Token;
+
 public class AccumulatingReporter implements Reporter {
 	
 	private Reporter delegate;

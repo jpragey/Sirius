@@ -7,7 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-import org.sirius.frontend.ast.QName;
+import org.sirius.common.core.QName;
+import org.sirius.frontend.ast.QualifiedName;
 
 public class LogicalPath {
 

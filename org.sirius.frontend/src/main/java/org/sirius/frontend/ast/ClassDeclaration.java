@@ -18,9 +18,13 @@ public class ClassDeclaration implements Type, Scoped, Visitable {
 	private List<TypeFormalParameterDeclaration> typeParameters = new ArrayList<>();
 	
 	private List<FunctionDeclaration> functionDeclarations = new ArrayList<>();
+	private List<ValueDeclaration> valueDeclarations = new ArrayList<>();
 
 	/** Root package at first */
 	private PackageDeclaration packageDeclaration;
+	
+	/** True for annotation classes (ConstrainedAnnotation subtypes, ie OptionalAnnotation or SequencedAnnotation) */
+	private boolean annotationType = false; 
 	
 //	public enum Type {Interface, Class}
 	
@@ -41,6 +45,13 @@ public class ClassDeclaration implements Type, Scoped, Visitable {
 //		this.symbolTable.addClass(name, this);
 		
 	}
+	public static ClassDeclaration newClass(Reporter reporter, AstToken name) {
+		return new ClassDeclaration (reporter, false /*interfaceType */ , name);
+	}
+	public static ClassDeclaration newInterface(Reporter reporter, AstToken name) {
+		return new ClassDeclaration (reporter, true /*interfaceType */ , name);
+	}
+	
 	public ClassDeclaration(Reporter reporter, boolean interfaceType, Token name/*, PackageDeclaration packageDeclaration*/) {
 		this(reporter, interfaceType, new AstToken(name));
 	}
@@ -56,6 +67,12 @@ public class ClassDeclaration implements Type, Scoped, Visitable {
 		this.functionDeclarations.add(declaration);
 		this.symbolTable.addFunction(declaration.getName(), declaration);
 	}
+	public void addValueDeclaration(ValueDeclaration valueDeclaration) {
+		this.valueDeclarations.add(valueDeclaration);
+		// TODO: add to symbol table
+	}
+	
+	
 	public PackageDeclaration getPackageDeclaration() {
 		assert(this.packageDeclaration != null);
 		return packageDeclaration;
@@ -140,6 +157,12 @@ public class ClassDeclaration implements Type, Scoped, Visitable {
 	@Override
 	public String toString() {
 		return "class " + name.getText();
+	}
+	public boolean isAnnotationType() {
+		return annotationType;
+	}
+	public void setAnnotationType(boolean annotationType) {
+		this.annotationType = annotationType;
 	}
 
 }

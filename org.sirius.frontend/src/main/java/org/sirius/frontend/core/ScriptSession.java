@@ -6,10 +6,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.sirius.common.core.QName;
+import org.sirius.common.core.Token;
+import org.sirius.common.core.TokenLocation;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstToken;
@@ -44,8 +48,7 @@ public class ScriptSession implements Session {
 	public List<ModuleContent> getModuleContents() {
 		return moduleContents;
 	}
-
-//	@Override
+	
 	private void addInput(InputTextProvider input) {
 		String sourceCode = input.getText();
 		
@@ -81,8 +84,8 @@ public class ScriptSession implements Session {
 //		LocalSymbolTable rootSymbolTable = new LocalSymbolTable(reporter);
 
 		// -- Package
-		List<String> packageQName = Arrays.asList(input.getResourcePhysicalName().split("/"));
-
+//		List<String> packageQName = Arrays.asList(input.getResourcePhysicalName().split("/"));
+		QName packageQName = new PhysicalResourceQName(input.getResourcePhysicalName()).toQName();
 
 		// -- Root class transformer
 		String rootClassName = "$root$";

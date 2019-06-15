@@ -1,6 +1,7 @@
-package org.sirius.frontend.api;
+package org.sirius.common.core;
 
-public interface Token {
+public interface TokenLocation {
+
 	/** The index of the first character of this token relative to the beginning of the line at which it occurs, 0..n-1
 	 * 
 	 * @return
@@ -22,9 +23,8 @@ public interface Token {
 	 * @return
 	 */
 	public int getStopIndex();
-	/** Get the text of the token.
-	 * 
-	 * @return
-	 */
-	public String getText();
+	
+	/** Location, eg file path, to be printed in messages (no semantic meaning) */
+	public String getSourceName();
+
 }

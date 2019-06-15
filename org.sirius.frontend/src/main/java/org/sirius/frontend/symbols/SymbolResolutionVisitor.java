@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
+import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ClassDeclaration;
 import org.sirius.frontend.ast.StandardCompilationUnit;
@@ -22,10 +23,10 @@ public class SymbolResolutionVisitor implements AstVisitor {
 //	private List<SymbolTable> stack = new ArrayList<>();
 	private Stack<SymbolTable> stack = new Stack<>();
 	
-	private List<String> packageQName;
+	private QName packageQName;
 	private GlobalSymbolTable globalSymbolTable;
 
-	public SymbolResolutionVisitor(/*SymbolTable rootSymbolTable, */GlobalSymbolTable globalSymbolTable, List<String> packageQName) {
+	public SymbolResolutionVisitor(/*SymbolTable rootSymbolTable, */GlobalSymbolTable globalSymbolTable, QName packageQName) {
 		super();
 		this.packageQName = packageQName;
 		this.globalSymbolTable = globalSymbolTable;

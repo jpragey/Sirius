@@ -40,8 +40,8 @@ public class AstFactory {
 		return new IntersectionType(first, second);
 	}
 	
-	public FunctionDeclaration createFunctionDeclaration(Token name, Type returnType) {
-		return new FunctionDeclaration(reporter, new AstToken(name), returnType);
+	public FunctionDeclaration createFunctionDeclaration(AnnotationList annotationList, Token name, Type returnType) {
+		return new FunctionDeclaration(reporter, annotationList, new AstToken(name), returnType);
 	}
 
 	public StandardCompilationUnit createStandardCompilationUnit() {
@@ -59,6 +59,9 @@ public class AstFactory {
 	
 
 	
+	public PackageDeclaration createPackageDeclaration(QualifiedName qname) {
+		return new PackageDeclaration(reporter, qname.toQName());
+	}
 	public PackageDeclaration createPackageDeclaration() {
 		return new PackageDeclaration(reporter);
 	}
@@ -67,7 +70,7 @@ public class AstFactory {
 		return new ModuleDeclaration(reporter);
 	}
 	
-	public ImportDeclaration createImportDeclaration(QName pack) {
+	public ImportDeclaration createImportDeclaration(QualifiedName pack) {
 		return new ImportDeclaration(reporter, pack);
 	}
 	
@@ -88,12 +91,15 @@ public class AstFactory {
 	public BooleanConstantExpression booleanConstant(Token value) {
 		return new BooleanConstantExpression(new AstToken(value));
 	}
+
+	// -- Values
+	public ValueDeclaration valueDeclaration(AnnotationList annotationList, Type type, Token name) {
+		return new ValueDeclaration(annotationList, type, new AstToken(name));
+	}
 	
-//	/** {type *} */ 
-//	public ClassDeclaration createIterable(Token startBracket,  Type type) {
-//		ClassDeclaration cd = new ClassDeclaration(reporter, true /*is interface*/, startBracket);
-//		cd.se
-//		return cd;
-//	}
+	// -- Annotations
+	public Annotation annotation(Token name) {
+		return new Annotation(new AstToken(name));
+	}
 	
 }

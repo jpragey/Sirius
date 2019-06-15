@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstToken;
@@ -17,7 +18,7 @@ import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ClassDeclaration;
 import org.sirius.frontend.ast.ModuleDeclaration;
 import org.sirius.frontend.ast.PackageDeclaration;
-import org.sirius.frontend.ast.QName;
+import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
@@ -88,7 +89,8 @@ public class StandardSession implements Session {
 //		LocalSymbolTable rootSymbolTable = new LocalSymbolTable(reporter);
 
 		// -- Package
-		List<String> packageQName = Arrays.asList(input.getResourcePhysicalName().split("/"));
+//		List<String> packageQName = Arrays.asList(input.getResourcePhysicalName().split("/"));
+		QName packageQName = new PhysicalResourceQName(input.getResourcePhysicalName()).toQName();
 
 
 		// -- Root class transformer
@@ -160,8 +162,8 @@ public class StandardSession implements Session {
 		
 		if(packageDeclarations.isEmpty()) {
 			// -- Add initial package (name is module qname)
-			QName name = moduleContent.getModuleDeclaration().getqName();
-			PackageDeclaration unnamedPackage = new PackageDeclaration (reporter, name.getElements());
+			QualifiedName name = moduleContent.getModuleDeclaration().getqName();
+			PackageDeclaration unnamedPackage = new PackageDeclaration (reporter, name.toQName());
 			packageDeclarations.add(unnamedPackage);
 		}
 		

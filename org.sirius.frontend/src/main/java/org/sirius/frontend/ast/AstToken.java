@@ -1,8 +1,11 @@
 package org.sirius.frontend.ast;
 
-import org.antlr.v4.runtime.Token;
+import java.util.Optional;
 
-public class AstToken implements org.sirius.frontend.api.Token, org.sirius.common.error.Token {
+import org.antlr.v4.runtime.Token;
+import org.sirius.common.core.TokenLocation;
+
+public class AstToken implements org.sirius.common.core.Token {
 
 	private int charPositionInLine;
 	private int line;
@@ -10,6 +13,7 @@ public class AstToken implements org.sirius.frontend.api.Token, org.sirius.commo
 	private int stopIndex;
 	private String text;
 	private String sourceName;
+	private Optional<TokenLocation> tokenLocation;
 	
 
 	public AstToken(int charPositionInLine, int line, int startIndex, int stopIndex, String text, String sourceName) {
@@ -20,10 +24,44 @@ public class AstToken implements org.sirius.frontend.api.Token, org.sirius.commo
 		this.stopIndex = stopIndex;
 		this.text = text;
 		this.sourceName = sourceName;
+		this.tokenLocation = Optional.of(new TokenLocation() {
+			
+			@Override
+			public int getStopIndex() {
+				return stopIndex;
+			}
+			
+			@Override
+			public int getStartIndex() {
+				return startIndex;
+			}
+			
+			@Override
+			public String getSourceName() {
+				return sourceName;
+			}
+			
+			@Override
+			public int getLine() {
+				return line;
+			}
+			
+			@Override
+			public int getCharPositionInLine() {
+				return charPositionInLine;
+			}
+		});
 	}
 
 	public AstToken(Token token) {
 		this(token.getCharPositionInLine(), token.getLine(), token.getStartIndex(), token.getStopIndex(), token.getText(), token.getTokenSource().getSourceName());
+	}
+
+	public static AstToken internal(String text, String sourceName) {
+		return new AstToken(0, 0, 0, 0, text, sourceName);
+	}
+	public static AstToken internal(String text) {
+		return new AstToken(0, 0, 0, 0, text, "<internal>");
 	}
 
 	public int getCharPositionInLine() {
@@ -43,7 +81,6 @@ public class AstToken implements org.sirius.frontend.api.Token, org.sirius.commo
 		return text;
 	}
 
-	@Override
 	public String getSourceName() {
 		return sourceName;
 	}
@@ -51,5 +88,10 @@ public class AstToken implements org.sirius.frontend.api.Token, org.sirius.commo
 	@Override
 	public String toString() {
 		return text;
+	}
+
+	@Override
+	public Optional<TokenLocation> getTokenLocation() {
+		return tokenLocation;
 	}
 }

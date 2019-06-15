@@ -4,6 +4,9 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Optional;
 
+import org.sirius.common.core.Token;
+import org.sirius.common.core.TokenLocation;
+
 public class ShellReporter implements Reporter {
 	
 	private int errorCnt = 0;
@@ -35,12 +38,14 @@ public class ShellReporter implements Reporter {
 		
 		if(token.isPresent()) {
 			Token tk = token.get();
-			sb.append(tk.getSourceName());
-			sb.append(":");
-			sb.append(tk.getLine());
-			sb.append(":");
-			sb.append(tk.getCharPositionInLine());
-			sb.append(":");
+			tk.getTokenLocation().ifPresent(location -> {
+				sb.append(location.getSourceName());
+				sb.append(":");
+				sb.append(location.getLine());
+				sb.append(":");
+				sb.append(location.getCharPositionInLine());
+				sb.append(":");
+			});
 		}
 		
 		sb.append(severity.name);

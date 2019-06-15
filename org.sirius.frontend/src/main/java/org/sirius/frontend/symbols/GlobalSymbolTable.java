@@ -5,16 +5,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.ClassDeclaration;
 import org.sirius.frontend.ast.FunctionDeclaration;
+import org.sirius.frontend.ast.ValueDeclaration;
 
+/**
+ * Table of all symbols that can be accessed globally (in external package or module).
+ * 
+ * It's basically a map key -> symbol, where a symbol can be 
+ * 
+ * ClassDeclaration (top-level / nested)		package	nestedClassName?
+ * FunctionDeclaration (top-level / member)		package	nestedClassName? functionName
+ * ValueDeclaration (top-level / member)		package	nestedClassName? valueName
+ * 
+ * @author jpragey
+ *
+ */
 public class GlobalSymbolTable /*implements SymbolTable */{
 
 	static class Key {
-		List<String> packageQName;
+		QName packageQName;
 		String simpleName;
-		public Key(List<String> packageQName, String simpleName) {
+		public Key(QName packageQName, String simpleName) {
 			super();
 			this.packageQName = packageQName;
 			this.simpleName = simpleName;
@@ -53,20 +67,28 @@ public class GlobalSymbolTable /*implements SymbolTable */{
 	
 	private Map<Key, Symbol> symbols = new HashMap<>();
 	
-	public void addSymbol(List<String> packageQName, AstToken simpleName, Symbol symbol) {
+	public void addSymbol(QName packageQName, AstToken simpleName, Symbol symbol) {
 		Key key = new Key(packageQName, simpleName.getText());
 		symbols.put(key, symbol);
 	}
 	
-	public void addClass(List<String> packageQName, AstToken simpleName, ClassDeclaration classDeclaration) {
+	public void addClass(QName packageQName, ClassDeclaration classDeclaration) {
+		AstToken simpleName = classDeclaration.getName();
 		addSymbol(packageQName, simpleName, new Symbol(simpleName, classDeclaration));
 	}
 	
-	public void addFunction(List<String> packageQName, AstToken simpleName, FunctionDeclaration functionDeclaration) {
+	public void addFunction(QName packageQName, FunctionDeclaration functionDeclaration) {
+		AstToken simpleName = functionDeclaration.getName();
 		addSymbol(packageQName, simpleName, new Symbol(simpleName, functionDeclaration));
 	}
+	
+	/** Top-level value */
+	public void addValue(QName packageQName, ValueDeclaration valueDeclaration) {
+		AstToken simpleName = valueDeclaration.getName();
+		addSymbol(packageQName, simpleName, new Symbol(simpleName, valueDeclaration));
+	}
 
-	public Optional<Symbol> lookup(List<String> packageQName, String simpleName) {
+	public Optional<Symbol> lookup(QName packageQName, String simpleName) {
 		Key key = new Key(packageQName, simpleName);
 		Symbol symbol = symbols.get(key);
 		Optional<Symbol> s = Optional.ofNullable(symbol);

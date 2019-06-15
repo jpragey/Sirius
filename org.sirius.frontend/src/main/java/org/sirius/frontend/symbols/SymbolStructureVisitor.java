@@ -3,6 +3,7 @@ package org.sirius.frontend.symbols;
 import java.util.List;
 import java.util.Stack;
 
+import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ClassDeclaration;
@@ -24,10 +25,11 @@ public class SymbolStructureVisitor implements AstVisitor {
 //	private List<SymbolTable> stack = new ArrayList<>();
 	private Stack<SymbolTable> stack = new Stack<>();
 	
-	private List<String> packageQName;
+//	private List<String> packageQName;
+	private QName packageQName;
 	private GlobalSymbolTable globalSymbolTable;
 
-	public SymbolStructureVisitor(/*SymbolTable rootSymbolTable, */GlobalSymbolTable globalSymbolTable, List<String> packageQName) {
+	public SymbolStructureVisitor(/*SymbolTable rootSymbolTable, */GlobalSymbolTable globalSymbolTable, QName packageQName) {
 		super();
 //		this.stack.add(rootSymbolTable);
 //		this.stack.add(globalSymbolTable);
@@ -83,7 +85,7 @@ public class SymbolStructureVisitor implements AstVisitor {
 		classDeclaration.getSymbolTable().addClass(className, classDeclaration);	// TODO: demeter
 //		symbolTable.addClass(className, classDeclaration);
 		
-		globalSymbolTable.addClass(packageQName, className, classDeclaration);
+		globalSymbolTable.addClass(packageQName, classDeclaration);
 	}
 
 	@Override
@@ -102,7 +104,7 @@ public class SymbolStructureVisitor implements AstVisitor {
 //		symbolTable.addFunction(functionName, functionDeclaration);
 		functionDeclaration.getSymbolTable().addFunction(functionName, functionDeclaration);	// TODO: demeter
 		
-		globalSymbolTable.addFunction(packageQName, functionName, functionDeclaration);
+		globalSymbolTable.addFunction(packageQName, functionDeclaration);
 	}
 
 	@Override

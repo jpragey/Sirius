@@ -3,6 +3,7 @@ package org.sirius.frontend.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.ModuleDeclaration;
 import org.sirius.frontend.ast.PackageDeclaration;
@@ -22,7 +23,7 @@ public class ModuleContent {
 		this.reporter = reporter;
 		this.moduleDeclaration = moduleDeclaration;
 		
-		this.modulePath = new PhysicalPath(moduleDeclaration.getqName().getStringElements());
+		this.modulePath = new PhysicalPath(moduleDeclaration.getqName().toQName().getStringElements());
 		
 		this.packageContents.addAll(moduleDeclaration.getPackageDeclarations());
 	}
@@ -47,7 +48,7 @@ public class ModuleContent {
 	public void createDefaultPackageIfNeeded() {
 		if(packageContents.isEmpty()) {
 			
-			PackageDeclaration pc = new PackageDeclaration(reporter, moduleDeclaration.getqName().getElements());
+			PackageDeclaration pc = new PackageDeclaration(reporter, moduleDeclaration.getqName().toQName());
 			packageContents.add(pc);
 		}
 	}
@@ -56,8 +57,8 @@ public class ModuleContent {
 		return moduleDeclaration;
 	}
 
-	public List<String> getQName() {
-		return moduleDeclaration.getqName().getStringElements();	// TODO cache?
+	public QName getQName() {
+		return moduleDeclaration.getqName().toQName();
 	}
 
 	public PhysicalPath getModulePath() {

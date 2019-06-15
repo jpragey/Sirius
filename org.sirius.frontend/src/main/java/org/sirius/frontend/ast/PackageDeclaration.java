@@ -7,6 +7,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.Token;
+import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.PhysicalPath;
 import org.sirius.frontend.symbols.LocalSymbolTable;
@@ -33,26 +34,16 @@ public class PackageDeclaration implements Scoped, Visitable {
 	private LocalSymbolTable symbolTable; 
 
 	
-	public PackageDeclaration(Reporter reporter,List<AstToken> qname) {
+	public PackageDeclaration(Reporter reporter, QName qname) {
 		super();
 		this.reporter = reporter;
-		this.qname.addAll(qname);
+		this.qname = qname;
 		this.symbolTable = new LocalSymbolTable(reporter); 
 	}
 
 	public PackageDeclaration(Reporter reporter) {
-		this(reporter, Collections.emptyList());
+		this(reporter, new QName());
 	}
-
-	public void addNamePart(AstToken partName) {
-		qnameString = null;
-		qname.add(partName);
-	}
-
-	public void addNamePart(Token partName) {
-		addNamePart(new AstToken(partName));
-	}
-
 
 	public String getQnameString() {
 		if(qnameString == null) {
@@ -65,9 +56,9 @@ public class PackageDeclaration implements Scoped, Visitable {
 	public QName getQname() {
 		return qname;
 	}
-	public List<String> getPathElements() { // TODO: cache (?)
-		return qname.getStringElements();
-	}
+//	public List<String> getPathElements() { // TODO: cache (?)
+//		return qname.getElements();
+//	}
 
 	public void addFunctionDeclaration(FunctionDeclaration declaration) {
 		this.functionDeclarations.add(declaration);

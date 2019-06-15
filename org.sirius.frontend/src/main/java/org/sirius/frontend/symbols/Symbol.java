@@ -7,6 +7,7 @@ import org.sirius.frontend.ast.ClassDeclaration;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionFormalArgument;
 import org.sirius.frontend.ast.TypeFormalParameterDeclaration;
+import org.sirius.frontend.ast.ValueDeclaration;
 
 public class Symbol {
 
@@ -17,8 +18,8 @@ public class Symbol {
 	private Optional<FunctionDeclaration> functionDeclaration = Optional.empty();
 	private Optional<FunctionFormalArgument> functionArgument = Optional.empty();
 
-	
-	
+	private Optional<ValueDeclaration> valueDeclaration = Optional.empty();
+
 	public Symbol(AstToken name, ClassDeclaration classDeclaration) {
 		super();
 		this.name = name;
@@ -37,11 +38,18 @@ public class Symbol {
 		this.functionDeclaration = Optional.of(declaration);
 	}
 
+	public Symbol(AstToken name, ValueDeclaration argument) {
+		super();
+		this.name = name;
+		this.valueDeclaration = Optional.of(argument);
+	}
+
 	public Symbol(AstToken name, FunctionFormalArgument argument) {
 		super();
 		this.name = name;
 		this.functionArgument = Optional.of(argument);
 	}
+
 
 	public AstToken getName() {
 		return name;
@@ -57,6 +65,10 @@ public class Symbol {
 	
 	public Optional<FunctionDeclaration> getFunctionDeclaration() {
 		return functionDeclaration;
+	}
+	
+	public Optional<ValueDeclaration> getValueDeclaration() {
+		return valueDeclaration;
 	}
 	
 }

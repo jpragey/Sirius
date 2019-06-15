@@ -80,10 +80,11 @@ packageDescriptorCompilationUnit returns [PackageDescriptorCompilationUnit unit]
 
 moduleDeclaration returns [ModuleDeclaration declaration]
 	: 'module'			{ $declaration = factory.createModuleDeclaration(); }
-	  LOWER_ID			{ $declaration.addQNameElement($LOWER_ID); }
-	  ( 
-	  	'.' LOWER_ID 	{ $declaration.addQNameElement($LOWER_ID); }
-	  )*
+	qname				{ $declaration.setQName($qname.content); }
+//	  LOWER_ID			{ $declaration.addQNameElement($LOWER_ID); }
+//	  ( 
+//	  	'.' LOWER_ID 	{ $declaration.addQNameElement($LOWER_ID); }
+//	  )*
 	  STRING			{ $declaration.setVersion($STRING); }
 	  '{'
 	  		(	
@@ -108,12 +109,14 @@ moduleDeclaration returns [ModuleDeclaration declaration]
 	  '}'
 	;
 
-qname returns [QName content]
+qname returns [QualifiedName content]
 @init {
-	$content = new QName();
+//	$content = new QualifiedName();
+	List<AstToken> elements = new ArrayList<>();
 }	
-	: LOWER_ID		{ $content.add($LOWER_ID); }
-	('.' LOWER_ID	{ $content.add($LOWER_ID); } )*
+	: LOWER_ID		{ /*$content.add($LOWER_ID); */elements.add(new AstToken($LOWER_ID));}
+	('.' LOWER_ID	{ /*$content.add($LOWER_ID); */elements.add(new AstToken($LOWER_ID));} )*
+	{$content = new QualifiedName(elements);}
 	;
 
 // -------------------- SHEBANG
@@ -143,11 +146,22 @@ importDeclarationElement returns [ImportDeclarationElement declaration]
 	  		'}')?
 	;
 
+// -------------------- VALUE
+valueDeclaration returns [ValueDeclaration declaration]
+	: /*Annotations*/
+		annotationList
+		type
+		LOWER_ID		{$declaration = factory.valueDeclaration($annotationList.annotations, $type.declaration, $LOWER_ID);}
+		';'
+	;
+
 // -------------------- (TOP-LEVEL ?) FUNCION
+// Also maps to annotation declaration.
 
 functionDeclaration returns [FunctionDeclaration declaration]
-	: type
-	  LOWER_ID		{ $declaration = factory. createFunctionDeclaration($LOWER_ID, $type.declaration); }
+	: annotationList
+	  type
+	  LOWER_ID		{ $declaration = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, $type.declaration); }
 	  (
 	    '<'
 	  		  	(
@@ -214,17 +228,22 @@ constantExpression returns [Expression express]
 	;
 
 
-//
-//// -------------------- ANNOTATION
-//
-//annotation returns [Annotation anno]
-//	: LOWER_ID	{ $anno = new Annotation($LOWER_ID); }
-//	(
-//		'(' ')'
-//	)?
-//	;
-//
-//
+
+// -------------------- ANNOTATION
+
+annotation returns [Annotation anno]
+	: LOWER_ID	{ $anno = factory.annotation($LOWER_ID); }
+	(
+		'(' ')'
+	)?
+	;
+
+annotationList returns [AnnotationList annotations]
+	:
+	( annotation 		{$annotations.addAnnotation($annotation.anno ); })*
+	;
+
+
 // -------------------- PACKAGE 
 
 packageDeclaration returns [PackageDeclaration declaration]
@@ -232,9 +251,12 @@ packageDeclaration returns [PackageDeclaration declaration]
 	$declaration = factory.createPackageDeclaration();
 }
 	: 'package'
-		LOWER_ID			{ $declaration.addNamePart($LOWER_ID);}
-		('.' LOWER_ID	{ $declaration.addNamePart($LOWER_ID);})*
+		qname //returns [QualifiedName content]
+	
+//		LOWER_ID			{ $declaration.addNamePart($LOWER_ID);}
+//		('.' LOWER_ID	{ $declaration.addNamePart($LOWER_ID);})*
 	  ';'
+	  {$declaration = factory.createPackageDeclaration($qname.content);}
 	;
 	
 
@@ -272,7 +294,8 @@ classDeclaration /*[PackageDeclaration currentPackage]*/ returns [ClassDeclarati
 	  
 	  '{'
 	  (
-	  	functionDeclaration { $declaration.addFunctionDeclaration($functionDeclaration.declaration);}
+	  	  functionDeclaration	{ $declaration.addFunctionDeclaration($functionDeclaration.declaration);}
+	  	| valueDeclaration		{ $declaration.addValueDeclaration($valueDeclaration.declaration);}
 	  )*
 	  '}'
 	;
