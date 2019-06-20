@@ -90,6 +90,11 @@ public class FunctionDeclaration implements Scoped, Visitable {
 	public List<FunctionFormalArgument> getFormalArguments() {
 		return formalArguments;
 	}
+	
+
+	public AnnotationList getAnnotationList() {
+		return annotationList;
+	}
 
 	public String messageStr() {
 		List<String> typeParams = typeParameters.stream().map(p -> p.messageStr()).collect(Collectors.toList());

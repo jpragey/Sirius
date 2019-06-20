@@ -34,6 +34,9 @@ public interface AstVisitor {
 	public default void startFunctionDeclaration (FunctionDeclaration functionDeclaration) {}
 	public default void endFunctionDeclaration (FunctionDeclaration functionDeclaration) {}
 	
+	public default void startValueDeclaration (ValueDeclaration valueDeclaration) {}
+	public default void endValueDeclaration (ValueDeclaration valueDeclaration) {}
+	
 	// -- Expressions
 	public default void startExpression (Expression expression) {}
 	public default void endExpression (Expression expression) {}

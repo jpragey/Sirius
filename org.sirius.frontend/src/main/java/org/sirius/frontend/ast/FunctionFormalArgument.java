@@ -18,9 +18,9 @@ public class FunctionFormalArgument {
 		this.name = name;
 	}
 	
-	public FunctionFormalArgument(Type type, Token name) {
-		this(type, new AstToken(name));
-	}
+//	public FunctionFormalArgument(Type type, Token name) {
+//		this(type, new AstToken(name));
+//	}
 	
 	public Type getType() {
 		return type;

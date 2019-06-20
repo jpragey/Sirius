@@ -30,7 +30,8 @@ public class PackageDeclaration implements Scoped, Visitable {
 
 	private List<FunctionDeclaration> functionDeclarations = new ArrayList<>();
 	private List<ClassDeclaration> classDeclarations = new ArrayList<>();
-
+	private List<ValueDeclaration> valueDeclarations = new ArrayList<>();
+	
 	private LocalSymbolTable symbolTable; 
 
 	
@@ -67,6 +68,11 @@ public class PackageDeclaration implements Scoped, Visitable {
 
 	public void addClassDeclaration(ClassDeclaration declaration) {
 		this.classDeclarations.add(declaration);
+		this.visitables.add(declaration);
+	}
+
+	public void addValueDeclaration(ValueDeclaration declaration) {
+		this.valueDeclarations.add(declaration);
 		this.visitables.add(declaration);
 	}
 

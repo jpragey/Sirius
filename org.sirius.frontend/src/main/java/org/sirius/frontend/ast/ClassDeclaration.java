@@ -100,6 +100,7 @@ public class ClassDeclaration implements Type, Scoped, Visitable {
 	public void visit(AstVisitor visitor) {
 		visitor.startClassDeclaration(this);
 		functionDeclarations.stream().forEach(fd -> fd.visit(visitor));
+		valueDeclarations.stream().forEach(fd -> fd.visit(visitor));
 		visitor.endClassDeclaration(this);
 	}
 	

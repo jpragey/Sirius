@@ -2,7 +2,7 @@ package org.sirius.frontend.ast;
 
 import java.util.List;
 
-public class ValueDeclaration {
+public class ValueDeclaration implements /*Type, Scoped, */Visitable  {
 
 	private Type type;
 	private AstToken name;
@@ -29,5 +29,10 @@ public class ValueDeclaration {
 		return annotations;
 	}
 	
+	@Override
+	public void visit(AstVisitor visitor) {
+		visitor.startValueDeclaration(this);
+		visitor.endValueDeclaration(this);
+	}
 	
 }

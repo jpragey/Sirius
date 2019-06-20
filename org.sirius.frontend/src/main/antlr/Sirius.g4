@@ -189,7 +189,7 @@ functionDeclaration returns [FunctionDeclaration declaration]
 
 functionFormalArgument returns [FunctionFormalArgument argument]
 :
-	type LOWER_ID	{$argument = new FunctionFormalArgument($type.declaration, $LOWER_ID);}
+	type LOWER_ID	{$argument = new FunctionFormalArgument($type.declaration, new AstToken($LOWER_ID));}
 ;
 
 

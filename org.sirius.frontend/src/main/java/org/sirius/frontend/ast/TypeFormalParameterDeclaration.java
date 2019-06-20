@@ -1,6 +1,6 @@
 package org.sirius.frontend.ast;
 
-public class TypeFormalParameterDeclaration {
+public class TypeFormalParameterDeclaration implements Type {
 
 	private Variance variance;
 	
