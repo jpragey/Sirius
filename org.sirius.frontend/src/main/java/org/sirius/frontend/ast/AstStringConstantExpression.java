@@ -2,23 +2,31 @@ package org.sirius.frontend.ast;
 
 import java.util.Optional;
 
-import org.sirius.frontend.api.Expression;
+import org.sirius.common.core.Token;
 import org.sirius.frontend.api.StringConstantExpression;
 
 public class AstStringConstantExpression implements AstExpression {
 	
-	private AstToken content;
-
+	private AstToken contentToken;
+	private String contentString;
+	
 	public AstStringConstantExpression(AstToken content) {
 		super();
-		this.content = content;
+		this.contentToken = content;
+		String text = content.getText();
+		this.contentString = text.substring(1, text.length()-1);
 	}
 	
 	
-	public AstToken getContent() {
-		return content;
+	public AstToken getContentToken() {
+		return contentToken;
 	}
 	
+	public String getContentString() {
+		return contentString;
+	}
+
+
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startStringConstant(this);
@@ -31,8 +39,18 @@ public class AstStringConstantExpression implements AstExpression {
 
 
 	@Override
-	public Expression getExpression() {
+	public StringConstantExpression getExpression() {
 		return new StringConstantExpression() {
+
+			@Override
+			public Token getContent() {
+				return contentToken.asToken();
+			}
+
+			@Override
+			public String getText() {
+				return contentString;
+			}
 		};
 	}
 }

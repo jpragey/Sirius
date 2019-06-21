@@ -1,5 +1,7 @@
 package org.sirius.frontend.api;
 
+import java.util.List;
+
 import org.sirius.common.core.Token;
 
 /** Function call expression
@@ -10,4 +12,5 @@ import org.sirius.common.core.Token;
 public interface FunctionCall extends Expression {
 	
 	Token getFunctionName(); 
+	List<Expression> getArguments();
 }

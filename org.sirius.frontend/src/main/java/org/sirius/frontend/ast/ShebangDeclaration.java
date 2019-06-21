@@ -12,7 +12,7 @@ public class ShebangDeclaration implements Visitable {
 	public ShebangDeclaration(Token token) {
 		this(new AstToken(token));
 	}
-	public AstToken getContent() {
+	public AstToken getContentToken() {
 		return content;
 	}
 	

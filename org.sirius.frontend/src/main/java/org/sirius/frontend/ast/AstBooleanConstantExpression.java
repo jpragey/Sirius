@@ -15,7 +15,7 @@ public class AstBooleanConstantExpression implements AstExpression {
 	}
 	
 	
-	public AstToken getContent() {
+	public AstToken getContentToken() {
 		return content;
 	}
 	

@@ -11,6 +11,7 @@ import org.sirius.frontend.api.FunctionCall;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.Statement;
+import org.sirius.frontend.api.StringConstantExpression;
 import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.ast.AstExpressionStatement;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
@@ -66,7 +67,7 @@ public class TopLevelFunctionTest {
 
 	@Test(description = "")
 	public void checkFunctionBodyContainsAnExpressionStatement() {
-		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  Void f(){print();}");
+		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  Void f(){print(\"Hello World\");}");
 		
 		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
 		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
@@ -91,7 +92,14 @@ public class TopLevelFunctionTest {
 		
 		FunctionCall functionCall = (FunctionCall)functionCallst.getExpression();
 		assertEquals(functionCall.getFunctionName().getText(), "print");
+		assertEquals(functionCall.getArguments().size(), 1);
 		
+		StringConstantExpression arg0Expr = (StringConstantExpression)functionCall.getArguments().get(0);
+		
+		assertEquals(arg0Expr.getContent().getText(), "\"Hello World\"");
+		assertEquals(arg0Expr.getText(), "Hello World");
+		
+//		System.out.println();
 //		FunctionCall functionCall = (FunctionCall)apiStatements.get(0);
 //		assertNotNull(functionCall);
 		

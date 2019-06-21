@@ -3,6 +3,7 @@ package org.sirius.frontend.ast;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.Token;
 import org.sirius.common.core.QName;
@@ -55,6 +56,13 @@ public class AstFunctionCallExpression implements AstExpression {
 			@Override
 			public org.sirius.common.core.Token getFunctionName() {
 				return name.asToken();
+			}
+
+			@Override
+			public List<Expression> getArguments() {
+				return actualArguments.stream()
+						.map(AstExpression::getExpression)
+						.collect(Collectors.toList());
 			}
 		};
 	}

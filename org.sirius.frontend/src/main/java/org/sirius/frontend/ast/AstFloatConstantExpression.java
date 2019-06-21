@@ -15,7 +15,7 @@ public class AstFloatConstantExpression implements AstExpression {
 	}
 	
 	
-	public AstToken getContent() {
+	public AstToken getContentToken() {
 		return content;
 	}
 	
