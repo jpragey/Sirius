@@ -94,4 +94,19 @@ public class AstToken implements org.sirius.common.core.Token {
 	public Optional<TokenLocation> getTokenLocation() {
 		return tokenLocation;
 	}
+	
+	public org.sirius.common.core.Token asToken() {
+		return new org.sirius.common.core.Token() {
+			
+			@Override
+			public Optional<TokenLocation> getTokenLocation() {
+				return tokenLocation;
+			}
+			
+			@Override
+			public String getText() {
+				return text;
+			}
+		};
+	}
 }

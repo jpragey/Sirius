@@ -2,11 +2,14 @@ package org.sirius.frontend.ast;
 
 import java.util.Optional;
 
-public class StringConstantExpression implements Expression {
+import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.StringConstantExpression;
+
+public class AstStringConstantExpression implements AstExpression {
 	
 	private AstToken content;
 
-	public StringConstantExpression(AstToken content) {
+	public AstStringConstantExpression(AstToken content) {
 		super();
 		this.content = content;
 	}
@@ -24,5 +27,12 @@ public class StringConstantExpression implements Expression {
 	@Override
 	public Optional<Type> getType() {
 		return Optional.empty();
+	}
+
+
+	@Override
+	public Expression getExpression() {
+		return new StringConstantExpression() {
+		};
 	}
 }

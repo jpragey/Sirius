@@ -41,14 +41,14 @@ public interface AstVisitor {
 	public default void endValueDeclaration (AstValueDeclaration valueDeclaration) {}
 	
 	// -- Expressions
-	public default void startExpression (Expression expression) {}
-	public default void endExpression (Expression expression) {}
+	public default void startExpression (AstExpression expression) {}
+	public default void endExpression (AstExpression expression) {}
 	
-	public default void startBinaryOpExpression (BinaryOpExpression expression) {}
-	public default void endBinaryOpExpression (BinaryOpExpression expression) {}
+	public default void startBinaryOpExpression (AstBinaryOpExpression expression) {}
+	public default void endBinaryOpExpression (AstBinaryOpExpression expression) {}
 	
-	public default void startFunctionCallExpression (FunctionCallExpression expression) {}
-	public default void endFunctionCallExpression (FunctionCallExpression expression) {}
+	public default void startFunctionCallExpression (AstFunctionCallExpression expression) {}
+	public default void endFunctionCallExpression (AstFunctionCallExpression expression) {}
 	
 	
 	
@@ -56,22 +56,22 @@ public interface AstVisitor {
 //	public default void startConstantExpression (ConstantExpression expression) {}
 //	public default void endConstantExpression (ConstantExpression expression) {}
 	
-	public default void startStringConstant(StringConstantExpression expression) {}
-	public default void endStringConstant (StringConstantExpression expression) {}
+	public default void startStringConstant(AstStringConstantExpression expression) {}
+	public default void endStringConstant (AstStringConstantExpression expression) {}
 	
-	public default void startIntegerConstant(IntegerConstantExpression expression) {}
-	public default void endIntegerConstant (IntegerConstantExpression expression) {}
+	public default void startIntegerConstant(AstIntegerConstantExpression expression) {}
+	public default void endIntegerConstant (AstIntegerConstantExpression expression) {}
 	
-	public default void startFloatConstant(FloatConstantExpression expression) {}
-	public default void endFloatConstant (FloatConstantExpression expression) {}
+	public default void startFloatConstant(AstFloatConstantExpression expression) {}
+	public default void endFloatConstant (AstFloatConstantExpression expression) {}
 	
-	public default void startBooleanConstant(BooleanConstantExpression expression) {}
-	public default void endBooleanConstant (BooleanConstantExpression expression) {}
+	public default void startBooleanConstant(AstBooleanConstantExpression expression) {}
+	public default void endBooleanConstant (AstBooleanConstantExpression expression) {}
 	
 	
 	// -- Statements
-	public default void startReturnStatement (ReturnStatement statement) {}
-	public default void endReturnStatement (ReturnStatement statement) {}
+	public default void startReturnStatement (AstReturnStatement statement) {}
+	public default void endReturnStatement (AstReturnStatement statement) {}
 
 	
 	

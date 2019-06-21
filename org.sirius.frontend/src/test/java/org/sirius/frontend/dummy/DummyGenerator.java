@@ -18,7 +18,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
-import org.sirius.frontend.ast.ReturnStatement;
+import org.sirius.frontend.ast.AstReturnStatement;
 
 
 public class DummyGenerator {
@@ -165,12 +165,12 @@ public class DummyGenerator {
 //		}
 
 		@Override
-		public void startReturnStatement(ReturnStatement statement) {
+		public void startReturnStatement(AstReturnStatement statement) {
 			System.out.println(" -- Starting ReturnStatement " + statement.getExpression());
 		}
 
 		@Override
-		public void endReturnStatement(ReturnStatement statement) {
+		public void endReturnStatement(AstReturnStatement statement) {
 			System.out.println(" -- Ending ReturnStatement " + statement.getExpression());
 		}
 

@@ -9,6 +9,7 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.MemberFunction;
+import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.symbols.LocalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
@@ -22,7 +23,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 	private List<AstFunctionFormalArgument> formalArguments = new ArrayList<>();
 	
 
-	private List<Statement> statements = new ArrayList<>(); 
+	private List<AstStatement> statements = new ArrayList<>(); 
 	
 	private Type returnType = new VoidType();
 
@@ -50,11 +51,11 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 		return name;
 	}
 	
-	public void addStatement(Statement statement) {
+	public void addStatement(AstStatement statement) {
 		this.statements.add(statement);
 	}
 
-	public List<Statement> getStatements() {
+	public List<AstStatement> getStatements() {
 		return statements;
 	}
 	
@@ -161,7 +162,13 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 						.map(arg -> arg.toAPI(functionQName))
 						.collect(Collectors.toList());
 			}
-			
+
+			@Override
+			public List<org.sirius.frontend.api.Statement> getBodyStatements() {
+				return statements.stream()
+					.map(st -> st.toAPI())
+					.collect(Collectors.toList());
+			}
 		});
 	}
 	

@@ -79,17 +79,17 @@ public class AstFactory {
 	}
 
 	// -- Expressions
-	public StringConstantExpression stringConstant(Token value) {
-		return new StringConstantExpression(new AstToken(value));
+	public AstStringConstantExpression stringConstant(Token value) {
+		return new AstStringConstantExpression(new AstToken(value));
 	}
-	public IntegerConstantExpression integerConstant(Token value) {
-		return new IntegerConstantExpression(new AstToken(value));
+	public AstIntegerConstantExpression integerConstant(Token value) {
+		return new AstIntegerConstantExpression(new AstToken(value));
 	}
-	public FloatConstantExpression floatConstant(Token value) {
-		return new FloatConstantExpression(new AstToken(value));
+	public AstFloatConstantExpression floatConstant(Token value) {
+		return new AstFloatConstantExpression(new AstToken(value));
 	}
-	public BooleanConstantExpression booleanConstant(Token value) {
-		return new BooleanConstantExpression(new AstToken(value));
+	public AstBooleanConstantExpression booleanConstant(Token value) {
+		return new AstBooleanConstantExpression(new AstToken(value));
 	}
 
 	// -- Values

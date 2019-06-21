@@ -8,9 +8,9 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
-import org.sirius.frontend.ast.FunctionCallExpression;
+import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.StandardCompilationUnit;
-import org.sirius.frontend.ast.StringConstantExpression;
+import org.sirius.frontend.ast.AstStringConstantExpression;
 
 /** Visitor that sets the 'parent' symbol table field throughout the AST.
  * 
@@ -62,12 +62,12 @@ public class SymbolResolutionVisitor implements AstVisitor {
 	}
 	
 	
-	private void resolveFctCallSymbol(FunctionCallExpression expression, Symbol symbol) {
+	private void resolveFctCallSymbol(AstFunctionCallExpression expression, Symbol symbol) {
 		
 	}
 	
 	@Override
-	public void startFunctionCallExpression(FunctionCallExpression expression) {
+	public void startFunctionCallExpression(AstFunctionCallExpression expression) {
 		String funcName = expression.getName().getText();
 		Optional<Symbol> f = stack.peek().lookup(funcName);
 		if(f.isPresent()) {
@@ -81,7 +81,7 @@ public class SymbolResolutionVisitor implements AstVisitor {
 	}
 	
 	@Override
-	public void endStringConstant(StringConstantExpression expression) {
+	public void endStringConstant(AstStringConstantExpression expression) {
 	}
 	
 //	// TODO: move it?

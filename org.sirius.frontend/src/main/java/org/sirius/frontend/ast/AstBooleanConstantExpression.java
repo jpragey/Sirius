@@ -2,11 +2,14 @@ package org.sirius.frontend.ast;
 
 import java.util.Optional;
 
-public class BooleanConstantExpression implements Expression {
+import org.sirius.frontend.api.BooleanConstantExpression;
+import org.sirius.frontend.api.Expression;
+
+public class AstBooleanConstantExpression implements AstExpression {
 	
 	private AstToken content;
 
-	public BooleanConstantExpression(AstToken content) {
+	public AstBooleanConstantExpression(AstToken content) {
 		super();
 		this.content = content;
 	}
@@ -24,5 +27,13 @@ public class BooleanConstantExpression implements Expression {
 	@Override
 	public Optional<Type> getType() {
 		return Optional.empty();
+	}
+
+
+	@Override
+	public Expression getExpression() {
+		
+		return new BooleanConstantExpression() {
+		};
 	}
 }

@@ -3,18 +3,20 @@ package org.sirius.frontend.ast;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.Token;
+import org.sirius.frontend.api.BinaryOpExpression;
+import org.sirius.frontend.api.Expression;
 
-public class BinaryOpExpression implements Expression {
+public class AstBinaryOpExpression implements AstExpression {
 	public enum Operator {Add, Substract, Mult, Divide}
 	
 	private Operator operator;
 	
-	private Expression left;
-	private Expression right;
+	private AstExpression left;
+	private AstExpression right;
 	
 	private AstToken opToken;
 
-	public BinaryOpExpression(Expression left, Expression right, AstToken opToken) {
+	public AstBinaryOpExpression(AstExpression left, AstExpression right, AstToken opToken) {
 		super();
 //		this.operator = operator;
 		this.left = left;
@@ -44,7 +46,7 @@ public class BinaryOpExpression implements Expression {
 		}
 	}
 
-	public BinaryOpExpression(Expression left, Expression right, Token opToken) {
+	public AstBinaryOpExpression(AstExpression left, AstExpression right, Token opToken) {
 		this(left, right, new AstToken(opToken));
 	}
 		
@@ -63,6 +65,12 @@ public class BinaryOpExpression implements Expression {
 		right.visit(visitor);
 		
 		visitor.endBinaryOpExpression(this);
+	}
+
+	@Override
+	public Expression getExpression() {
+		return new BinaryOpExpression() {
+		};
 	}
 
 }

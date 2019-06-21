@@ -92,11 +92,7 @@ packageDescriptorCompilationUnit returns [PackageDescriptorCompilationUnit unit]
 
 moduleDeclaration returns [AstModuleDeclaration declaration]
 	: 'module'			{ $declaration = factory.createModuleDeclaration(); }
-	qname				{ $declaration.setQName($qname.content); }
-//	  LOWER_ID			{ $declaration.addQNameElement($LOWER_ID); }
-//	  ( 
-//	  	'.' LOWER_ID 	{ $declaration.addQNameElement($LOWER_ID); }
-//	  )*
+	  qname				{ $declaration.setQName($qname.content); }
 	  STRING			{ $declaration.setVersion($STRING); }
 	  '{'
 	  		(	
@@ -194,7 +190,7 @@ functionDeclaration returns [AstFunctionDeclaration declaration]
 	  ')' 
 	  '{' 
 	  		(
-	  			statement	{ $declaration.addStatement($statement.stmt); }
+	  			statement ';'	{ $declaration.addStatement($statement.stmt); }
 	  		)*
 	   '}'
 	;
@@ -207,24 +203,24 @@ functionFormalArgument returns [AstFunctionFormalArgument argument]
 
 // -------------------- STATEMENT
 
-statement returns [Statement stmt]
+statement returns [AstStatement stmt]
 	: returnStatement	{ $stmt = $returnStatement.stmt; }
+	| expression		{ $stmt = new AstExpressionStatement($expression.express); }
 	;
 
-returnStatement returns [ReturnStatement stmt]
-	: 'return' expression { $stmt = new ReturnStatement($expression.express); }
-	  ';'
+returnStatement returns [AstReturnStatement stmt]
+	: 'return' expression { $stmt = new AstReturnStatement($expression.express); }
 	; 
 
 // -------------------- EXPRESSION
 
-expression returns [Expression express]
+expression returns [AstExpression express]
 	: constantExpression { $express = $constantExpression.express ;}
 	
-	| left=expression op=('+'|'-') right=expression 	{ $express = new BinaryOpExpression($left.express, $right.express, $op); }
-	| left=expression op=('*'|'/') right=expression 	{ $express = new BinaryOpExpression($left.express, $right.express, $op); }
+	| left=expression op=('+'|'-') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
+	| left=expression op=('*'|'/') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
 	// Function call
-	| LOWER_ID '('				{ FunctionCallExpression call = new FunctionCallExpression($LOWER_ID); $express = call;}
+	| LOWER_ID '('				{ AstFunctionCallExpression call = new AstFunctionCallExpression($LOWER_ID); $express = call;}
 		(expression 			{ call.addActualArgument($expression.express); }
 			( ',' expression	{ call.addActualArgument($expression.express); } )*
 		)?
@@ -232,7 +228,7 @@ expression returns [Expression express]
 	
 	;
 
-constantExpression returns [Expression express]
+constantExpression returns [AstExpression express]
 	: STRING	{ $express = factory.stringConstant($STRING); }
 	| INTEGER	{ $express = factory.integerConstant($INTEGER); }
 	| FLOAT		{ $express = factory.floatConstant($FLOAT); }
