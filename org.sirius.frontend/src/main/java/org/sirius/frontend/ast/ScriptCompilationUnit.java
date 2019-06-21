@@ -1,6 +1,7 @@
 package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,8 +16,8 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	
 	private Optional<ShebangDeclaration> shebangDeclaration = Optional.empty();
 
-	private ArrayList<AstModuleDeclaration> moduleDeclarations = new ArrayList<>();
-	private AstModuleDeclaration currentModule;
+	private LinkedList<AstModuleDeclaration> moduleDeclarations = new LinkedList<>();
+//	private AstModuleDeclaration currentModule;
 	
 	private Reporter reporter; 
 	
@@ -28,7 +29,7 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		this.reporter = reporter;
 		this.symbolTable = new LocalSymbolTable(reporter);
 	
-		this.addModuleDeclaration(new AstModuleDeclaration(reporter));
+//		this.addModuleDeclaration(new AstModuleDeclaration(reporter));
 	}
 
 	public void setShebang(ShebangDeclaration declaration) {
@@ -41,21 +42,30 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	
 	@Override
 	public void visit(AstVisitor visitor) {
-//		visitor.startScriptCompilationUnit(this);
+		visitor.startScriptCompilationUnit(this);
+		
+		this.moduleDeclarations.stream().forEach(fd -> fd.visit(visitor));
+//		if(shebangDeclaration.isPresent()) {
+//			shebangDeclaration.get().visit(visitor);
+//		}
 //		
-//		this.visitables.stream().forEach(fd -> fd.visit(visitor));
-////		if(shebangDeclaration.isPresent()) {
-////			shebangDeclaration.get().visit(visitor);
-////		}
-////		
-////		functionDeclarations.stream().forEach(fd -> fd.visit(visitor));
-////		classDeclarations.stream().forEach(cd -> cd.visit(visitor));
-//		visitor.endScriptCompilationUnit(this);
+//		functionDeclarations.stream().forEach(fd -> fd.visit(visitor));
+//		classDeclarations.stream().forEach(cd -> cd.visit(visitor));
+		visitor.endScriptCompilationUnit(this);
 	}
 	
 	
 	public AstModuleDeclaration getCurrentModule() {
-		return currentModule;
+		AstModuleDeclaration last = moduleDeclarations.peekLast();
+		if(last == null) {
+			last = new AstModuleDeclaration(reporter);
+			moduleDeclarations.add(last);
+		}
+		return last;
+	}
+
+	public AstPackageDeclaration getCurrentPackage() {
+		return getCurrentModule().getCurrentPackage();
 	}
 
 	public List<AstModuleDeclaration> getModuleDeclarations() {
@@ -63,7 +73,7 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	}
 
 	public void addModuleDeclaration(AstModuleDeclaration moduleDeclaration) {
-		this.currentModule = moduleDeclaration;
+		moduleDeclaration.updatePackagesContainer();
 		this.moduleDeclarations.add(moduleDeclaration);
 	}
 
@@ -72,14 +82,14 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	}
 	
 	public void addPackageDeclaration(AstPackageDeclaration declaration) {
-		this.currentModule.addPackageDeclaration(declaration);
+		getCurrentModule().addPackageDeclaration(declaration);
 	}
 
 	public void addFunctionDeclaration(AstFunctionDeclaration d) {
-		this.currentModule.addFunctionDeclaration(d);
+		getCurrentModule().addFunctionDeclaration(d);
 	}
 	public void addClassDeclaration(AstClassDeclaration d) {
-		this.currentModule.addClassDeclaration(d);
+		getCurrentModule().addClassDeclaration(d);
 	}
 	
 	
@@ -88,4 +98,9 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		return symbolTable;
 	}
 
+	public void updateParentsDeeply() {
+		
+		this.moduleDeclarations.stream()
+			.forEach(AstModuleDeclaration::updatePackagesContainer);
+	}
 }

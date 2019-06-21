@@ -7,13 +7,13 @@ grammar Sirius;
 	package org.sirius.frontend.parser;
 	import org.sirius.frontend.ast.AstFactory;
 	import org.sirius.frontend.ast.AstModuleDeclaration;
-	import org.sirius.frontend.core.ScriptCurrentState;
+//	import org.sirius.frontend.core.ScriptCurrentState;
 }
 @parser::header {
 	package org.sirius.frontend.parser;
 	import org.sirius.frontend.ast.*;
 	import org.sirius.common.core.QName;
-	import org.sirius.frontend.core.ScriptCurrentState;
+//	import org.sirius.frontend.core.ScriptCurrentState;
 	
 	import java.util.Optional;
 }
@@ -22,7 +22,7 @@ grammar Sirius;
 	//public SiriusLangPackage languagePackage; 
 	public AstFactory factory;
 	public AstModuleDeclaration currentModule;
-	public ScriptCurrentState scriptCurrentState;
+//	public ScriptCurrentState scriptCurrentState;
 }
 
 
@@ -43,8 +43,12 @@ locals[
     (
     	  moduleDeclaration 	{ $stdUnit.addModuleDeclaration($moduleDeclaration.declaration);    } 
     	| packageDeclaration	{ $currentPackage = $packageDeclaration.declaration; }
-    	| functionDeclaration	{ $stdUnit.addFunctionDeclaration($functionDeclaration.declaration); }
-    	| classDeclaration 		{ $stdUnit.addClassDeclaration($classDeclaration.declaration); }
+    	| functionDeclaration	{
+    								$stdUnit.addFunctionDeclaration($functionDeclaration.declaration);
+    	}
+    	| classDeclaration 		{ 
+    								$stdUnit.addClassDeclaration($classDeclaration.declaration);
+    	}
     )*
 	EOF
 	;
@@ -58,11 +62,11 @@ scriptCompilationUnit returns [ScriptCompilationUnit unit]
 	(
 		  moduleDeclaration 		{
 		  								$unit.addModuleDeclaration($moduleDeclaration.declaration);
-		  								scriptCurrentState.addModule($moduleDeclaration.declaration);
+//		  								scriptCurrentState.addModule($moduleDeclaration.declaration);
 		  							} 
 		| packageDeclaration 		{
 										$unit.addPackageDeclaration($packageDeclaration.declaration);
-										scriptCurrentState.getCurrentModule().addPackageDeclaration($packageDeclaration.declaration);
+//										scriptCurrentState.getCurrentModule().addPackageDeclaration($packageDeclaration.declaration);
 									} 
 		| functionDeclaration 		{$unit.addFunctionDeclaration($functionDeclaration.declaration);	}
 		| classDeclaration 			{$unit.addClassDeclaration($classDeclaration.declaration);	}
@@ -247,6 +251,9 @@ annotation returns [Annotation anno]
 	;
 
 annotationList returns [AnnotationList annotations]
+@init {
+	$annotations = new AnnotationList();
+}
 	:
 	( annotation 		{$annotations.addAnnotation($annotation.anno ); })*
 	;
@@ -256,15 +263,9 @@ annotationList returns [AnnotationList annotations]
 
 packageDeclaration returns [AstPackageDeclaration declaration]
 @init {
-	$declaration = factory.createPackageDeclaration();
+//	$declaration = factory.createPackageDeclaration();
 }
-	: 'package'
-		qname //returns [QualifiedName content]
-	
-//		LOWER_ID			{ $declaration.addNamePart($LOWER_ID);}
-//		('.' LOWER_ID	{ $declaration.addNamePart($LOWER_ID);})*
-	  ';'
-	  {$declaration = factory.createPackageDeclaration($qname.content);}
+	: 'package' qname ';'	  {$declaration = factory.createPackageDeclaration($qname.content);}
 	;
 	
 

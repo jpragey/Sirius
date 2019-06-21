@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstModuleDeclaration;
@@ -61,13 +62,13 @@ public class ScriptSession implements Session {
 		parser.factory = astFactory;
 		
 		AstModuleDeclaration moduleDeclaration = new AstModuleDeclaration(reporter);
-		AstPackageDeclaration pd = new AstPackageDeclaration(reporter);
-		moduleDeclaration.addPackageDeclaration(pd);
+//		AstPackageDeclaration pd = new AstPackageDeclaration(reporter);
+//		moduleDeclaration.addPackageDeclaration(pd);
 		
 		parser.currentModule = moduleDeclaration;
 
-		ScriptCurrentState scriptCurrentState = new ScriptCurrentState(reporter);
-		parser.scriptCurrentState = scriptCurrentState;
+//		ScriptCurrentState scriptCurrentState = new ScriptCurrentState(reporter);
+//		parser.scriptCurrentState = scriptCurrentState;
 		
 		parser.removeErrorListeners();
 		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
@@ -76,13 +77,14 @@ public class ScriptSession implements Session {
 		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
 		assertNotNull(unitContext);
 		ScriptCompilationUnit compilationUnit = unitContext.unit;
+		compilationUnit.updateParentsDeeply();
 
 		this.shebang = compilationUnit.getShebangDeclaration();
 		
 //		ModuleContent mc = new ModuleContent(reporter, moduleDeclaration);
 //		ModuleContent mc = new ModuleContent(reporter, compilationUnit.getCurrentModule());
 //		this.moduleContents.add(mc);
-		this.moduleContents.addAll(scriptCurrentState.getModuleList().stream()
+		this.moduleContents.addAll(compilationUnit.getModuleDeclarations().stream()
 				.map(mod -> new ModuleContent(reporter, compilationUnit.getCurrentModule()))
 				.collect(Collectors.toList())
 						
@@ -130,5 +132,12 @@ public class ScriptSession implements Session {
 	public Optional<ShebangDeclaration> getShebang() {
 		return shebang;
 	}
-	
+
+	@Override
+	public List<ModuleDeclaration> getModuleDeclarations() {
+		
+		return this.moduleContents.stream()
+				.map( (ModuleContent mc ) -> mc.getModuleDeclaration().getModuleDeclaration())
+				.collect(Collectors.toList());
+	}
 }

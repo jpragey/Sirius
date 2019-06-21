@@ -113,7 +113,8 @@ public class AstModuleDeclaration implements Visitable {
 	 */
 	public AstPackageDeclaration getCurrentPackage() {
 		if(currentPackage.isEmpty()) {
-			addPackageDeclaration(new AstPackageDeclaration(reporter));
+			AstPackageDeclaration pd = new AstPackageDeclaration(reporter, qName.toQName());
+			addPackageDeclaration(pd);
 		}
 		return currentPackage.get();
 	}
@@ -173,8 +174,9 @@ public class AstModuleDeclaration implements Visitable {
 
 	@Override
 	public void visit(AstVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		visitor.startModuleDeclaration(this);
+		packageDeclarations.stream().forEach(pd -> pd.visit(visitor));
+		visitor.endModuleDeclaration(this);		
 	}
 	
 	@Override
@@ -182,7 +184,14 @@ public class AstModuleDeclaration implements Visitable {
 		return qName.toString();
 	}
 	
+	public void updatePackagesContainer() {
+		packageDeclarations.stream()
+			.forEach(AstPackageDeclaration::updateContentContainerRefs);
+	}
+	
 	public ModuleDeclaration getModuleDeclaration() {
+		
+		
 		return new ModuleDeclaration() {
 			private QName moduleQName = qName.toQName();
 			

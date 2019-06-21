@@ -6,6 +6,7 @@ import java.util.Stack;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.FunctionCallExpression;
 import org.sirius.frontend.ast.StandardCompilationUnit;
@@ -82,4 +83,11 @@ public class SymbolResolutionVisitor implements AstVisitor {
 	@Override
 	public void endStringConstant(StringConstantExpression expression) {
 	}
+	
+//	// TODO: move it?
+//	@Override
+//	public void startPackageDeclaration(AstPackageDeclaration declaration) {
+//		declaration.updateContentContainerRefs();	
+//	}
+
 }

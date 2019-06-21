@@ -3,6 +3,7 @@ package org.sirius.frontend.ast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,8 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 	
 	private LocalSymbolTable symbolTable; 
 
+	// Set after parsing
+	private Optional<AstModuleDeclaration> containingModule = Optional.empty();
 	
 	public AstPackageDeclaration(Reporter reporter, QName qname) {
 		super();
@@ -86,6 +89,10 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		return functionDeclarations;
 	}
 
+	public void setContainingModule(AstModuleDeclaration declaration) {
+		this.containingModule = Optional.of(declaration);
+	}
+
 	@Override
 	public SymbolTable getSymbolTable() {
 		return symbolTable;
@@ -109,6 +116,15 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		return getQnameString();
 	}
 	
+	/** Set package refs for children (classes, values, functions */
+	public void updateContentContainerRefs() {
+		for(AstFunctionDeclaration fd: functionDeclarations) {
+			fd.setContainerQName(this.qname);
+		}
+//		private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
+//		private List<AstValueDeclaration> valueDeclarations = new ArrayList<>();
+	}
+	
 	public PackageDeclaration getPackageDeclaration() {
 		return new PackageDeclaration() {
 
@@ -116,7 +132,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 			public List<ClassDeclaration> getClasses() {
 				return classDeclarations.stream()
 						.filter(cd -> !cd.isInterfaceType())
-						.map(cd -> cd.getClassDeclaration())
+						.map(cd -> cd.getClassDeclaration(qname))
 						.collect(Collectors.toList());
 			}
 
@@ -124,7 +140,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 			public List<InterfaceDeclaration> getInterfaces() {
 				return classDeclarations.stream()
 						.filter(cd -> !cd.isInterfaceType())
-						.map(cd -> cd.getInterfaceDeclaration())
+						.map(cd -> cd.getInterfaceDeclaration(qname))
 						.collect(Collectors.toList());
 			}
 
@@ -140,7 +156,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 			@Override
 			public List<TopLevelFunction> getFunctions() {
 				return functionDeclarations.stream()
-						.map(AstFunctionDeclaration::getTopLevelFunction)
+						.map(fd -> fd.getTopLevelFunction())
 						.filter(fd -> fd.isPresent())
 						.map(fd -> fd.get())
 						.collect(Collectors.toList());

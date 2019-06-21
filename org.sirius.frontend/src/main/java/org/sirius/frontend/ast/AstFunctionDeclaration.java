@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.TopLevelFunction;
@@ -30,6 +31,9 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 
 	private LocalSymbolTable symbolTable; 
 
+	// 
+	private Optional<QName> containerQName = Optional.empty();
+	
 	public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, Type returnType) {
 		super();
 		this.reporter = reporter;
@@ -126,13 +130,29 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 		return Optional.of(cd);
 	}
 
+	
+	public Optional<QName> getContainerQName() {
+		return containerQName;
+	}
+
+	public void setContainerQName(QName containerQName) {
+		this.containerQName = Optional.of(containerQName);
+	}
+
 	@Override
 	public String toString() {
 		return name.getText() + "(" + formalArguments.size() + " args)";
 	}
 	
-	public Optional<TopLevelFunction> getTopLevelFunction() {// TODO: filter top-level
+	public Optional<TopLevelFunction> getTopLevelFunction() 
+	{// TODO: filter top-level
 		return Optional.of(new TopLevelFunction() {
+			QName qName = containerQName.get().child(name.getText());
+
+			@Override
+			public QName getQName() {
+				return qName;
+			}
 			
 		});
 	}

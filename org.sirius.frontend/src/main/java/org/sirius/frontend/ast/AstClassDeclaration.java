@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.Token;
+import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.InterfaceDeclaration;
@@ -173,9 +174,9 @@ public class AstClassDeclaration implements Type, Scoped, Visitable {
 		this.annotationType = annotationType;
 	}
 
-	public ClassDeclaration getClassDeclaration() {
+	public ClassDeclaration getClassDeclaration(/* Containing package/class/interface qname */QName containerQName) {
 		return new ClassDeclaration() {
-
+			QName qName = containerQName.child(name.getText());
 			@Override
 			public List<MemberValue> getValues() {
 				return valueDeclarations.stream()
@@ -193,12 +194,17 @@ public class AstClassDeclaration implements Type, Scoped, Visitable {
 						.map(fd -> fd.get())
 						.collect(Collectors.toList());
 			}
+
+			@Override
+			public QName getQName() {
+				return qName;
+			}
 		};
 	}
 
-	public InterfaceDeclaration getInterfaceDeclaration() {
+	public InterfaceDeclaration getInterfaceDeclaration(/* Containing package/class/interface qname */QName containerQName) {
 		return new InterfaceDeclaration() {
-
+			QName qName = containerQName.child(name.getText());
 			@Override
 			public List<MemberValue> getValues() {
 				return valueDeclarations.stream()
@@ -215,6 +221,10 @@ public class AstClassDeclaration implements Type, Scoped, Visitable {
 						.filter(fd -> fd.isPresent())
 						.map(fd -> fd.get())
 						.collect(Collectors.toList());
+			}
+			@Override
+			public QName getQName() {
+				return qName;
 			}
 		};
 	}
