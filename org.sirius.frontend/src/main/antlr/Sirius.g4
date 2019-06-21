@@ -4,23 +4,25 @@
 grammar Sirius;
 
 @lexer::header {
-  package org.sirius.frontend.parser;
-  import org.sirius.frontend.ast.AstFactory;
-  import org.sirius.frontend.ast.ModuleDeclaration;
+	package org.sirius.frontend.parser;
+	import org.sirius.frontend.ast.AstFactory;
+	import org.sirius.frontend.ast.AstModuleDeclaration;
+	import org.sirius.frontend.core.ScriptCurrentState;
 }
 @parser::header {
-  package org.sirius.frontend.parser;
-  import org.sirius.frontend.ast.*;
-  import org.sirius.frontend.ast.AstFactory;
-  import org.sirius.frontend.ast.AstFactory;
-    
-  import java.util.Optional;
+	package org.sirius.frontend.parser;
+	import org.sirius.frontend.ast.*;
+	import org.sirius.common.core.QName;
+	import org.sirius.frontend.core.ScriptCurrentState;
+	
+	import java.util.Optional;
 }
 
 @members {
 	//public SiriusLangPackage languagePackage; 
 	public AstFactory factory;
-	public ModuleDeclaration currentModule;
+	public AstModuleDeclaration currentModule;
+	public ScriptCurrentState scriptCurrentState;
 }
 
 
@@ -29,7 +31,7 @@ grammar Sirius;
 /** Usual compilation unit */
 standardCompilationUnit returns [StandardCompilationUnit stdUnit]
 locals[
-	PackageDeclaration currentPackage
+	AstPackageDeclaration currentPackage
 ]
 @init {     
 	$currentPackage = factory.createPackageDeclaration();
@@ -54,8 +56,14 @@ scriptCompilationUnit returns [ScriptCompilationUnit unit]
 }
 	: shebangDeclaration			{$unit.setShebang($shebangDeclaration.declaration); }
 	(
-		  moduleDeclaration 			{$unit.addModuleDeclaration($moduleDeclaration.declaration);    } 
-		| packageDeclaration 			{$unit.addPackageDeclaration($packageDeclaration.declaration);	} 
+		  moduleDeclaration 		{
+		  								$unit.addModuleDeclaration($moduleDeclaration.declaration);
+		  								scriptCurrentState.addModule($moduleDeclaration.declaration);
+		  							} 
+		| packageDeclaration 		{
+										$unit.addPackageDeclaration($packageDeclaration.declaration);
+										scriptCurrentState.getCurrentModule().addPackageDeclaration($packageDeclaration.declaration);
+									} 
 		| functionDeclaration 		{$unit.addFunctionDeclaration($functionDeclaration.declaration);	}
 		| classDeclaration 			{$unit.addClassDeclaration($classDeclaration.declaration);	}
 	)*
@@ -78,7 +86,7 @@ packageDescriptorCompilationUnit returns [PackageDescriptorCompilationUnit unit]
 
 // -------------------- MODULE DECLARATION
 
-moduleDeclaration returns [ModuleDeclaration declaration]
+moduleDeclaration returns [AstModuleDeclaration declaration]
 	: 'module'			{ $declaration = factory.createModuleDeclaration(); }
 	qname				{ $declaration.setQName($qname.content); }
 //	  LOWER_ID			{ $declaration.addQNameElement($LOWER_ID); }
@@ -92,7 +100,7 @@ moduleDeclaration returns [ModuleDeclaration declaration]
 	  			|
 	  									{ boolean shared = false; } 
 	  				( 'shared' 			{ shared = true;})? 
-	  				'import'    		{ ModuleDeclaration.ModuleImport mi = $declaration.addImport(shared);} 
+	  				'import'    		{ AstModuleDeclaration.ModuleImport mi = $declaration.addImport(shared);} 
 	  				
 	  							// source: package artefact version
 	  				(STRING ':'			{	mi.setOrigin($STRING); })?
@@ -147,7 +155,7 @@ importDeclarationElement returns [ImportDeclarationElement declaration]
 	;
 
 // -------------------- VALUE
-valueDeclaration returns [ValueDeclaration declaration]
+valueDeclaration returns [AstValueDeclaration declaration]
 	: /*Annotations*/
 		annotationList
 		type
@@ -158,7 +166,7 @@ valueDeclaration returns [ValueDeclaration declaration]
 // -------------------- (TOP-LEVEL ?) FUNCION
 // Also maps to annotation declaration.
 
-functionDeclaration returns [FunctionDeclaration declaration]
+functionDeclaration returns [AstFunctionDeclaration declaration]
 	: annotationList
 	  type
 	  LOWER_ID		{ $declaration = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, $type.declaration); }
@@ -246,7 +254,7 @@ annotationList returns [AnnotationList annotations]
 
 // -------------------- PACKAGE 
 
-packageDeclaration returns [PackageDeclaration declaration]
+packageDeclaration returns [AstPackageDeclaration declaration]
 @init {
 	$declaration = factory.createPackageDeclaration();
 }
@@ -267,7 +275,7 @@ packageDeclaration returns [PackageDeclaration declaration]
 
 // -------------------- CLASS 
 //
-classDeclaration /*[PackageDeclaration currentPackage]*/ returns [ClassDeclaration declaration]
+classDeclaration /*[PackageDeclaration currentPackage]*/ returns [AstClassDeclaration declaration]
 @init {
 //	List<Annotation> annos = new ArrayList<Annotation> ();
 }

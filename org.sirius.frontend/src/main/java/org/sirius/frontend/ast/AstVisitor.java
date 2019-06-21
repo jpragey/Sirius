@@ -24,18 +24,18 @@ public interface AstVisitor {
 	public default void startShebangDeclaration (ShebangDeclaration declaration) {}
 	public default void endShebangDeclaration (ShebangDeclaration declaration) {}
 
-	public default void startPackageDeclaration (PackageDeclaration declaration) {}
-	public default void endPackageDeclaration (PackageDeclaration declaration) {}
+	public default void startPackageDeclaration (AstPackageDeclaration declaration) {}
+	public default void endPackageDeclaration (AstPackageDeclaration declaration) {}
 
 	
-	public default void startClassDeclaration (ClassDeclaration classDeclaration) {}
-	public default void endClassDeclaration (ClassDeclaration classDeclaration) {}
+	public default void startClassDeclaration (AstClassDeclaration classDeclaration) {}
+	public default void endClassDeclaration (AstClassDeclaration classDeclaration) {}
 	
-	public default void startFunctionDeclaration (FunctionDeclaration functionDeclaration) {}
-	public default void endFunctionDeclaration (FunctionDeclaration functionDeclaration) {}
+	public default void startFunctionDeclaration (AstFunctionDeclaration functionDeclaration) {}
+	public default void endFunctionDeclaration (AstFunctionDeclaration functionDeclaration) {}
 	
-	public default void startValueDeclaration (ValueDeclaration valueDeclaration) {}
-	public default void endValueDeclaration (ValueDeclaration valueDeclaration) {}
+	public default void startValueDeclaration (AstValueDeclaration valueDeclaration) {}
+	public default void endValueDeclaration (AstValueDeclaration valueDeclaration) {}
 	
 	// -- Expressions
 	public default void startExpression (Expression expression) {}

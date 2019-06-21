@@ -3,7 +3,6 @@ package org.sirius.frontend.core;
 import static org.testng.Assert.assertNotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,15 +11,13 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.core.QName;
-import org.sirius.common.core.Token;
-import org.sirius.common.core.TokenLocation;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFactory;
+import org.sirius.frontend.ast.AstModuleDeclaration;
+import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstVisitor;
-import org.sirius.frontend.ast.ClassDeclaration;
-import org.sirius.frontend.ast.ModuleDeclaration;
-import org.sirius.frontend.ast.PackageDeclaration;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.parser.SiriusLexer;
@@ -63,11 +60,14 @@ public class ScriptSession implements Session {
 		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
 		parser.factory = astFactory;
 		
-		ModuleDeclaration moduleDeclaration = new ModuleDeclaration(reporter);
-		PackageDeclaration pd = new PackageDeclaration(reporter);
+		AstModuleDeclaration moduleDeclaration = new AstModuleDeclaration(reporter);
+		AstPackageDeclaration pd = new AstPackageDeclaration(reporter);
 		moduleDeclaration.addPackageDeclaration(pd);
 		
 		parser.currentModule = moduleDeclaration;
+
+		ScriptCurrentState scriptCurrentState = new ScriptCurrentState(reporter);
+		parser.scriptCurrentState = scriptCurrentState;
 		
 		parser.removeErrorListeners();
 		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
@@ -79,8 +79,16 @@ public class ScriptSession implements Session {
 
 		this.shebang = compilationUnit.getShebangDeclaration();
 		
-		ModuleContent mc = new ModuleContent(reporter, moduleDeclaration);
-		this.moduleContents.add(mc);
+//		ModuleContent mc = new ModuleContent(reporter, moduleDeclaration);
+//		ModuleContent mc = new ModuleContent(reporter, compilationUnit.getCurrentModule());
+//		this.moduleContents.add(mc);
+		this.moduleContents.addAll(scriptCurrentState.getModuleList().stream()
+				.map(mod -> new ModuleContent(reporter, compilationUnit.getCurrentModule()))
+				.collect(Collectors.toList())
+						
+						);
+		
+		
 //		LocalSymbolTable rootSymbolTable = new LocalSymbolTable(reporter);
 
 		// -- Package
@@ -90,7 +98,7 @@ public class ScriptSession implements Session {
 		// -- Root class transformer
 		String rootClassName = "$root$";
 		AstToken name = new AstToken(0, 0, 0, 0, rootClassName, "<unknown>");
-		ClassDeclaration rootClass = new ClassDeclaration(reporter, false /*is interface*/, name);
+		AstClassDeclaration rootClass = new AstClassDeclaration(reporter, false /*is interface*/, name);
 		CreateRootClassTransformer createRootClassTransformer = new CreateRootClassTransformer(reporter, rootClass);
 
 		// -- Various transformations

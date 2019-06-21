@@ -9,31 +9,16 @@ import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.RETURN;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
-import org.sirius.common.error.AccumulatingReporter;
-import org.sirius.common.error.Reporter;
-import org.sirius.common.error.ShellReporter;
-import org.sirius.frontend.ast.AstToken;
+import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
-import org.sirius.frontend.ast.ClassDeclaration;
-import org.sirius.frontend.ast.StandardCompilationUnit;
-import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.ReturnStatement;
-import org.sirius.frontend.core.FrontEnd;
-import org.sirius.frontend.core.ModuleContent;
-import org.sirius.frontend.core.TextInputTextProvider;
-import org.sirius.frontend.parser.Compiler;
-import org.testng.annotations.Test;
 
 
 public class DummyGenerator {
@@ -49,7 +34,7 @@ public class DummyGenerator {
 			return byteCode;
 		}
 
-		private String classInternalName(ClassDeclaration classDeclaration) {
+		private String classInternalName(AstClassDeclaration classDeclaration) {
 			/* From doc:
 			 * Returns the internal name of the class corresponding to this object or array type. 
 			 * The internal name of a class is its fully qualified name (as returned by Class.getName(), where '.' are replaced by '/'). 
@@ -66,7 +51,7 @@ public class DummyGenerator {
 			return internalName;
 		}
 
-		private void startClass(/*ClassWriter cw, */ClassDeclaration classDeclaration) {
+		private void startClass(/*ClassWriter cw, */AstClassDeclaration classDeclaration) {
 
 			/* Flags for class/interface:
 			 * @See https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.1
@@ -96,7 +81,7 @@ public class DummyGenerator {
 			return definedClasses;
 		}
 
-		public void startClassDeclaration (ClassDeclaration classDeclaration) {
+		public void startClassDeclaration (AstClassDeclaration classDeclaration) {
 			System.out.println(" -- Starting ClassDeclaration " + classDeclaration.getName().getText());
 
 			String clssQname = classDeclaration.getQname();
@@ -126,7 +111,7 @@ public class DummyGenerator {
 			mv.visitEnd();
 		}
 		
-		public void endClassDeclaration (ClassDeclaration classDeclaration) {
+		public void endClassDeclaration (AstClassDeclaration classDeclaration) {
 			System.out.println(" -- Ending ClassDeclaration " + classDeclaration.getName().getText());
 			
 			classWriter.visitEnd();
@@ -136,12 +121,12 @@ public class DummyGenerator {
 		}
 
 		@Override
-		public void startFunctionDeclaration(FunctionDeclaration functionDeclaration) {
+		public void startFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
 			System.out.println(" -- Starting FunctionDeclaration " + functionDeclaration.getName().getText());
 		}
 
 		@Override
-		public void endFunctionDeclaration(FunctionDeclaration functionDeclaration) {
+		public void endFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
 			System.out.println(" -- Exit FunctionDeclaration " + functionDeclaration.getName().getText());
 			MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC + ACC_STATIC,
 		            "main",

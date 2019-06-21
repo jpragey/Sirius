@@ -7,21 +7,29 @@ import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.Token;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.InterfaceDeclaration;
+import org.sirius.frontend.api.MemberFunction;
+import org.sirius.frontend.api.MemberValue;
+import org.sirius.frontend.api.PackageDeclaration;
+import org.sirius.frontend.api.TopLevelFunction;
+import org.sirius.frontend.api.TopLevelValue;
 import org.sirius.frontend.symbols.LocalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
-public class ClassDeclaration implements Type, Scoped, Visitable {
+public class AstClassDeclaration implements Type, Scoped, Visitable {
 
 	private AstToken name;
 	
 	// Formal parameters
 	private List<TypeFormalParameterDeclaration> typeParameters = new ArrayList<>();
 	
-	private List<FunctionDeclaration> functionDeclarations = new ArrayList<>();
-	private List<ValueDeclaration> valueDeclarations = new ArrayList<>();
+	private List<AstFunctionDeclaration> functionDeclarations = new ArrayList<>();
+	private List<AstValueDeclaration> valueDeclarations = new ArrayList<>();
+	private List<FunctionFormalArgument> anonConstructorArguments = new ArrayList<>(); 
 
 	/** Root package at first */
-	private PackageDeclaration packageDeclaration;
+	private AstPackageDeclaration packageDeclaration;
 	
 	/** True for annotation classes (ConstrainedAnnotation subtypes, ie OptionalAnnotation or SequencedAnnotation) */
 	private boolean annotationType = false; 
@@ -34,52 +42,52 @@ public class ClassDeclaration implements Type, Scoped, Visitable {
 	
 	private Reporter reporter;
 	
-	public ClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/) {
+	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/) {
 		super();
 		this.reporter = reporter;
 		this.interfaceType = interfaceType;
 		this.name = name;
-		this.packageDeclaration = new PackageDeclaration(reporter);
+		this.packageDeclaration = new AstPackageDeclaration(reporter);
 		this.symbolTable = new LocalSymbolTable(reporter);
 		
 //		this.symbolTable.addClass(name, this);
 		
 	}
-	public static ClassDeclaration newClass(Reporter reporter, AstToken name) {
-		return new ClassDeclaration (reporter, false /*interfaceType */ , name);
+	public static AstClassDeclaration newClass(Reporter reporter, AstToken name) {
+		return new AstClassDeclaration (reporter, false /*interfaceType */ , name);
 	}
-	public static ClassDeclaration newInterface(Reporter reporter, AstToken name) {
-		return new ClassDeclaration (reporter, true /*interfaceType */ , name);
+	public static AstClassDeclaration newInterface(Reporter reporter, AstToken name) {
+		return new AstClassDeclaration (reporter, true /*interfaceType */ , name);
 	}
 	
-	public ClassDeclaration(Reporter reporter, boolean interfaceType, Token name/*, PackageDeclaration packageDeclaration*/) {
+	public AstClassDeclaration(Reporter reporter, boolean interfaceType, Token name/*, PackageDeclaration packageDeclaration*/) {
 		this(reporter, interfaceType, new AstToken(name));
 	}
 	
 	public AstToken getName() {
 		return name;
 	}
-	public List<FunctionDeclaration> getFunctionDeclarations() {
+	public List<AstFunctionDeclaration> getFunctionDeclarations() {
 		return functionDeclarations;
 	}
 	
-	public void addFunctionDeclaration(FunctionDeclaration declaration) {
+	public void addFunctionDeclaration(AstFunctionDeclaration declaration) {
 		this.functionDeclarations.add(declaration);
 		this.symbolTable.addFunction(declaration.getName(), declaration);
 	}
-	public void addValueDeclaration(ValueDeclaration valueDeclaration) {
+	public void addValueDeclaration(AstValueDeclaration valueDeclaration) {
 		this.valueDeclarations.add(valueDeclaration);
 		// TODO: add to symbol table
 	}
 	
 	
-	public PackageDeclaration getPackageDeclaration() {
+	public AstPackageDeclaration getPackageDeclaration() {
 		assert(this.packageDeclaration != null);
 		return packageDeclaration;
 	}
 	
 	
-	public void setPackageDeclaration(PackageDeclaration packageDeclaration) {
+	public void setPackageDeclaration(AstPackageDeclaration packageDeclaration) {
 		this.packageDeclaration = packageDeclaration;
 	}
 	public void addTypeParameterDeclaration(TypeFormalParameterDeclaration d) {
@@ -115,7 +123,6 @@ public class ClassDeclaration implements Type, Scoped, Visitable {
 		return typeParameters;
 	}
 	
-	private List<FunctionFormalArgument> anonConstructorArguments = new ArrayList<>(); 
 	
 	public void addAnonConstructorArgument(FunctionFormalArgument argument) {
 		this.anonConstructorArguments.add(argument);
@@ -132,7 +139,7 @@ public class ClassDeclaration implements Type, Scoped, Visitable {
 			return Optional.empty();
 		}
 		
-		ClassDeclaration cd = new ClassDeclaration(reporter, interfaceType, name);
+		AstClassDeclaration cd = new AstClassDeclaration(reporter, interfaceType, name);
 		
 		cd.typeParameters.addAll(typeParameters.subList(1, typeParameters.size()));
 	
@@ -164,6 +171,52 @@ public class ClassDeclaration implements Type, Scoped, Visitable {
 	}
 	public void setAnnotationType(boolean annotationType) {
 		this.annotationType = annotationType;
+	}
+
+	public ClassDeclaration getClassDeclaration() {
+		return new ClassDeclaration() {
+
+			@Override
+			public List<MemberValue> getValues() {
+				return valueDeclarations.stream()
+					.map(v->v.getMemberValue())
+					.filter(v ->v.isPresent())
+					.map(v->v.get())
+					.collect(Collectors.toList());
+			}
+
+			@Override
+			public List<MemberFunction> getFunctions() {
+				return functionDeclarations.stream()
+						.map(AstFunctionDeclaration::getMemberFunction)
+						.filter(fd -> fd.isPresent())
+						.map(fd -> fd.get())
+						.collect(Collectors.toList());
+			}
+		};
+	}
+
+	public InterfaceDeclaration getInterfaceDeclaration() {
+		return new InterfaceDeclaration() {
+
+			@Override
+			public List<MemberValue> getValues() {
+				return valueDeclarations.stream()
+						.map(v->v.getMemberValue())
+						.filter(v -> v.isPresent())
+						.map(v->v.get())
+						.collect(Collectors.toList());
+			}
+
+			@Override
+			public List<MemberFunction> getFunctions() {
+				return functionDeclarations.stream()
+						.map(AstFunctionDeclaration::getMemberFunction)
+						.filter(fd -> fd.isPresent())
+						.map(fd -> fd.get())
+						.collect(Collectors.toList());
+			}
+		};
 	}
 
 }

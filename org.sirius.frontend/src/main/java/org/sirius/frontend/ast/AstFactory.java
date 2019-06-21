@@ -17,12 +17,12 @@ public class AstFactory {
 		this.globalSymbolTable = globalSymbolTable;
 	}
 
-	public ClassDeclaration createClassDeclaration(Token name/*, PackageDeclaration packageDeclaration*/) {
-		return new ClassDeclaration(reporter, false /*asInterface*/, new AstToken(name));
+	public AstClassDeclaration createClassDeclaration(Token name/*, PackageDeclaration packageDeclaration*/) {
+		return new AstClassDeclaration(reporter, false /*asInterface*/, new AstToken(name));
 	}
 
-	public ClassDeclaration createInterfaceDeclaration(Token name /*, PackageDeclaration packageDeclaration*/) {
-		return new ClassDeclaration(reporter, true /*asInterface*/, new AstToken(name));
+	public AstClassDeclaration createInterfaceDeclaration(Token name /*, PackageDeclaration packageDeclaration*/) {
+		return new AstClassDeclaration(reporter, true /*asInterface*/, new AstToken(name));
 	}
 
 	public TypeFormalParameterDeclaration createTypeFormalParameter(Variance variance, Token formalName) {
@@ -40,8 +40,8 @@ public class AstFactory {
 		return new IntersectionType(first, second);
 	}
 	
-	public FunctionDeclaration createFunctionDeclaration(AnnotationList annotationList, Token name, Type returnType) {
-		return new FunctionDeclaration(reporter, annotationList, new AstToken(name), returnType);
+	public AstFunctionDeclaration createFunctionDeclaration(AnnotationList annotationList, Token name, Type returnType) {
+		return new AstFunctionDeclaration(reporter, annotationList, new AstToken(name), returnType);
 	}
 
 	public StandardCompilationUnit createStandardCompilationUnit() {
@@ -50,24 +50,24 @@ public class AstFactory {
 	public ScriptCompilationUnit createScriptCompilationUnit() {
 		return new ScriptCompilationUnit(reporter);
 	}
-	public ModuleDescriptor createModuleDescriptorCompilationUnit(ModuleDeclaration moduleDeclaration) {
+	public ModuleDescriptor createModuleDescriptorCompilationUnit(AstModuleDeclaration moduleDeclaration) {
 		return new ModuleDescriptor(reporter, moduleDeclaration);
 	}
-	public PackageDescriptorCompilationUnit createPackageDescriptorCompilationUnit(PackageDeclaration packageDeclaration) {
+	public PackageDescriptorCompilationUnit createPackageDescriptorCompilationUnit(AstPackageDeclaration packageDeclaration) {
 		return new PackageDescriptorCompilationUnit(reporter, packageDeclaration);
 	}
 	
 
 	
-	public PackageDeclaration createPackageDeclaration(QualifiedName qname) {
-		return new PackageDeclaration(reporter, qname.toQName());
+	public AstPackageDeclaration createPackageDeclaration(QualifiedName qname) {
+		return new AstPackageDeclaration(reporter, qname.toQName());
 	}
-	public PackageDeclaration createPackageDeclaration() {
-		return new PackageDeclaration(reporter);
+	public AstPackageDeclaration createPackageDeclaration() {
+		return new AstPackageDeclaration(reporter);
 	}
 
-	public ModuleDeclaration createModuleDeclaration() {
-		return new ModuleDeclaration(reporter);
+	public AstModuleDeclaration createModuleDeclaration() {
+		return new AstModuleDeclaration(reporter);
 	}
 	
 	public ImportDeclaration createImportDeclaration(QualifiedName pack) {
@@ -93,8 +93,8 @@ public class AstFactory {
 	}
 
 	// -- Values
-	public ValueDeclaration valueDeclaration(AnnotationList annotationList, Type type, Token name) {
-		return new ValueDeclaration(annotationList, type, new AstToken(name));
+	public AstValueDeclaration valueDeclaration(AnnotationList annotationList, Type type, Token name) {
+		return new AstValueDeclaration(annotationList, type, new AstToken(name));
 	}
 	
 	// -- Annotations

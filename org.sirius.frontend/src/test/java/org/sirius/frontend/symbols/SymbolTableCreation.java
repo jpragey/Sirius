@@ -1,18 +1,5 @@
 package org.sirius.frontend.symbols;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-
-import java.util.List;
-import java.util.Optional;
-
-import org.sirius.frontend.ast.StandardCompilationUnit;
-import org.sirius.frontend.ast.FunctionDeclaration;
-import org.sirius.frontend.core.ModuleContent;
-import org.sirius.frontend.core.TextInputTextProvider;
-import org.sirius.frontend.parser.Compiler;
-import org.sirius.frontend.symbols.AliasingSymbolTable.ImportedSymbol;
 import org.testng.annotations.Test;
 
 public class SymbolTableCreation {

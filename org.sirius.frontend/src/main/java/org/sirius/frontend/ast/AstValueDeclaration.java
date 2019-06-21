@@ -1,14 +1,18 @@
 package org.sirius.frontend.ast;
 
 import java.util.List;
+import java.util.Optional;
 
-public class ValueDeclaration implements /*Type, Scoped, */Visitable  {
+import org.sirius.frontend.api.MemberValue;
+import org.sirius.frontend.api.TopLevelValue;
+
+public class AstValueDeclaration implements /*Type, Scoped, */Visitable  {
 
 	private Type type;
 	private AstToken name;
 	private List<Annotation> annotations;
 	
-	public ValueDeclaration(AnnotationList annotations, Type type, AstToken name) {
+	public AstValueDeclaration(AnnotationList annotations, Type type, AstToken name) {
 		super();
 		this.annotations = annotations.getAnnotations();
 		this.type = type;
@@ -35,4 +39,15 @@ public class ValueDeclaration implements /*Type, Scoped, */Visitable  {
 		visitor.endValueDeclaration(this);
 	}
 	
+	public Optional<TopLevelValue> getTopLevelValue() {	// TODO
+		return Optional.of(new TopLevelValue() {
+			
+		});
+	}
+	
+	public Optional<MemberValue> getMemberValue() {	// TODO
+		return Optional.of(new MemberValue() {
+			
+		});
+	}
 }

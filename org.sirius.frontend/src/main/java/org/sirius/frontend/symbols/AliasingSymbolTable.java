@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.ast.ClassDeclaration;
-import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionFormalArgument;
 import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.ast.TypeFormalParameterDeclaration;
@@ -116,7 +116,7 @@ public class AliasingSymbolTable implements SymbolTable {
 		}
 	}
 	
-	public void addClass(AstToken simpleName, ClassDeclaration classDeclaration) {
+	public void addClass(AstToken simpleName, AstClassDeclaration classDeclaration) {
 		addSymbol(simpleName, new Symbol(simpleName, classDeclaration));
 	}
 	
@@ -134,7 +134,7 @@ public class AliasingSymbolTable implements SymbolTable {
 //		this.importedSymbols.add(new ImportedSymbol(localName.getText(), pkqQname, simpleName));
 	}
 	
-	public void addFunction(AstToken simpleName, FunctionDeclaration declaration) {
+	public void addFunction(AstToken simpleName, AstFunctionDeclaration declaration) {
 		addSymbol(simpleName, new Symbol(simpleName, declaration));
 	}
 	

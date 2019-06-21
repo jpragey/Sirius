@@ -11,7 +11,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.ast.ModuleDescriptor;
-import org.sirius.frontend.ast.PackageDeclaration;
+import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.testng.annotations.Test;
 
 
@@ -43,7 +43,7 @@ public class FrontEndTest {
 		
 		ModuleContent mc = moduleContents.get(0);
 		assertEquals(mc.getPackageContents().size(), 1);
-		PackageDeclaration pd = mc.getPackageContents().get(0);
+		AstPackageDeclaration pd = mc.getPackageContents().get(0);
 		
 //		assertEquals(pc.getPackageDeclaration().getPathElements(), Arrays.asList("a", "b"));
 		assertEquals(pd.getQname().getStringElements(), Arrays.asList("a", "b"));
@@ -64,7 +64,7 @@ public class FrontEndTest {
 //		assertEquals(moduleContents.get(0).getModulePath().getElements(), Arrays.asList("a", "b"));
 		ModuleContent mc = moduleContents.get(0);
 		assertEquals(mc.getPackageContents().size(), 1);
-		PackageDeclaration pc = mc.getPackageContents().get(0);
+		AstPackageDeclaration pc = mc.getPackageContents().get(0);
 		
 		assertEquals(pc.getQname().getStringElements(), Arrays.asList("a", "b"));
 	}
@@ -85,14 +85,14 @@ public class FrontEndTest {
 		assertEquals(moduleContents.size(), 1);
 		ModuleContent module = moduleContents.get(0);
 
-		List<PackageDeclaration> packageDeclarations = module.getPackageContents();
+		List<AstPackageDeclaration> packageDeclarations = module.getPackageContents();
 		assertEquals(packageDeclarations.size(), 1);
 		
 		
-		List<PackageDeclaration> pkgs = module.getModuleDeclaration().getPackageDeclarations();
+		List<AstPackageDeclaration> pkgs = module.getModuleDeclaration().getPackageDeclarations();
 
 		assertEquals(pkgs.size(), 1);
-		PackageDeclaration pkg = pkgs.get(0);
+		AstPackageDeclaration pkg = pkgs.get(0);
 		assertEquals(pkg.getQnameString(), "a.b");
 		
 		/**

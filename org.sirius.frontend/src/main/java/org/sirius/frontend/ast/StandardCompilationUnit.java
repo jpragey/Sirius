@@ -8,8 +8,6 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.AbstractCompilationUnit;
 import org.sirius.frontend.symbols.AliasingSymbolTable;
 import org.sirius.frontend.symbols.GlobalSymbolTable;
-import org.sirius.frontend.symbols.LocalSymbolTable;
-import org.sirius.frontend.symbols.SymbolTable;
 
 public class StandardCompilationUnit implements AbstractCompilationUnit, Visitable, Scoped {
 
@@ -17,10 +15,10 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 
 	private List<ImportDeclaration> importDeclarations = new ArrayList<>();
 	
-	private List<FunctionDeclaration> functionDeclarations = new ArrayList<>();
-	private List<ClassDeclaration> classDeclarations = new ArrayList<>();
+	private List<AstFunctionDeclaration> functionDeclarations = new ArrayList<>();
+	private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
 	
-	private List<ModuleDeclaration> moduleDeclarations = new ArrayList<>();
+	private List<AstModuleDeclaration> moduleDeclarations = new ArrayList<>();
 
 	private Reporter reporter; 
 	
@@ -53,7 +51,7 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 		}
 	}
 
-	public void addFunctionDeclaration(FunctionDeclaration declaration) {
+	public void addFunctionDeclaration(AstFunctionDeclaration declaration) {
 		this.functionDeclarations.add(declaration);
 	}
 
@@ -61,7 +59,7 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 		functionDeclarations.clear();
 	}
 	
-	public List<FunctionDeclaration> getFunctionDeclarations() {
+	public List<AstFunctionDeclaration> getFunctionDeclarations() {
 		return functionDeclarations;
 	}
 	
@@ -74,15 +72,15 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 		visitor.endCompilationUnit(this);
 	}
 	
-	public void addClassDeclaration(ClassDeclaration classDeclaration) {
+	public void addClassDeclaration(AstClassDeclaration classDeclaration) {
 		this.classDeclarations.add(classDeclaration);
 	}
 
-	public List<ClassDeclaration> getClassDeclarations() {
+	public List<AstClassDeclaration> getClassDeclarations() {
 		return classDeclarations;
 	}
 	
-	public void addModuleDeclaration(ModuleDeclaration declaration) {
+	public void addModuleDeclaration(AstModuleDeclaration declaration) {
 		this.moduleDeclarations.add(declaration);
 	}
 	
@@ -90,7 +88,7 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 //		this.symbolTable.setParentSymbolTable(newParent);
 //	}
 	
-	public List<ModuleDeclaration> getModuleDeclarations() {
+	public List<AstModuleDeclaration> getModuleDeclarations() {
 		return moduleDeclarations;
 	}
 

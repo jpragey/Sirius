@@ -5,13 +5,11 @@ import java.util.List;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstModuleDeclaration;
+import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.ast.ClassDeclaration;
-import org.sirius.frontend.ast.FunctionDeclaration;
-import org.sirius.frontend.ast.ModuleDeclaration;
-import org.sirius.frontend.ast.PackageDeclaration;
-import org.sirius.frontend.ast.QualifiedName;
-import org.sirius.frontend.ast.Type;
 import org.sirius.frontend.symbols.GlobalSymbolTable;
 
 public class SiriusLangPackage {
@@ -31,31 +29,31 @@ public class SiriusLangPackage {
 
 //	public static List<String> siriusLangNameAsList = siriusLangQName.getStringElements();
 
-	private ModuleDeclaration siriusLangModule;
+	private AstModuleDeclaration siriusLangModule;
 
-	private PackageDeclaration siriusLangPackage;
+	private AstPackageDeclaration siriusLangPackage;
 
 	// -- 'Public' class 
-	private ClassDeclaration publicClassDeclaration;
+	private AstClassDeclaration publicClassDeclaration;
 	
 	// -- 'public' annotation constructor
-	private FunctionDeclaration publicAnnotationConstructor;
+	private AstFunctionDeclaration publicAnnotationConstructor;
 	
 	// -- 'Integer' class 
-	private ClassDeclaration integerClassDeclaration;
+	private AstClassDeclaration integerClassDeclaration;
 	
-	private ClassDeclaration stringClassDeclaration;
+	private AstClassDeclaration stringClassDeclaration;
 	
-	private ClassDeclaration stringifiableClassDeclaration;
+	private AstClassDeclaration stringifiableClassDeclaration;
 	
 	public SiriusLangPackage(Reporter reporter, GlobalSymbolTable globalSymbolTable) {
 		super();
 		this.reporter = reporter;
 		
 
-		this.siriusLangModule = new ModuleDeclaration(reporter);
+		this.siriusLangModule = new AstModuleDeclaration(reporter);
 
-		this.siriusLangPackage = new PackageDeclaration(reporter, siriusLangQName);
+		this.siriusLangPackage = new AstPackageDeclaration(reporter, siriusLangQName);
 
 		
 	}

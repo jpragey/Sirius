@@ -6,10 +6,10 @@ import org.sirius.frontend.core.AbstractCompilationUnit;
 /** CompilationUnit from package descriptor */
 public class PackageDescriptorCompilationUnit implements AbstractCompilationUnit, Visitable {
 
-	private PackageDeclaration packageDeclaration;
+	private AstPackageDeclaration packageDeclaration;
 	private Reporter reporter; 
 	
-	public PackageDescriptorCompilationUnit(Reporter reporter, PackageDeclaration packageDeclaration) {
+	public PackageDescriptorCompilationUnit(Reporter reporter, AstPackageDeclaration packageDeclaration) {
 		super();
 		this.reporter = reporter;
 		this.packageDeclaration = packageDeclaration;
@@ -25,7 +25,7 @@ public class PackageDescriptorCompilationUnit implements AbstractCompilationUnit
 	}
 	
 	
-	public PackageDeclaration getPackageDeclaration() {
+	public AstPackageDeclaration getPackageDeclaration() {
 		return packageDeclaration;
 	}
 

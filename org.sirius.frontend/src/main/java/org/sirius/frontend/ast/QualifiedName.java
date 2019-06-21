@@ -67,10 +67,10 @@ public class QualifiedName {
 //		return QName.super.dotSeparated();
 //	}
 
-//	@Override
-//	public String toString() {
-//		return dotSeparated();
-//	}
+	@Override
+	public String toString() {
+		return stringElements.stream().collect(Collectors.joining("."));
+	}
 	
 	public boolean isEmpty() {
 		return this.elements.isEmpty();

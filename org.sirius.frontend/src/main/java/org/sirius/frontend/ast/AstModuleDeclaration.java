@@ -5,12 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.Token;
+import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.ModuleDeclaration;
+import org.sirius.frontend.api.PackageDeclaration;
 
-public class ModuleDeclaration implements Visitable {
+public class AstModuleDeclaration implements Visitable {
 
+//	private QualifiedName qName = new QualifiedName();
 	private QualifiedName qName = new QualifiedName();
 	private AstToken version = new AstToken(0,0,0,0,"","");
 	
@@ -81,17 +86,17 @@ public class ModuleDeclaration implements Visitable {
 	
 	private List<ModuleImport> moduleImports = new ArrayList<>(); 
 	
-	private List<PackageDeclaration> packageDeclarations = new ArrayList<>();
-	private Optional<PackageDeclaration> currentPackage = Optional.empty();
+	private List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
+	private Optional<AstPackageDeclaration> currentPackage = Optional.empty();
 	
-	public ModuleDeclaration(Reporter reporter) {
+	public AstModuleDeclaration(Reporter reporter) {
 		super();
 		this.reporter = reporter;
 //		this.addPackageDeclaration(new PackageDeclaration(reporter));
 	}
 
 	
-	public List<PackageDeclaration> getPackageDeclarations() {
+	public List<AstPackageDeclaration> getPackageDeclarations() {
 		return packageDeclarations;
 	}
 
@@ -106,9 +111,9 @@ public class ModuleDeclaration implements Visitable {
 	 * 
 	 * @return
 	 */
-	private PackageDeclaration assertCurrentPackage() {
+	public AstPackageDeclaration getCurrentPackage() {
 		if(currentPackage.isEmpty()) {
-			addPackageDeclaration(new PackageDeclaration(reporter));
+			addPackageDeclaration(new AstPackageDeclaration(reporter));
 		}
 		return currentPackage.get();
 	}
@@ -117,16 +122,16 @@ public class ModuleDeclaration implements Visitable {
 	 * 
 	 * @param packageDeclaration
 	 */
-	public void addPackageDeclaration(PackageDeclaration packageDeclaration) {
+	public void addPackageDeclaration(AstPackageDeclaration packageDeclaration) {
 		this.currentPackage = Optional.of(packageDeclaration);
 		this.packageDeclarations.add(packageDeclaration);
 	}
 	
-	public void addFunctionDeclaration(FunctionDeclaration d) {
-		this.assertCurrentPackage().addFunctionDeclaration(d);
+	public void addFunctionDeclaration(AstFunctionDeclaration d) {
+		this.getCurrentPackage().addFunctionDeclaration(d);
 	}
-	public void addClassDeclaration(ClassDeclaration d) {
-		this.assertCurrentPackage().addClassDeclaration(d);
+	public void addClassDeclaration(AstClassDeclaration d) {
+		this.getCurrentPackage().addClassDeclaration(d);
 	}
 
 	
@@ -176,4 +181,25 @@ public class ModuleDeclaration implements Visitable {
 	public String toString() {
 		return qName.toString();
 	}
+	
+	public ModuleDeclaration getModuleDeclaration() {
+		return new ModuleDeclaration() {
+			private QName moduleQName = qName.toQName();
+			
+			@Override
+			public List<PackageDeclaration> getPackages() {
+				return packageDeclarations.stream()
+						.map(AstPackageDeclaration::getPackageDeclaration)
+						.collect(Collectors.toList());
+			}
+
+			@Override
+			public QName getQName() {
+				return moduleQName;
+			}
+			
+		};
+	}
+	
+	
 }

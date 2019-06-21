@@ -6,8 +6,8 @@ import static org.testng.Assert.assertTrue;
 import java.util.List;
 import java.util.Optional;
 
-import org.sirius.frontend.ast.FunctionDeclaration;
-import org.sirius.frontend.ast.PackageDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.core.ModuleContent;
 import org.sirius.frontend.core.ScriptSession;
@@ -33,16 +33,16 @@ public class CompilationUnitTest {
 				.getModuleContents();
 		assertEquals(modules.size(), 1);
 				
-		List<PackageDeclaration> packageDeclarations = modules
+		List<AstPackageDeclaration> packageDeclarations = modules
 				.get(0)
 				.getPackageContents();
 		assertEquals(packageDeclarations.size(), 1);
 				
-		List<FunctionDeclaration> fds = packageDeclarations
+		List<AstFunctionDeclaration> fds = packageDeclarations
 				.get(0)
 				.getFunctionDeclarations();
 		
-		PackageDeclaration pd = packageDeclarations.get(0);
+		AstPackageDeclaration pd = packageDeclarations.get(0);
 		
 		
 		assertEquals(fds.size(), 2);

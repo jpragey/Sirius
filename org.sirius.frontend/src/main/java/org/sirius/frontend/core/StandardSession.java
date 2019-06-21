@@ -15,9 +15,9 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstVisitor;
-import org.sirius.frontend.ast.ClassDeclaration;
-import org.sirius.frontend.ast.ModuleDeclaration;
-import org.sirius.frontend.ast.PackageDeclaration;
+import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstModuleDeclaration;
+import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.parser.SiriusLexer;
@@ -63,7 +63,7 @@ public class StandardSession implements Session {
 //		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
 		parser.factory = astFactory;
 		
-		parser.currentModule = new ModuleDeclaration(reporter);
+		parser.currentModule = new AstModuleDeclaration(reporter);
 		
 		parser.removeErrorListeners();
 		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
@@ -71,7 +71,7 @@ public class StandardSession implements Session {
 		return parser;
 	}
 	
-	private ModuleDeclaration parseModuleDescriptor(InputTextProvider input) {
+	private AstModuleDeclaration parseModuleDescriptor(InputTextProvider input) {
 		SiriusParser parser = createParser(input, new AstFactory(reporter, globalSymbolTable));
 		ModuleDeclarationContext ctxt = parser.moduleDeclaration();
 //		ModuleContent mc = new ModuleContent(reporter, ctxt.declaration);
@@ -96,7 +96,7 @@ public class StandardSession implements Session {
 		// -- Root class transformer
 		String rootClassName = "$root$";
 		AstToken name = new AstToken(0, 0, 0, 0, rootClassName, "<unknown>");
-		ClassDeclaration rootClass = new ClassDeclaration(reporter, false /*is interface*/, name);
+		AstClassDeclaration rootClass = new AstClassDeclaration(reporter, false /*is interface*/, name);
 		CreateRootClassTransformer createRootClassTransformer = new CreateRootClassTransformer(reporter, rootClass);
 
 		// -- Various transformations
@@ -114,27 +114,27 @@ public class StandardSession implements Session {
 				new SymbolResolutionVisitor(globalSymbolTable, packageQName)
 				);
 		
-		List<ModuleDeclaration> moduleDeclarations = compilationUnit.getModuleDeclarations();
-		for(ModuleDeclaration moduleDeclaration: moduleDeclarations) {
+		List<AstModuleDeclaration> moduleDeclarations = compilationUnit.getModuleDeclarations();
+		for(AstModuleDeclaration moduleDeclaration: moduleDeclarations) {
 			ModuleContent moduleContent = new ModuleContent(reporter, moduleDeclaration);
 			this.moduleContents.add(moduleContent);
 		}
 	}
 	
-	private List<ModuleDeclaration> parseModuleDescriptors(List<InputTextProvider> inputs) {
-		List<ModuleDeclaration> moduleDeclarations = new ArrayList<>();
+	private List<AstModuleDeclaration> parseModuleDescriptors(List<InputTextProvider> inputs) {
+		List<AstModuleDeclaration> moduleDeclarations = new ArrayList<>();
 		for(InputTextProvider input: inputs) {
 			if(input.isModuleDescriptor()) {
-				ModuleDeclaration md = parseModuleDescriptor(input);
+				AstModuleDeclaration md = parseModuleDescriptor(input);
 				moduleDeclarations.add(md);
 			}
 		}
 		return moduleDeclarations;
 	}
 
-	private PackageDeclaration parsePackageDescriptor(InputTextProvider input) {
+	private AstPackageDeclaration parsePackageDescriptor(InputTextProvider input) {
 		SiriusParser parser = createParser(input, new AstFactory(reporter, globalSymbolTable));
-		PackageDeclaration pd = parser.packageDescriptorCompilationUnit().packageDeclaration.declaration;
+		AstPackageDeclaration pd = parser.packageDescriptorCompilationUnit().packageDeclaration.declaration;
 		return pd;
 	}
 
@@ -145,7 +145,7 @@ public class StandardSession implements Session {
 	 * @return
 	 */
 	private void parsePackagesDescriptors(List<InputTextProvider> inputs, ModuleContent moduleContent) {
-		List<PackageDeclaration> packageDeclarations = new ArrayList<>();
+		List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
 
 
 		for(InputTextProvider input: inputs) {
@@ -153,7 +153,7 @@ public class StandardSession implements Session {
 				PhysicalPath modulePPath = moduleContent.getModulePath();
 				PhysicalPath packagePPath = input.getPackagePhysicalPath();
 				if(packagePPath.startWith(modulePPath)) {
-					PackageDeclaration pd = parsePackageDescriptor(input);
+					AstPackageDeclaration pd = parsePackageDescriptor(input);
 //					PackageContent pc = new PackageContent(pd);
 					packageDeclarations.add(pd);
 				}
@@ -163,14 +163,14 @@ public class StandardSession implements Session {
 		if(packageDeclarations.isEmpty()) {
 			// -- Add initial package (name is module qname)
 			QualifiedName name = moduleContent.getModuleDeclaration().getqName();
-			PackageDeclaration unnamedPackage = new PackageDeclaration (reporter, name.toQName());
+			AstPackageDeclaration unnamedPackage = new AstPackageDeclaration (reporter, name.toQName());
 			packageDeclarations.add(unnamedPackage);
 		}
 		
 		moduleContent.addPackageContents(packageDeclarations);
 	}
 	
-	void parseCodeInput(InputTextProvider input, PackageDeclaration packageContent, ModuleContent  moduleContent) {
+	void parseCodeInput(InputTextProvider input, AstPackageDeclaration packageContent, ModuleContent  moduleContent) {
 		parseInput(input);
 	}
 	
@@ -178,7 +178,7 @@ public class StandardSession implements Session {
 	private void addInput(List<InputTextProvider> inputs) {
 		
 		// -- Parse module descriptors
-		List<ModuleDeclaration> modules = parseModuleDescriptors(inputs);
+		List<AstModuleDeclaration> modules = parseModuleDescriptors(inputs);
 		this.moduleContents.addAll(modules.stream()
 				.map(md -> new ModuleContent(reporter, md))
 				.collect(Collectors.toList()));
@@ -196,7 +196,7 @@ public class StandardSession implements Session {
 				continue;
 			
 			for(ModuleContent mc: this.moduleContents) {
-				for(PackageDeclaration pc: mc.getPackageContents()) {
+				for(AstPackageDeclaration pc: mc.getPackageContents()) {
 					if(input.getPackageLogicalPath().matchQName(pc.getQname())) {
 						parseCodeInput(input, pc, mc);
 						break;

@@ -1,12 +1,10 @@
 package org.sirius.frontend.transform;
 
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.ast.AstToken;
+import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
-import org.sirius.frontend.ast.ClassDeclaration;
 import org.sirius.frontend.ast.StandardCompilationUnit;
-import org.sirius.frontend.ast.FunctionDeclaration;
-import org.sirius.frontend.ast.PackageDeclaration;
 
 /** Regroup all top-level classes in a '$root$' class
  * 
@@ -18,10 +16,10 @@ public class CreateRootClassTransformer implements /*Transformer*/ AstVisitor {
 	
 	private Reporter reporter;
 	
-	private ClassDeclaration rootClass;
+	private AstClassDeclaration rootClass;
 //	private PackageDeclaration rootPackageDeclaration;
 	
-	public CreateRootClassTransformer(Reporter reporter/*, PackageDeclaration rootPackageDeclaration*/, ClassDeclaration moduleRootClass) {
+	public CreateRootClassTransformer(Reporter reporter/*, PackageDeclaration rootPackageDeclaration*/, AstClassDeclaration moduleRootClass) {
 		super();
 		this.reporter = reporter;
 //		this.rootPackageDeclaration = rootPackageDeclaration;
@@ -52,7 +50,7 @@ public class CreateRootClassTransformer implements /*Transformer*/ AstVisitor {
 //		
 //		ClassDeclaration rootClass = new ClassDeclaration(reporter, false /*is interface*/, name /*, rootPackageDeclaration /*PackageDeclaration.root*/ /*TODO: ???*/);
 		
-		for(FunctionDeclaration fd: compilationUnit.getFunctionDeclarations()) {
+		for(AstFunctionDeclaration fd: compilationUnit.getFunctionDeclarations()) {
 			rootClass.addFunctionDeclaration(fd);
 		}
 		

@@ -1,17 +1,16 @@
 package org.sirius.frontend.symbols;
 
-import java.util.List;
 import java.util.Stack;
 
 import org.sirius.common.core.QName;
+import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstVisitor;
-import org.sirius.frontend.ast.ClassDeclaration;
-import org.sirius.frontend.ast.StandardCompilationUnit;
-import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ImportDeclarationElement;
 import org.sirius.frontend.ast.Scoped;
+import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.ast.TypeFormalParameterDeclaration;
 
 /** Visitor that sets the 'parent' symbol table field throughout the AST.
@@ -72,7 +71,7 @@ public class SymbolStructureVisitor implements AstVisitor {
 	
 	
 	@Override
-	public void startClassDeclaration(ClassDeclaration classDeclaration) {
+	public void startClassDeclaration(AstClassDeclaration classDeclaration) {
 		SymbolTable symbolTable = startScope0(classDeclaration);
 		stack.push(symbolTable);
 		
@@ -89,13 +88,13 @@ public class SymbolStructureVisitor implements AstVisitor {
 	}
 
 	@Override
-	public void endClassDeclaration(ClassDeclaration classDeclaration) {
+	public void endClassDeclaration(AstClassDeclaration classDeclaration) {
 		stack.pop();
 //		endScope(classDeclaration);
 	}
 
 	@Override
-	public void startFunctionDeclaration(FunctionDeclaration functionDeclaration) {
+	public void startFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
 		AstToken functionName = functionDeclaration.getName();
 
 		SymbolTable symbolTable = startScope0(functionDeclaration);
@@ -108,7 +107,7 @@ public class SymbolStructureVisitor implements AstVisitor {
 	}
 
 	@Override
-	public void endFunctionDeclaration(FunctionDeclaration functionDeclaration) {
+	public void endFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
 //		endScope(functionDeclaration);
 		stack.pop();
 	}

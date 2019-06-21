@@ -1,15 +1,14 @@
 package org.sirius.frontend.symbols;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.sirius.common.core.QName;
+import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.ast.ClassDeclaration;
-import org.sirius.frontend.ast.FunctionDeclaration;
-import org.sirius.frontend.ast.ValueDeclaration;
+import org.sirius.frontend.ast.AstValueDeclaration;
 
 /**
  * Table of all symbols that can be accessed globally (in external package or module).
@@ -72,18 +71,18 @@ public class GlobalSymbolTable /*implements SymbolTable */{
 		symbols.put(key, symbol);
 	}
 	
-	public void addClass(QName packageQName, ClassDeclaration classDeclaration) {
+	public void addClass(QName packageQName, AstClassDeclaration classDeclaration) {
 		AstToken simpleName = classDeclaration.getName();
 		addSymbol(packageQName, simpleName, new Symbol(simpleName, classDeclaration));
 	}
 	
-	public void addFunction(QName packageQName, FunctionDeclaration functionDeclaration) {
+	public void addFunction(QName packageQName, AstFunctionDeclaration functionDeclaration) {
 		AstToken simpleName = functionDeclaration.getName();
 		addSymbol(packageQName, simpleName, new Symbol(simpleName, functionDeclaration));
 	}
 	
 	/** Top-level value */
-	public void addValue(QName packageQName, ValueDeclaration valueDeclaration) {
+	public void addValue(QName packageQName, AstValueDeclaration valueDeclaration) {
 		AstToken simpleName = valueDeclaration.getName();
 		addSymbol(packageQName, simpleName, new Symbol(simpleName, valueDeclaration));
 	}

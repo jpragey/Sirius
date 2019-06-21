@@ -1,15 +1,14 @@
 package org.sirius.frontend.symbols;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
 import org.sirius.common.core.QName;
+import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
-import org.sirius.frontend.ast.ClassDeclaration;
-import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.ast.FunctionCallExpression;
-import org.sirius.frontend.ast.FunctionDeclaration;
+import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.ast.StringConstantExpression;
 
 /** Visitor that sets the 'parent' symbol table field throughout the AST.
@@ -43,21 +42,21 @@ public class SymbolResolutionVisitor implements AstVisitor {
 	}
 
 	@Override
-	public void startClassDeclaration(ClassDeclaration classDeclaration) {
+	public void startClassDeclaration(AstClassDeclaration classDeclaration) {
 //		startScope(classDeclaration);
 	}
 	@Override
-	public void endClassDeclaration(ClassDeclaration classDeclaration) {
+	public void endClassDeclaration(AstClassDeclaration classDeclaration) {
 //		endScope(classDeclaration);
 	}
 	
 	@Override
-	public void startFunctionDeclaration(FunctionDeclaration functionDeclaration) {
+	public void startFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
 //		startScope(functionDeclaration);
 	}
 	
 	@Override
-	public void endFunctionDeclaration(FunctionDeclaration functionDeclaration) {
+	public void endFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
 //		endScope(functionDeclaration);
 	}
 	

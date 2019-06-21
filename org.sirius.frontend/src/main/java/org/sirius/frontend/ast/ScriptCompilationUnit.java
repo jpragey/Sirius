@@ -15,8 +15,8 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	
 	private Optional<ShebangDeclaration> shebangDeclaration = Optional.empty();
 
-	private ArrayList<ModuleDeclaration> moduleDeclarations = new ArrayList<>();
-	private ModuleDeclaration currentModule;
+	private ArrayList<AstModuleDeclaration> moduleDeclarations = new ArrayList<>();
+	private AstModuleDeclaration currentModule;
 	
 	private Reporter reporter; 
 	
@@ -28,7 +28,7 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		this.reporter = reporter;
 		this.symbolTable = new LocalSymbolTable(reporter);
 	
-		this.addModuleDeclaration(new ModuleDeclaration(reporter));
+		this.addModuleDeclaration(new AstModuleDeclaration(reporter));
 	}
 
 	public void setShebang(ShebangDeclaration declaration) {
@@ -54,11 +54,15 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	}
 	
 	
-	public List<ModuleDeclaration> getModuleDeclarations() {
+	public AstModuleDeclaration getCurrentModule() {
+		return currentModule;
+	}
+
+	public List<AstModuleDeclaration> getModuleDeclarations() {
 		return moduleDeclarations;
 	}
 
-	public void addModuleDeclaration(ModuleDeclaration moduleDeclaration) {
+	public void addModuleDeclaration(AstModuleDeclaration moduleDeclaration) {
 		this.currentModule = moduleDeclaration;
 		this.moduleDeclarations.add(moduleDeclaration);
 	}
@@ -67,14 +71,14 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		this.symbolTable.setParentSymbolTable(newParent);
 	}
 	
-	public void addPackageDeclaration(PackageDeclaration declaration) {
+	public void addPackageDeclaration(AstPackageDeclaration declaration) {
 		this.currentModule.addPackageDeclaration(declaration);
 	}
 
-	public void addFunctionDeclaration(FunctionDeclaration d) {
+	public void addFunctionDeclaration(AstFunctionDeclaration d) {
 		this.currentModule.addFunctionDeclaration(d);
 	}
-	public void addClassDeclaration(ClassDeclaration d) {
+	public void addClassDeclaration(AstClassDeclaration d) {
 		this.currentModule.addClassDeclaration(d);
 	}
 	

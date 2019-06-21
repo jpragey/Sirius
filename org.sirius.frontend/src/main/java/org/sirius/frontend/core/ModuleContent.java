@@ -5,19 +5,19 @@ import java.util.List;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.ast.ModuleDeclaration;
-import org.sirius.frontend.ast.PackageDeclaration;
+import org.sirius.frontend.ast.AstModuleDeclaration;
+import org.sirius.frontend.ast.AstPackageDeclaration;
 
 public class ModuleContent {
 
 	private Reporter reporter;
-	private List<PackageDeclaration> packageContents = new ArrayList<>();
-	private ModuleDeclaration moduleDeclaration;
+	private List<AstPackageDeclaration> packageContents = new ArrayList<>();
+	private AstModuleDeclaration moduleDeclaration;
 	
 	// cache, from module declaration
 	private PhysicalPath modulePath; 
 			
-	public ModuleContent(Reporter reporter, ModuleDeclaration moduleDeclaration)
+	public ModuleContent(Reporter reporter, AstModuleDeclaration moduleDeclaration)
 	{
 		super();
 		this.reporter = reporter;
@@ -28,16 +28,16 @@ public class ModuleContent {
 		this.packageContents.addAll(moduleDeclaration.getPackageDeclarations());
 	}
 	
-	public List<PackageDeclaration> getPackageContents() {
+	public List<AstPackageDeclaration> getPackageContents() {
 		return packageContents;
 	}
 	
-	public void addPackageContents(List<PackageDeclaration> packageContents) {
-		for(PackageDeclaration pc: packageContents)
+	public void addPackageContents(List<AstPackageDeclaration> packageContents) {
+		for(AstPackageDeclaration pc: packageContents)
 			addPackage(pc);
 	}
 	
-	public void addPackage(PackageDeclaration packageContent) {
+	public void addPackage(AstPackageDeclaration packageContent) {
 		this.moduleDeclaration.addPackageDeclaration(packageContent);
 		this.packageContents.add(packageContent);
 	}
@@ -48,12 +48,12 @@ public class ModuleContent {
 	public void createDefaultPackageIfNeeded() {
 		if(packageContents.isEmpty()) {
 			
-			PackageDeclaration pc = new PackageDeclaration(reporter, moduleDeclaration.getqName().toQName());
+			AstPackageDeclaration pc = new AstPackageDeclaration(reporter, moduleDeclaration.getqName().toQName());
 			packageContents.add(pc);
 		}
 	}
 
-	public ModuleDeclaration getModuleDeclaration() {
+	public AstModuleDeclaration getModuleDeclaration() {
 		return moduleDeclaration;
 	}
 

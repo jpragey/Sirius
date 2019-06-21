@@ -6,10 +6,10 @@ import org.sirius.frontend.core.AbstractCompilationUnit;
 /** CompilationUnit from module descriptor */
 public class ModuleDescriptor implements AbstractCompilationUnit, Visitable {
 
-	private ModuleDeclaration moduleDeclaration;
+	private AstModuleDeclaration moduleDeclaration;
 	private Reporter reporter; 
 	
-	public ModuleDescriptor(Reporter reporter, ModuleDeclaration moduleDeclaration) {
+	public ModuleDescriptor(Reporter reporter, AstModuleDeclaration moduleDeclaration) {
 		super();
 		this.reporter = reporter;
 		this.moduleDeclaration = moduleDeclaration;
@@ -24,7 +24,7 @@ public class ModuleDescriptor implements AbstractCompilationUnit, Visitable {
 	}
 	
 	
-	public ModuleDeclaration getModuleDeclaration() {
+	public AstModuleDeclaration getModuleDeclaration() {
 		return moduleDeclaration;
 	}
 
