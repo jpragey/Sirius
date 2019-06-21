@@ -1,10 +1,13 @@
 package org.sirius.frontend.api;
 
-public interface MemberFunction extends AbstractFunction {
+import org.sirius.common.core.QName;
+
+public interface FunctionFormalArgument {
+
+	QName getQName();
 	
 	default void visitMe(Visitor visitor) {
 		visitor.start(this);
-		getArguments().forEach(arg -> arg.visitMe(visitor));
 		visitor.end(this);
 	}
 

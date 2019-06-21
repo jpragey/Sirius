@@ -23,6 +23,11 @@ public interface Visitor {
 	public default void start(TopLevelFunction declaration) {}
 	public default void end(TopLevelFunction declaration) {}
 	
+	public default void start(FunctionFormalArgument declaration) {}
+	public default void end(FunctionFormalArgument declaration) {}
+	
+	
+	
 	public default void start(TopLevelValue declaration) {}
 	public default void end(TopLevelValue declaration) {}
 	

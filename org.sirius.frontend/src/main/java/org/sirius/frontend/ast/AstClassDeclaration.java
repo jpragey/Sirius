@@ -27,7 +27,7 @@ public class AstClassDeclaration implements Type, Scoped, Visitable {
 	
 	private List<AstFunctionDeclaration> functionDeclarations = new ArrayList<>();
 	private List<AstValueDeclaration> valueDeclarations = new ArrayList<>();
-	private List<FunctionFormalArgument> anonConstructorArguments = new ArrayList<>(); 
+	private List<AstFunctionFormalArgument> anonConstructorArguments = new ArrayList<>(); 
 
 	/** Root package at first */
 	private AstPackageDeclaration packageDeclaration;
@@ -125,11 +125,11 @@ public class AstClassDeclaration implements Type, Scoped, Visitable {
 	}
 	
 	
-	public void addAnonConstructorArgument(FunctionFormalArgument argument) {
+	public void addAnonConstructorArgument(AstFunctionFormalArgument argument) {
 		this.anonConstructorArguments.add(argument);
 	}
 
-	public List<FunctionFormalArgument> getAnonConstructorArguments() {
+	public List<AstFunctionFormalArgument> getAnonConstructorArguments() {
 		return anonConstructorArguments;
 	}
 

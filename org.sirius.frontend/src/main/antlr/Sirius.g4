@@ -199,9 +199,9 @@ functionDeclaration returns [AstFunctionDeclaration declaration]
 	   '}'
 	;
 
-functionFormalArgument returns [FunctionFormalArgument argument]
+functionFormalArgument returns [AstFunctionFormalArgument argument]
 :
-	type LOWER_ID	{$argument = new FunctionFormalArgument($type.declaration, new AstToken($LOWER_ID));}
+	type LOWER_ID	{$argument = new AstFunctionFormalArgument($type.declaration, new AstToken($LOWER_ID));}
 ;
 
 

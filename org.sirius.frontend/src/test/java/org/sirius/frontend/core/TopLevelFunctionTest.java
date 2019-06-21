@@ -44,11 +44,16 @@ public class TopLevelFunctionTest {
 	@Test(description = "")
 	public void checkFunctionArgumentsInAPIFunction() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  Void f(Integer i, Integer j){}");
+		
+//		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
+//		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
+//		AstFunctionDeclaration fd = pd.getFunctionDeclarations().get(0);
 
-		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
-		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
-		AstFunctionDeclaration fd = pd.getFunctionDeclarations().get(0);
-
+		TopLevelFunction tlf = session.getModuleDeclarations().get(0).getPackages().get(0).getFunctions().get(0);
+		
+		assertEquals(tlf.getArguments().size(), 2);
+		assertEquals(tlf.getArguments().get(0).getQName().dotSeparated(), "a.b.f.i");
+		assertEquals(tlf.getArguments().get(1).getQName().dotSeparated(), "a.b.f.j");
 	}
 
 }

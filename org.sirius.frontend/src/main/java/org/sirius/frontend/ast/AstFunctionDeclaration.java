@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.symbols.LocalSymbolTable;
@@ -18,7 +19,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 	
 	private List<TypeFormalParameterDeclaration> typeParameters = new ArrayList<>();
 	
-	private List<FunctionFormalArgument> formalArguments = new ArrayList<>();
+	private List<AstFunctionFormalArgument> formalArguments = new ArrayList<>();
 	
 
 	private List<Statement> statements = new ArrayList<>(); 
@@ -88,12 +89,12 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 		this.typeParameters.add(typeParameter);
 	}
 
-	public void addFormalArgument(FunctionFormalArgument argument) {
+	public void addFormalArgument(AstFunctionFormalArgument argument) {
 		this.formalArguments.add(argument);
 		this.symbolTable.addFunctionArgument(argument.getName(), argument);
 	}
 
-	public List<FunctionFormalArgument> getFormalArguments() {
+	public List<AstFunctionFormalArgument> getFormalArguments() {
 		return formalArguments;
 	}
 	
@@ -147,11 +148,18 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 	public Optional<TopLevelFunction> getTopLevelFunction() 
 	{// TODO: filter top-level
 		return Optional.of(new TopLevelFunction() {
-			QName qName = containerQName.get().child(name.getText());
+			QName functionQName = containerQName.get().child(name.getText());
 
 			@Override
 			public QName getQName() {
-				return qName;
+				return functionQName;
+			}
+
+			@Override
+			public List<FunctionFormalArgument> getArguments() {
+				return formalArguments.stream()
+						.map(arg -> arg.toAPI(functionQName))
+						.collect(Collectors.toList());
 			}
 			
 		});
@@ -159,6 +167,12 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 	
 	public Optional<MemberFunction> getMemberFunction() {// TODO: filter top-level
 		return Optional.of(new MemberFunction() {
+			
+			@Override
+			public List<FunctionFormalArgument> getArguments() {
+				// TODO Auto-generated method stub
+				return null;
+			}
 			
 		});
 	}
