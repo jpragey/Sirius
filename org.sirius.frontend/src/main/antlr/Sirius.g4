@@ -221,8 +221,8 @@ expression returns [AstExpression express]
 	| left=expression op=('*'|'/') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
 	// Function call
 	| LOWER_ID '('				{ AstFunctionCallExpression call = new AstFunctionCallExpression($LOWER_ID); $express = call;}
-		(expression 			{ call.addActualArgument($expression.express); }
-			( ',' expression	{ call.addActualArgument($expression.express); } )*
+		(arg=expression 			{ call.addActualArgument($arg.express); }
+			( ',' arg=expression	{ call.addActualArgument($arg.express); } )*
 		)?
 	  ')'
 	

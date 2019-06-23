@@ -93,22 +93,13 @@ public class TopLevelFunctionTest {
 		FunctionCall functionCall = (FunctionCall)functionCallst.getExpression();
 		assertEquals(functionCall.getFunctionName().getText(), "print");
 		assertEquals(functionCall.getArguments().size(), 1);
+
+		Expression arg0Expr = functionCall.getArguments().get(0);
+		StringConstantExpression strExpr = (StringConstantExpression)arg0Expr;
 		
-		StringConstantExpression arg0Expr = (StringConstantExpression)functionCall.getArguments().get(0);
+		assertEquals(strExpr.getContent().getText(), "\"Hello World\"");
+		assertEquals(strExpr.getText(), "Hello World");
 		
-		assertEquals(arg0Expr.getContent().getText(), "\"Hello World\"");
-		assertEquals(arg0Expr.getText(), "Hello World");
-		
-//		System.out.println();
-//		FunctionCall functionCall = (FunctionCall)apiStatements.get(0);
-//		assertNotNull(functionCall);
-		
-//		assertEquals(functionCall.getFunctionName().getText(), "print");
-		
-		
-//		assertEquals(tlf.getArguments().size(), 2);
-//		assertEquals(tlf.getArguments().get(0).getQName().dotSeparated(), "a.b.f.i");
-//		assertEquals(tlf.getArguments().get(1).getQName().dotSeparated(), "a.b.f.j");
 	}
 
 }

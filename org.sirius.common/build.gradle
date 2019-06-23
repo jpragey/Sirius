@@ -36,3 +36,16 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
 }
+
+ext.moduleName = 'org.sirius.common'
+
+compileJava {
+	inputs.property("moduleName", moduleName);
+	doFirst {
+		options.compilerArgs = [
+			'--module-path', classpath.asPath,
+		]
+		classpath = files();
+	};
+}
+

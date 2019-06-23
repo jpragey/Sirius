@@ -49,22 +49,53 @@ public class AstFunctionCallExpression implements AstExpression {
 		
 	}
 
+	private class FunctionCallImpl implements FunctionCall {
+		
+		@Override
+		public org.sirius.common.core.Token getFunctionName() {
+			return name.asToken();
+		}
+
+		@Override
+		public List<Expression> getArguments() {
+			ArrayList<Expression> l = new ArrayList<>();
+			for(AstExpression arg: actualArguments) {
+				Expression ex = arg.getExpression();
+				l.add(ex);
+				System.out.println(ex);
+			}
+			return l;
+//			
+//			return actualArguments.stream()
+//					.map(AstExpression::getExpression)
+//					.collect(Collectors.toList());
+		}
+		
+	}
+	
 	@Override
 	public Expression getExpression() {
-		return new FunctionCall() {
-			
-			@Override
-			public org.sirius.common.core.Token getFunctionName() {
-				return name.asToken();
-			}
-
-			@Override
-			public List<Expression> getArguments() {
-				return actualArguments.stream()
-						.map(AstExpression::getExpression)
-						.collect(Collectors.toList());
-			}
-		};
+		return new FunctionCallImpl();
+//		return new FunctionCall() {
+//			
+//			@Override
+//			public org.sirius.common.core.Token getFunctionName() {
+//				return name.asToken();
+//			}
+//
+//			@Override
+//			public List<Expression> getArguments() {
+//				ArrayList<Expression> l = new ArrayList<>();
+//				for(AstExpression arg: actualArguments) {
+//					Expression ex = arg.getExpression();
+//					System.out.println(ex);
+//				}
+//				
+//				return actualArguments.stream()
+//						.map(AstExpression::getExpression)
+//						.collect(Collectors.toList());
+//			}
+//		};
 	}
 	
 	

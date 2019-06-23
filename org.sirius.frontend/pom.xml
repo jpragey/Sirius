@@ -1,0 +1,121 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.sirius</groupId>
+  <artifactId>org.sirius.frontend</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+<parent>
+  <groupId>org.sirius</groupId>
+  <artifactId>parent</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+</parent>
+        
+        
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+  
+    <dependency>
+      <groupId>org.sirius</groupId>
+      <artifactId>org.sirius.common</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+  
+  <!-- https://mvnrepository.com/artifact/org.testng/testng -->
+  <dependency>
+    <groupId>org.testng</groupId>
+    <artifactId>testng</artifactId>
+    <version>6.14.3</version>
+    <!--  <scope>test</scope>  -->
+  </dependency>
+    
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>4.7.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.17</version>
+    </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/org.ow2.asm/asm -->
+	<dependency>
+	    <groupId>org.ow2.asm</groupId>
+	    <artifactId>asm</artifactId>
+	    <version>7.1</version>
+	</dependency>
+	    
+  </dependencies>
+  
+  <build>
+  
+    <!-- To define the plugin version in your parent POM -->
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.antlr</groupId>
+          <artifactId>antlr4-maven-plugin</artifactId>
+          <version>4.7.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    
+  
+    <resources>
+      <resource>
+        <directory>build/generated-sources/antlr4</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>src/main/grammar</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    
+    <plugins>
+    
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.0</version>
+        <configuration>
+          <source>11</source>
+          <target>11</target>
+          <compilerVersion>11</compilerVersion>
+          <!--<release>11</release>-->
+        </configuration>
+      </plugin>
+      
+          <!-- To use the plugin goals in your POM or parent POM -->
+          <!-- To print AntLR4 plugin parameters:
+          		mvn antlr4:help -Ddetail=true
+           -->
+      <plugin>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>antlr</id>
+            <goals>
+              <goal>antlr4</goal>
+            </goals>
+          </execution>
+        </executions>
+        
+        <configuration>
+        	<outputDirectory>build/generated-source/antlr/org/sirius/frontend/parser</outputDirectory>
+        	<sourceDirectory>src/main/antlr</sourceDirectory>
+        </configuration>
+      </plugin>
+      
+    </plugins>
+  </build>
+</project>
