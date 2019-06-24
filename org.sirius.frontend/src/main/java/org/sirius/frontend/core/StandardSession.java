@@ -16,6 +16,7 @@ import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.api.ModuleDeclaration;
+import org.sirius.frontend.api.Session;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;

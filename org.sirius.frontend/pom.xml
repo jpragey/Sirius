@@ -112,6 +112,7 @@
         
         <configuration>
         	<outputDirectory>build/generated-source/antlr/org/sirius/frontend/parser</outputDirectory>
+        	 <!-- <outputDirectory>build/generated-source/antlr</outputDirectory> -->
         	<sourceDirectory>src/main/antlr</sourceDirectory>
         </configuration>
       </plugin>

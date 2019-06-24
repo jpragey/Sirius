@@ -1,8 +1,8 @@
-package org.sirius.frontend.core;
+package org.sirius.frontend.api;
 
 import java.util.List;
 
-import org.sirius.frontend.api.ModuleDeclaration;
+import org.sirius.frontend.core.ModuleContent;
 
 public interface Session {
 
