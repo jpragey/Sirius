@@ -1,7 +1,5 @@
 package org.sirius.frontend.core;
 
-import static org.testng.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +15,6 @@ import org.sirius.frontend.api.Session;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstModuleDeclaration;
-import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
@@ -76,7 +73,6 @@ public class ScriptSession implements Session {
 
 		// -- Parsing
 		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
-		assertNotNull(unitContext);
 		ScriptCompilationUnit compilationUnit = unitContext.unit;
 		compilationUnit.updateParentsDeeply();
 

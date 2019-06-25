@@ -1,9 +1,7 @@
 package org.sirius.frontend.core;
 
-import static org.testng.Assert.assertNotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,14 +10,14 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.ast.AstFactory;
-import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Session;
 import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
+import org.sirius.frontend.ast.AstToken;
+import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.parser.SiriusLexer;
@@ -76,7 +74,6 @@ public class StandardSession implements Session {
 	private AstModuleDeclaration parseModuleDescriptor(InputTextProvider input) {
 		SiriusParser parser = createParser(input, new AstFactory(reporter, globalSymbolTable));
 		ModuleDeclarationContext ctxt = parser.moduleDeclaration();
-//		ModuleContent mc = new ModuleContent(reporter, ctxt.declaration);
 		return ctxt.declaration;
 	}
 	
@@ -85,10 +82,7 @@ public class StandardSession implements Session {
 		SiriusParser parser = createParser(input, new AstFactory(reporter, globalSymbolTable));
 		// -- Parsing
 		StandardCompilationUnitContext unitContext = parser.standardCompilationUnit();
-		assertNotNull(unitContext);
 		StandardCompilationUnit compilationUnit = unitContext.stdUnit;
-
-//		LocalSymbolTable rootSymbolTable = new LocalSymbolTable(reporter);
 
 		// -- Package
 //		List<String> packageQName = Arrays.asList(input.getResourcePhysicalName().split("/"));

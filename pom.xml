@@ -8,16 +8,53 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <sirius.version>0.0.1-SNAPSHOT</sirius.version>
   </properties>
 
-<modules>
+  <modules>
     <module>org.sirius.common</module>
     <module>org.sirius.frontend</module>
     <module>org.sirius.compiler</module>
     <module>org.sirius.backend.core</module>
     <module>org.sirius.backend.jvm</module>
-</modules>
+  </modules>
 
+  <dependencyManagement>
+	<dependencies>
+
+		<dependency>
+			<groupId>org.sirius</groupId>
+			<artifactId>org.sirius.compiler</artifactId>
+			<version>${sirius.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.sirius</groupId>
+			<artifactId>org.sirius.common</artifactId>
+			<version>${sirius.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.sirius</groupId>
+			<artifactId>org.sirius.frontend</artifactId>
+			<version>${sirius.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.sirius</groupId>
+			<artifactId>org.sirius.backend.core</artifactId>
+			<version>${sirius.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.sirius</groupId>
+			<artifactId>org.sirius.backend.jvm</artifactId>
+			<version>${sirius.version}</version>
+		</dependency>
+
+	</dependencies>
+  </dependencyManagement>
+  
   <dependencies>
   </dependencies>
   <build>

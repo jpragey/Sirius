@@ -4,36 +4,28 @@
   <artifactId>org.sirius.backend.jvm</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
-<parent>
-  <groupId>org.sirius</groupId>
-  <artifactId>parent</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-</parent>
+  <parent>
+    <groupId>org.sirius</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
 
   <packaging>jar</packaging>
-
-  <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
 
   <dependencies>
   	<dependency>
 	    <groupId>org.sirius</groupId>
 	    <artifactId>org.sirius.common</artifactId>
-	    <version>0.0.1-SNAPSHOT</version>
   	</dependency>
   
   	<dependency>
 	    <groupId>org.sirius</groupId>
 	    <artifactId>org.sirius.frontend</artifactId>
-	    <version>0.0.1-SNAPSHOT</version>
   	</dependency>
 
    	<dependency>
 	    <groupId>org.sirius</groupId>
 	    <artifactId>org.sirius.backend.core</artifactId>
-	    <version>0.0.1-SNAPSHOT</version>
   	</dependency>
   
   </dependencies>

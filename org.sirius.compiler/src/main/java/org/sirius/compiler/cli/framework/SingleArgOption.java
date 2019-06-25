@@ -1,25 +1,49 @@
 package org.sirius.compiler.cli.framework;
 
-import java.util.function.Function;
+import java.util.Set;
+import java.util.function.Consumer;
 
-public class SingleArgOption<V, Help> implements Option<V, Help> {
-	private String shortName;
-	private String longName;
+public class SingleArgOption<Help> implements Option<Help> {
+	private String description;
+	private Set<String> matchingKeywords;
 	private Help help;
-	
-	public SingleArgOption(String shortName, String longName, Help help) {
-		this.shortName = shortName;
-		this.longName = longName;
+
+	public SingleArgOption(String description, Set<String> matchingKeywords, Help help) {
+		super();
+		this.description = description;
+		this.matchingKeywords = matchingKeywords;
 		this.help = help;
 	}
 
+	@Override
+	public String getDescription() {
+		return description;
+	}
+	
+	public BoundOption bind(Consumer<String> setter) {
+		return new BoundOption() {
+
+			@Override
+			public ArgumentParsingResult parse(Cursor cursor) {
+				String lookahead = cursor.lookahead();
+				if(matchingKeywords.contains(lookahead)) {
+					if(cursor.exists(1)) {
+						setter.accept(cursor.lookahead(1));
+						cursor.advance(2 /*matchedArgCount*/);
+						return ArgumentParsingResult.success();
+					} else {
+						return ArgumentParsingResult.fail("Option " + lookahead + " needs an argument.");
+					}
+				}
+				return ArgumentParsingResult.notMatched();
+			}
+			
+		};
+	}		
+	
 	@Override
 	public Help getHelp() {
 		return help;
 	}
 
-	@Override
-	public OptionParser bind(Function<String, Boolean> accept) {
-		return new SingleArgOptionParser(shortName, longName, accept);
-	}
 }

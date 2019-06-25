@@ -13,9 +13,8 @@ import org.sirius.backend.core.Backend;
 import org.sirius.backend.jvm.JvmBackend;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
-import org.sirius.compiler.cli.framework.CliException;
+import org.sirius.compiler.cli.framework.BoundOption;
 import org.sirius.compiler.cli.framework.OptionParser;
-import org.sirius.compiler.cli.framework.OptionsRunner;
 import org.sirius.compiler.options.AbstractOptionValues;
 import org.sirius.compiler.options.CompilerOptionValues;
 import org.sirius.compiler.options.OptionsRepository;
@@ -38,7 +37,7 @@ public class CompilerBuilder {
 	private List<Supplier<Backend> > backendFactories = new ArrayList<>(); 
 
 	
-	private Optional<AbstractOptionValues> compilerOptionValues = Optional.empty();
+//	private Optional<AbstractOptionValues> compilerOptionValues = Optional.empty();
 	private Optional<String[]> cliArgs = Optional.empty();
 	
 	
@@ -125,28 +124,24 @@ public class CompilerBuilder {
 		}
 	}
 
-	public void setCompilerOptions(CompilerOptionValues values) {
-		this.compilerOptionValues = Optional.of(values);
-	}
+//	public void setCompilerOptions(CompilerOptionValues values) {
+//		this.compilerOptionValues = Optional.of(values);
+//	}
 	
 	public void setCliArs(String[] cliArgs) {
 		this.cliArgs = Optional.ofNullable(cliArgs);
 	}
 	
 	private AbstractOptionValues getOptionValues() {
-		if(compilerOptionValues.isPresent())
-			return compilerOptionValues.get();
+//		if(compilerOptionValues.isPresent())
+//			return compilerOptionValues.get();
 		
 		CompilerOptionValues values = new CompilerOptionValues(reporter);
 		if(this.cliArgs.isPresent()) {
-			List<OptionParser> parsers = OptionsRepository.bindStandardCompilerOptions(values);
-			OptionsRunner runner = new OptionsRunner(parsers);
-			try {
-				runner.parse(this.cliArgs.get());
-			} catch (CliException e) {
-				// TODO something civilized
-				e.printStackTrace();
-			}
+			List<BoundOption> parsers = OptionsRepository.bindStandardCompilerOptions(values);
+			OptionParser<CompilerOptionValues> parser = new OptionParser<CompilerOptionValues>(parsers);
+			Optional<String> error = parser.parse(this.cliArgs.get());
+			error.ifPresent(msg -> reporter.error(msg));
 		}
 		return values;
 		

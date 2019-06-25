@@ -5,6 +5,7 @@ import java.util.List;
 import org.sirius.backend.core.Backend;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.FrontEnd;
+import org.sirius.frontend.core.InputTextProvider;
 
 public class ScriptCompiler implements Compiler {
 
@@ -22,7 +23,8 @@ public class ScriptCompiler implements Compiler {
 
 	@Override
 	public void compile() {
-		// TODO Auto-generated method stub
+//		InputTextProvider provider = 
+//		frontEnd.createScriptSession(provider)
 
 	}
 
