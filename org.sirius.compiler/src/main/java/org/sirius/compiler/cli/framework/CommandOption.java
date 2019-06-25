@@ -11,9 +11,9 @@ public class CommandOption<CommandValues, Help> implements Option<Help>{
 	private Help help;
 	private String description;
 	private Supplier<CommandValues> commandValueSupplier;
-	private List< Function<CommandValues, BoundOption> > bindings; 
+	private List< Function<CommandValues, BoundOption<Help>> > bindings; 
 	
-	public CommandOption(String description, String commandName, Supplier<CommandValues> commandValueSupplier, List< Function<CommandValues, BoundOption> > bindings, Help help) {
+	public CommandOption(String description, String commandName, Supplier<CommandValues> commandValueSupplier, List< Function<CommandValues, BoundOption<Help>> > bindings, Help help) {
 		this.commandName = commandName;
 		this.commandValueSupplier = commandValueSupplier;
 		this.bindings = bindings;
@@ -30,20 +30,20 @@ public class CommandOption<CommandValues, Help> implements Option<Help>{
 		return help;
 	}
 
-	public BoundOption bind() {
-		return new BoundOption() {
+	public BoundOption<Help> bind() {
+		return new BoundOption<Help>() {
 
 			@Override
 			public ArgumentParsingResult parse(Cursor cursor) {
 				if(cursor.lookahead().equals(commandName)) {
 					CommandValues commandValue = commandValueSupplier.get();
 					
-					List<BoundOption> boundOptions = bindings.stream()
+					List<BoundOption<Help>> boundOptions = bindings.stream()
 							.map(binding -> binding.apply(commandValue))
 							.collect(Collectors.toList());
 					
 					
-					OptionParser<CommandValues> commandParser = new OptionParser<CommandValues>(boundOptions);
+					OptionParser<CommandValues, Help> commandParser = new OptionParser<>(boundOptions);
 					cursor.advance(1); // skip command name
 					
 					Optional<String> error = commandParser.parse(cursor);
@@ -53,6 +53,11 @@ public class CommandOption<CommandValues, Help> implements Option<Help>{
 					return ArgumentParsingResult.success();
 				}
 				return ArgumentParsingResult.notMatched();
+			}
+
+			@Override
+			public Help getHelp() {
+				return help;
 			}
 			
 		};

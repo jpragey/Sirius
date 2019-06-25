@@ -1,6 +1,7 @@
 package org.sirius.compiler.cli.framework;
 
-public interface BoundOption {
+public interface BoundOption<Help> {
 	
 	ArgumentParsingResult parse(Cursor cursor);
+	Help getHelp();
 }

@@ -19,8 +19,8 @@ public 	class BooleanOption<Help> implements Option<Help> {
 		return description;
 	}
 	
-	public BoundOption bind(Signal signal) {
-		return new BoundOption() {
+	public BoundOption<Help> bind(Signal signal) {
+		return new BoundOption<Help>() {
 
 			@Override
 			public ArgumentParsingResult parse(Cursor cursor) {
@@ -31,6 +31,11 @@ public 	class BooleanOption<Help> implements Option<Help> {
 				}
 					
 				return ArgumentParsingResult.notMatched();
+			}
+
+			@Override
+			public Help getHelp() {
+				return help;
 			}
 			
 		};

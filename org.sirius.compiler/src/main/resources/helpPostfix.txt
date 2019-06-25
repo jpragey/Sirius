@@ -1,0 +1,1 @@
+Sirius is open source, licence TBD. Written in 2019 by J.P.Ragey.

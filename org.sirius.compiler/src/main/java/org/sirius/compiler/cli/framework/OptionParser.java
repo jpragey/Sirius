@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class OptionParser<V> {
+public class OptionParser<V, Help> {
 	
 	 /** Remaining args handler that fails if remaining args list is not empty. 
 	  * 
@@ -19,21 +19,21 @@ public class OptionParser<V> {
 	}
 	
 	private Function<List<String>, Optional<String> > remainingHandler ;
-	private List<BoundOption> boundOptions;
+	private List<BoundOption<Help>> boundOptions;
 
 	
 	public OptionParser(Function<List<String>, Optional<String>> remainingHandler,
-			List<BoundOption> boundOptions) {
+			List<BoundOption<Help>> boundOptions) {
 		super();
 		this.remainingHandler = remainingHandler;
 		this.boundOptions = boundOptions;
 	}
-	public OptionParser(List<BoundOption> boundOptions) {
+	public OptionParser(List<BoundOption<Help>> boundOptions) {
 		this(OptionParser::failingRemainingHandler, boundOptions);
 	}
 	
 	@SafeVarargs
-	public OptionParser(BoundOption ... boundOptions) {
+	public OptionParser(BoundOption<Help> ... boundOptions) {
 		this(OptionParser::failingRemainingHandler, Arrays.asList(boundOptions));
 	}
 	
@@ -48,7 +48,7 @@ public class OptionParser<V> {
 			int currentPos = cursor.getCurrentPos();
 			boolean optionMatched = false;
 			
-			for(BoundOption bo: boundOptions) {
+			for(BoundOption<Help> bo: boundOptions) {
 				ArgumentParsingResult parsedCount = bo.parse(cursor);
 				if(parsedCount.matched) {	// Success or failed
 					Optional<String> errorMessage = parsedCount.errorMessage;

@@ -8,20 +8,20 @@ import org.sirius.common.error.ShellReporter;
 import org.sirius.compiler.cli.framework.BoundOption;
 import org.sirius.compiler.cli.framework.OptionParser;
 import org.sirius.compiler.options.CompilerOptionValues;
+import org.sirius.compiler.options.Help;
 import org.sirius.compiler.options.OptionsRepository;
 
 public class Main {
 
 	public static void main(String[] args) {
-//		CliRunner runner = new CliRunner();
 		int exitStatus = 0;
 		
 		Reporter reporter = new ShellReporter(); 
 
 		CompilerOptionValues optionValues = new CompilerOptionValues(reporter);
 		
-		List<BoundOption> boundOptions = OptionsRepository.bindStandardCompilerOptions(optionValues);
-		OptionParser<CompilerOptionValues> parser = new OptionParser<>(boundOptions);
+		List<BoundOption<Help>> boundOptions = OptionsRepository.bindStandardCompilerOptions(optionValues);
+		OptionParser<CompilerOptionValues, Help> parser = new OptionParser<>(boundOptions);
 		
 		Optional<String> error = parser.parse(args);
 		if(error.isPresent()) {
@@ -29,9 +29,9 @@ public class Main {
 			exitStatus = -1;
 		} else {
 			if(optionValues.getHelp()) {
-				System.out.println("Some help here...");
+				HelpProcessor helpProcessor = new HelpProcessor(boundOptions);
+				helpProcessor.printHelp(reporter);
 			} else if(optionValues.getVersion()) {
-				//System.out.println("Some version info here...");
 				new Version().printVersion(reporter);
 			} else {
 				System.out.println("Some compilation here...");
@@ -43,7 +43,6 @@ public class Main {
 		builder.setCliArs(args);
 		
 		builder.buildScript();
-		
 		
 		System.exit(exitStatus);
 	}

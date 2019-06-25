@@ -17,6 +17,7 @@ import org.sirius.compiler.cli.framework.BoundOption;
 import org.sirius.compiler.cli.framework.OptionParser;
 import org.sirius.compiler.options.AbstractOptionValues;
 import org.sirius.compiler.options.CompilerOptionValues;
+import org.sirius.compiler.options.Help;
 import org.sirius.compiler.options.OptionsRepository;
 import org.sirius.frontend.core.FileInputTextProvider;
 import org.sirius.frontend.core.FrontEnd;
@@ -138,8 +139,8 @@ public class CompilerBuilder {
 		
 		CompilerOptionValues values = new CompilerOptionValues(reporter);
 		if(this.cliArgs.isPresent()) {
-			List<BoundOption> parsers = OptionsRepository.bindStandardCompilerOptions(values);
-			OptionParser<CompilerOptionValues> parser = new OptionParser<CompilerOptionValues>(parsers);
+			List<BoundOption<Help>> parsers = OptionsRepository.bindStandardCompilerOptions(values);
+			OptionParser<CompilerOptionValues, Help> parser = new OptionParser<CompilerOptionValues, Help>(parsers);
 			Optional<String> error = parser.parse(this.cliArgs.get());
 			error.ifPresent(msg -> reporter.error(msg));
 		}

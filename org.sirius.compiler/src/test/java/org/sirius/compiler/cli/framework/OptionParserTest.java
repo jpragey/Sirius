@@ -2,17 +2,12 @@ package org.sirius.compiler.cli.framework;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
+import org.sirius.compiler.options.Help;
 import org.testng.annotations.Test;
 
 public class OptionParserTest {
@@ -39,71 +34,24 @@ public class OptionParserTest {
 		}
 	}
 	
-//	class CommandOption<CmdV, Help> implements Option<Help>{
-//		String commandName;
-//		Help help;
-//		String description;
-//		Supplier<CmdV> commandValueSupplier;
-//		List< Function<CmdV, BoundOption> > bindings; 
-//		
-//		public CommandOption(String description, String commandName, Supplier<CmdV> commandValueSupplier, List< Function<CmdV, BoundOption> > bindings, Help help) {
-//			this.commandName = commandName;
-//			this.commandValueSupplier = commandValueSupplier;
-//			this.bindings = bindings;
-//			this.help = help;
-//			this.description = description;
-//		}
-//
-//		@Override		public String getDescription()	{ return description;}
-//		@Override		public Help getHelp() 			{ return help;}
-//		public BoundOption bind() {
-//			return new BoundOption() {
-//
-//				@Override
-//				public ArgumentParsingResult parse(Cursor cursor) {
-//					if(cursor.lookahead().equals(commandName)) {
-//						CmdV commandValue = commandValueSupplier.get();
-//						List<BoundOption> boundOptions = bindings.stream()
-//								.map(binding -> binding.apply(commandValue))
-//								.collect(Collectors.toList());
-//						
-//						
-//						OptionParser<CmdV> commandParser = new OptionParser<CmdV>(boundOptions);
-//						cursor.advance(1); // skip command name
-//						
-//						Optional<String> error = commandParser.parse(cursor);
-//						if(error.isPresent()) {
-//							return ArgumentParsingResult.fail(error.get());
-//						}
-//						return ArgumentParsingResult.success(666);
-//					}
-//					return ArgumentParsingResult.notMatched();
-//				}
-//				
-//			};
-//		}
-//	}
-	
 	@Test
 	public void simpleOptionsTestTest() {
 		OptionsValue optionsValue = new OptionsValue();
 
-		BooleanOption<String> boolOption0 = new BooleanOption<String>("description", Set.of("-b0"), "");
-		BooleanOption<String> boolOption1 = new BooleanOption<String>("description", Set.of("-b1"), "");
+		BooleanOption<Help> boolOption0 = new BooleanOption<Help>("description", Set.of("-b0"), new Help(""));
+		BooleanOption<Help> boolOption1 = new BooleanOption<Help>("description", Set.of("-b1"), new Help(""));
 		
-		SingleArgOption<String> outputDirOption = new SingleArgOption<>("Output dir (", Set.of("-o", "--outdir"), "help");
-		Function<CommandOptionsValue, BoundOption> bind = (CommandOptionsValue v) -> outputDirOption.bind(dir -> {v.outputDir = dir;});
+		SingleArgOption<Help> outputDirOption = new SingleArgOption<Help>("Output dir (", Set.of("-o", "--outdir"), new Help("help"));
 		
-		CommandOption<CommandOptionsValue, String> commandOption = new CommandOption<>("description", "command", 
+		CommandOption<CommandOptionsValue, Help> commandOption = new CommandOption<>("description", "command", 
 				() -> optionsValue.createCommand(), 
 				Arrays.asList(
 						(CommandOptionsValue v) -> outputDirOption.bind(dir -> {v.outputDir = dir;})
-//						bind
 				), 
-				"help");
+				new Help("help"));
 		
 		String[] cliArgs = {"-b0", "-b1", "command", "-o", "target"};
-		OptionParser<OptionsValue> parser = new OptionParser<OptionsValue>(
+		OptionParser<OptionsValue, Help> parser = new OptionParser<OptionsValue, Help>(
 				boolOption0.bind( () -> optionsValue.b0 = true),
 				boolOption1.bind( () -> optionsValue.b1 = true),
 				commandOption.bind()

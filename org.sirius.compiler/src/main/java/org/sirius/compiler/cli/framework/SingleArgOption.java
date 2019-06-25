@@ -20,8 +20,8 @@ public class SingleArgOption<Help> implements Option<Help> {
 		return description;
 	}
 	
-	public BoundOption bind(Consumer<String> setter) {
-		return new BoundOption() {
+	public BoundOption<Help> bind(Consumer<String> setter) {
+		return new BoundOption<Help>() {
 
 			@Override
 			public ArgumentParsingResult parse(Cursor cursor) {
@@ -36,6 +36,11 @@ public class SingleArgOption<Help> implements Option<Help> {
 					}
 				}
 				return ArgumentParsingResult.notMatched();
+			}
+
+			@Override
+			public Help getHelp() {
+				return help;
 			}
 			
 		};
