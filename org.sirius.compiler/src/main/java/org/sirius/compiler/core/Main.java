@@ -31,7 +31,8 @@ public class Main {
 			if(optionValues.getHelp()) {
 				System.out.println("Some help here...");
 			} else if(optionValues.getVersion()) {
-				System.out.println("Some version info here...");
+				//System.out.println("Some version info here...");
+				new Version().printVersion(reporter);
 			} else {
 				System.out.println("Some compilation here...");
 			}

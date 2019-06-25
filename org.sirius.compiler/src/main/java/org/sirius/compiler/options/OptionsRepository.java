@@ -23,8 +23,8 @@ public class OptionsRepository {
 			new Help()); 
 
 	public static final BooleanOption<Help> version = new BooleanOption<>(
-			"-h,--help   : print help and exit",
-			Set.of("-h", "--help"), 
+			"-v,--version   : print version and exit",
+			Set.of("-v", "--version"), 
 			new Help()); 
 
 	
