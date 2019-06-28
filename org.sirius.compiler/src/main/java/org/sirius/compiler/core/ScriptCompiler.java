@@ -2,10 +2,13 @@ package org.sirius.compiler.core;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.sirius.backend.core.Backend;
 import org.sirius.common.error.Reporter;
 import org.sirius.compiler.options.CompileOptionsValues;
+import org.sirius.compiler.options.Help;
+import org.sirius.compiler.options.OptionsRepository;
 import org.sirius.compiler.options.RootOptionValues;
 import org.sirius.frontend.api.Session;
 import org.sirius.frontend.core.FrontEnd;
@@ -36,9 +39,23 @@ public class ScriptCompiler implements Compiler {
 		this.inputTextFactory = inputTextFactory;
 	}
 
+	private void helpPrintln(String text) {
+		System.out.println(text);
+	}
+	/** Print help for 'compile' option if '--help' option is found in CLI args, and return true; 
+	 * return false if no '--help' was seen.
+	 * */
 	private boolean processHelp() {
 		if(this.compileValues.getHelp()) {
-			System.out.println("Help on 'compile' option.");
+			helpPrintln("Help on 'compile' option:");
+			helpPrintln("");
+			
+			OptionsRepository.compileCommandOptions.stream()
+				.map(OptionsRepository.SubCommandOption::getHelp)
+				.forEach(help -> {
+					helpPrintln(help.getText());
+					helpPrintln("");
+					});
 			
 			return true;
 		} else 

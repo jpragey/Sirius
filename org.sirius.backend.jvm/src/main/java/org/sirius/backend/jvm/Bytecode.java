@@ -42,10 +42,8 @@ public class Bytecode {
 	
 	/** */
 	public void createClassFiles(Reporter reporter, String classDir, QName classQName) {
-//		reporter.error("JVM backend: Create class file; classDir=" + classDir + ", class QName=" + classQName);
 
-		Path classFilePath = Paths.get(classDir, classQName.getStringElements().toArray(new String[0]));
-//		reporter.info("class file: " + classFilePath.toString());
+		Path classFilePath = Paths.get(classDir, classQName.toArray());
 		
 		Path classDirPath = classFilePath.getParent();
 		if(classDirPath == null) {
@@ -62,6 +60,7 @@ public class Bytecode {
 //			reporter.info("Writing bytecode to: " + classFile.getAbsolutePath());
 			
 			writer.write(bytes);
+			
 		} catch (FileNotFoundException e) {
 			reporter.error("File not found: " + classFile.toString() + ": " + e.getMessage(), e);
 		} catch (IOException e) {

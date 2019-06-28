@@ -36,6 +36,9 @@ public class QName {
 	public List<String> getStringElements() {
 		return elements;
 	}
+	public String[] toArray() {
+		return elements.toArray(new String[0]);
+	}
 	
 	public QName child(String childName) {
 		return new QName(elements, childName); 

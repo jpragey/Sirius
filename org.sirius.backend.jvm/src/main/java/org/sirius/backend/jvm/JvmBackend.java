@@ -46,8 +46,8 @@ public class JvmBackend implements Backend {
 	}
 	
 	private void processModule(ModuleDeclaration declaration) {
-		System.out.println("Jvm: processing module " + declaration);
-		reporter.info("Jvm: processing module " + declaration.getQName());
+		////		System.out.println("Jvm: processing module " + declaration);
+		////		reporter.info("Jvm: processing module " + declaration.getQName());
 		
 		declaration.getPackages().stream().forEach(this::processPackage);
 	}
@@ -103,6 +103,6 @@ public class JvmBackend implements Backend {
 		Bytecode bytecode = writer.createByteCode(declaration);
 		classDir.ifPresent(cdir -> bytecode.createClassFiles(reporter, cdir, declaration.getQName()));
 		
-		System.out.println("bytecode: " + bytecode.size() + " bytes: " + bytecode);
+////		System.out.println("bytecode: " + bytecode.size() + " bytes: " + bytecode);
 	}
 }

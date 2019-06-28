@@ -4,10 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.sirius.compiler.cli.framework.BooleanOption;
 import org.sirius.compiler.cli.framework.BoundOption;
 import org.sirius.compiler.cli.framework.CommandOption;
+import org.sirius.compiler.cli.framework.Option;
 import org.sirius.compiler.cli.framework.SingleArgOption;
 
 
@@ -33,17 +36,44 @@ public class OptionsRepository {
 			"--class <DIR>   : create .class files in DIR",
 			Set.of("--class"), 
 			new Help("--class <DIR>   : create .class files in DIR"));
-	 
+
+	
+	public static class SubCommandOption<Values> {
+		public Option<Help> option;
+		public Function<Values, BoundOption<Help>> binding;
+		public SubCommandOption(Option<Help> option, Function<Values, BoundOption<Help>> binding) {
+			super();
+			this.option = option;
+			this.binding = binding;
+		}
+		public Help getHelp() {
+			return option.getHelp();
+		}
+		public Option<Help> getOption() {
+			return option;
+		}
+		public Function<Values, BoundOption<Help>> getBinding() {
+			return binding;
+		}
+	}
+	public static List<SubCommandOption<CompileOptionsValues>> compileCommandOptions = Arrays.asList(
+			new SubCommandOption<CompileOptionsValues>(help, (CompileOptionsValues v) -> help.bind(v::setHelp)),
+			new SubCommandOption<CompileOptionsValues>(classDir, (CompileOptionsValues v) -> classDir.bind(v::setClassDir))
+			);
+	
 	public static CommandOption<CompileOptionsValues, Help> compileCommand(RootOptionValues compilerOptionValues) {
 		
 		return new CommandOption<CompileOptionsValues, Help>(
 			"description", 
 			"compile", 
-			compilerOptionValues::createCompileOptions, 
-			Arrays.asList(
-					(CompileOptionsValues v) -> help.bind(v::setHelp),
-					(CompileOptionsValues v) -> classDir.bind(v::setClassDir)
-					), 
+			compilerOptionValues::createCompileOptions,
+			compileCommandOptions.stream()
+				.map( SubCommandOption::getBinding)
+				.collect(Collectors.toList()),
+//			Arrays.asList(
+//					(CompileOptionsValues v) -> help.bind(v::setHelp),
+//					(CompileOptionsValues v) -> classDir.bind(v::setClassDir)
+//					), 
 			Optional.of( (CompileOptionsValues optionValues, List<String> sources) -> {
 				optionValues.setSources(sources); 
 				return Optional.empty();

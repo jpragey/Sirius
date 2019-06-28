@@ -7,19 +7,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.sirius.backend.core.Backend;
 import org.sirius.backend.jvm.JvmBackend;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.compiler.cli.framework.BoundOption;
 import org.sirius.compiler.cli.framework.OptionParser;
+import org.sirius.compiler.options.CompileOptionsValues;
+import org.sirius.compiler.options.Help;
+import org.sirius.compiler.options.OptionsRepository;
 import org.sirius.compiler.options.RootOptionValues;
 import org.sirius.frontend.core.FileInputTextProvider;
 import org.sirius.frontend.core.FrontEnd;
 import org.sirius.frontend.core.InputTextProvider;
-import org.sirius.compiler.options.CompileOptionsValues;
-import org.sirius.compiler.options.Help;
-import org.sirius.compiler.options.OptionsRepository;
 
 public class Main {
 
@@ -61,12 +60,6 @@ public class Main {
 //				System.out.println("Some compilation here...");
 			}
 		}
-
-//		CompilerBuilder builder = new CompilerBuilder(reporter);
-//		builder.addJvmBackend();
-//		builder.setCliArs(args);
-//		
-//		builder.buildScript();
 		
 		int exitStatus = 0;
 		if(reporter.hasErrors())
@@ -81,8 +74,6 @@ public class Main {
 		
 		if(compileOptions.isPresent()) {
 			runCompileTool(compileOptions.get());
-//			CompilerBuilder builder = new CompilerBuilder(reporter, optionValues, compileOptions.get());
-//			builder.buildScript();
 		} else {
 			reporter.error("No command found in command line args.");
 		}
@@ -109,9 +100,6 @@ public class Main {
 				this::createScriptInput
 				);
 		compiler.compile();
-//
-//			CompilerBuilder builder = new CompilerBuilder(reporter, optionValues, compileOptions);
-//			builder.buildScript();
 	}
 	
 }
