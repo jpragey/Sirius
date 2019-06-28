@@ -11,7 +11,6 @@ import org.sirius.common.core.QName;
  */
 public interface TopLevelFunction extends AbstractFunction {
 
-	QName getQName();
 	
 	List<Statement> getBodyStatements();
 	

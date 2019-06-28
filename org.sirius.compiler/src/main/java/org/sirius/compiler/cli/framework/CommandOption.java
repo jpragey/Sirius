@@ -12,12 +12,19 @@ public class CommandOption<CommandValues, Help> implements Option<Help>{
 	private String description;
 	private Supplier<CommandValues> commandValueSupplier;
 	private List< Function<CommandValues, BoundOption<Help>> > bindings; 
+	private Optional<ExtraArgsHandler<CommandValues>> extraArgsHandler = Optional.empty();
 	
-	public CommandOption(String description, String commandName, Supplier<CommandValues> commandValueSupplier, List< Function<CommandValues, BoundOption<Help>> > bindings, Help help) {
+	public CommandOption(String description, String commandName, 
+			Supplier<CommandValues> commandValueSupplier, 
+			List< Function<CommandValues, BoundOption<Help>> > bindings,
+			Optional<ExtraArgsHandler<CommandValues>> extraArgsHandler,
+			Help help) 
+	{
 		this.commandName = commandName;
 		this.commandValueSupplier = commandValueSupplier;
 		this.bindings = bindings;
 		this.help = help;
+		this.extraArgsHandler = extraArgsHandler;
 		this.description = description;
 	}
 
@@ -30,6 +37,7 @@ public class CommandOption<CommandValues, Help> implements Option<Help>{
 		return help;
 	}
 
+	
 	public BoundOption<Help> bind() {
 		return new BoundOption<Help>() {
 
@@ -43,7 +51,11 @@ public class CommandOption<CommandValues, Help> implements Option<Help>{
 							.collect(Collectors.toList());
 					
 					
-					OptionParser<CommandValues, Help> commandParser = new OptionParser<>(boundOptions);
+					OptionParser<CommandValues, Help> commandParser = 
+							extraArgsHandler.isPresent() ? 
+									new OptionParser<>( (List<String> args) -> {return extraArgsHandler.get().consumeExtraArgs(commandValue, args);}    /*extraArgsHandler.get()*/, boundOptions) :
+									new OptionParser<>(boundOptions);
+							;
 					cursor.advance(1); // skip command name
 					
 					Optional<String> error = commandParser.parse(cursor);

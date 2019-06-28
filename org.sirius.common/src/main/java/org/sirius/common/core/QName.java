@@ -3,11 +3,12 @@ package org.sirius.common.core;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class QName {
 
-	public List<String> elements;
+	private List<String> elements;
 	
 	public QName(List<String> elements) {
 		super();
@@ -41,6 +42,13 @@ public class QName {
 	}
 	public QName child(QName childPath) {
 		return new QName(elements, childPath.elements); 
+	}
+	
+	public Optional<QName> parent() {
+		if(elements.isEmpty())
+			return Optional.empty();
+		
+		return Optional.of(new QName(elements.subList(0, elements.size()-1)));
 	}
 	
 	public boolean isEmpty() {

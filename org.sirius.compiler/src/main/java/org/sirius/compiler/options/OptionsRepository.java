@@ -2,6 +2,7 @@ package org.sirius.compiler.options;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.sirius.compiler.cli.framework.BooleanOption;
@@ -27,20 +28,30 @@ public class OptionsRepository {
 			Set.of("-v", "--version"), 
 			new Help("-v,--version   : print version and exit")); 
 
-	
-	public static CommandOption<CompileOptionsValues, Help> compileCommand(CompilerOptionValues compilerOptionValues) {
+	/** '--class' option (for compile command) */
+	public static final	SingleArgOption<Help> classDir = new SingleArgOption<Help>(
+			"--class <DIR>   : create .class files in DIR",
+			Set.of("--class"), 
+			new Help("--class <DIR>   : create .class files in DIR"));
+	 
+	public static CommandOption<CompileOptionsValues, Help> compileCommand(RootOptionValues compilerOptionValues) {
 		
 		return new CommandOption<CompileOptionsValues, Help>(
 			"description", 
 			"compile", 
 			compilerOptionValues::createCompileOptions, 
 			Arrays.asList(
-					(CompileOptionsValues v) -> help.bind(v::setHelp)
+					(CompileOptionsValues v) -> help.bind(v::setHelp),
+					(CompileOptionsValues v) -> classDir.bind(v::setClassDir)
 					), 
+			Optional.of( (CompileOptionsValues optionValues, List<String> sources) -> {
+				optionValues.setSources(sources); 
+				return Optional.empty();
+			}),
 			new Help("Compile source files to outputs according to selected backends (jvm by default).") );
 	}
 
-	public static CommandOption<RunOptionsValues, Help> runCommand(CompilerOptionValues compilerOptionValues) {
+	public static CommandOption<RunOptionsValues, Help> runCommand(RootOptionValues compilerOptionValues) {
 		
 		return new CommandOption<RunOptionsValues, Help>(
 			"description", 
@@ -49,11 +60,12 @@ public class OptionsRepository {
 			Arrays.asList(
 					(RunOptionsValues v) -> help.bind(v::setHelp)
 					), 
+			Optional.empty(),
 			new Help("Run source/compiled files.") );
 	}
 
 	
-	public static List<BoundOption<Help>> bindStandardCompilerOptions(CompilerOptionValues values) {
+	public static List<BoundOption<Help>> bindStandardCompilerOptions(RootOptionValues values) {
 		
 		List<BoundOption<Help>> optionParsers = Arrays.asList(
 				output.bind(values::setOutput),

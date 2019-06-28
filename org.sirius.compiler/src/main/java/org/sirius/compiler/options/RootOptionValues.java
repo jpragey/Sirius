@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.sirius.common.error.Reporter;
 
-public class CompilerOptionValues implements AbstractOptionValues {
+public class RootOptionValues implements AbstractOptionValues {
 
 	private Reporter reporter; 
 	
@@ -16,7 +16,7 @@ public class CompilerOptionValues implements AbstractOptionValues {
 	private Optional<RunOptionsValues> runOptions = Optional.empty();
 	
 	
-	public CompilerOptionValues(Reporter reporter) {
+	public RootOptionValues(Reporter reporter) {
 		super();
 		this.reporter = reporter;
 	}

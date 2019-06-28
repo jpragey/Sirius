@@ -13,7 +13,8 @@
   <packaging>jar</packaging>
 
 	<properties>
-		<build.package.lib>${project.build.directory}/lib</build.package.lib>
+<!-- 		<dist.lib>${${project.basedir}project.build.directory}/lib</dist.lib> -->
+		<dist.lib>${project.basedir}/../dist/lib</dist.lib>
 	</properties>
 
   <build>
@@ -76,55 +77,73 @@
         </executions>
         <configuration>
           <artifactItems>
+
+            <artifactItem>
+              <groupId>org.antlr</groupId>
+              <artifactId>antlr4-runtime</artifactId>
+              <version>4.7.2</version>
+              <type>jar</type>
+              <overWrite>false</overWrite>
+              <outputDirectory>${dist.lib}</outputDirectory>
+            </artifactItem>
+            
+            <artifactItem>
+              <groupId>org.ow2.asm</groupId>
+              <artifactId>asm</artifactId>
+              <version>7.1</version>
+              <type>jar</type>
+              <overWrite>false</overWrite>
+              <outputDirectory>${dist.lib}</outputDirectory>
+            </artifactItem>
           
             <artifactItem>
               <groupId>org.sirius</groupId>
               <artifactId>org.sirius.common</artifactId>
-              <version>0.0.1-SNAPSHOT</version>
+              <version>${sirius.version}</version>
               <type>jar</type>
               <overWrite>false</overWrite>
-              <outputDirectory>${build.package.lib}</outputDirectory>
-              <!-- <destFileName>optional-new-name.jar</destFileName> -->
+              <outputDirectory>${dist.lib}</outputDirectory>
+              <!-- <destFileName>common.jar</destFileName> -->
             </artifactItem>
             
             <artifactItem>
               <groupId>org.sirius</groupId>
               <artifactId>org.sirius.compiler</artifactId>
-              <version>0.0.1-SNAPSHOT</version>
+              <version>${sirius.version}</version>
               <type>jar</type>
               <overWrite>false</overWrite>
-              <outputDirectory>${build.package.lib}</outputDirectory>
-              <!-- <destFileName>optional-new-name.jar</destFileName> -->
+              <outputDirectory>${dist.lib}</outputDirectory>
+              <!-- <destFileName>compiler.jar</destFileName> -->
             </artifactItem>
             
             <artifactItem>
               <groupId>org.sirius</groupId>
               <artifactId>org.sirius.frontend</artifactId>
-              <version>0.0.1-SNAPSHOT</version>
+              <version>${sirius.version}</version>
               <type>jar</type>
               <overWrite>false</overWrite>
-              <outputDirectory>${build.package.lib}</outputDirectory>
-              <!-- <destFileName>optional-new-name.jar</destFileName> -->
+              <outputDirectory>${dist.lib}</outputDirectory>
+              <!-- <destFileName>frontend.jar</destFileName> -->
             </artifactItem>
             
             <artifactItem>
               <groupId>org.sirius</groupId>
               <artifactId>org.sirius.backend.core</artifactId>
-              <version>0.0.1-SNAPSHOT</version>
+              <version>${sirius.version}</version>
               <type>jar</type>
               <overWrite>false</overWrite>
-              <outputDirectory>${build.package.lib}</outputDirectory>
-              <!-- <destFileName>optional-new-name.jar</destFileName> -->
+              <outputDirectory>${dist.lib}</outputDirectory>
+              <!-- <destFileName>backend.core.jar</destFileName> -->
             </artifactItem>
             
             <artifactItem>
               <groupId>org.sirius</groupId>
               <artifactId>org.sirius.backend.jvm</artifactId>
-              <version>0.0.1-SNAPSHOT</version>
+              <version>${sirius.version}</version>
               <type>jar</type>
               <overWrite>false</overWrite>
-              <outputDirectory>${build.package.lib}</outputDirectory>
-              <!-- <destFileName>optional-new-name.jar</destFileName> -->
+              <outputDirectory>${dist.lib}</outputDirectory>
+              <!-- <destFileName>backend.jvm.jar</destFileName> -->
             </artifactItem>
             
             

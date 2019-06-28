@@ -1,32 +1,55 @@
 package org.sirius.compiler.core;
 
+import java.io.File;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.sirius.backend.core.Backend;
+import org.sirius.backend.jvm.JvmBackend;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.compiler.cli.framework.BoundOption;
 import org.sirius.compiler.cli.framework.OptionParser;
-import org.sirius.compiler.options.CompilerOptionValues;
+import org.sirius.compiler.options.RootOptionValues;
+import org.sirius.frontend.core.FileInputTextProvider;
+import org.sirius.frontend.core.FrontEnd;
+import org.sirius.frontend.core.InputTextProvider;
+import org.sirius.compiler.options.CompileOptionsValues;
 import org.sirius.compiler.options.Help;
 import org.sirius.compiler.options.OptionsRepository;
 
 public class Main {
 
+	private Reporter reporter;
+	private RootOptionValues optionValues;
+	
+	public Main(Reporter reporter, RootOptionValues optionValues) {
+		super();
+		this.reporter = reporter;
+		this.optionValues = optionValues;
+	}
+
 	public static void main(String[] args) {
-		int exitStatus = 0;
 		
 		Reporter reporter = new ShellReporter(); 
 
-		CompilerOptionValues optionValues = new CompilerOptionValues(reporter);
+		RootOptionValues optionValues = new RootOptionValues(reporter);
 		
 		List<BoundOption<Help>> boundOptions = OptionsRepository.bindStandardCompilerOptions(optionValues);
-		OptionParser<CompilerOptionValues, Help> parser = new OptionParser<>(boundOptions);
+		final List<String> sourceArgs = new ArrayList<String>();
+		OptionParser<RootOptionValues, Help> parser = new OptionParser<>( 
+				sources -> {
+					sourceArgs.addAll(sources); 
+					return Optional.empty();
+				},
+				boundOptions) ;
 		
 		Optional<String> error = parser.parse(args);
 		if(error.isPresent()) {
 			reporter.error(error.get());
-			exitStatus = -1;
 		} else {
 			if(optionValues.getHelp()) {
 				HelpProcessor helpProcessor = new HelpProcessor(boundOptions);
@@ -34,16 +57,61 @@ public class Main {
 			} else if(optionValues.getVersion()) {
 				new Version().printVersion(reporter);
 			} else {
-				System.out.println("Some compilation here...");
+				new Main(reporter, optionValues).runTool();
+//				System.out.println("Some compilation here...");
 			}
 		}
 
-		CompilerBuilder builder = new CompilerBuilder(reporter);
-		builder.addJvmBackend();
-		builder.setCliArs(args);
+//		CompilerBuilder builder = new CompilerBuilder(reporter);
+//		builder.addJvmBackend();
+//		builder.setCliArs(args);
+//		
+//		builder.buildScript();
 		
-		builder.buildScript();
+		int exitStatus = 0;
+		if(reporter.hasErrors())
+			exitStatus = -1;
 		
 		System.exit(exitStatus);
 	}
+	
+	private void runTool() {
+		
+		Optional<CompileOptionsValues> compileOptions = optionValues.getCompileOptions();
+		
+		if(compileOptions.isPresent()) {
+			runCompileTool(compileOptions.get());
+//			CompilerBuilder builder = new CompilerBuilder(reporter, optionValues, compileOptions.get());
+//			builder.buildScript();
+		} else {
+			reporter.error("No command found in command line args.");
+		}
+	}
+
+	private InputTextProvider createScriptInput(String source) {
+		return new FileInputTextProvider(reporter, 
+				new File("."), //rootDirectory, 
+				"", //packagePhysicalName, 
+				source, //resourcePhysicalName, 
+				Charset.forName("UTF8"));
+	}
+	
+	private void runCompileTool(CompileOptionsValues compileOptions) {
+		
+		FrontEnd frontEnd = new FrontEnd(reporter);
+		JvmBackend backend = new JvmBackend(reporter, compileOptions.getClassDir());
+		
+		ScriptCompiler compiler = new ScriptCompiler(reporter, 
+				Arrays.asList(backend), 
+				frontEnd,
+				optionValues,
+				compileOptions,
+				this::createScriptInput
+				);
+		compiler.compile();
+//
+//			CompilerBuilder builder = new CompilerBuilder(reporter, optionValues, compileOptions);
+//			builder.buildScript();
+	}
+	
 }

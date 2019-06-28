@@ -174,11 +174,18 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 	
 	public Optional<MemberFunction> getMemberFunction() {// TODO: filter top-level
 		return Optional.of(new MemberFunction() {
+			QName functionQName = containerQName.get().child(name.getText());
 			
 			@Override
+			public QName getQName() {
+				return functionQName;
+			}
+
+			@Override
 			public List<FunctionFormalArgument> getArguments() {
-				// TODO Auto-generated method stub
-				return null;
+				return formalArguments.stream()
+						.map(arg -> arg.toAPI(functionQName))
+						.collect(Collectors.toList());
 			}
 			
 		});

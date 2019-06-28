@@ -48,6 +48,7 @@ public class OptionParserTest {
 				Arrays.asList(
 						(CommandOptionsValue v) -> outputDirOption.bind(dir -> {v.outputDir = dir;})
 				), 
+				Optional.empty(),
 				new Help("help"));
 		
 		String[] cliArgs = {"-b0", "-b1", "command", "-o", "target"};
