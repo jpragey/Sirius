@@ -9,5 +9,7 @@ public interface AbstractFunction {
 	QName getQName();
 
 	List<FunctionFormalArgument> getArguments();
+	
+	Type getReturnType();
 
 }

@@ -33,9 +33,38 @@ public class QName {
 		this.elements.add(child);
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((elements == null) ? 0 : elements.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		QName other = (QName) obj;
+		if (elements == null) {
+			if (other.elements != null)
+				return false;
+		} else if (!elements.equals(other.elements))
+			return false;
+		return true;
+	}
+	
 	public List<String> getStringElements() {
 		return elements;
 	}
+	
+	public String getLast() {
+		return elements.get(elements.size()-1);
+	}
+	
 	public String[] toArray() {
 		return elements.toArray(new String[0]);
 	}

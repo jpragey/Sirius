@@ -1,17 +1,17 @@
 package org.sirius.frontend.ast;
 
-public class UnionType implements Type{
-	private Type first;
-	private Type second;
-	public UnionType(Type first, Type second) {
+public class UnionType implements AstType{
+	private AstType first;
+	private AstType second;
+	public UnionType(AstType first, AstType second) {
 		super();
 		this.first = first;
 		this.second = second;
 	}
-	public Type getFirst() {
+	public AstType getFirst() {
 		return first;
 	}
-	public Type getSecond() {
+	public AstType getSecond() {
 		return second;
 	}
 	

@@ -25,7 +25,7 @@ public class AstIntegerConstantExpression implements AstExpression {
 		visitor.endIntegerConstant(this);
 	}
 	@Override
-	public Optional<Type> getType() {
+	public Optional<AstType> getType() {
 		return Optional.empty();
 	}
 

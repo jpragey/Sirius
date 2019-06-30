@@ -25,7 +25,7 @@ public class AstFloatConstantExpression implements AstExpression {
 		visitor.endFloatConstant(this);
 	}
 	@Override
-	public Optional<Type> getType() {
+	public Optional<AstType> getType() {
 		return Optional.empty();
 	}
 

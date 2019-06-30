@@ -11,6 +11,7 @@ import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.TopLevelFunction;
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.LocalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
@@ -25,7 +26,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 
 	private List<AstStatement> statements = new ArrayList<>(); 
 	
-	private Type returnType = new VoidType();
+	private AstType returnType = new AstVoidType();
 
 	private Reporter reporter;
 	
@@ -35,8 +36,9 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 
 	// 
 	private Optional<QName> containerQName = Optional.empty();
+	private QName qName;
 	
-	public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, Type returnType) {
+	public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType) {
 		super();
 		this.reporter = reporter;
 		this.annotationList = annotationList;
@@ -65,11 +67,11 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 		visitor.endFunctionDeclaration(this);
 	}
 
-	public Type getReturnType() {
+	public AstType getReturnType() {
 		return returnType;
 	}
 
-	public void setReturnType(Type returnType) {
+	public void setReturnType(AstType returnType) {
 		this.returnType = returnType;
 	}
 
@@ -114,7 +116,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 				"(" + ")"; // TODO: parameters
 	}
 	
-	public Optional<AstFunctionDeclaration> apply(Type parameter) {
+	public Optional<AstFunctionDeclaration> apply(AstType parameter) {
 		TypeFormalParameterDeclaration formalParam = typeParameters.get(0);
 		if(formalParam == null) {
 			reporter.error("Can't apply type " + parameter.messageStr() + " to function " + messageStr() + ", it has no formal parameter." );
@@ -137,8 +139,13 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 		return containerQName;
 	}
 
+	public QName getQName() {
+		return qName;
+	}
+
 	public void setContainerQName(QName containerQName) {
 		this.containerQName = Optional.of(containerQName);
+		this.qName = containerQName.child(this.name.getText());
 	}
 
 	@Override
@@ -169,6 +176,11 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 					.map(st -> st.toAPI())
 					.collect(Collectors.toList());
 			}
+
+			@Override
+			public Type getReturnType() {
+				return AstFunctionDeclaration.this.getReturnType().getApiType();
+			}
 		});
 	}
 	
@@ -187,7 +199,10 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 						.map(arg -> arg.toAPI(functionQName))
 						.collect(Collectors.toList());
 			}
-			
+			@Override
+			public Type getReturnType() {
+				return AstFunctionDeclaration.this.getReturnType().getApiType();
+			}
 		});
 	}
 	

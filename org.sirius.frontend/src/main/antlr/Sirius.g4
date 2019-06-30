@@ -167,9 +167,14 @@ valueDeclaration returns [AstValueDeclaration declaration]
 // Also maps to annotation declaration.
 
 functionDeclaration returns [AstFunctionDeclaration declaration]
+@init {
+	AstType retType;
+}
 	: annotationList
-	  type
-	  LOWER_ID		{ $declaration = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, $type.declaration); }
+	  (	  rt=type	{retType = $rt.declaration; } 
+	  	| 'void' 	{retType = new AstVoidType();}
+	  )
+	  LOWER_ID		{ $declaration = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType); }
 	  (
 	    '<'
 	  		  	(
@@ -324,7 +329,7 @@ locals [
 // -------------------- TYPES
 	
 	
-type returns [Type declaration]
+type returns [AstType declaration]
 locals [
 	SimpleType simpleType = null; 
 ]
@@ -340,9 +345,9 @@ locals [
 	| first=type '|' second=type	{ $declaration = factory.createUnionType($first.declaration, $second.declaration); }
 	| first=type '&' second=type	{ $declaration = factory.createIntersectionType($first.declaration, $second.declaration); }
 	| '<' type '>'					{ $declaration = $type.declaration; }
+	| el=type '[' ']'					{ $declaration = factory.createArray($el.declaration); }
 ////	| '{' type '*' '}'				{ $declaration = factory.createIterable($type.declaration); }
 	;
-	
 	
 	
 	

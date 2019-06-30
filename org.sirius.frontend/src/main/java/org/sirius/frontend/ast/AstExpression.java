@@ -9,7 +9,7 @@ public interface AstExpression {
 	/** Expression type. Note that it may be absent at parsing type (returns null), at least for function call expression,
 	 *  
 	 * */
-	public Optional<Type> getType();
+	public Optional<AstType> getType();
 	
 	public void visit(AstVisitor visitor);
 	

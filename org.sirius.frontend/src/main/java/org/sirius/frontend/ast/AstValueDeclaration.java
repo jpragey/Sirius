@@ -8,11 +8,11 @@ import org.sirius.frontend.api.TopLevelValue;
 
 public class AstValueDeclaration implements /*Type, Scoped, */Visitable  {
 
-	private Type type;
+	private AstType type;
 	private AstToken name;
 	private List<Annotation> annotations;
 	
-	public AstValueDeclaration(AnnotationList annotations, Type type, AstToken name) {
+	public AstValueDeclaration(AnnotationList annotations, AstType type, AstToken name) {
 		super();
 		this.annotations = annotations.getAnnotations();
 		this.type = type;
@@ -22,7 +22,7 @@ public class AstValueDeclaration implements /*Type, Scoped, */Visitable  {
 //		this(type, new AstToken(name));
 //	}
 	
-	public Type getType() {
+	public AstType getType() {
 		return type;
 	}
 	public AstToken getName() {

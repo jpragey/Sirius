@@ -38,7 +38,7 @@ public class AstFunctionCallExpression implements AstExpression {
 	}
 
 	@Override
-	public Optional<Type> getType() {
+	public Optional<AstType> getType() {
 		// TODO Auto-generated method stub
 		return Optional.empty();
 	}

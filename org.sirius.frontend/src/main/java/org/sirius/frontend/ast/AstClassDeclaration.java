@@ -18,9 +18,10 @@ import org.sirius.frontend.api.TopLevelValue;
 import org.sirius.frontend.symbols.LocalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
-public class AstClassDeclaration implements Type, Scoped, Visitable {
+public class AstClassDeclaration implements AstType, Scoped, Visitable {
 
 	private AstToken name;
+	private QName qName; 
 	
 	// Formal parameters
 	private List<TypeFormalParameterDeclaration> typeParameters = new ArrayList<>();
@@ -90,6 +91,7 @@ public class AstClassDeclaration implements Type, Scoped, Visitable {
 	
 	public void setPackageDeclaration(AstPackageDeclaration packageDeclaration) {
 		this.packageDeclaration = packageDeclaration;
+		this.qName = packageDeclaration.getQname().child(this.name.getText());
 	}
 	public void addTypeParameterDeclaration(TypeFormalParameterDeclaration d) {
 		typeParameters.add(d);
@@ -100,10 +102,16 @@ public class AstClassDeclaration implements Type, Scoped, Visitable {
 	public boolean isInterfaceType() {
 		return interfaceType;
 	}
-	public String getQname() {
+	public String getQname() {	// TODO: remove
 		String pkgQname = packageDeclaration.getQnameString();
 		String classname = name.getText();
 		return pkgQname.isEmpty() ? classname : pkgQname + "." + classname;
+	}
+	public void setqName(QName qName) {
+		this.qName = qName;
+	}
+	public QName getQName() {
+		return this.qName;
 	}
 
 	public void visit(AstVisitor visitor) {
@@ -133,7 +141,7 @@ public class AstClassDeclaration implements Type, Scoped, Visitable {
 		return anonConstructorArguments;
 	}
 
-	public Optional<Type> apply(Type parameter) {
+	public Optional<AstType> apply(AstType parameter) {
 		TypeFormalParameterDeclaration formalParam = typeParameters.get(0);
 		if(formalParam == null) {
 			reporter.error("Can't apply type " + parameter.messageStr() + " to class/interface " + messageStr() + ", it has no formal parameter." );

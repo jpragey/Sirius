@@ -4,10 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SimpleType implements Type {
+import org.sirius.common.core.QName;
+import org.sirius.frontend.api.ClassType;
+import org.sirius.frontend.api.Type;
+
+/** most simple (class or interface) type 
+ * 
+ * @author jpragey
+ *
+ */
+public class SimpleType implements AstType {
 	AstToken name;
 
-	List<Type> appliedParameters = new ArrayList<>();
+	List<AstType> appliedParameters = new ArrayList<>();
 	
 	public SimpleType(AstToken name) {
 		super();
@@ -18,7 +27,7 @@ public class SimpleType implements Type {
 		return name;
 	}
 	
-	public void appliedParameter(Type type) {
+	public void appliedParameter(AstType type) {
 		appliedParameters.add(type);
 	}
 	
@@ -32,6 +41,18 @@ public class SimpleType implements Type {
 				"<" + 
 				String.join(",", typeParams) + 
 				">";
+	}
+
+	@Override
+	public ClassType getApiType() {
+		return new ClassType() {
+			QName qName = new QName(name.getText());	// TODO : must be a full class name
+			@Override
+			public QName getQName() {
+				return qName;
+			}
+			
+		};
 	}
 
 }

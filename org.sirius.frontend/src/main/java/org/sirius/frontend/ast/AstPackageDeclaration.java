@@ -161,6 +161,11 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 						.map(fd -> fd.get())
 						.collect(Collectors.toList());
 			}
+
+			@Override
+			public QName getQName() {
+				return qname;
+			}
 			
 		};
 	}

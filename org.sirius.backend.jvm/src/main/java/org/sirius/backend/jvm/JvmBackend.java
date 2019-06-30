@@ -19,6 +19,7 @@ import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.Session;
 import org.sirius.frontend.api.TopLevelFunction;
+import org.sirius.frontend.api.Type;
 
 public class JvmBackend implements Backend {
 
@@ -29,10 +30,17 @@ public class JvmBackend implements Backend {
 	private Reporter reporter;
 	private Optional<String> classDir;
 	
-	public JvmBackend(Reporter reporter, Optional<String> classDir) {
+	// '--verbose' cli option has the 'ast' flag
+	private boolean verboseAst = false;
+	
+	public JvmBackend(Reporter reporter, Optional<String> classDir, boolean verboseAst) {
 		super();
 		this.reporter = reporter;
 		this.classDir = classDir;
+		this.verboseAst = verboseAst;
+		
+		System.out.println("JVM backend: verboseAst=" + verboseAst);
+		
 	}
 
 	@Override
@@ -40,18 +48,26 @@ public class JvmBackend implements Backend {
 		return "jvm";
 	}
 
+	private void printIfVerbose(String s) {
+		if(verboseAst)
+			System.out.println(s);
+	}
+	
 	@Override
 	public void process(Session session) {
+		printIfVerbose("JVM: starting session, nb of modules: " + session.getModuleDeclarations().size());
 		session.getModuleDeclarations().stream().forEach(this::processModule);
 	}
 	
 	private void processModule(ModuleDeclaration declaration) {
-		////		System.out.println("Jvm: processing module " + declaration);
+		printIfVerbose("Jvm: processing module " + declaration);
+//				System.out.println("Jvm: processing module " + declaration);
 		////		reporter.info("Jvm: processing module " + declaration.getQName());
 		
 		declaration.getPackages().stream().forEach(this::processPackage);
 	}
 	private void processPackage(PackageDeclaration pkgDeclaration) {
+		printIfVerbose("Jvm: processing package ..." /*+ pkgDeclaration*/);
 //		declaration.getFunctions().forEach(this::processTopLevelFunction);
 		processTopLevelFunctions(pkgDeclaration.getFunctions(), new QName("TODO_pkgqname"));
 		pkgDeclaration.getClasses().forEach(this::processClass);
@@ -60,6 +76,7 @@ public class JvmBackend implements Backend {
 	
 	private void processTopLevelFunctions(List<TopLevelFunction> declarations, QName pkgQName) {
 		QName classQName = pkgQName.child("$package$");
+		printIfVerbose("Jvm: processing top-level function in package " + pkgQName.toString());
 		
 		ClassDeclaration classDeclaration = new ClassDeclaration() {
 			
@@ -88,6 +105,11 @@ public class JvmBackend implements Backend {
 						public List<FunctionFormalArgument> getArguments() {
 							return tlf.getArguments();
 						}
+
+						@Override
+						public Type getReturnType() {
+							return tlf.getReturnType();
+						}
 						
 					};
 					memberFunctions.add(mf);
@@ -99,7 +121,9 @@ public class JvmBackend implements Backend {
 //		declaration.getFunctions();
 	}
 	private void processClass(ClassDeclaration declaration) {
-		JvmClassWriter writer = new JvmClassWriter(reporter, classDir);
+		printIfVerbose("Jvm: processing class " + declaration.getQName().toString());
+
+		JvmClassWriter writer = new JvmClassWriter(reporter, classDir, verboseAst);
 		Bytecode bytecode = writer.createByteCode(declaration);
 		classDir.ifPresent(cdir -> bytecode.createClassFiles(reporter, cdir, declaration.getQName()));
 		

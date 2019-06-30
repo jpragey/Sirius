@@ -17,6 +17,7 @@ public class AstFactory {
 		this.globalSymbolTable = globalSymbolTable;
 	}
 
+	// -- Types
 	public AstClassDeclaration createClassDeclaration(Token name/*, PackageDeclaration packageDeclaration*/) {
 		return new AstClassDeclaration(reporter, false /*asInterface*/, new AstToken(name));
 	}
@@ -33,14 +34,19 @@ public class AstFactory {
 		return new SimpleType(new AstToken(name));
 	}
 
-	public UnionType createUnionType(Type first, Type second) {
+	public UnionType createUnionType(AstType first, AstType second) {
 		return new UnionType(first, second);
 	}
-	public IntersectionType createIntersectionType(Type first, Type second) {
+	public IntersectionType createIntersectionType(AstType first, AstType second) {
 		return new IntersectionType(first, second);
 	}
 	
-	public AstFunctionDeclaration createFunctionDeclaration(AnnotationList annotationList, Token name, Type returnType) {
+	public AstArrayType createArray(AstType element) {
+		return new AstArrayType(element);
+	}
+	
+	
+	public AstFunctionDeclaration createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType) {
 		return new AstFunctionDeclaration(reporter, annotationList, new AstToken(name), returnType);
 	}
 
@@ -93,7 +99,7 @@ public class AstFactory {
 	}
 
 	// -- Values
-	public AstValueDeclaration valueDeclaration(AnnotationList annotationList, Type type, Token name) {
+	public AstValueDeclaration valueDeclaration(AnnotationList annotationList, AstType type, Token name) {
 		return new AstValueDeclaration(annotationList, type, new AstToken(name));
 	}
 	

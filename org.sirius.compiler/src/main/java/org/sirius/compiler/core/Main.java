@@ -90,7 +90,7 @@ public class Main {
 	private void runCompileTool(CompileOptionsValues compileOptions) {
 		
 		FrontEnd frontEnd = new FrontEnd(reporter);
-		JvmBackend backend = new JvmBackend(reporter, compileOptions.getClassDir());
+		JvmBackend backend = new JvmBackend(reporter, compileOptions.getClassDir(), compileOptions.isVerboseAst());
 		
 		ScriptCompiler compiler = new ScriptCompiler(reporter, 
 				Arrays.asList(backend), 

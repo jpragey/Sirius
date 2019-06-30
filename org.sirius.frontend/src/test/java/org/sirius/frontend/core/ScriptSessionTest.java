@@ -2,6 +2,11 @@ package org.sirius.frontend.core;
 
 import static org.testng.Assert.assertEquals;
 
+import org.sirius.common.core.QName;
+import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.MemberFunction;
+import org.sirius.frontend.api.ModuleDeclaration;
+import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.parser.Compiler;
 import org.testng.annotations.Test;
 
@@ -30,4 +35,23 @@ public class ScriptSessionTest {
 
 		assertEquals(session.getModuleContents().size(), 0);
 	}
+	
+	@Test 
+	public void checkQNameAreSetInClassAndFunctions() {
+		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public Void f(){}}");
+		
+		ModuleDeclaration md = session.getModuleDeclarations().get(0);
+		
+		PackageDeclaration pack = md.getPackages().get(0);
+		assertEquals(pack.getQName().dotSeparated(), "p.k");
+		
+		
+		ClassDeclaration cd = pack.getClasses().get(0);
+		assertEquals(cd.getQName(), new QName("p", "k", "C"));
+		
+		MemberFunction func = cd.getFunctions().get(0);
+		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
+		
+	}
+	
 }

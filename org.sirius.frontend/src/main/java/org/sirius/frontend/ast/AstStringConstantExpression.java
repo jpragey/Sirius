@@ -33,7 +33,7 @@ public class AstStringConstantExpression implements AstExpression {
 		visitor.endStringConstant(this);
 	}
 	@Override
-	public Optional<Type> getType() {
+	public Optional<AstType> getType() {
 		return Optional.empty();
 	}
 

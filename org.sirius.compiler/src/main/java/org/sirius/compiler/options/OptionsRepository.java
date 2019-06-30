@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.sirius.compiler.cli.framework.BooleanOption;
 import org.sirius.compiler.cli.framework.BoundOption;
 import org.sirius.compiler.cli.framework.CommandOption;
+import org.sirius.compiler.cli.framework.ExtendedOption;
 import org.sirius.compiler.cli.framework.Option;
 import org.sirius.compiler.cli.framework.SingleArgOption;
 
@@ -37,7 +38,18 @@ public class OptionsRepository {
 			Set.of("--class"), 
 			new Help("--class <DIR>   : create .class files in DIR"));
 
-	
+//	  --verbose[=<flags>], -d
+//      Produce verbose output. If no 'flags' are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: 'all', 'loader', 'ast', 'code', 'cmr', 'benchmark'.
+//
+//	ExtendedOption<String> opt = new ExtendedOption<String>("description", "--verbose", "Some help");
+	public final static ExtendedOption<Help> verbose = new ExtendedOption<>(
+			"--verbose[=flags]", "--verbose",
+			new Help("--verbose[=flags]: \n" +
+					"    Dump verbose output, according to <flags>. <flags> is a comma separated list of 'all', 'ast'. \n" +
+					"    If empty, 'all' is assumed"
+					)
+			);
+
 	public static class SubCommandOption<Values> {
 		public Option<Help> option;
 		public Function<Values, BoundOption<Help>> binding;
@@ -58,7 +70,8 @@ public class OptionsRepository {
 	}
 	public static List<SubCommandOption<CompileOptionsValues>> compileCommandOptions = Arrays.asList(
 			new SubCommandOption<CompileOptionsValues>(help, (CompileOptionsValues v) -> help.bind(v::setHelp)),
-			new SubCommandOption<CompileOptionsValues>(classDir, (CompileOptionsValues v) -> classDir.bind(v::setClassDir))
+			new SubCommandOption<CompileOptionsValues>(classDir, (CompileOptionsValues v) -> classDir.bind(v::setClassDir)),
+			new SubCommandOption<CompileOptionsValues>(verbose, (CompileOptionsValues v) -> verbose.bind(v::setVerbose))
 			);
 	
 	public static CommandOption<CompileOptionsValues, Help> compileCommand(RootOptionValues compilerOptionValues) {

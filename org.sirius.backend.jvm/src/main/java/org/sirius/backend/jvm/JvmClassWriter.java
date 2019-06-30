@@ -18,9 +18,12 @@ import java.util.stream.Collectors;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.ArrayType;
 import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.TopLevelFunction;
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.Visitor;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
@@ -36,11 +39,15 @@ public class JvmClassWriter {
 
 	private Optional<String> classDir;
 	private Reporter reporter;
+	private boolean verboseAst;
+	private DescriptorFactory descriptorFactory;
 	
-	public JvmClassWriter(Reporter reporter, Optional<String> classDir) {
+	public JvmClassWriter(Reporter reporter, Optional<String> classDir, boolean verboseAst) {
 		super();
 		this.reporter = reporter;
 		this.classDir = classDir;
+		this.verboseAst = verboseAst;
+		this.descriptorFactory = new DescriptorFactory(reporter);
 	}
 
 	
@@ -61,6 +68,8 @@ public class JvmClassWriter {
 		String in = classDeclaration.getQName().getStringElements().stream().collect(Collectors.joining("/"));
 		return in;
 	}
+	
+	
 
 	class CodeCreationVisitor implements Visitor {
 		private final static int VERSION = 49;
@@ -149,6 +158,13 @@ public class JvmClassWriter {
 
 			MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
 //			MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()I", null, null);
+			
+			System.out.println(" MemberFunction count: " + classDeclaration.getFunctions().size());
+			for(MemberFunction function: classDeclaration.getFunctions()) {
+				System.out.println(" MemberFunction: " + function.getQName());
+			}
+			
+			
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitMethodInsn(INVOKESPECIAL,
 					"java/lang/Object",
@@ -183,14 +199,22 @@ public class JvmClassWriter {
 
 		@Override
 		public void end(MemberFunction functionDeclaration) {
+			String functionName = functionDeclaration.getQName().getLast();
+			String functionDescriptor = descriptorFactory.methodDescriptor(functionDeclaration);
+			
 			System.out.println(" -- Exit FunctionDeclaration " + functionDeclaration.getQName());
 			MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC + ACC_STATIC,
-		            "main",
+					functionName, //"main",
 		//            "([Ljava/lang/String;)V",
 //		            "(Ljava/lang/String;)V",
-		            "(Ljava/lang/String;)I",
+					
+//		            "(Ljava/lang/String;)I",
+		            functionDescriptor,
+		            
 		            null /* String signature */,
 		            null /* String[] exceptions */);
+			
+			// -- System.out.println("hello")
 		    mv.visitFieldInsn(GETSTATIC,
 		            "java/lang/System",
 		            "out",
@@ -201,11 +225,12 @@ public class JvmClassWriter {
 		            "println",
 		            "(Ljava/lang/String;)V",
 		            false /*isInterface*/);
-//		    mv.visitInsn(RETURN);
 		    
+		    mv.visitInsn(RETURN);
+/***		    
 		    mv.visitLdcInsn(42);
 		    mv.visitInsn(IRETURN);
-		    
+	*/	    
 		    mv.visitMaxs(2, 1);
 		    mv.visitEnd();
 		}
