@@ -11,6 +11,13 @@ public interface Visitor {
 	public default void start(MemberFunction declaration) {}
 	public default void end(MemberFunction declaration) {}
 	
+	public default void start(Statement statement) {}
+	public default void end(Statement statement) {}
+	
+	public default void start(ExpressionStatement statement) {}
+	public default void end(ExpressionStatement statement) {}
+	
+	
 	public default void start(MemberValue declaration) {}
 	public default void end(MemberValue declaration) {}
 	

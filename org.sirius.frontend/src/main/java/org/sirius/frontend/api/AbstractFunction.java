@@ -12,4 +12,6 @@ public interface AbstractFunction {
 	
 	Type getReturnType();
 
+	List<Statement> getBodyStatements();
+
 }

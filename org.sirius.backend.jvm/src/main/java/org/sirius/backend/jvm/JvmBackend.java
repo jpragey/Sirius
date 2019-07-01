@@ -18,6 +18,7 @@ import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.Session;
+import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
 
@@ -67,9 +68,9 @@ public class JvmBackend implements Backend {
 		declaration.getPackages().stream().forEach(this::processPackage);
 	}
 	private void processPackage(PackageDeclaration pkgDeclaration) {
-		printIfVerbose("Jvm: processing package ..." /*+ pkgDeclaration*/);
+		printIfVerbose("Jvm: processing package '" + pkgDeclaration.getQName() + "'");
 //		declaration.getFunctions().forEach(this::processTopLevelFunction);
-		processTopLevelFunctions(pkgDeclaration.getFunctions(), new QName("TODO_pkgqname"));
+		processTopLevelFunctions(pkgDeclaration.getFunctions(), pkgDeclaration.getQName() /* new QName("TODO_pkgqname")*/);
 		pkgDeclaration.getClasses().forEach(this::processClass);
 	}
 	
@@ -109,6 +110,11 @@ public class JvmBackend implements Backend {
 						@Override
 						public Type getReturnType() {
 							return tlf.getReturnType();
+						}
+
+						@Override
+						public List<Statement> getBodyStatements() {
+							return tlf.getBodyStatements();
 						}
 						
 					};

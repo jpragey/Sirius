@@ -171,7 +171,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 			}
 
 			@Override
-			public List<org.sirius.frontend.api.Statement> getBodyStatements() {
+			public List<Statement> getBodyStatements() {
 				return statements.stream()
 					.map(st -> st.toAPI())
 					.collect(Collectors.toList());
@@ -198,6 +198,12 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 				return formalArguments.stream()
 						.map(arg -> arg.toAPI(functionQName))
 						.collect(Collectors.toList());
+			}
+			@Override
+			public List<Statement> getBodyStatements() {
+				return statements.stream()
+					.map(st -> st.toAPI())
+					.collect(Collectors.toList());
 			}
 			@Override
 			public Type getReturnType() {
