@@ -37,6 +37,12 @@ public class OptionsRepository {
 			"--class <DIR>   : create .class files in DIR",
 			Set.of("--class"), 
 			new Help("--class <DIR>   : create .class files in DIR"));
+	
+	/** '--module' option (for compile command) */
+	public static final	SingleArgOption<Help> moduleOpt = new SingleArgOption<Help>(
+			"--module <DIR>   : create jar file in DIR",
+			Set.of("--module"), 
+			new Help("--module <DIR>   : create jar file in DIR"));
 
 //	  --verbose[=<flags>], -d
 //      Produce verbose output. If no 'flags' are given then be verbose about everything, otherwise just be verbose about the flags which are present. Allowed flags include: 'all', 'loader', 'ast', 'code', 'cmr', 'benchmark'.
@@ -71,6 +77,7 @@ public class OptionsRepository {
 	public static List<SubCommandOption<CompileOptionsValues>> compileCommandOptions = Arrays.asList(
 			new SubCommandOption<CompileOptionsValues>(help, (CompileOptionsValues v) -> help.bind(v::setHelp)),
 			new SubCommandOption<CompileOptionsValues>(classDir, (CompileOptionsValues v) -> classDir.bind(v::setClassDir)),
+			new SubCommandOption<CompileOptionsValues>(moduleOpt, (CompileOptionsValues v) -> moduleOpt.bind(v::setModuleDir)),
 			new SubCommandOption<CompileOptionsValues>(verbose, (CompileOptionsValues v) -> verbose.bind(v::setVerbose))
 			);
 	

@@ -35,14 +35,16 @@ import org.sirius.frontend.api.Visitor;
 public class JvmClassWriter {
 
 	private Optional<String> classDir;
+	private List<ClassWriterListener> listeners;
 	private Reporter reporter;
 	private boolean verboseAst;
 	private DescriptorFactory descriptorFactory;
 	
-	public JvmClassWriter(Reporter reporter, Optional<String> classDir, boolean verboseAst) {
+	public JvmClassWriter(Reporter reporter, Optional<String> classDir, List<ClassWriterListener> listeners, boolean verboseAst) {
 		super();
 		this.reporter = reporter;
 		this.classDir = classDir;
+		this.listeners = listeners;
 		this.verboseAst = verboseAst;
 		this.descriptorFactory = new DescriptorFactory(reporter);
 	}
@@ -52,8 +54,12 @@ public class JvmClassWriter {
 		CodeCreationVisitor visitor = new CodeCreationVisitor();
 		classDeclaration.visitMe(visitor);
 		
-		byte[] byteCode = visitor.toByteCode();
-		return new Bytecode(byteCode);
+		byte[] bytes = visitor.toByteCode();
+		Bytecode bytecode = new Bytecode(bytes);
+		
+		listeners.forEach(l -> l.addByteCode(bytecode, classDeclaration.getQName()));
+		
+		return bytecode;
 	}
 
 	public static String classInternalName(ClassDeclaration classDeclaration) {
@@ -104,7 +110,7 @@ public class JvmClassWriter {
 
 		@Override
 		public void start(ClassDeclaration classDeclaration) {
-			System.out.println(" -- Starting ClassDeclaration " + classDeclaration.getQName());
+//			System.out.println(" -- Starting ClassDeclaration " + classDeclaration.getQName());
 
 			String clssQname = classDeclaration.getQName().dotSeparated();
 			this.definedClasses.add(clssQname);
@@ -120,29 +126,14 @@ public class JvmClassWriter {
 			startClass(classDeclaration);
 
 			
-			
-//			MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
-//			MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()I", null, null);
-			
-			System.out.println(" MemberFunction count: " + classDeclaration.getFunctions().size());
-			for(MemberFunction function: classDeclaration.getFunctions()) {
-				System.out.println(" MemberFunction: " + function.getQName() + " , statements: " + function.getBodyStatements());
-			}
+//			System.out.println(" MemberFunction count: " + classDeclaration.getFunctions().size());
+//			for(MemberFunction function: classDeclaration.getFunctions()) {
+//				System.out.println(" MemberFunction: " + function.getQName() + " , statements: " + function.getBodyStatements());
+//			}
 
 			writeInitMethod();
-			
-			
-//			mv.visitVarInsn(ALOAD, 0);
-//			mv.visitMethodInsn(INVOKESPECIAL,
-//					"java/lang/Object",
-//					"<init>",
-//					"()V", 
-//					false /*isInterface*/);
-//
-//			mv.visitInsn(RETURN);
-//			mv.visitMaxs(1, 1);
-//			mv.visitEnd();
 		}
+		
 		/** 
 		 * 
 		 */
@@ -176,12 +167,12 @@ public class JvmClassWriter {
 		
 		@Override
 		public void start(MemberFunction declaration) {
-			System.out.println(" -- Starting Member Function " + declaration.getQName());
+//			System.out.println(" -- Starting Member Function " + declaration.getQName());
 			
 			String functionName = declaration.getQName().getLast();
 			String functionDescriptor = descriptorFactory.methodDescriptor(declaration);
 			
-			System.out.println(" -- Exit FunctionDeclaration " + declaration.getQName());
+//			System.out.println(" -- Exit FunctionDeclaration " + declaration.getQName());
 			MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC + ACC_STATIC,
 					functionName, 
 		            functionDescriptor,	// eg (Ljava/lang/String;)V
@@ -193,53 +184,26 @@ public class JvmClassWriter {
 
 		@Override
 		public void end(MemberFunction functionDeclaration) {
-//			String functionName = functionDeclaration.getQName().getLast();
-//			String functionDescriptor = descriptorFactory.methodDescriptor(functionDeclaration);
-//			
-//			System.out.println(" -- Exit FunctionDeclaration " + functionDeclaration.getQName());
-//			MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC + ACC_STATIC,
-//					functionName, 
-//		            functionDescriptor,	// eg (Ljava/lang/String;)V
-//		            null /* String signature */,
-//		            null /* String[] exceptions */);
-			
 			
 			MethodVisitor mv = methodStack.pop();
-/**			
-			// -- System.out.println("hello")
-		    mv.visitFieldInsn(GETSTATIC,
-		            "java/lang/System",
-		            "out",
-		            "Ljava/io/PrintStream;");
-		    mv.visitLdcInsn("hello");
-		    mv.visitMethodInsn(INVOKEVIRTUAL,
-		            "java/io/PrintStream",
-		            "println",
-		            "(Ljava/lang/String;)V",
-		            false /*isInterface* /);
-	*/	    
 		    mv.visitInsn(RETURN);
-/***		    
-		    mv.visitLdcInsn(42);
-		    mv.visitInsn(IRETURN);
-	*/	    
 		    mv.visitMaxs(2, 1);
 		    mv.visitEnd();
 		}
 		
 		@Override
 		public void start(Statement statement) {
-			System.out.println("Starting statement " + statement);
+//			System.out.println("Starting statement " + statement);
 		}
 		@Override
 		public void end(Statement statement) {
-			System.out.println("Ending statement " + statement);
+//			System.out.println("Ending statement " + statement);
 		}
 		
 		@Override
 		public void start(ExpressionStatement statement) {
 			Expression expression = statement.getExpression(); 
-			System.out.println("Starting ExpressionStatement " + statement + ", expression: " + expression);
+//			System.out.println("Starting ExpressionStatement " + statement + ", expression: " + expression);
 			if(expression instanceof FunctionCall) {
 				FunctionCall call = (FunctionCall)expression;
 				String funcName = call.getFunctionName().getText();
@@ -280,30 +244,8 @@ public class JvmClassWriter {
 		}
 		@Override
 		public void end(ExpressionStatement statement) {
-			System.out.println("Ending ExpressionStatement " + statement);
+//			System.out.println("Ending ExpressionStatement " + statement);
 		}
-		
-
-////		@Override
-////		public void startConstantExpression(ConstantExpression expression) {
-////			System.out.println(" -- Starting ConstantExpression " + expression.getContent().getText());
-////		}
-////
-////		@Override
-////		public void endConstantExpression(ConstantExpression expression) {
-////			System.out.println(" -- Ending ConstantExpression " + expression.getContent().getText());
-////		}
-//
-//		@Override
-//		public void startReturnStatement(AstReturnStatement statement) {
-//			System.out.println(" -- Starting ReturnStatement " + statement.getExpression());
-//		}
-//
-//		@Override
-//		public void endReturnStatement(AstReturnStatement statement) {
-//			System.out.println(" -- Ending ReturnStatement " + statement.getExpression());
-//		}
-
 		
 	}
 }

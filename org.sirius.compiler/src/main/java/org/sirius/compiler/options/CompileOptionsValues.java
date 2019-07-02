@@ -17,7 +17,10 @@ public class CompileOptionsValues {
 	private Boolean help = false;
 
 	private Optional<String> classDir = Optional.empty();
-	
+
+	private Optional<String> moduleDir = Optional.empty();
+
+
 	private ArrayList<String> sources = new ArrayList<String>();
 	
 	public void setHelp() {
@@ -30,6 +33,14 @@ public class CompileOptionsValues {
 
 	public Optional<String> getClassDir() {
 		return classDir;
+	}
+
+	public Optional<String> getModuleDir() {
+		return moduleDir;
+	}
+
+	public void setModuleDir(String moduleDir) {
+		this.moduleDir = Optional.of(moduleDir);
 	}
 
 	public void setClassDir(String classDir) {

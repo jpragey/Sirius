@@ -56,7 +56,7 @@ public class DescriptorFactory {
 	public String methodDescriptor(AbstractFunction function  ) {
 		Type returnType = function .getReturnType();
 		String descr = function.getArguments().stream()
-			.map(/**/ (FunctionFormalArgument arg) -> fieldDescriptor(arg.getType()) )
+			.map((FunctionFormalArgument arg) -> fieldDescriptor(arg.getType()) )
 			.collect(Collectors.joining("", "(", ")"))
 			+ (returnType instanceof VoidType ? "V" : fieldDescriptor(returnType))
 			;

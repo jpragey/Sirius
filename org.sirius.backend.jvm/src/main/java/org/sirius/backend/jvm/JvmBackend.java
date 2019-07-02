@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-import org.objectweb.asm.ClassWriter;
 import org.sirius.backend.core.Backend;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
@@ -24,24 +21,24 @@ import org.sirius.frontend.api.Type;
 
 public class JvmBackend implements Backend {
 
-	private final static int VERSION = 49;
-
-//	private ClassWriter classWriter;
-
 	private Reporter reporter;
 	private Optional<String> classDir;
-	
+	// -- as given by '--module' option
+	private Optional<String> moduleDir;
+
+	private List<ClassWriterListener> listeners = new ArrayList<>();
+
 	// '--verbose' cli option has the 'ast' flag
 	private boolean verboseAst = false;
 	
-	public JvmBackend(Reporter reporter, Optional<String> classDir, boolean verboseAst) {
+	public JvmBackend(Reporter reporter, Optional<String> classDir, Optional<String> moduleDir, boolean verboseAst) {
 		super();
 		this.reporter = reporter;
 		this.classDir = classDir;
+		this.moduleDir = moduleDir;
 		this.verboseAst = verboseAst;
-		
-		System.out.println("JVM backend: verboseAst=" + verboseAst);
-		
+	
+//		System.out.println("JVM backend: verboseAst=" + verboseAst);
 	}
 
 	@Override
@@ -64,13 +61,22 @@ public class JvmBackend implements Backend {
 		printIfVerbose("Jvm: processing module " + declaration);
 //				System.out.println("Jvm: processing module " + declaration);
 		////		reporter.info("Jvm: processing module " + declaration.getQName());
+
 		
+		// -- Listener to create jar
+		moduleDir.ifPresent(modulePath ->  listeners.add(new JarCreatorListener(reporter, modulePath, declaration.getQName())));
+
+		
+		listeners.forEach(ClassWriterListener::start);
+
 		declaration.getPackages().stream().forEach(this::processPackage);
+		
+		listeners.forEach(ClassWriterListener::end);
+
 	}
 	private void processPackage(PackageDeclaration pkgDeclaration) {
 		printIfVerbose("Jvm: processing package '" + pkgDeclaration.getQName() + "'");
-//		declaration.getFunctions().forEach(this::processTopLevelFunction);
-		processTopLevelFunctions(pkgDeclaration.getFunctions(), pkgDeclaration.getQName() /* new QName("TODO_pkgqname")*/);
+		processTopLevelFunctions(pkgDeclaration.getFunctions(), pkgDeclaration.getQName());
 		pkgDeclaration.getClasses().forEach(this::processClass);
 	}
 	
@@ -124,15 +130,14 @@ public class JvmBackend implements Backend {
 			}
 		};
 		processClass(classDeclaration);
-//		declaration.getFunctions();
 	}
 	private void processClass(ClassDeclaration declaration) {
 		printIfVerbose("Jvm: processing class " + declaration.getQName().toString());
 
-		JvmClassWriter writer = new JvmClassWriter(reporter, classDir, verboseAst);
+		JvmClassWriter writer = new JvmClassWriter(reporter, classDir, listeners, verboseAst);
 		Bytecode bytecode = writer.createByteCode(declaration);
 		classDir.ifPresent(cdir -> bytecode.createClassFiles(reporter, cdir, declaration.getQName()));
-		
-////		System.out.println("bytecode: " + bytecode.size() + " bytes: " + bytecode);
+
+//		System.out.println("bytecode: " + bytecode.size() + " bytes: " + bytecode);
 	}
 }

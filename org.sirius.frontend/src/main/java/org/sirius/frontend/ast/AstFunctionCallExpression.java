@@ -62,7 +62,7 @@ public class AstFunctionCallExpression implements AstExpression {
 			for(AstExpression arg: actualArguments) {
 				Expression ex = arg.getExpression();
 				l.add(ex);
-				System.out.println(ex);
+//				System.out.println(ex);
 			}
 			return l;
 //			
