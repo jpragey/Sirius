@@ -19,12 +19,12 @@ mkdir demo
 cd demo
 (cat - <<EOF
 #!/bin/sh
-void main(String[]) {
+void main(String[] args) {
     println("Hello world!");
 }
 EOF
 ) > hello.sirius
 
-java -cp ../dist/lib/ -jar ../dist/lib/org.sirius.compiler-0.0.1-SNAPSHOT.jar compile --class target hello.sirius
-java -cp target \$package\$
+java -cp ../dist/lib/ -jar ../dist/lib/org.sirius.compiler-0.0.1-SNAPSHOT.jar compile --module modulesDir hello.sirius
+java -jar modulesDir/unnamed.jar 
 ```
