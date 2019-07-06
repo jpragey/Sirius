@@ -8,6 +8,7 @@ import static org.objectweb.asm.Opcodes.GETSTATIC;
 import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 import static org.objectweb.asm.Opcodes.RETURN;
+import static org.objectweb.asm.Opcodes.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.ExpressionStatement;
 import org.sirius.frontend.api.FunctionCall;
+import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.StringConstantExpression;
@@ -204,44 +206,57 @@ public class JvmClassWriter {
 		public void start(ExpressionStatement statement) {
 			Expression expression = statement.getExpression(); 
 //			System.out.println("Starting ExpressionStatement " + statement + ", expression: " + expression);
+			MethodVisitor mv = methodStack.peek();
+
+			processExpression(mv, expression);
+//			if(expression instanceof FunctionCall) {
+//				FunctionCall call = (FunctionCall)expression;
+//				processFunctionCall(mv, call);
+//			} else {
+//				reporter.error("Currently unsupported expression type: " + expression.getClass());
+//			}
+		}
+
+		private void processExpression(MethodVisitor mv, Expression expression) {
 			if(expression instanceof FunctionCall) {
 				FunctionCall call = (FunctionCall)expression;
-				String funcName = call.getFunctionName().getText();
-				if(funcName.equals("println")) {
-					
-					// Get "Hello world argument"
-					Expression arg = call.getArguments().get(0);
-					StringConstantExpression stringArg = (StringConstantExpression)arg;
-					
-					MethodVisitor mv = methodStack.peek();
-					
-					// -- System.out.println("hello")
-				    mv.visitFieldInsn(GETSTATIC,
-				            "java/lang/System",
-				            "out",
-				            "Ljava/io/PrintStream;");
-//				    mv.visitLdcInsn("hello");
-				    mv.visitLdcInsn(stringArg.getText());
-				    mv.visitMethodInsn(INVOKEVIRTUAL,
-				            "java/io/PrintStream",
-				            "println",
-				            "(Ljava/lang/String;)V",
-				            false /*isInterface*/);
-				    
-				    mv.visitInsn(RETURN);
-		/***		    
-				    mv.visitLdcInsn(42);
-				    mv.visitInsn(IRETURN);
-			*/	    
-					
-					
-				} else {
-					reporter.error("Currently unsupported function (only 'println' is supported): " + funcName);
-				}
-			} else {
+				processFunctionCall(mv, call);
+			} 
+			else if(expression instanceof StringConstantExpression) {
+				processStringConstant(mv, (StringConstantExpression) expression);
+			} 
+			else if(expression instanceof IntegerConstantExpression) {
+				processIntegerConstant(mv, (IntegerConstantExpression) expression);
+			} 
+			
+			else {
 				reporter.error("Currently unsupported expression type: " + expression.getClass());
 			}
 		}
+		private void processStringConstant(MethodVisitor mv, StringConstantExpression expression) {
+		    mv.visitLdcInsn(expression.getText());
+		}
+		
+		private void processIntegerConstant(MethodVisitor mv, IntegerConstantExpression expression) {
+		    mv.visitLdcInsn(expression.getValue());
+		}
+		
+		private void processFunctionCall(MethodVisitor mv, FunctionCall call) {
+			String funcName = call.getFunctionName().getText();
+			if(funcName.equals("println")) {
+
+
+				// -- System.out.println("...")
+				mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+
+				call.getArguments().forEach(expr -> processExpression(mv, expr) );
+
+				mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false /*isInterface*/);
+			} else {
+				reporter.error("Currently unsupported function (only 'println' is supported): " + funcName);
+			}
+		}
+		
 		@Override
 		public void end(ExpressionStatement statement) {
 //			System.out.println("Ending ExpressionStatement " + statement);

@@ -145,7 +145,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 
 	public void setContainerQName(QName containerQName) {
 		this.containerQName = Optional.of(containerQName);
-		this.qName = containerQName.child(this.name.getText());
+		this.qName = containerQName.child(this.name.getText()); // TODO: ugly
 	}
 
 	@Override

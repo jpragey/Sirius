@@ -1,7 +1,6 @@
 package org.sirius.frontend.core;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,8 +8,6 @@ import java.util.List;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
-import org.sirius.frontend.ast.StandardCompilationUnit;
-import org.sirius.frontend.ast.ModuleDescriptor;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.testng.annotations.Test;
 

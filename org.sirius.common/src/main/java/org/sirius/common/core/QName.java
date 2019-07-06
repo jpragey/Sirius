@@ -33,6 +33,12 @@ public class QName {
 		this.elements.add(child);
 	}
 	
+	public static final QName empty = new QName();
+	
+	public static QName parseDotSeparated(String dotSeparated) {
+		return new QName(dotSeparated.split("\\."));
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -7,9 +7,9 @@ import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.Expression;
 
 public class AstBinaryOpExpression implements AstExpression {
-	public enum Operator {Add, Substract, Mult, Divide}
+//	public enum Operator {Add, Substract, Mult, Divide}
 	
-	private Operator operator;
+	private BinaryOpExpression.Operator operator;
 	
 	private AstExpression left;
 	private AstExpression right;
@@ -26,19 +26,19 @@ public class AstBinaryOpExpression implements AstExpression {
 		String opText = opToken.getText();
 		switch(opText) {
 		case "+":
-			this.operator = Operator.Add;
+			this.operator = BinaryOpExpression.Operator.Add;
 			break;
 			
 		case "-":
-			this.operator = Operator.Substract;
+			this.operator = BinaryOpExpression.Operator.Substract;
 			break;
 			
 		case "*":
-			this.operator = Operator.Mult;
+			this.operator = BinaryOpExpression.Operator.Mult;
 			break;
 			
 		case "/":
-			this.operator = Operator.Divide;
+			this.operator = BinaryOpExpression.Operator.Divide;
 			break;
 
 		default:
@@ -70,6 +70,16 @@ public class AstBinaryOpExpression implements AstExpression {
 	@Override
 	public Expression getExpression() {
 		return new BinaryOpExpression() {
+
+			@Override
+			public Expression getLeft() {
+				return left.getExpression();
+			}
+
+			@Override
+			public Expression getRight() {
+				return right.getExpression();
+			}
 		};
 	}
 

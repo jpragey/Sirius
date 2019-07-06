@@ -53,7 +53,9 @@ public class JarCreatorListener implements ClassWriterListener {
 			if(parentDir!= null) {
 				parentDir.mkdirs();
 			}
-			
+			if(jarFile.isFile()) {
+				jarFile.delete();
+			}
 			OutputStream out = new BufferedOutputStream(new FileOutputStream(jarFile));
 			
 			Manifest manifest = new Manifest();

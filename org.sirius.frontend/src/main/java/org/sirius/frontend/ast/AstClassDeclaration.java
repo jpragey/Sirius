@@ -40,6 +40,9 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	
 	private boolean interfaceType;
 	
+	/** directly implemented interfaces or extended classes */
+	private List<AstClassQName> ancestors = new ArrayList<>();
+
 	private LocalSymbolTable symbolTable /*= new SymbolTable()*/; 
 	
 	private Reporter reporter;
@@ -139,6 +142,15 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 
 	public List<AstFunctionFormalArgument> getAnonConstructorArguments() {
 		return anonConstructorArguments;
+	}
+	public List<AstClassQName> getAncestors() {
+		return ancestors;
+	}
+	public void addAncestor(AstClassQName ancestor) {
+		this.ancestors.add(ancestor);
+	}
+	public void addAncestor(QName packageQName, String className /* class or interface */ ) {
+		this.ancestors.add(new AstClassQName(packageQName, className));
 	}
 
 	public Optional<AstType> apply(AstType parameter) {

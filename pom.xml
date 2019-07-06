@@ -13,6 +13,7 @@
 
   <modules>
     <module>org.sirius.common</module>
+    <module>org.sirius.sdk</module>
     <module>org.sirius.frontend</module>
     <module>org.sirius.compiler</module>
     <module>org.sirius.backend.core</module>
@@ -24,13 +25,19 @@
 
 		<dependency>
 			<groupId>org.sirius</groupId>
-			<artifactId>org.sirius.compiler</artifactId>
+			<artifactId>org.sirius.common</artifactId>
 			<version>${sirius.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.sirius</groupId>
-			<artifactId>org.sirius.common</artifactId>
+			<artifactId>org.sirius.sdk</artifactId>
+			<version>${sirius.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.sirius</groupId>
+			<artifactId>org.sirius.compiler</artifactId>
 			<version>${sirius.version}</version>
 		</dependency>
 
@@ -52,6 +59,13 @@
 			<version>${sirius.version}</version>
 		</dependency>
 
+		<dependency>
+		    <groupId>org.testng</groupId>
+		    <artifactId>testng</artifactId>
+		    <version>6.14.3</version>
+		    <scope>test</scope>
+		</dependency>
+
 	</dependencies>
   </dependencyManagement>
   
@@ -66,7 +80,11 @@
           <source>11</source>
           <target>11</target>
           <compilerVersion>11</compilerVersion>
+          <compilerArgs>
+            <arg>-parameters</arg>
+          </compilerArgs>
           <!--<release>11</release>-->
+          
         </configuration>
       </plugin>
     </plugins>

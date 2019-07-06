@@ -89,7 +89,7 @@ public class AstFactory {
 		return new AstStringConstantExpression(new AstToken(value));
 	}
 	public AstIntegerConstantExpression integerConstant(Token value) {
-		return new AstIntegerConstantExpression(new AstToken(value));
+		return new AstIntegerConstantExpression(new AstToken(value), reporter);
 	}
 	public AstFloatConstantExpression floatConstant(Token value) {
 		return new AstFloatConstantExpression(new AstToken(value));

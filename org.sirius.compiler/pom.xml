@@ -105,6 +105,16 @@
               <outputDirectory>${dist.lib}</outputDirectory>
               <!-- <destFileName>common.jar</destFileName> -->
             </artifactItem>
+
+            <artifactItem>
+              <groupId>org.sirius</groupId>
+              <artifactId>org.sirius.sdk</artifactId>
+              <version>${sirius.version}</version>
+              <type>jar</type>
+              <overWrite>false</overWrite>
+              <outputDirectory>${dist.lib}</outputDirectory>
+              <!-- <destFileName>backend.jvm.jar</destFileName> -->
+            </artifactItem>
             
             <artifactItem>
               <groupId>org.sirius</groupId>
@@ -145,6 +155,7 @@
               <outputDirectory>${dist.lib}</outputDirectory>
               <!-- <destFileName>backend.jvm.jar</destFileName> -->
             </artifactItem>
+            
             
             
             

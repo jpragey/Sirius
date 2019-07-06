@@ -48,6 +48,25 @@ public class ScriptSession implements Session {
 	}
 	
 	private void addInput(InputTextProvider input) {
+
+		GlobalSymbolTable globalSymbolTable = new GlobalSymbolTable();
+
+		ScriptCompilationUnit compilationUnit = parseInput(input, globalSymbolTable);
+		
+		compilationUnit.updateParentsDeeply();
+		
+		this.shebang = compilationUnit.getShebangDeclaration();
+
+		this.moduleContents.addAll(compilationUnit.getModuleDeclarations().stream()
+				.map(mod -> new ModuleContent(reporter, compilationUnit.getCurrentModule()))
+				.collect(Collectors.toList())
+				);
+
+		transform(input, compilationUnit, globalSymbolTable);
+
+	}
+	
+	private ScriptCompilationUnit parseInput(InputTextProvider input, GlobalSymbolTable globalSymbolTable) {
 		String sourceCode = input.getText();
 		
 		CharStream stream = CharStreams.fromString(sourceCode); 
@@ -56,38 +75,57 @@ public class ScriptSession implements Session {
 		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 		
 		SiriusParser parser = new SiriusParser(tokenStream);
-
-		GlobalSymbolTable globalSymbolTable = new GlobalSymbolTable();
+		
 		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
 		parser.factory = astFactory;
 		
 		AstModuleDeclaration moduleDeclaration = new AstModuleDeclaration(reporter);
-//		AstPackageDeclaration pd = new AstPackageDeclaration(reporter);
-//		moduleDeclaration.addPackageDeclaration(pd);
 		
 		parser.currentModule = moduleDeclaration;
 
-//		ScriptCurrentState scriptCurrentState = new ScriptCurrentState(reporter);
-//		parser.scriptCurrentState = scriptCurrentState;
-		
 		parser.removeErrorListeners();
 		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
 
 		// -- Parsing
 		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
 		ScriptCompilationUnit compilationUnit = unitContext.unit;
-		compilationUnit.updateParentsDeeply();
+		return compilationUnit;
+	}
+	
+	private void transform(InputTextProvider input, ScriptCompilationUnit compilationUnit, GlobalSymbolTable globalSymbolTable) {
+//		private void addInput0(InputTextProvider input) {
+//		String sourceCode = input.getText();
+//		
+//		CharStream stream = CharStreams.fromString(sourceCode); 
+//		
+//		SiriusLexer lexer = new SiriusLexer(stream);
+//		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+//		
+//		SiriusParser parser = new SiriusParser(tokenStream);
 
-		this.shebang = compilationUnit.getShebangDeclaration();
+//		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
+//		parser.factory = astFactory;
+//		
+//		AstModuleDeclaration moduleDeclaration = new AstModuleDeclaration(reporter);
+//		
+//		parser.currentModule = moduleDeclaration;
+//
+//		parser.removeErrorListeners();
+//		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
+//
+//		// -- Parsing
+//		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
+//		ScriptCompilationUnit compilationUnit = unitContext.unit;
 		
-//		ModuleContent mc = new ModuleContent(reporter, moduleDeclaration);
-//		ModuleContent mc = new ModuleContent(reporter, compilationUnit.getCurrentModule());
-//		this.moduleContents.add(mc);
-		this.moduleContents.addAll(compilationUnit.getModuleDeclarations().stream()
-				.map(mod -> new ModuleContent(reporter, compilationUnit.getCurrentModule()))
-				.collect(Collectors.toList())
-						
-						);
+//		compilationUnit.updateParentsDeeply();
+
+//		this.shebang = compilationUnit.getShebangDeclaration();
+//		
+//		this.moduleContents.addAll(compilationUnit.getModuleDeclarations().stream()
+//				.map(mod -> new ModuleContent(reporter, compilationUnit.getCurrentModule()))
+//				.collect(Collectors.toList())
+//						
+//						);
 		
 		
 //		LocalSymbolTable rootSymbolTable = new LocalSymbolTable(reporter);
