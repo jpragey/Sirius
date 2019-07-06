@@ -1,0 +1,30 @@
+package org.sirius.sdk.tooling;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.sirius.sdk.org.sirius.Addable;
+import org.sirius.sdk.org.sirius.SiriusInteger;
+import org.sirius.sdk.org.sirius.SiriusString;
+import org.sirius.sdk.org.sirius.Stringifiable;
+import org.sirius.sdk.org.sirius.TopLevel;
+
+public class Sdk {
+	
+	private static List<Class<?>> allClasses = Arrays.asList(
+			// -- top-level
+			TopLevel.class,
+			
+			// -- interfaces
+			Addable.class,
+			Stringifiable.class,
+			
+			// -- interfaces
+			SiriusInteger.class,
+			SiriusString.class
+			);
+	
+	public static List<Class<?>> sdkClasses() {
+		return allClasses;
+	}
+}
