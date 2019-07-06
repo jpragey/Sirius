@@ -97,8 +97,8 @@ public class SdkTools {
 		AstClassDeclaration cd = createClassInPackage(reporter, pd, name);
 //		cd.setPackageDeclaration(pd);
 
-		symbolTable.addClass(classPkgQName, cd);
-		symbolTable.addClass(QName.empty, cd);	// TODO: check correctness (sirius.lang content is known by default)
+		symbolTable.addClass(cd);
+		symbolTable.addClass(cd);	// TODO: check correctness (sirius.lang content is known by default)
 		
 		// -- ancestors/implemented interfaces
 		Inherit [] annos = clss.getAnnotationsByType(Inherit.class);
@@ -172,7 +172,7 @@ public class SdkTools {
 			fd.addFormalArgument(arg);
 		}
 		
-		symbolTable.addFunction(classPkgQName, fd);
+		symbolTable.addFunction(fd);
 		
 	}
 	

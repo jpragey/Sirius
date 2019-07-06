@@ -85,7 +85,7 @@ public class SymbolStructureVisitor implements AstVisitor {
 		classDeclaration.getSymbolTable().addClass(className, classDeclaration);	// TODO: demeter
 //		symbolTable.addClass(className, classDeclaration);
 		
-		globalSymbolTable.addClass(packageQName, classDeclaration);
+		globalSymbolTable.addClass(classDeclaration);
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class SymbolStructureVisitor implements AstVisitor {
 //		symbolTable.addFunction(functionName, functionDeclaration);
 //		functionDeclaration.getSymbolTable().addFunction(functionName, functionDeclaration);	// TODO: demeter
 		
-		globalSymbolTable.addFunction(packageQName, functionDeclaration);
+		globalSymbolTable.addFunction(functionDeclaration);
 	}
 
 	@Override

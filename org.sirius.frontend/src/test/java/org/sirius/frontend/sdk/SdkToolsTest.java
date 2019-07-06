@@ -37,23 +37,23 @@ public class SdkToolsTest {
 	public void sdkParsingMustCreateBasicClasses() {
 		assertEquals(reporter.getErrorCount(), 0);
 		
-		checkSymbolTableContains(symbolTable, new QName("sirius", "lang"), "Stringifiable");
-		checkSymbolTableContains(symbolTable, new QName("sirius", "lang"), "String");
-		checkSymbolTableContains(symbolTable, new QName("sirius", "lang"), "Addable");
-		checkSymbolTableContains(symbolTable, new QName("sirius", "lang"), "Integer");
+		checkSymbolTableContains(symbolTable, new QName("sirius", "lang", "Stringifiable"));
+		checkSymbolTableContains(symbolTable, new QName("sirius", "lang", "String"));
+		checkSymbolTableContains(symbolTable, new QName("sirius", "lang", "Addable"));
+		checkSymbolTableContains(symbolTable, new QName("sirius", "lang", "Integer"));
 	}
 	
-	private void checkSymbolTableContains(GlobalSymbolTable symbolTable, QName pkgQName, String simpleName) {
-		Symbol symbol = symbolTable.lookup(pkgQName, simpleName).get();
-		Symbol simpleSymbol = symbolTable.lookup(QName.empty, simpleName).get();
+	private void checkSymbolTableContains(GlobalSymbolTable symbolTable, QName symbolQName) {
+		Symbol symbol = symbolTable.lookup(symbolQName).get();
+//		Symbol simpleSymbol = symbolTable.lookup(new QName(simpleName)).get();
 		
-		assertSame(symbol.getClassDeclaration().get(), simpleSymbol.getClassDeclaration().get());
+		assertSame(symbol.getClassDeclaration().get(), symbol.getClassDeclaration().get());
 		AstClassDeclaration stringCD = symbol.getClassDeclaration().get();
 	}
 	
 	@Test
 	public void checkAncestorsForSiriusInteger() {
-		Symbol symbol = symbolTable.lookup(new QName("sirius", "lang"), "Integer").get();
+		Symbol symbol = symbolTable.lookup(new QName("sirius", "lang", "Integer")).get();
 		AstClassDeclaration cd = symbol.getClassDeclaration().get();  
 		
 		assertEquals(cd.getAncestors().size(), 2);
@@ -68,7 +68,7 @@ public class SdkToolsTest {
 	@Test
 	public void checkBasicTopLevelFunctionsFoundInPackageClass() {
 		
-		Symbol symbol = symbolTable.lookup(new QName("sirius", "lang"), "println").get();
+		Symbol symbol = symbolTable.lookup(new QName("sirius", "lang", "println")).get();
 		AstFunctionDeclaration func = symbol.getFunctionDeclaration().get();
 		
 		assertEquals(func.getQName(), new QName("sirius", "lang", "println"));

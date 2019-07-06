@@ -91,44 +91,37 @@ public class ScriptSession implements Session {
 		ScriptCompilationUnit compilationUnit = unitContext.unit;
 		return compilationUnit;
 	}
+
+	public static class QNameSetterVisitor implements AstVisitor {
+		Stack<QName> stack = new Stack<QName>();
+		{ stack.push(new QName());}
+		// -- Package
+		@Override public void startPackageDeclaration(org.sirius.frontend.ast.AstPackageDeclaration declaration) {
+			stack.push(declaration.getQname());
+		};
+		@Override public void endPackageDeclaration(org.sirius.frontend.ast.AstPackageDeclaration declaration) {
+			stack.pop();
+		};
+		// -- Class
+		@Override public void startClassDeclaration(AstClassDeclaration classDeclaration) {
+			QName classQName = stack.peek().child(classDeclaration.getName().getText()); // TODO: ugly
+			classDeclaration.setqName(classQName); // TODO: ugly
+			stack.push(classDeclaration.getQName());
+		};
+		@Override public void endClassDeclaration(AstClassDeclaration classDeclaration) {
+			stack.pop();
+		}
+		// -- Function
+		@Override public void startFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
+			functionDeclaration.setContainerQName(stack.peek());
+			stack.push(functionDeclaration.getQName());
+		}; 
+		@Override public void endFunctionDeclaration(org.sirius.frontend.ast.AstFunctionDeclaration functionDeclaration) {
+			stack.pop();
+		}; 
+	}
 	
 	private void transform(InputTextProvider input, ScriptCompilationUnit compilationUnit, GlobalSymbolTable globalSymbolTable) {
-//		private void addInput0(InputTextProvider input) {
-//		String sourceCode = input.getText();
-//		
-//		CharStream stream = CharStreams.fromString(sourceCode); 
-//		
-//		SiriusLexer lexer = new SiriusLexer(stream);
-//		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-//		
-//		SiriusParser parser = new SiriusParser(tokenStream);
-
-//		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
-//		parser.factory = astFactory;
-//		
-//		AstModuleDeclaration moduleDeclaration = new AstModuleDeclaration(reporter);
-//		
-//		parser.currentModule = moduleDeclaration;
-//
-//		parser.removeErrorListeners();
-//		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
-//
-//		// -- Parsing
-//		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
-//		ScriptCompilationUnit compilationUnit = unitContext.unit;
-		
-//		compilationUnit.updateParentsDeeply();
-
-//		this.shebang = compilationUnit.getShebangDeclaration();
-//		
-//		this.moduleContents.addAll(compilationUnit.getModuleDeclarations().stream()
-//				.map(mod -> new ModuleContent(reporter, compilationUnit.getCurrentModule()))
-//				.collect(Collectors.toList())
-//						
-//						);
-		
-		
-//		LocalSymbolTable rootSymbolTable = new LocalSymbolTable(reporter);
 
 		// -- Package
 //		List<String> packageQName = Arrays.asList(input.getResourcePhysicalName().split("/"));
@@ -140,38 +133,13 @@ public class ScriptSession implements Session {
 		AstClassDeclaration rootClass = new AstClassDeclaration(reporter, false /*is interface*/, name);
 		CreateRootClassTransformer createRootClassTransformer = new CreateRootClassTransformer(reporter, rootClass);
 		
-		AstVisitor parentQNameSettingVisitor = new AstVisitor() {
-			Stack<QName> stack = new Stack<QName>();
-			{ stack.push(new QName());}
-			
-			@Override public void startPackageDeclaration(org.sirius.frontend.ast.AstPackageDeclaration declaration) {
-				stack.push(declaration.getQname());
-			};
-			@Override public void endPackageDeclaration(org.sirius.frontend.ast.AstPackageDeclaration declaration) {
-				stack.pop();
-			};
-			@Override public void startClassDeclaration(AstClassDeclaration classDeclaration) {
-				QName classQName = stack.peek().child(classDeclaration.getName().getText()); // TODO: ugly
-				classDeclaration.setqName(classQName); // TODO: ugly
-				stack.push(classDeclaration.getQName());
-			};
-			@Override public void endClassDeclaration(AstClassDeclaration classDeclaration) {
-				stack.pop();
-			}
-			@Override public void startFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
-				functionDeclaration.setContainerQName(stack.peek());
-				stack.push(functionDeclaration.getQName());
-			}; 
-			@Override public void endFunctionDeclaration(org.sirius.frontend.ast.AstFunctionDeclaration functionDeclaration) {
-				stack.pop();
-			}; 
-		};
 		// -- Various transformations
 		applyVisitors(reporter, compilationUnit, 
 				// Add top-level functions in a 'root' class
 				createRootClassTransformer, 
 
-				parentQNameSettingVisitor,
+				new QNameSetterVisitor(),
+//				parentQNameSettingVisitor,
 				
 				// Set symbol tables parents (thus create the ST tree), add symbols to tables
 				new SymbolStructureVisitor(/*rootSymbolTable, */globalSymbolTable, packageQName)	

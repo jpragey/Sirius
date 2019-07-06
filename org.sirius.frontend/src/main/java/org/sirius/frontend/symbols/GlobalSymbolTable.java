@@ -24,72 +24,33 @@ import org.sirius.frontend.ast.AstValueDeclaration;
  */
 public class GlobalSymbolTable /*implements SymbolTable */{
 
-	static class Key {
-		QName packageQName;
-		String simpleName;
-		public Key(QName packageQName, String simpleName) {
-			super();
-			this.packageQName = packageQName;
-			this.simpleName = simpleName;
-		}
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((packageQName == null) ? 0 : packageQName.hashCode());
-			result = prime * result + ((simpleName == null) ? 0 : simpleName.hashCode());
-			return result;
-		}
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Key other = (Key) obj;
-			if (packageQName == null) {
-				if (other.packageQName != null)
-					return false;
-			} else if (!packageQName.equals(other.packageQName))
-				return false;
-			if (simpleName == null) {
-				if (other.simpleName != null)
-					return false;
-			} else if (!simpleName.equals(other.simpleName))
-				return false;
-			return true;
-		}
-		
+	private Map<QName, Symbol> symbols = new HashMap<>();
+	
+	public void addSymbol(QName symbolQName, Symbol symbol) {
+		symbols.put(symbolQName, symbol);
 	}
 	
-	private Map<Key, Symbol> symbols = new HashMap<>();
-	
-	public void addSymbol(QName packageQName, AstToken simpleName, Symbol symbol) {
-		Key key = new Key(packageQName, simpleName.getText());
-		symbols.put(key, symbol);
-	}
-	
-	public void addClass(QName packageQName, AstClassDeclaration classDeclaration) {
+	public void addClass(AstClassDeclaration classDeclaration) {
 		AstToken simpleName = classDeclaration.getName();
-		addSymbol(packageQName, simpleName, new Symbol(simpleName, classDeclaration));
+		QName classQName = classDeclaration.getQName();
+		addSymbol(classQName, new Symbol(simpleName, classDeclaration));
 	}
 	
-	public void addFunction(QName packageQName, AstFunctionDeclaration functionDeclaration) {
+	public void addFunction(AstFunctionDeclaration functionDeclaration) {
 		AstToken simpleName = functionDeclaration.getName();
-		addSymbol(packageQName, simpleName, new Symbol(simpleName, functionDeclaration));
+		QName funcQName = functionDeclaration.getQName();
+		addSymbol(funcQName, new Symbol(simpleName, functionDeclaration));
 	}
 	
 	/** Top-level value */
-	public void addValue(QName packageQName, AstValueDeclaration valueDeclaration) {
+	public void addValue(AstValueDeclaration valueDeclaration) {
 		AstToken simpleName = valueDeclaration.getName();
-		addSymbol(packageQName, simpleName, new Symbol(simpleName, valueDeclaration));
+////		addSymbol(packageQName, simpleName, new Symbol(simpleName, valueDeclaration));	// TODO
 	}
 
-	public Optional<Symbol> lookup(QName packageQName, String simpleName) {
-		Key key = new Key(packageQName, simpleName);
-		Symbol symbol = symbols.get(key);
+//	public Optional<Symbol> lookup(QName packageQName, String simpleName) {
+	public Optional<Symbol> lookup(QName symbolQName) {
+		Symbol symbol = symbols.get(symbolQName);
 		Optional<Symbol> s = Optional.ofNullable(symbol);
 		return s;
 	}
