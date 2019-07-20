@@ -9,7 +9,7 @@ public class TopLevel {
 	
 	@SiriusMethod
 	public void println(
-			@Parameter(typeQName = "sirius.lang.String")
+			@Parameter(typeQName = "sirius.lang.Stringifiable")
 			Stringifiable text
 			) 
 	{

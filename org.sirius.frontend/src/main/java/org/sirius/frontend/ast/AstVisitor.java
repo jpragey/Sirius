@@ -37,8 +37,16 @@ public interface AstVisitor {
 	public default void startFunctionDeclaration (AstFunctionDeclaration functionDeclaration) {}
 	public default void endFunctionDeclaration (AstFunctionDeclaration functionDeclaration) {}
 	
+	public default void startFunctionFormalArgument (AstFunctionFormalArgument formalArgument) {}
+	public default void endFunctionFormalArgument   (AstFunctionFormalArgument formalArgument) {}
+	
+	
+	
 	public default void startValueDeclaration (AstValueDeclaration valueDeclaration) {}
 	public default void endValueDeclaration (AstValueDeclaration valueDeclaration) {}
+	
+	public default void startSimpleType (SimpleType simpleType) {}
+	public default void endSimpleType (SimpleType simpleType) {}
 	
 	// -- Expressions
 	public default void startExpression (AstExpression expression) {}
@@ -73,6 +81,8 @@ public interface AstVisitor {
 	public default void startReturnStatement (AstReturnStatement statement) {}
 	public default void endReturnStatement (AstReturnStatement statement) {}
 
+	public default void startExpressionStatement (AstExpressionStatement statement) {}
+	public default void endExpressionStatement (AstExpressionStatement statement) {}
 	
 	
 }

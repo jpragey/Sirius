@@ -12,6 +12,7 @@ import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.LocalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
@@ -32,7 +33,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 	
 	private AnnotationList annotationList;
 
-	private LocalSymbolTable symbolTable; 
+	private DefaultSymbolTable symbolTable; 
 
 	// 
 	private Optional<QName> containerQName = Optional.empty();
@@ -44,9 +45,9 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 		this.annotationList = annotationList;
 		this.name = name;
 		this.returnType = returnType;
-		this.symbolTable = new LocalSymbolTable(reporter); 
-		
-		this.symbolTable.addFunction(name, this);
+//		this.symbolTable = new LocalSymbolTable(reporter); 
+//		
+//		this.symbolTable.addFunction(name, this);
 	}
 
 	public AstToken getName() {
@@ -60,10 +61,21 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 	public List<AstStatement> getStatements() {
 		return statements;
 	}
-	
+
+	public void assignSymbolTable(DefaultSymbolTable symbolTable) {
+		this.symbolTable = symbolTable;
+		this.symbolTable.addFunction(this);
+		
+////		formalArguments.stream().forEach(argument -> symbolTable.addFunctionArgument(argument.getName(), argument));
+		
+
+	}
+
 	public void visit(AstVisitor visitor) {
 		visitor.startFunctionDeclaration(this);
+		formalArguments.stream().forEach(formalArg -> formalArg.visit(visitor));
 		statements.stream().forEach(st -> st.visit(visitor));
+//		returnType.
 		visitor.endFunctionDeclaration(this);
 	}
 
@@ -75,12 +87,12 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 		this.returnType = returnType;
 	}
 
-	public void setSymbolTableParent(SymbolTable newParent) {
-		this.symbolTable.setParentSymbolTable(newParent);
-	}
+//	public void setSymbolTableParent(SymbolTable newParent) {
+//		this.symbolTable.setParentSymbolTable(newParent);
+//	}
 
 	@Override
-	public LocalSymbolTable getSymbolTable() {
+	public DefaultSymbolTable getSymbolTable() {
 		return symbolTable;
 	}
 
@@ -94,7 +106,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 
 	public void addFormalArgument(AstFunctionFormalArgument argument) {
 		this.formalArguments.add(argument);
-		this.symbolTable.addFunctionArgument(argument.getName(), argument);
+//		this.symbolTable.addFunctionArgument(argument.getName(), argument);
 	}
 
 	public List<AstFunctionFormalArgument> getFormalArguments() {

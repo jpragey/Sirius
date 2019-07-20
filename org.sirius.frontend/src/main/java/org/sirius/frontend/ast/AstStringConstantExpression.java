@@ -2,14 +2,20 @@ package org.sirius.frontend.ast;
 
 import java.util.Optional;
 
+import org.sirius.common.core.QName;
 import org.sirius.common.core.Token;
 import org.sirius.frontend.api.StringConstantExpression;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 public class AstStringConstantExpression implements AstExpression {
 	
 	private AstToken contentToken;
 	private String contentString;
+	private DefaultSymbolTable symbolTable;
 	
+	// TODO: should be static
+	private AstClassDeclaration stringType;
+
 	public AstStringConstantExpression(AstToken content) {
 		super();
 		this.contentToken = content;
@@ -26,6 +32,13 @@ public class AstStringConstantExpression implements AstExpression {
 		return contentString;
 	}
 
+	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+		this.symbolTable = symbolTable;
+		
+		// TODO: Maybe we should check ??? 
+		this.stringType = symbolTable.lookup(new QName("sirius", "lang", "String") ).get().getClassDeclaration().get();
+	}
+
 
 	@Override
 	public void visit(AstVisitor visitor) {
@@ -34,7 +47,7 @@ public class AstStringConstantExpression implements AstExpression {
 	}
 	@Override
 	public Optional<AstType> getType() {
-		return Optional.empty();
+		return Optional.of(stringType);
 	}
 
 

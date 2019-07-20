@@ -16,22 +16,27 @@ import org.sirius.frontend.symbols.Symbol;
  * @author jpragey
  *
  */
-public final class SimpleType implements AstType {
-	private AstToken name;
+public final class QNameRefType implements AstType {
+	private QName qName ;
 
 	private List<AstType> appliedParameters = new ArrayList<>();
 	
 	private DefaultSymbolTable symbolTable;
 	
-	public SimpleType(AstToken name) {
+	public QNameRefType(QName name) {
 		super();
-		this.name = name;
+		this.qName = name;
 	}
 
-	public AstToken getName() {
-		return name;
+	public QNameRefType(String dotSeparated) {
+		super();
+		this.qName = QName.parseDotSeparated(dotSeparated);
 	}
-	
+
+	public QName getqName() {
+		return qName;
+	}
+
 	public DefaultSymbolTable getSymbolTable() {
 		return symbolTable;
 	}
@@ -43,6 +48,9 @@ public final class SimpleType implements AstType {
 	public void appliedParameter(AstType type) {
 		appliedParameters.add(type);
 	}
+
+	
+	
 	
 	@Override
 	public String messageStr() {
@@ -50,7 +58,7 @@ public final class SimpleType implements AstType {
 		List<String> typeParams = appliedParameters.stream().map(p -> p.messageStr()).collect(Collectors.toList());
 		
 		return "class " + 
-				name.getText() + 
+				qName.dotSeparated() + 
 				"<" + 
 				String.join(",", typeParams) + 
 				">";
@@ -63,46 +71,50 @@ public final class SimpleType implements AstType {
 	
 	@Override
 	public ClassType getApiType() {
-		return new ClassType() {
-			QName qName = new QName(name.getText());	// TODO : must be a full class name
-			@Override
-			public QName getQName() {
-				return qName;
-			}
-			
-		};
+		throw new UnsupportedOperationException();
+//		return new ClassType() {
+//			QName qName = new QName(name.getText());	// TODO : must be a full class name
+//			@Override
+//			public QName getQName() {
+//				return qName;
+//			}
+//			
+//		};
 	}
 
 	private boolean isExactlyAClassDeclaration(AstClassDeclaration thisClassDeclaration, AstType otherType) {
-		if(otherType instanceof ClassDeclaration) {
-			return thisClassDeclaration.isExactlyA(otherType);
-		}
-		return false;
+		throw new UnsupportedOperationException();
+//		if(otherType instanceof ClassDeclaration) {
+//			return thisClassDeclaration.isExactlyA(otherType);
+//		}
+//		return false;
 	}
 
 	private Optional<AstClassDeclaration> getClassDeclaration() {
-		Optional<Symbol> optSymbol = symbolTable.lookup(name.getText());
+		Optional<Symbol> optSymbol = symbolTable.lookup(qName);
 		if(optSymbol.isPresent()) {
 			Symbol symbol = optSymbol.get();
 			Optional<AstClassDeclaration> optClassDeclaration = symbol.getClassDeclaration();
 			return optClassDeclaration;
 		}
-		return Optional.empty();
+//		return Optional.empty();
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public boolean isExactlyA(AstType type) {
-		Optional<Symbol> optSymbol = symbolTable.lookup(name.getText());
-		if(optSymbol.isPresent()) {
-			Symbol symbol = optSymbol.get();
-			Optional<AstClassDeclaration> optClassDeclaration = symbol.getClassDeclaration();
-			if(optClassDeclaration.isPresent()) {
-				AstClassDeclaration thisClassDeclaration = optClassDeclaration.get();
-				boolean match = isExactlyAClassDeclaration(thisClassDeclaration, type);
-				return match;
-			}
-		}
-		return false;
+		throw new UnsupportedOperationException();
+//		Optional<Symbol> optSymbol = symbolTable.lookup(name.getText());
+//		if(optSymbol.isPresent()) {
+//			Symbol symbol = optSymbol.get();
+//			Optional<AstClassDeclaration> optClassDeclaration = symbol.getClassDeclaration();
+//			if(optClassDeclaration.isPresent()) {
+//				AstClassDeclaration thisClassDeclaration = optClassDeclaration.get();
+//				boolean match = isExactlyAClassDeclaration(thisClassDeclaration, type);
+//				return match;
+//			}
+//		}
+//		return false;
 	}
 
 	@Override

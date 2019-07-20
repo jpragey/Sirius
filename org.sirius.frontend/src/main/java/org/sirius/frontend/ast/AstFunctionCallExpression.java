@@ -1,14 +1,20 @@
 package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.Token;
-import org.sirius.common.core.QName;
+import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionCall;
+import org.sirius.frontend.api.IntegerConstantExpression;
+import org.sirius.frontend.api.Type;
+import org.sirius.frontend.api.TypeCastExpression;
+import org.sirius.frontend.symbols.Symbol;
+import org.sirius.frontend.symbols.SymbolTable;
 
 public class AstFunctionCallExpression implements AstExpression {
 	/** Function name */
@@ -16,13 +22,26 @@ public class AstFunctionCallExpression implements AstExpression {
 	
 	private List<AstExpression> actualArguments = new ArrayList<>();
 
-	public AstFunctionCallExpression(AstToken name) {
+	private SymbolTable symbolTable = null;
+	
+	private Reporter reporter;
+
+	public AstFunctionCallExpression(Reporter reporter, AstToken name) {
 		super();
 		this.name = name;
+		this.reporter = reporter;
 	}
 	
-	public AstFunctionCallExpression(Token name) {
-		this(new AstToken(name));
+	public AstFunctionCallExpression(Reporter reporter, Token name) {
+		this(reporter, new AstToken(name));
+	}
+
+	public SymbolTable getSymbolTable() {
+		return symbolTable;
+	}
+
+	public void setSymbolTable(SymbolTable symbolTable) {
+		this.symbolTable = symbolTable;
 	}
 
 	public AstToken getName() {
@@ -45,12 +64,48 @@ public class AstFunctionCallExpression implements AstExpression {
 
 	@Override
 	public void visit(AstVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		visitor.startFunctionCallExpression(this);
+		this.actualArguments.forEach(expr -> expr.visit(visitor));
+		visitor.endFunctionCallExpression(this);
 	}
 
-	private class FunctionCallImpl implements FunctionCall {
+	private Optional<Expression> mapArg(AstExpression argExpression, AstFunctionFormalArgument formalArgument) {
+		AstType argType = argExpression.getType().get();
+		AstType expectedType = formalArgument.getType();
+		if(argType.isExactlyA(expectedType)) {
+			return Optional.of(argExpression.getExpression());
+		}
 		
+		// -- 
+		if(expectedType.isAncestorOrSameAs(argType)) {
+			Expression expr = argExpression.getExpression();
+			TypeCastExpression castExpression = new TypeCastExpression() {
+
+				@Override
+				public Expression expression() {
+					return expr;
+				}
+
+				@Override
+				public Type targetType() {
+					return argType.getApiType();
+				}};
+			return Optional.of(castExpression);
+		}
+		
+		reporter.error("Couldn't map actual type " + argType.messageStr() + " to type " + expectedType.messageStr());
+		return Optional.empty();
+//		System.out.println("---");
+	}
+	
+	private class FunctionCallImpl implements FunctionCall {
+		private AstFunctionDeclaration functionDeclaration;
+		
+		public FunctionCallImpl(AstFunctionDeclaration functionDeclaration) {
+			super();
+			this.functionDeclaration = functionDeclaration;
+		}
+
 		@Override
 		public org.sirius.common.core.Token getFunctionName() {
 			return name.asToken();
@@ -58,47 +113,67 @@ public class AstFunctionCallExpression implements AstExpression {
 
 		@Override
 		public List<Expression> getArguments() {
+			List<AstFunctionFormalArgument> formalArgs = functionDeclaration.getFormalArguments();
+			Iterator<AstFunctionFormalArgument> it = formalArgs.iterator();
+			
 			ArrayList<Expression> l = new ArrayList<>();
 			for(AstExpression arg: actualArguments) {
-				Expression ex = arg.getExpression();
-				l.add(ex);
+				AstFunctionFormalArgument formalArgument = it.next();
+				Optional<Expression> expr = mapArg(arg, formalArgument);
+				if(expr.isPresent()) {
+					l.add(expr.get());
+				} else {	// TODO ???
+				}
+//				Expression ex = arg.getExpression();
+//				l.add(ex);
 //				System.out.println(ex);
 			}
 			return l;
-//			
-//			return actualArguments.stream()
-//					.map(AstExpression::getExpression)
-//					.collect(Collectors.toList());
 		}
 		
 	}
 	
 	@Override
-	public Expression getExpression() {
-		return new FunctionCallImpl();
-//		return new FunctionCall() {
-//			
-//			@Override
-//			public org.sirius.common.core.Token getFunctionName() {
-//				return name.asToken();
-//			}
-//
-//			@Override
-//			public List<Expression> getArguments() {
-//				ArrayList<Expression> l = new ArrayList<>();
-//				for(AstExpression arg: actualArguments) {
-//					Expression ex = arg.getExpression();
-//					System.out.println(ex);
-//				}
-//				
-//				return actualArguments.stream()
-//						.map(AstExpression::getExpression)
-//						.collect(Collectors.toList());
-//			}
-//		};
+	public FunctionCall getExpression() {
+		Optional<Symbol> symbol = symbolTable.lookup(name.getText());
+		if(symbol.isPresent()) {
+			Optional<AstFunctionDeclaration> fd = symbol.get().getFunctionDeclaration();
+			if(fd.isPresent()) {
+				AstFunctionDeclaration functionDeclaration = fd.get();
+				
+				int expectedArgCount = functionDeclaration.getFormalArguments().size();
+				if(expectedArgCount != actualArguments.size()) {
+					reporter.error(name.getText() + " has a wrong number of arguments: " + expectedArgCount + " actual, " + actualArguments.size() + " expected.", name);
+				} else {
+					return new FunctionCallImpl(functionDeclaration);
+				}
+				
+			} else {
+				reporter.error(name.getText() + " is not a function name.", name);
+			}
+		} else {
+			reporter.error("Function " + name.getText() + " not found.", name);
+		}
+		
+		// -- If function call expression couldn't be created, return a descent fake
+		return new FunctionCall() {
+			
+			@Override
+			public org.sirius.common.core.Token getFunctionName() {
+				return name;
+			}
+			
+			@Override
+			public List<Expression> getArguments() {
+				return Collections.emptyList();
+			}
+		};
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "AstFunctionCallExpression " + name.getText() + "()";
+	}
 	
 }
 

@@ -91,9 +91,10 @@ public class Main {
 		
 		FrontEnd frontEnd = new FrontEnd(reporter);
 		JvmBackend backend = new JvmBackend(reporter, 
-				compileOptions.getClassDir(), 
-				compileOptions.getModuleDir(), 
+//				compileOptions.getClassDir(), 
 				compileOptions.isVerboseAst());
+		
+		compileOptions.getModuleDir().ifPresent(moduleDir -> backend.addFileOutput(moduleDir, compileOptions.getClassDir()));
 		
 		ScriptCompiler compiler = new ScriptCompiler(reporter, 
 				Arrays.asList(backend), 

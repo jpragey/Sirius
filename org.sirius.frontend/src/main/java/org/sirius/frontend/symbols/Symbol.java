@@ -71,4 +71,15 @@ public class Symbol {
 		return valueDeclaration;
 	}
 	
+	@Override
+	public String toString() {
+		
+		return name.getText() + ":" + 
+				(classDeclaration.isPresent() 			? classDeclaration.get().toString() : "") +
+				(formalParameterDeclaration.isPresent() ? formalParameterDeclaration.get().toString() : "") +
+				(functionDeclaration.isPresent() ? functionDeclaration.toString() : "") +
+				(functionArgument.isPresent() ? functionArgument.toString() : "") +
+				(valueDeclaration.isPresent() ? functionArgument.toString() : "")
+				;
+	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 /** Argument for function / method or class constructor declaration
  * 
@@ -15,11 +16,17 @@ public class AstFunctionFormalArgument {
 	
 	private AstType type;
 	private AstToken name;
+	private DefaultSymbolTable symbolTable;
 	
 	public AstFunctionFormalArgument(AstType type, AstToken name) {
 		super();
 		this.type = type;
 		this.name = name;
+	}
+	
+	public void visit(AstVisitor visitor) {
+		visitor.startFunctionFormalArgument(this);
+		visitor.endFunctionFormalArgument(this);
 	}
 	
 	public AstType getType() {
@@ -28,6 +35,11 @@ public class AstFunctionFormalArgument {
 	public AstToken getName() {
 		return name;
 	}
+	
+	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+		this.symbolTable = symbolTable;
+	}
+	
 
 	public FunctionFormalArgument toAPI(QName functionQName) {
 		return new FunctionFormalArgument() {
@@ -42,9 +54,12 @@ public class AstFunctionFormalArgument {
 			public Type getType() {
 				return type.getApiType();
 			}
-			
-			
 		};
 	}
 	
+	 @Override
+	public String toString() {
+	
+		return "(" + type.toString() + " " + name + ")";
+	}
 }

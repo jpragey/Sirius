@@ -37,4 +37,23 @@ public class AstArrayType implements AstType {
 		};
 	}
 
+	@Override
+	public boolean isExactlyA(AstType type) {
+		if(type instanceof AstArrayType) {
+			AstArrayType otherType = (AstArrayType)type;
+			return this.elementType.isExactlyA(otherType);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isAncestorOrSameAs(AstType type) {
+		return isExactlyA(type);
+	}
+
+	@Override
+	public boolean isStrictDescendantOf(AstType type) {
+		return false;
+	}
+
 }

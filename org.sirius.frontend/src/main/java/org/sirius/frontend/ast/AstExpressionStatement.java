@@ -19,8 +19,9 @@ public class AstExpressionStatement implements AstStatement {
 
 	@Override
 	public void visit(AstVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		visitor.startExpressionStatement(this);
+		expression.visit(visitor);
+		visitor.endExpressionStatement(this);
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package org.sirius.frontend.sdk;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
@@ -13,12 +12,16 @@ import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
+import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
-import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.symbols.GlobalSymbolTable;
+import org.sirius.frontend.ast.QNameRefType;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.QNameSetterVisitor;
+import org.sirius.frontend.symbols.SymbolResolutionVisitor;
+import org.sirius.frontend.symbols.SymbolTableFillingVisitor;
 import org.sirius.sdk.tooling.Inherit;
 import org.sirius.sdk.tooling.Sdk;
 import org.sirius.sdk.tooling.SiriusMethod;
@@ -31,11 +34,14 @@ public class SdkTools {
 	// SDK packages, by QNames
 	private Map<QName, AstPackageDeclaration> packagesMap = new HashMap<QName, AstPackageDeclaration>();
 
-	private QName packageQName = new QName("sirius", "lang"); 
-	private AstPackageDeclaration rootPd = new AstPackageDeclaration(reporter, packageQName);
+	private QName siriusLangQName = new QName("sirius", "lang"); 
+	private AstPackageDeclaration rootPd = new AstPackageDeclaration(reporter, siriusLangQName);
 
 	/** Class containing top-level functions */
 	private AstClassDeclaration topLevelClass;
+
+	private AstModuleDeclaration sdkModule;
+	private AstPackageDeclaration langPackage;	// sirius.lang
 
 	
 	public AstClassDeclaration getTopLevelClass() {
@@ -48,7 +54,11 @@ public class SdkTools {
 		
 		this.topLevelClass = createClassInPackage(reporter, rootPd, "$package$");
 		
-		packagesMap.put(packageQName, rootPd);
+		packagesMap.put(siriusLangQName, rootPd);
+		
+		this.sdkModule = new AstModuleDeclaration(reporter);
+		this.langPackage = new AstPackageDeclaration(reporter, siriusLangQName);
+		sdkModule.addPackageDeclaration(langPackage);
 	}
 
 	private static AstClassDeclaration createClassInPackage(Reporter reporter, AstPackageDeclaration pkg, String name) {
@@ -58,7 +68,8 @@ public class SdkTools {
 		
 	}
 	
-	public void parseSdk(GlobalSymbolTable symbolTable) {
+	public void parseSdk(DefaultSymbolTable symbolTable) {
+		
 		List<Class<?>> sdkClasses = Sdk.sdkClasses();
 		
 		for(Class<?> clss: sdkClasses) {
@@ -74,14 +85,16 @@ public class SdkTools {
 //				System.out.println("- Top-level methods: " + clss + ", anno: " + topLevelmethodsAnno);
 			}
 		}
+		
+		this.sdkModule.visit(new QNameSetterVisitor());
+		this.sdkModule.visit(new SymbolTableFillingVisitor(symbolTable));
+		this.sdkModule.visit(new SymbolResolutionVisitor(reporter, symbolTable));
+		
 	}
 	
-	private void parseClass(Class<?> clss, TopLevelClass topLevelClassAnno, GlobalSymbolTable symbolTable) {
-//		AstToken name = AstToken.internal(topLevelClassAnno.name());
+	private void parseClass(Class<?> clss, TopLevelClass topLevelClassAnno, DefaultSymbolTable symbolTable) {
 		String name = topLevelClassAnno.name();
 		
-//		AstClassDeclaration cd = new AstClassDeclaration(reporter, false/*interfaceType*/, name);
-//		AstClassDeclaration cd = createClassInPackage(reporter, rootPd, "$package$");
 		
 		String pkgQName = topLevelClassAnno.packageQName();
 		String[] pkgNameElements = pkgQName.split("\\.");
@@ -89,16 +102,15 @@ public class SdkTools {
 		AstPackageDeclaration pd = packagesMap.get(classPkgQName);
 		if(pd == null) {
 			reporter.error("SDK class/interface " + clss + " doesn't belong to the language SDK package " +
-					packageQName.dotSeparated() + " (found : " + classPkgQName + ")");
+					siriusLangQName.dotSeparated() + " (found : " + classPkgQName + ")");
 			
 			pd = rootPd;	// Just to allow compilation to keep on  
 		}
 
 		AstClassDeclaration cd = createClassInPackage(reporter, pd, name);
-//		cd.setPackageDeclaration(pd);
-
-		symbolTable.addClass(cd);
+		
 		symbolTable.addClass(cd);	// TODO: check correctness (sirius.lang content is known by default)
+
 		
 		// -- ancestors/implemented interfaces
 		Inherit [] annos = clss.getAnnotationsByType(Inherit.class);
@@ -106,42 +118,24 @@ public class SdkTools {
 			QName pkg = QName.parseDotSeparated(inherit.packageQName());
 			cd.addAncestor(pkg, inherit.name());
 		}
-		
-		System.out.println("Anno: " + annos);
-		
+
+		this.langPackage.addClassDeclaration(cd);;
+
 	}
 	
-	private void parseTopLevel(Class<?> clss, TopLevelMethods topLevelMethods, GlobalSymbolTable symbolTable) {
+	private void parseTopLevel(Class<?> clss, TopLevelMethods topLevelMethods, DefaultSymbolTable symbolTable) {
 		QName classPkgQName = new QName(topLevelMethods.packageQName().split("\\."));
-		if(!classPkgQName.equals(packageQName)) {
-			reporter.error("SDK top-level " + clss.getName() + " refers to package " + classPkgQName + ", only root package " + packageQName + " allowed yet.");
+		if(!classPkgQName.equals(siriusLangQName)) {
+			reporter.error("SDK top-level " + clss.getName() + " refers to package " + classPkgQName + ", only root package " + siriusLangQName + " allowed yet.");
 			return;
 		}
 		
 		for(Method method: clss.getDeclaredMethods()) {
 			parseTopLevelFunction(method, classPkgQName, symbolTable);
-//			SiriusMethod m = method.getDeclaredAnnotation(SiriusMethod.class);
-//			if(m != null) {
-////				String methodName = m.methodName();
-////				if(methodName.isEmpty())
-////					methodName = method.getName();
-////
-////				AstType returnType = new AstVoidType();	// TODO
-////				AstFunctionDeclaration fd = new AstFunctionDeclaration(reporter, 
-////						new AnnotationList() ,	// TODO 
-////						AstToken.internal(methodName), 
-////						returnType);
-////				this.topLevelClass.addFunctionDeclaration(fd);
-////				
-////				fd.setContainerQName(classPkgQName);
-////				
-////				symbolTable.addFunction(classPkgQName, fd);
-//			}
-			
 		}
 	}
 	
-	private void parseTopLevelFunction(Method method, QName classPkgQName, GlobalSymbolTable symbolTable) {
+	private void parseTopLevelFunction(Method method, QName classPkgQName, DefaultSymbolTable symbolTable) {
 		SiriusMethod m = method.getDeclaredAnnotation(SiriusMethod.class);
 		if(m == null) {
 			return;
@@ -156,6 +150,7 @@ public class SdkTools {
 				new AnnotationList() ,	// TODO 
 				AstToken.internal(methodName), 
 				returnType);
+		fd.setContainerQName(classPkgQName);
 		this.topLevelClass.addFunctionDeclaration(fd);
 		
 		fd.setContainerQName(classPkgQName);
@@ -167,15 +162,20 @@ public class SdkTools {
 				continue;
 			
 			String name = parameter.getName();
-			SimpleType type = new SimpleType(AstToken.internal(anno.typeQName()));
+//			SimpleType type = new SimpleType(AstToken.internal(anno.typeQName()));
+			QNameRefType type = new QNameRefType(anno.typeQName());
+			
+			type.setSymbolTable(symbolTable);
+			
 			AstFunctionFormalArgument arg = new AstFunctionFormalArgument(type, AstToken.internal(name));
+			arg.setSymbolTable(symbolTable);
 			fd.addFormalArgument(arg);
 		}
 		
 		symbolTable.addFunction(fd);
+		fd.assignSymbolTable(symbolTable);
 		
+		this.langPackage.addFunctionDeclaration(fd);
 	}
-	
-	
 	
 }

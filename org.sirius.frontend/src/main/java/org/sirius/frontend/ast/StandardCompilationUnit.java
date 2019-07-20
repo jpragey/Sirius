@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.AbstractCompilationUnit;
 import org.sirius.frontend.symbols.AliasingSymbolTable;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.GlobalSymbolTable;
 
 public class StandardCompilationUnit implements AbstractCompilationUnit, Visitable, Scoped {
@@ -22,13 +23,13 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 
 	private Reporter reporter; 
 	
-	private AliasingSymbolTable symbolTable; 
+	private DefaultSymbolTable symbolTable; 
 	
 	
-	public StandardCompilationUnit(Reporter reporter, GlobalSymbolTable globalSymbolTable) {
+	public StandardCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
 		super();
 		this.reporter = reporter;
-		this.symbolTable = new AliasingSymbolTable(reporter, globalSymbolTable);
+		this.symbolTable = new DefaultSymbolTable(globalSymbolTable);
 	}
 
 	public void setShebang(ShebangDeclaration declaration) {
@@ -93,7 +94,7 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 	}
 
 	@Override
-	public AliasingSymbolTable getSymbolTable() {
+	public DefaultSymbolTable getSymbolTable() {
 		return symbolTable;
 	}
 

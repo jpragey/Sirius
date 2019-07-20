@@ -18,6 +18,18 @@ public class IntersectionType implements AstType{
 	public String messageStr() {
 		return first.messageStr() + "&" + second.messageStr();
 	}
-	
+	@Override
+	public boolean isExactlyA(AstType type) {
+		throw new UnsupportedOperationException();
+	}
+	@Override
+	public boolean isAncestorOrSameAs(AstType type) {
+		throw new UnsupportedOperationException();
+	}
+	@Override
+	public boolean isStrictDescendantOf(AstType type) {
+		throw new UnsupportedOperationException();
+	}
+
 	
 }

@@ -4,10 +4,13 @@ import java.util.Optional;
 import java.util.Stack;
 
 import org.sirius.common.core.QName;
+import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
+import org.sirius.frontend.ast.ImportDeclaration;
+import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.ast.AstStringConstantExpression;
@@ -23,13 +26,16 @@ public class SymbolResolutionVisitor implements AstVisitor {
 //	private List<SymbolTable> stack = new ArrayList<>();
 	private Stack<SymbolTable> stack = new Stack<>();
 	
-	private QName packageQName;
-	private GlobalSymbolTable globalSymbolTable;
-
-	public SymbolResolutionVisitor(/*SymbolTable rootSymbolTable, */GlobalSymbolTable globalSymbolTable, QName packageQName) {
+//	private QName packageQName;
+	private DefaultSymbolTable globalSymbolTable;
+	private Reporter reporter;
+	
+	public SymbolResolutionVisitor(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
 		super();
-		this.packageQName = packageQName;
+//		this.packageQName = packageQName;
 		this.globalSymbolTable = globalSymbolTable;
+		this.reporter = reporter;
+		this.stack.push(globalSymbolTable);
 	}
 
 	
@@ -41,6 +47,28 @@ public class SymbolResolutionVisitor implements AstVisitor {
 	public void endCompilationUnit(StandardCompilationUnit compilationUnit) {
 //		endScope(compilationUnit);
 	}
+	
+	@Override
+	public void startScriptCompilationUnit(ScriptCompilationUnit compilationUnit) {
+		
+//		// -- add content of sirius.lang
+//		QName packageQName = new QName("sirius", "lang");
+//		
+//		globalSymbolTable.forEach((qname, symbol)  -> {
+//			if(qname.getStringElements().size() == 3 && packageQName.equals(qname)) {
+//				ImportDeclaration importDeclaration = new ImportDeclaration(reporter, pack)
+//			}
+//		} );
+		
+		
+//		compilationUnit.addImport(importDeclaration);ClassDeclaration(d);
+	}
+	@Override
+	public void endScriptCompilationUnit(ScriptCompilationUnit compilationUnit) {
+		// TODO Auto-generated method stub
+		AstVisitor.super.endScriptCompilationUnit(compilationUnit);
+	}
+
 
 	@Override
 	public void startClassDeclaration(AstClassDeclaration classDeclaration) {

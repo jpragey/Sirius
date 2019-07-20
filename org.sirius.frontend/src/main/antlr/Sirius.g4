@@ -59,6 +59,7 @@ scriptCompilationUnit returns [ScriptCompilationUnit unit]
 	$unit = factory.createScriptCompilationUnit();
 }
 	: shebangDeclaration			{$unit.setShebang($shebangDeclaration.declaration); }
+    ( importDeclaration 			{$unit.addImport($importDeclaration.declaration);  })*
 	(
 		  moduleDeclaration 		{
 		  								$unit.addModuleDeclaration($moduleDeclaration.declaration);
@@ -225,7 +226,9 @@ expression returns [AstExpression express]
 	| left=expression op=('+'|'-') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
 	| left=expression op=('*'|'/') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
 	// Function call
-	| LOWER_ID '('				{ AstFunctionCallExpression call = new AstFunctionCallExpression($LOWER_ID); $express = call;}
+//	| LOWER_ID '('				{ AstFunctionCallExpression call = new AstFunctionCallExpression($LOWER_ID); $express = call;}
+	| LOWER_ID '('				{ AstFunctionCallExpression call = factory.functionCall($LOWER_ID); $express = call;
+	}
 		(arg=expression 			{ call.addActualArgument($arg.express); }
 			( ',' arg=expression	{ call.addActualArgument($arg.express); } )*
 		)?

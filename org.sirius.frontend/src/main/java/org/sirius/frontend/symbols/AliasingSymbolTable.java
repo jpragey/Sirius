@@ -120,9 +120,6 @@ public class AliasingSymbolTable implements SymbolTable {
 		addSymbol(simpleName, new Symbol(simpleName, classDeclaration));
 	}
 	
-	
-	
-	
 	public void addImportSymbol(QualifiedName pkqQname, AstToken simpleName, Optional<AstToken> aliasName) {
 		// Name local to the CU
 		AstToken localName = aliasName.isPresent() ? aliasName.get() : simpleName;

@@ -15,14 +15,17 @@ import java.util.zip.ZipEntry;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.ModuleDeclaration;
 
 public class JarCreatorListener implements ClassWriterListener {
 
 	private Reporter reporter;
 	private String modulePath;
-	private QName moduleQName;
+	private Optional<String> classDir;
+//	private QName moduleQName;
 	private Optional<JarOutputStream> outputStream = Optional.empty();
 	private Path jarPath;
+	
 	
 	/**
 	 * 
@@ -30,22 +33,29 @@ public class JarCreatorListener implements ClassWriterListener {
 	 * @param modulePath   module directory path, as given by '--module' option
 	 * @param moduleQName
 	 */
-	public JarCreatorListener(Reporter reporter, String modulePath, QName moduleQName) {
+	public JarCreatorListener(Reporter reporter, String modulePath/*, QName moduleQName*/, Optional<String> classDir) {
 		super();
 		this.reporter = reporter;
 		this.modulePath = modulePath;
-		this.moduleQName = moduleQName;
+		this.classDir = classDir;
+//		this.moduleQName = moduleQName;
 
-		QName effectiveQName = moduleQName.isEmpty() ?
-			new QName("unnamed.jar") :
-			moduleQName.parent().get().child(moduleQName.getLast() + ".jar");
-		
-		this.jarPath = Paths.get(modulePath, effectiveQName.toArray());
+//		QName effectiveQName = moduleQName.isEmpty() ?
+//			new QName("unnamed.jar") :
+//			moduleQName.parent().get().child(moduleQName.getLast() + ".jar");
+//		
+//		this.jarPath = Paths.get(modulePath, effectiveQName.toArray());
 	}
 
 	@Override
-	public void start() {
+	public void start(ModuleDeclaration moduleDeclaration) {
 //		System.out.println(" ++ Start module creation in " + modulePath + " for module '" + moduleQName + "'");
+		QName moduleQName = moduleDeclaration.getQName();
+		QName effectiveQName = moduleQName.isEmpty() ?
+				new QName("unnamed.jar") :
+				moduleQName.parent().get().child(moduleQName.getLast() + ".jar");
+			
+		this.jarPath = Paths.get(modulePath, effectiveQName.toArray());
 		
 		File jarFile = jarPath.toFile();
 		try {
@@ -72,21 +82,30 @@ public class JarCreatorListener implements ClassWriterListener {
 	}
 
 	@Override
-	public void addByteCode(Bytecode bytecode, QName qName) {
+	public void addByteCode(Bytecode bytecode, QName classQName) {
 //		System.out.println(" ++ Adding bytecode to module " + modulePath + " : " + bytecode.size() + " bytes, to class: " + qName);
 		
+		addToJar(bytecode, classQName);
+		writeClassFile(bytecode, classQName);
+	}
+	
+	private void addToJar(Bytecode bytecode, QName classQName) {
 		this.outputStream.ifPresent(jarOS -> {
-			ZipEntry ze = new ZipEntry(qName.dotSeparated() + ".class");
+			ZipEntry ze = new ZipEntry(classQName.dotSeparated() + ".class");
 			try {
 				jarOS.putNextEntry(ze);
 				jarOS.write(bytecode.getBytes());
 				jarOS.closeEntry();
 			} catch (IOException e) {
-				reporter.error("Can't write entry " + qName + " to jar file " + jarPath.toAbsolutePath()+ ": " + e.getMessage(), e);
+				reporter.error("Can't write entry " + classQName + " to jar file " + jarPath.toAbsolutePath()+ ": " + e.getMessage(), e);
 			}
 		});
-		
 	}
+	
+	private void writeClassFile(Bytecode bytecode, QName classDeclarationQName ) {
+		classDir.ifPresent(cdir -> bytecode.createClassFiles(reporter, cdir, classDeclarationQName));
+	}
+	
 
 	@Override
 	public void end() {

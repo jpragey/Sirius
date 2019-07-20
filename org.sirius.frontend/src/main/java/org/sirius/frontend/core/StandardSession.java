@@ -12,11 +12,9 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Session;
-import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
-import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.ast.StandardCompilationUnit;
@@ -24,16 +22,16 @@ import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.parser.SiriusParser.ModuleDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.StandardCompilationUnitContext;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.GlobalSymbolTable;
 import org.sirius.frontend.symbols.SymbolResolutionVisitor;
-import org.sirius.frontend.symbols.SymbolStructureVisitor;
-import org.sirius.frontend.transform.CreateRootClassTransformer;
+import org.sirius.frontend.symbols.SymbolTableFillingVisitor;
 
 public class StandardSession implements Session {
 
 	private Reporter reporter;
 
-	private GlobalSymbolTable globalSymbolTable = new GlobalSymbolTable();
+	private DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable();
 	
 	private List<ModuleContent> moduleContents = new ArrayList<>();
 
@@ -90,24 +88,24 @@ public class StandardSession implements Session {
 
 
 		// -- Root class transformer
-		String rootClassName = "$root$";
-		AstToken name = new AstToken(0, 0, 0, 0, rootClassName, "<unknown>");
-		AstClassDeclaration rootClass = new AstClassDeclaration(reporter, false /*is interface*/, name);
-		CreateRootClassTransformer createRootClassTransformer = new CreateRootClassTransformer(reporter, rootClass);
+//		String rootClassName = "$root$";
+//		AstToken name = new AstToken(0, 0, 0, 0, rootClassName, "<unknown>");
+//		AstClassDeclaration rootClass = new AstClassDeclaration(reporter, false /*is interface*/, name);
+//		CreateRootClassTransformer createRootClassTransformer = new CreateRootClassTransformer(reporter, rootClass);
 
 		// -- Various transformations
 		applyVisitors(reporter, compilationUnit, 
 				// Add top-level functions in a 'root' class
-				createRootClassTransformer, 
+//				createRootClassTransformer, 
 					
 				// Set symbol tables parents (thus create the ST tree), add symbols to tables
-				new SymbolStructureVisitor(/*rootSymbolTable, */globalSymbolTable, packageQName)	
+				new SymbolTableFillingVisitor(globalSymbolTable)	
 				);
 
 
 		// -- Resolve symbols in expressions
 		applyVisitors(reporter, compilationUnit, 
-				new SymbolResolutionVisitor(globalSymbolTable, packageQName)
+				new SymbolResolutionVisitor(reporter, globalSymbolTable)
 				);
 		
 		List<AstModuleDeclaration> moduleDeclarations = compilationUnit.getModuleDeclarations();

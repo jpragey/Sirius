@@ -2,18 +2,29 @@ package org.sirius.frontend.ast;
 
 import java.util.Optional;
 
+import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.IntegerConstantExpression;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.GlobalSymbolTable;
 
 public class AstIntegerConstantExpression implements AstExpression {
 	
 	private AstToken content;
 	private int value = 0;
 
+	// TODO: should be static
+	private AstClassDeclaration intType;
+	
+	private DefaultSymbolTable symbolTable; // TODO: optional (???)
+	
 	public AstIntegerConstantExpression(AstToken content, Reporter reporter) {
 		super();
 		this.content = content;
+//		this.intType = AstClassDeclaration.newClass(reporter, AstToken.internal("Integer"));
+//		this.intType.setqName(new QName("sirius", "lang", "Integer"));
+		
 		String text = content.getText();
 		try {
 			this.value = Integer.parseInt(text);
@@ -27,6 +38,13 @@ public class AstIntegerConstantExpression implements AstExpression {
 		return content;
 	}
 	
+	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+		this.symbolTable = symbolTable;
+		
+		// TODO: Maybe we should check ??? 
+		this.intType = symbolTable.lookup(new QName("sirius", "lang", "Integer") ).get().getClassDeclaration().get();
+	}
+	
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startIntegerConstant(this);
@@ -34,12 +52,13 @@ public class AstIntegerConstantExpression implements AstExpression {
 	}
 	@Override
 	public Optional<AstType> getType() {
-		return Optional.empty();
+		return Optional.of(intType);
 	}
 
 
 	@Override
 	public Expression getExpression() {
+		
 		return new IntegerConstantExpression() {
 
 			@Override

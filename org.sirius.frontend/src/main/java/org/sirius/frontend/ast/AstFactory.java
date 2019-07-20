@@ -4,14 +4,15 @@ import java.util.Optional;
 
 import org.antlr.v4.runtime.Token;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.GlobalSymbolTable;
 
 public class AstFactory {
 
 	private Reporter reporter;
-	private GlobalSymbolTable globalSymbolTable;
+	private DefaultSymbolTable globalSymbolTable;
 	
-	public AstFactory(Reporter reporter, GlobalSymbolTable globalSymbolTable) {
+	public AstFactory(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
 		super();
 		this.reporter = reporter;
 		this.globalSymbolTable = globalSymbolTable;
@@ -54,7 +55,7 @@ public class AstFactory {
 		return new StandardCompilationUnit(reporter, globalSymbolTable);
 	}
 	public ScriptCompilationUnit createScriptCompilationUnit() {
-		return new ScriptCompilationUnit(reporter);
+		return new ScriptCompilationUnit(reporter, globalSymbolTable);
 	}
 	public ModuleDescriptor createModuleDescriptorCompilationUnit(AstModuleDeclaration moduleDeclaration) {
 		return new ModuleDescriptor(reporter, moduleDeclaration);
@@ -96,6 +97,9 @@ public class AstFactory {
 	}
 	public AstBooleanConstantExpression booleanConstant(Token value) {
 		return new AstBooleanConstantExpression(new AstToken(value));
+	}
+	public AstFunctionCallExpression functionCall(Token funcName) {
+		return new AstFunctionCallExpression(reporter, funcName);
 	}
 
 	// -- Values

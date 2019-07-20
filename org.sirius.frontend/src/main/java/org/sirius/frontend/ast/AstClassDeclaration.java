@@ -12,11 +12,8 @@ import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
-import org.sirius.frontend.api.PackageDeclaration;
-import org.sirius.frontend.api.TopLevelFunction;
-import org.sirius.frontend.api.TopLevelValue;
-import org.sirius.frontend.symbols.LocalSymbolTable;
-import org.sirius.frontend.symbols.SymbolTable;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.Symbol;
 
 public class AstClassDeclaration implements AstType, Scoped, Visitable {
 
@@ -41,10 +38,12 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	private boolean interfaceType;
 	
 	/** directly implemented interfaces or extended classes */
-	private List<AstClassQName> ancestors = new ArrayList<>();
+//	private List<AstClassQName> ancestors = new ArrayList<>();
+	private List<QName> ancestors = new ArrayList<>();
 
-	private LocalSymbolTable symbolTable /*= new SymbolTable()*/; 
+	private DefaultSymbolTable symbolTable /*= new SymbolTable()*/; 
 	
+
 	private Reporter reporter;
 	
 	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/) {
@@ -53,7 +52,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		this.interfaceType = interfaceType;
 		this.name = name;
 		this.packageDeclaration = new AstPackageDeclaration(reporter);
-		this.symbolTable = new LocalSymbolTable(reporter);
+//		this.symbolTable = new DefaultSymbolTable();	// TODO ???
 		
 //		this.symbolTable.addClass(name, this);
 		
@@ -64,7 +63,17 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	public static AstClassDeclaration newInterface(Reporter reporter, AstToken name) {
 		return new AstClassDeclaration (reporter, true /*interfaceType */ , name);
 	}
-	
+
+	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+		if(symbolTable == null)
+			throw new NullPointerException();
+		
+		this.symbolTable = symbolTable;
+
+		for(TypeFormalParameterDeclaration d: typeParameters)
+			this.symbolTable.addFormalParameter(this.qName, d);
+	}
+
 	public AstClassDeclaration(Reporter reporter, boolean interfaceType, Token name/*, PackageDeclaration packageDeclaration*/) {
 		this(reporter, interfaceType, new AstToken(name));
 	}
@@ -78,7 +87,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	
 	public void addFunctionDeclaration(AstFunctionDeclaration declaration) {
 		this.functionDeclarations.add(declaration);
-		this.symbolTable.addFunction(declaration.getName(), declaration);
+//		this.symbolTable.addFunction(declaration);
 	}
 	public void addValueDeclaration(AstValueDeclaration valueDeclaration) {
 		this.valueDeclarations.add(valueDeclaration);
@@ -98,7 +107,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	}
 	public void addTypeParameterDeclaration(TypeFormalParameterDeclaration d) {
 		typeParameters.add(d);
-		this.symbolTable.addFormalParameter(d.getFormalName(), d);
+//		this.symbolTable.addFormalParameter(this.qName, d);
 	}
 
 	
@@ -125,12 +134,12 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	}
 	
 	@Override
-	public LocalSymbolTable getSymbolTable() {
+	public DefaultSymbolTable getSymbolTable() {
 		return symbolTable;
 	}
-	public void setSymbolTableParent(SymbolTable newParent) {
-		this.symbolTable.setParentSymbolTable(newParent);
-	}
+//	public void setSymbolTableParent(SymbolTable newParent) {
+//		this.symbolTable.setParentSymbolTable(newParent);
+//	}
 	public List<TypeFormalParameterDeclaration> getTypeParameters() {
 		return typeParameters;
 	}
@@ -143,14 +152,15 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	public List<AstFunctionFormalArgument> getAnonConstructorArguments() {
 		return anonConstructorArguments;
 	}
-	public List<AstClassQName> getAncestors() {
+	public List<QName> getAncestors() {
 		return ancestors;
 	}
-	public void addAncestor(AstClassQName ancestor) {
+	public void addAncestor(QName ancestor) {
 		this.ancestors.add(ancestor);
 	}
 	public void addAncestor(QName packageQName, String className /* class or interface */ ) {
-		this.ancestors.add(new AstClassQName(packageQName, className));
+//		this.ancestors.add(new AstClassQName(packageQName, className));
+		this.ancestors.add(packageQName.child(className));
 	}
 
 	public Optional<AstType> apply(AstType parameter) {
@@ -183,6 +193,20 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 				">";
 	}
 	
+	@Override
+	public boolean isExactlyA(AstType type) {
+		if(type instanceof AstClassDeclaration) {
+			AstClassDeclaration other = (AstClassDeclaration)type;
+			if(this.interfaceType != other.interfaceType)
+				return false;
+			if(!this.qName.equals(other.qName))
+				return false;
+			
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public String toString() {
 		return "class " + name.getText();
@@ -249,4 +273,54 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		};
 	}
 
+	@Override
+	public boolean isAncestorOrSameAs(AstType type) {
+		if(isExactlyA(type))
+			return true;
+		
+		if(type instanceof AstClassDeclaration) {
+			AstClassDeclaration otherClassDecl = (AstClassDeclaration)type;
+
+			for(QName ancestorQName: otherClassDecl.ancestors) {
+				Optional<Symbol> optSymbol = symbolTable.lookup(ancestorQName);
+
+				if(optSymbol.isPresent()) {
+					Symbol symbol = optSymbol.get();
+					Optional<AstClassDeclaration> optClassDecl = symbol.getClassDeclaration();
+					if(optClassDecl.isPresent()) {
+						AstClassDeclaration ancestorCD = optClassDecl.get();
+						if(isAncestorOrSameAs(ancestorCD)) {
+							return true;
+						}
+					}
+
+				};
+			}
+		}
+		
+		return false;
+	}
+	@Override
+	public boolean isStrictDescendantOf(AstType type) {
+		for(AstClassDeclaration ancestor: getAncestorClasses()) {
+			if(ancestor.isExactlyA(type))
+				return true;
+			
+			if(ancestor.isStrictDescendantOf(type))
+				return true;
+		}
+		return false;
+	}
+	
+	List<AstClassDeclaration> getAncestorClasses() {
+		return this.ancestors.stream()
+				.map(qname -> symbolTable.lookup(qname))
+				.filter(optSymbol -> optSymbol.isPresent())
+				.map(optSymbol -> optSymbol.get())
+				.map(symbol -> symbol.getClassDeclaration())
+				.filter(optCD -> optCD.isPresent())
+				.map(optCD -> optCD.get())
+				.collect(Collectors.toList());
+				
+	}
 }

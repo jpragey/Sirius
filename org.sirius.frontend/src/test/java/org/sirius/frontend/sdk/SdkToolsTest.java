@@ -2,15 +2,19 @@ package org.sirius.frontend.sdk;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
+import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
+import org.sirius.frontend.ast.QNameRefType;
 import org.sirius.frontend.ast.SimpleType;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.GlobalSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
 import org.testng.annotations.BeforeMethod;
@@ -18,14 +22,14 @@ import org.testng.annotations.Test;
 
 public class SdkToolsTest {
 	private Reporter reporter;
-	private GlobalSymbolTable symbolTable ;
+	private DefaultSymbolTable symbolTable ;
 	private SdkTools sdkTools;
 	
 	@BeforeMethod
 	public void setup() throws Exception {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
 		this.sdkTools = new SdkTools(reporter);
-		symbolTable = new GlobalSymbolTable();
+		symbolTable = new DefaultSymbolTable();
 		sdkTools.parseSdk(symbolTable);
 		
 		if(this.reporter.hasErrors()) 
@@ -43,7 +47,7 @@ public class SdkToolsTest {
 		checkSymbolTableContains(symbolTable, new QName("sirius", "lang", "Integer"));
 	}
 	
-	private void checkSymbolTableContains(GlobalSymbolTable symbolTable, QName symbolQName) {
+	private void checkSymbolTableContains(DefaultSymbolTable symbolTable, QName symbolQName) {
 		Symbol symbol = symbolTable.lookup(symbolQName).get();
 //		Symbol simpleSymbol = symbolTable.lookup(new QName(simpleName)).get();
 		
@@ -58,11 +62,9 @@ public class SdkToolsTest {
 		
 		assertEquals(cd.getAncestors().size(), 2);
 		
-		assertEquals(cd.getAncestors().get(0).getPackageQName(), new QName("sirius", "lang"));
-		assertEquals(cd.getAncestors().get(0).getClassName(), "Addable");
+		assertEquals(cd.getAncestors().get(0), new QName("sirius", "lang", "Addable"));
 		
-		assertEquals(cd.getAncestors().get(1).getPackageQName(), new QName("sirius", "lang"));
-		assertEquals(cd.getAncestors().get(1).getClassName(), "Stringifiable");
+		assertEquals(cd.getAncestors().get(1), new QName("sirius", "lang", "Stringifiable"));
 	}
 	
 	@Test
@@ -76,11 +78,22 @@ public class SdkToolsTest {
 		
 		AstFunctionFormalArgument arg0 = func.getFormalArguments().get(0); 
 		assertEquals(arg0.getName().getText(), "text"); // TODO
-		assert(arg0.getType() instanceof SimpleType);
-		SimpleType arg0Type = (SimpleType)arg0.getType();
-		assertEquals(arg0Type.getName().getText(), "sirius.lang.String");
-		
+		assert(arg0.getType() instanceof QNameRefType);
+		QNameRefType arg0Type = (QNameRefType)arg0.getType();
+//		assertEquals(arg0Type.getName().getText(), "sirius.lang.String");
+		assertEquals(arg0Type.getqName(), new QName("sirius","lang","Stringifiable"));
 		
 	}
+
+	@Test
+	public void checkIntegerIsStringifiable() {
+		
+		AstClassDeclaration intCD = symbolTable.lookup(new QName("sirius", "lang", "Integer")).get().getClassDeclaration().get();
+		AstClassDeclaration stringifiableCD = symbolTable.lookup(new QName("sirius", "lang", "Stringifiable")).get().getClassDeclaration().get();
+		
+		assertTrue(stringifiableCD.isAncestorOrSameAs(intCD));
+		
+	}
+	
 	
 }

@@ -18,13 +18,13 @@ public class Bytecode {
 
 	private byte[] bytes;
 
-	public Bytecode(byte[] bytes) {
+	public Bytecode(byte[] bytes, QName classQName) {
 		super();
 		this.bytes = bytes;
 	}
 
-	public Bytecode(ClassWriter classWriter) {
-		this(classWriter.toByteArray());
+	public Bytecode(ClassWriter classWriter, QName classQName) {
+		this(classWriter.toByteArray(), classQName);
 	}
 	
 	public byte[] getBytes() {

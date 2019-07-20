@@ -27,6 +27,7 @@ import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.StringConstantExpression;
+import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.api.Visitor;
 
 /** Convert a class declaration in equivalent bytecode.
@@ -36,16 +37,16 @@ import org.sirius.frontend.api.Visitor;
  */
 public class JvmClassWriter {
 
-	private Optional<String> classDir;
+//	private Optional<String> classDir;
 	private List<ClassWriterListener> listeners;
 	private Reporter reporter;
 	private boolean verboseAst;
 	private DescriptorFactory descriptorFactory;
 	
-	public JvmClassWriter(Reporter reporter, Optional<String> classDir, List<ClassWriterListener> listeners, boolean verboseAst) {
+	public JvmClassWriter(Reporter reporter, /*Optional<String> classDir, */List<ClassWriterListener> listeners, boolean verboseAst) {
 		super();
 		this.reporter = reporter;
-		this.classDir = classDir;
+//		this.classDir = classDir;
 		this.listeners = listeners;
 		this.verboseAst = verboseAst;
 		this.descriptorFactory = new DescriptorFactory(reporter);
@@ -57,7 +58,7 @@ public class JvmClassWriter {
 		classDeclaration.visitMe(visitor);
 		
 		byte[] bytes = visitor.toByteCode();
-		Bytecode bytecode = new Bytecode(bytes);
+		Bytecode bytecode = new Bytecode(bytes, classDeclaration.getQName());
 		
 		listeners.forEach(l -> l.addByteCode(bytecode, classDeclaration.getQName()));
 		
@@ -228,6 +229,11 @@ public class JvmClassWriter {
 			else if(expression instanceof IntegerConstantExpression) {
 				processIntegerConstant(mv, (IntegerConstantExpression) expression);
 			} 
+			else if(expression instanceof TypeCastExpression) {
+				TypeCastExpression tc = (TypeCastExpression)expression;
+				processExpression(mv, tc.expression());
+			} 
+			
 			
 			else {
 				reporter.error("Currently unsupported expression type: " + expression.getClass());

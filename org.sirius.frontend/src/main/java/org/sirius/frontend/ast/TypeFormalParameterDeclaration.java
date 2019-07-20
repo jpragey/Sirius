@@ -24,6 +24,20 @@ public class TypeFormalParameterDeclaration implements AstType {
 		String txt = formalName.getText();
 		return (variance == Variance.INVARIANT) ? txt :  variance.name() + " " + txt;
 	}
-	
+	@Override
+	public boolean isExactlyA(AstType type) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean isAncestorOrSameAs(AstType type) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean isStrictDescendantOf(AstType type) {
+		throw new UnsupportedOperationException();
+	}
+
 	
 }

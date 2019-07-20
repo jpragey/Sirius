@@ -14,4 +14,19 @@ public class AstVoidType implements AstType {
 		return new VoidType() {};
 	}
 
+	@Override
+	public boolean isExactlyA(AstType type) {
+		return type instanceof AstVoidType;
+	}
+
+	@Override
+	public boolean isAncestorOrSameAs(AstType type) {
+		return isExactlyA(type);
+	}
+
+	@Override
+	public boolean isStrictDescendantOf(AstType type) {
+		return false;
+	}
+
 }

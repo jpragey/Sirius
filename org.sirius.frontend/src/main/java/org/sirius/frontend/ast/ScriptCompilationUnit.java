@@ -7,6 +7,9 @@ import java.util.Optional;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.AbstractCompilationUnit;
+import org.sirius.frontend.symbols.AliasingSymbolTable;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.GlobalSymbolTable;
 import org.sirius.frontend.symbols.LocalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
@@ -16,18 +19,22 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	
 	private Optional<ShebangDeclaration> shebangDeclaration = Optional.empty();
 
+	private List<ImportDeclaration> importDeclarations = new ArrayList<>();
+
 	private LinkedList<AstModuleDeclaration> moduleDeclarations = new LinkedList<>();
 //	private AstModuleDeclaration currentModule;
 	
 	private Reporter reporter; 
 	
-	private LocalSymbolTable symbolTable; 
+//	private LocalSymbolTable symbolTable; 
+	private DefaultSymbolTable symbolTable; 
+
 	
-	
-	public ScriptCompilationUnit(Reporter reporter) {
+	public ScriptCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
 		super();
 		this.reporter = reporter;
-		this.symbolTable = new LocalSymbolTable(reporter);
+//		this.symbolTable = new DefaultSymbolTable(globalSymbolTable);
+		this.symbolTable = globalSymbolTable;
 	
 //		this.addModuleDeclaration(new AstModuleDeclaration(reporter));
 	}
@@ -39,7 +46,19 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	public Optional<ShebangDeclaration> getShebangDeclaration() {
 		return shebangDeclaration;
 	}
-	
+
+	public List<ImportDeclaration> getImportDeclarations() {
+		return importDeclarations;
+	}
+
+	public void addImport(ImportDeclaration importDeclaration) {
+		this.importDeclarations.add(importDeclaration);
+		
+		for(ImportDeclarationElement e: importDeclaration.getElements()) {
+			this.symbolTable.addImportSymbol(importDeclaration.getPack(), e.getImportedTypeName(), e.getAlias());
+		}
+	}
+
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startScriptCompilationUnit(this);
@@ -77,9 +96,9 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		this.moduleDeclarations.add(moduleDeclaration);
 	}
 
-	public void setSymbolTableParent(SymbolTable newParent) {
-		this.symbolTable.setParentSymbolTable(newParent);
-	}
+//	public void setSymbolTableParent(SymbolTable newParent) {
+//		this.symbolTable.setParentSymbolTable(newParent);
+//	}
 	
 	public void addPackageDeclaration(AstPackageDeclaration declaration) {
 		getCurrentModule().addPackageDeclaration(declaration);

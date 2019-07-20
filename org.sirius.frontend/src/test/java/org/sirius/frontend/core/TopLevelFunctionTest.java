@@ -16,6 +16,7 @@ import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.StringConstantExpression;
 import org.sirius.frontend.api.TopLevelFunction;
+import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.ast.AstExpressionStatement;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
@@ -71,7 +72,7 @@ public class TopLevelFunctionTest {
 
 	@Test(description = "")
 	public void checkFunctionBodyContainsAnExpressionStatement() {
-		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  Void f(){print(\"Hello World\");}");
+		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  Void f(){println(\"Hello World\");}");
 		
 		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
 		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
@@ -82,7 +83,7 @@ public class TopLevelFunctionTest {
 		
 		AstExpressionStatement printCallStmt = (AstExpressionStatement)statements.get(0);	// NOTE: type casting is used as an assertion
 		AstFunctionCallExpression callExpression = (AstFunctionCallExpression)printCallStmt.getExpression();
-		assertEquals(callExpression.getName().getText(), "print");
+		assertEquals(callExpression.getName().getText(), "println");
 		
 		
 		
@@ -95,10 +96,16 @@ public class TopLevelFunctionTest {
 		ExpressionStatement functionCallst = (ExpressionStatement)apiStatements.get(0);
 		
 		FunctionCall functionCall = (FunctionCall)functionCallst.getExpression();
-		assertEquals(functionCall.getFunctionName().getText(), "print");
+		assertEquals(functionCall.getFunctionName().getText(), "println");
 		assertEquals(functionCall.getArguments().size(), 1);
 
-		Expression arg0Expr = functionCall.getArguments().get(0);
+		// -- arg 0 is a TypeCastExpression because println requires an Stringifiable
+		Expression arg0TypeCastExpr = functionCall.getArguments().get(0);
+		assert(arg0TypeCastExpr instanceof TypeCastExpression);
+		TypeCastExpression strTypeCastExpr = (TypeCastExpression)arg0TypeCastExpr;
+		
+		Expression arg0Expr = strTypeCastExpr.expression();
+		assert(arg0Expr instanceof StringConstantExpression);
 		StringConstantExpression strExpr = (StringConstantExpression)arg0Expr;
 		
 		assertEquals(strExpr.getContent().getText(), "\"Hello World\"");

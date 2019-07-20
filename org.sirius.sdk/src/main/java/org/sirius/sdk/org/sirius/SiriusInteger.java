@@ -30,6 +30,6 @@ public class SiriusInteger implements Addable<SiriusInteger>, Stringifiable
 
 	@Override
 	public SiriusString string() {
-		return new SiriusString();
+		return new SiriusString(value.toString());
 	}
 }
