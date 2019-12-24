@@ -1,6 +1,8 @@
 package org.sirius.frontend.ast;
 
 import org.sirius.frontend.api.VoidType;
+import org.sirius.frontend.symbols.GlobalSymbolTable;
+import org.sirius.frontend.symbols.SymbolTable;
 
 public class AstVoidType implements AstType {
 
@@ -29,4 +31,16 @@ public class AstVoidType implements AstType {
 		return false;
 	}
 
+	@Override
+	public AstType resolve(SymbolTable symbolTable) {
+		return this;
+	}
+
+	@Override
+	public void visit(AstVisitor visitor) {
+		visitor.start(this);
+		visitor.end(this);		
+	}
+
+	
 }

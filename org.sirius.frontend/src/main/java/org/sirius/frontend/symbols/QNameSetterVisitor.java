@@ -71,6 +71,6 @@ public class QNameSetterVisitor implements AstVisitor {
 	}
 	
 	@Override
-	public void startSimpleType(SimpleType simpleType) {
+	public void start(SimpleType simpleType) {
 	}
 }

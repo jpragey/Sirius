@@ -17,6 +17,9 @@ public interface Visitor {
 	public default void start(ExpressionStatement statement) {}
 	public default void end(ExpressionStatement statement) {}
 	
+	public default void start(ReturnStatement statement) {}
+	public default void end(ReturnStatement statement) {}
+	
 	
 	public default void start(MemberValue declaration) {}
 	public default void end(MemberValue declaration) {}

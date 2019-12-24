@@ -38,7 +38,7 @@ public class ScriptSessionTest {
 	
 	@Test 
 	public void checkQNameAreSetInClassAndFunctions() {
-		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public Void f(){}}");
+		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){}}");
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		

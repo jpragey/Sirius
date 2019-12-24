@@ -31,7 +31,7 @@ public class TopLevelFunctionTest {
 
 	@Test
 	public void findTopLevelFunction() {
-		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  Void f(){}");
+		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(){}");
 
 		assertEquals(session.getModuleContents().size(), 1);
 		
@@ -57,7 +57,7 @@ public class TopLevelFunctionTest {
 
 	@Test(description = "")
 	public void checkFunctionArgumentsInAPIFunction() {
-		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  Void f(Integer i, Integer j){}");
+		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(Integer i, Integer j){}");
 		
 //		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
 //		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
@@ -72,7 +72,7 @@ public class TopLevelFunctionTest {
 
 	@Test(description = "")
 	public void checkFunctionBodyContainsAnExpressionStatement() {
-		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  Void f(){println(\"Hello World\");}");
+		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(){println(\"Hello World\");}");
 		
 		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
 		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
@@ -115,7 +115,7 @@ public class TopLevelFunctionTest {
 
 	@Test
 	public void checkFunctionArgumentFoundInApi() {
-		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  Void f(String s){}");
+		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(String s){}");
 		
 		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
 		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
@@ -142,7 +142,7 @@ public class TopLevelFunctionTest {
 	
 	@Test
 	public void checkArrayFunctionArgumentFoundInApi() {
-		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  Void f(String[] s){}");
+		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(String[] s){}");
 		
 		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
 		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);

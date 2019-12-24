@@ -6,10 +6,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
+import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassType;
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.GlobalSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
+import org.sirius.frontend.symbols.SymbolTable;
 
 /** most simple (class or interface) type 
  * 
@@ -17,14 +21,20 @@ import org.sirius.frontend.symbols.Symbol;
  *
  */
 public final class SimpleType implements AstType {
+	
+	private Reporter reporter;
+	
 	private AstToken name;
 
 	private List<AstType> appliedParameters = new ArrayList<>();
 	
 	private DefaultSymbolTable symbolTable;
 	
-	public SimpleType(AstToken name) {
+	private Optional<AstType> resolvedElementType = Optional.empty();
+
+	public SimpleType(Reporter reporter, AstToken name) {
 		super();
+		this.reporter = reporter;
 		this.name = name;
 	}
 
@@ -62,15 +72,20 @@ public final class SimpleType implements AstType {
 	}
 	
 	@Override
-	public ClassType getApiType() {
-		return new ClassType() {
-			QName qName = new QName(name.getText());	// TODO : must be a full class name
-			@Override
-			public QName getQName() {
-				return qName;
-			}
-			
-		};
+	public Type getApiType() {
+		
+		assert(resolvedElementType.isPresent());
+		AstType type = resolvedElementType.get();
+		return type.getApiType();
+		
+//		return new ClassType() {
+//			QName qName = new QName(name.getText());	// TODO : must be a full class name
+//			@Override
+//			public QName getQName() {
+//				return qName;
+//			}
+//			
+//		};
 	}
 
 	private boolean isExactlyAClassDeclaration(AstClassDeclaration thisClassDeclaration, AstType otherType) {
@@ -116,9 +131,41 @@ public final class SimpleType implements AstType {
 	}
 	@Override
 	public boolean isStrictDescendantOf(AstType type) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException();
 	}
 
+	
+	private Optional<AstType> fetchResolveType(SymbolTable symbolTable) {
+		Optional<Symbol> optSymbol = symbolTable.lookup(name.getText());
+		if(optSymbol.isPresent()) {
+			Symbol symbol = optSymbol.get();
+			
+			Optional<AstClassDeclaration> optClassDecl = symbol.getClassDeclaration();
+			if(optClassDecl.isPresent()) {
+				return Optional.of(optClassDecl.get());
+			}
+			
+			reporter.error("Symbol \"" + name.getText() + "\" : class name expected.", name);
+			return Optional.of(new AstVoidType());
+		} else {
+			reporter.error("Symbol \"" + name.getText() + "\" not found.", name);
+			return Optional.of(new AstVoidType());
+		}
+	}
+	
+	@Override
+	public AstType resolve(SymbolTable symbolTable) {
+		if(resolvedElementType.isEmpty()) {
+			resolvedElementType = fetchResolveType(symbolTable);
+		}
+			
+		return resolvedElementType.get();
+	}
 
+	@Override
+	public void visit(AstVisitor visitor) {
+		visitor.start(this);
+		resolvedElementType.ifPresent(type -> type.visit(visitor));
+		visitor.end(this);		
+	}
 }

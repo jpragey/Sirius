@@ -11,6 +11,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionCall;
 import org.sirius.frontend.api.IntegerConstantExpression;
+import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.symbols.Symbol;
@@ -58,6 +59,24 @@ public class AstFunctionCallExpression implements AstExpression {
 
 	@Override
 	public Optional<AstType> getType() {
+		String fctName = name.getText();
+		
+		Optional<Symbol> symbol = symbolTable.lookup(fctName);
+		if(symbol.isPresent()) {
+			Optional<AstFunctionDeclaration> fct = symbol.get().getFunctionDeclaration();
+			if(fct.isPresent()) {
+				AstFunctionDeclaration decl = fct.get();
+				AstType returnType = decl.getReturnType();
+				return Optional.of(returnType);
+				
+			} else {
+				reporter.error("Symbol named '" + fctName + "' is not a  function.", name);
+			}
+		} else {
+			reporter.error("Function named '" + fctName + "' not found.", name);
+		}
+		
+		
 		// TODO Auto-generated method stub
 		return Optional.empty();
 	}
@@ -130,6 +149,21 @@ public class AstFunctionCallExpression implements AstExpression {
 			}
 			return l;
 		}
+
+		@Override
+		public Optional<TopLevelFunction> getDeclaration() {
+			Optional<Symbol> optSymbol = symbolTable.lookup(name.getText());
+			if(optSymbol.isPresent()) {
+				Optional<AstFunctionDeclaration> optFunc =  optSymbol.get().getFunctionDeclaration();
+				if(optFunc.isPresent()) {
+					AstFunctionDeclaration funcDecl = optFunc.get();
+					Optional<TopLevelFunction> tlFunc = funcDecl.getTopLevelFunction();
+					return tlFunc;
+				}
+			}
+			
+			return Optional.empty();
+		}
 		
 	}
 	
@@ -166,6 +200,11 @@ public class AstFunctionCallExpression implements AstExpression {
 			@Override
 			public List<Expression> getArguments() {
 				return Collections.emptyList();
+			}
+
+			@Override
+			public Optional<TopLevelFunction> getDeclaration() {
+				return Optional.empty();
 			}
 		};
 	}

@@ -75,7 +75,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 		visitor.startFunctionDeclaration(this);
 		formalArguments.stream().forEach(formalArg -> formalArg.visit(visitor));
 		statements.stream().forEach(st -> st.visit(visitor));
-//		returnType.
+		returnType.visit(visitor);
 		visitor.endFunctionDeclaration(this);
 	}
 

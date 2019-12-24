@@ -39,12 +39,12 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 		DefaultSymbolTable st = compilationUnit.getSymbolTable();
 		symbolTableStack.push(st);
 		
-		DefaultSymbolTable alst = compilationUnit.getSymbolTable();
+//		DefaultSymbolTable alst = compilationUnit.getSymbolTable();
 		
 		for(ImportDeclaration importDecl: compilationUnit.getImportDeclarations()) {
 			for(ImportDeclarationElement element: importDecl.getElements()) {
 				
-				alst.addImportSymbol(importDecl.getPack(), element.getImportedTypeName(), element.getAlias());
+				st.addImportSymbol(importDecl.getPack(), element.getImportedTypeName(), element.getAlias());
 			}
 		}
 	}
@@ -127,7 +127,7 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 	}
 	
 	@Override
-	public void startSimpleType(SimpleType simpleType) {
+	public void start(SimpleType simpleType) {
 		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
 		simpleType.setSymbolTable(symbolTable);
 	}

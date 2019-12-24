@@ -41,7 +41,7 @@ public class DummyGenerator {
 			 * This method should only be used for an object or array type.
 			 */
 			StringBuilder sb = new StringBuilder();
-			for(String tk: classDeclaration.getPackageDeclaration().getQname().getStringElements()) {
+			for(String tk: classDeclaration.getQName().getStringElements()) {
 				sb.append(tk);
 				sb.append('/');
 			}
@@ -84,7 +84,7 @@ public class DummyGenerator {
 		public void startClassDeclaration (AstClassDeclaration classDeclaration) {
 			System.out.println(" -- Starting ClassDeclaration " + classDeclaration.getName().getText());
 
-			String clssQname = classDeclaration.getQname();
+			String clssQname = classDeclaration.getQName().dotSeparated();
 			this.definedClasses.add(clssQname);
 			
 			this.classWriter = new ClassWriter(

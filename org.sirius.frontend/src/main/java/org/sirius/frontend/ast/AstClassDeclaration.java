@@ -1,19 +1,24 @@
 package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.GlobalSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
+import org.sirius.frontend.symbols.SymbolTable;
 
 public class AstClassDeclaration implements AstType, Scoped, Visitable {
 
@@ -28,7 +33,8 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	private List<AstFunctionFormalArgument> anonConstructorArguments = new ArrayList<>(); 
 
 	/** Root package at first */
-	private AstPackageDeclaration packageDeclaration;
+//	private AstPackageDeclaration packageDeclaration;
+	private Optional<QName> packageQName;
 	
 	/** True for annotation classes (ConstrainedAnnotation subtypes, ie OptionalAnnotation or SequencedAnnotation) */
 	private boolean annotationType = false; 
@@ -46,22 +52,32 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 
 	private Reporter reporter;
 	
-	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/) {
+	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/, Optional<QName> packageQName) {
 		super();
 		this.reporter = reporter;
 		this.interfaceType = interfaceType;
 		this.name = name;
-		this.packageDeclaration = new AstPackageDeclaration(reporter);
-//		this.symbolTable = new DefaultSymbolTable();	// TODO ???
+		this.packageQName = packageQName;
 		
-//		this.symbolTable.addClass(name, this);
-		
+		this.qName = null;
+		packageQName.ifPresent((pkgQName) -> {this.qName = pkgQName.child(name.getText());});
 	}
-	public static AstClassDeclaration newClass(Reporter reporter, AstToken name) {
-		return new AstClassDeclaration (reporter, false /*interfaceType */ , name);
+	public AstClassDeclaration(Reporter reporter, boolean interfaceType, Token name/*, PackageDeclaration packageDeclaration*/, Optional<QName> packageQName) {
+		this(reporter, interfaceType, new AstToken(name), packageQName);
 	}
-	public static AstClassDeclaration newInterface(Reporter reporter, AstToken name) {
-		return new AstClassDeclaration (reporter, true /*interfaceType */ , name);
+
+	public static AstClassDeclaration newClass(Reporter reporter, AstToken name, Optional<QName> packageQName) {
+		return new AstClassDeclaration (reporter, false /*interfaceType */ , name, packageQName);
+	}
+	public static AstClassDeclaration newClass(Reporter reporter, AstToken name, QName packageQName) {
+		return newClass(reporter, name, Optional.of(packageQName));
+	}
+	
+	public static AstClassDeclaration newInterface(Reporter reporter, AstToken name, Optional<QName> packageQName) {
+		return new AstClassDeclaration (reporter, true /*interfaceType */ , name, packageQName);
+	}
+	public static AstClassDeclaration newInterface(Reporter reporter, AstToken name, QName packageQName) {
+		return newInterface(reporter, name, Optional.of(packageQName));
 	}
 
 	public void setSymbolTable(DefaultSymbolTable symbolTable) {
@@ -74,9 +90,8 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 			this.symbolTable.addFormalParameter(this.qName, d);
 	}
 
-	public AstClassDeclaration(Reporter reporter, boolean interfaceType, Token name/*, PackageDeclaration packageDeclaration*/) {
-		this(reporter, interfaceType, new AstToken(name));
-	}
+	
+	
 	
 	public AstToken getName() {
 		return name;
@@ -95,16 +110,22 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	}
 	
 	
-	public AstPackageDeclaration getPackageDeclaration() {
-		assert(this.packageDeclaration != null);
-		return packageDeclaration;
+//	public AstPackageDeclaration getPackageDeclaration() {
+//		assert(this.packageDeclaration != null);
+//		return packageDeclaration;
+//	}
+	
+	
+//	public void setPackageDeclaration(AstPackageDeclaration packageDeclaration) {
+//		this.packageDeclaration = packageDeclaration;
+//		this.qName = packageDeclaration.getQname().child(this.name.getText());
+//	}
+	public void setPackageQName(QName packageQName) {
+		this.packageQName = Optional.of(packageQName);
+		this.qName = packageQName.child(this.name.getText());
 	}
 	
 	
-	public void setPackageDeclaration(AstPackageDeclaration packageDeclaration) {
-		this.packageDeclaration = packageDeclaration;
-		this.qName = packageDeclaration.getQname().child(this.name.getText());
-	}
 	public void addTypeParameterDeclaration(TypeFormalParameterDeclaration d) {
 		typeParameters.add(d);
 //		this.symbolTable.addFormalParameter(this.qName, d);
@@ -114,11 +135,11 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	public boolean isInterfaceType() {
 		return interfaceType;
 	}
-	public String getQname() {	// TODO: remove
-		String pkgQname = packageDeclaration.getQnameString();
-		String classname = name.getText();
-		return pkgQname.isEmpty() ? classname : pkgQname + "." + classname;
-	}
+//	public String getQname() {	// TODO: remove
+//		String pkgQname = packageDeclaration.getQnameString();
+//		String classname = name.getText();
+//		return pkgQname.isEmpty() ? classname : pkgQname + "." + classname;
+//	}
 	public void setqName(QName qName) {
 		this.qName = qName;
 	}
@@ -170,7 +191,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 			return Optional.empty();
 		}
 		
-		AstClassDeclaration cd = new AstClassDeclaration(reporter, interfaceType, name);
+		AstClassDeclaration cd = new AstClassDeclaration(reporter, interfaceType, name, packageQName);
 		
 		cd.typeParameters.addAll(typeParameters.subList(1, typeParameters.size()));
 	
@@ -278,6 +299,8 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		if(isExactlyA(type))
 			return true;
 		
+		type = type.resolve(symbolTable);	// TODO: it's for SimpleType ref -> refactor ???
+		
 		if(type instanceof AstClassDeclaration) {
 			AstClassDeclaration otherClassDecl = (AstClassDeclaration)type;
 
@@ -323,4 +346,34 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 				.collect(Collectors.toList());
 				
 	}
+	@Override
+	public AstType resolve(SymbolTable symbolTable) {
+//		reporter.error("Symbol \"" + name.getText() + "\" not found.", name);
+		return this; // TODO
+	}
+	
+	private class ApiClassDeclaration implements ClassDeclaration {
+
+		@Override
+		public List<MemberValue> getValues() {
+			return Collections.emptyList();	// TODO
+		}
+
+		@Override
+		public List<MemberFunction> getFunctions() {
+			return Collections.emptyList();	// TODO
+		}
+
+		@Override
+		public QName getQName() {
+			return qName;
+		}
+		
+	}
+	
+	@Override
+	public Type getApiType() {
+		return new ApiClassDeclaration();
+	}
+
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.sirius.common.core.QName;
 
-public interface ClassOrInterfaceDeclaration {
+public interface ClassOrInterfaceDeclaration extends ClassType {
 
 	List<MemberValue> getValues();
 	List<MemberFunction> getFunctions();
@@ -15,9 +15,15 @@ public interface ClassOrInterfaceDeclaration {
 	
 	default void visitContent(Visitor visitor) {
 		
-		getValues().stream().forEach(v -> v.visitMe(visitor));
-		getFunctions().stream().forEach(v -> v.visitMe(visitor));
-		
+		getValues().stream().forEach(
+				val -> val.visitMe(visitor)
+		);
+//		getFunctions().stream().forEach(
+//				fct -> fct.visitMe(visitor)
+//		);
+		for(MemberFunction fct: getFunctions()) {
+			fct.visitMe(visitor);
+		}
 	}
 
 	

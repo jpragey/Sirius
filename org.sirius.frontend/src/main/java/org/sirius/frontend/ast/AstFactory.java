@@ -19,12 +19,12 @@ public class AstFactory {
 	}
 
 	// -- Types
-	public AstClassDeclaration createClassDeclaration(Token name/*, PackageDeclaration packageDeclaration*/) {
-		return new AstClassDeclaration(reporter, false /*asInterface*/, new AstToken(name));
+	public AstClassDeclaration createClassDeclaration(Token name) {
+		return AstClassDeclaration.newClass(reporter, new AstToken(name), Optional.empty());
 	}
 
-	public AstClassDeclaration createInterfaceDeclaration(Token name /*, PackageDeclaration packageDeclaration*/) {
-		return new AstClassDeclaration(reporter, true /*asInterface*/, new AstToken(name));
+	public AstClassDeclaration createInterfaceDeclaration(Token name) {
+		return AstClassDeclaration.newInterface(reporter, new AstToken(name), Optional.empty());
 	}
 
 	public TypeFormalParameterDeclaration createTypeFormalParameter(Variance variance, Token formalName) {
@@ -32,7 +32,7 @@ public class AstFactory {
 	}
 	
 	public SimpleType createSimpleType(Token name) {
-		return new SimpleType(new AstToken(name));
+		return new SimpleType(reporter, new AstToken(name));
 	}
 
 	public UnionType createUnionType(AstType first, AstType second) {

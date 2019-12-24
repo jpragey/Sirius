@@ -7,10 +7,13 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionFormalArgument;
 import org.sirius.frontend.ast.AstPackageDeclaration;
+import org.sirius.frontend.ast.AstReturnStatement;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
+import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.ast.AstStringConstantExpression;
@@ -89,6 +92,10 @@ public class SymbolResolutionVisitor implements AstVisitor {
 //		endScope(functionDeclaration);
 	}
 	
+	@Override
+	public void startFunctionFormalArgument(AstFunctionFormalArgument formalArgument) {
+		formalArgument.resolve();
+	}
 	
 	private void resolveFctCallSymbol(AstFunctionCallExpression expression, Symbol symbol) {
 		
@@ -110,6 +117,16 @@ public class SymbolResolutionVisitor implements AstVisitor {
 	
 	@Override
 	public void endStringConstant(AstStringConstantExpression expression) {
+	}
+	
+	@Override
+	public void startReturnStatement(AstReturnStatement statement) {
+//		statement.resolve(stack.peek());
+	}
+	
+	@Override
+	public void start(SimpleType simpleType) {
+		simpleType.resolve(stack.peek());
 	}
 	
 //	// TODO: move it?

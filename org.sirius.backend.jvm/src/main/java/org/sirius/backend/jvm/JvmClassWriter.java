@@ -27,6 +27,7 @@ import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.StringConstantExpression;
+import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.api.Visitor;
 
@@ -259,7 +260,23 @@ public class JvmClassWriter {
 
 				mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false /*isInterface*/);
 			} else {
-				reporter.error("Currently unsupported function (only 'println' is supported): " + funcName);
+				
+				call.getArguments().forEach(expr -> processExpression(mv, expr) );
+
+				Optional<TopLevelFunction> tlFunc = call.getDeclaration();
+				if(tlFunc.isPresent()) {
+					String descriptor = descriptorFactory.methodDescriptor(tlFunc.get());
+					mv.visitMethodInsn(
+							INVOKEVIRTUAL,	// opcode 
+							"$package$", // owner "java/io/PrintStream", 
+							call.getFunctionName().getText(), //"println", 
+							descriptor,	// "(Ljava/lang/String;)V",	// method descriptor 
+							false /*isInterface*/);
+				} else {
+					reporter.error("Backend: top-level function not defined: " + funcName);
+				}
+				
+//				reporter.error("Currently unsupported function (only 'println' is supported): " + funcName);
 			}
 		}
 		

@@ -26,6 +26,7 @@ public class AstFunctionFormalArgument {
 	
 	public void visit(AstVisitor visitor) {
 		visitor.startFunctionFormalArgument(this);
+		type.visit(visitor);
 		visitor.endFunctionFormalArgument(this);
 	}
 	
@@ -40,6 +41,8 @@ public class AstFunctionFormalArgument {
 		this.symbolTable = symbolTable;
 	}
 	
+	public void resolve() {
+	}
 
 	public FunctionFormalArgument toAPI(QName functionQName) {
 		return new FunctionFormalArgument() {

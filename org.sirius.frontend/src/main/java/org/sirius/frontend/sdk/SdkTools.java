@@ -5,6 +5,7 @@ import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
@@ -62,8 +63,8 @@ public class SdkTools {
 	}
 
 	private static AstClassDeclaration createClassInPackage(Reporter reporter, AstPackageDeclaration pkg, String name) {
-		AstClassDeclaration cd = new AstClassDeclaration(reporter, false/*interfaceType*/, AstToken.internal(name));
-		cd.setPackageDeclaration(pkg);
+		AstClassDeclaration cd = new AstClassDeclaration(reporter, false/*interfaceType*/, AstToken.internal(name), Optional.of(pkg.getQname()));
+//		cd.setPackageQName(pkg.getQname());
 		return cd;
 		
 	}

@@ -1,5 +1,7 @@
 package org.sirius.frontend.ast;
 
+import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 
 public class AstReturnStatement implements AstStatement {
@@ -24,8 +26,13 @@ public class AstReturnStatement implements AstStatement {
 
 	@Override
 	public Statement toAPI() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ReturnStatement() {
+			
+			@Override
+			public Expression getExpression() {
+				return expression.getExpression();
+			}
+		};
 	}
 	
 }

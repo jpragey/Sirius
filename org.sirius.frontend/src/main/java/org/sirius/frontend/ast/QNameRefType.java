@@ -9,7 +9,9 @@ import org.sirius.common.core.QName;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.GlobalSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
+import org.sirius.frontend.symbols.SymbolTable;
 
 /** most simple (class or interface) type 
  * 
@@ -132,5 +134,16 @@ public final class QNameRefType implements AstType {
 		return false;
 	}
 
+	@Override
+	public AstType resolve(SymbolTable symbolTable) {
+		throw new UnsupportedOperationException("QNameRefType.resolve(not supported)");
+	}
+
+	@Override
+	public void visit(AstVisitor visitor) {
+		visitor.start(this);
+		appliedParameters.stream().forEach(type -> type.visit(visitor));
+		visitor.end(this);		
+	}
 
 }

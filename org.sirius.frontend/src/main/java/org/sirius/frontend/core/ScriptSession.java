@@ -141,11 +141,8 @@ public class ScriptSession implements Session {
 		// -- Set symbol tables (thus create the ST tree), add symbols to tables
 		applyVisitors(reporter, compilationUnit, new SymbolTableFillingVisitor(globalSymbolTable));
 
-
 		// -- Resolve symbols in expressions
-		applyVisitors(reporter, compilationUnit, 
-				new SymbolResolutionVisitor(reporter, globalSymbolTable)
-				);
+		applyVisitors(reporter, compilationUnit, new SymbolResolutionVisitor(reporter, globalSymbolTable));
 		
 	}
 	

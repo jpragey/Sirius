@@ -45,8 +45,8 @@ public interface AstVisitor {
 	public default void startValueDeclaration (AstValueDeclaration valueDeclaration) {}
 	public default void endValueDeclaration (AstValueDeclaration valueDeclaration) {}
 	
-	public default void startSimpleType (SimpleType simpleType) {}
-	public default void endSimpleType (SimpleType simpleType) {}
+//	public default void startSimpleType (SimpleType simpleType) {}
+//	public default void endSimpleType (SimpleType simpleType) {}
 	
 	// -- Expressions
 	public default void startExpression (AstExpression expression) {}
@@ -84,5 +84,26 @@ public interface AstVisitor {
 	public default void startExpressionStatement (AstExpressionStatement statement) {}
 	public default void endExpressionStatement (AstExpressionStatement statement) {}
 	
+	// -- Types
+	public default void start(AstArrayType type) {}
+	public default void end(AstArrayType type) {}
+	
+	public default void start(AstVoidType type) {}
+	public default void end(AstVoidType type) {}
+	
+	public default void start(IntersectionType type) {}
+	public default void end(IntersectionType type) {}
+	
+	public default void start(QNameRefType type) {}
+	public default void end(QNameRefType type) {}
+	
+	public default void start(SimpleType type) {}
+	public default void end(SimpleType type) {}
+	
+	public default void start(TypeFormalParameterDeclaration type) {}
+	public default void end(TypeFormalParameterDeclaration type) {}
+	
+	public default void start(UnionType type) {}
+	public default void end(UnionType type) {}
 	
 }

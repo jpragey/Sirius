@@ -1,5 +1,7 @@
 package org.sirius.frontend.ast;
 
+import org.sirius.frontend.symbols.SymbolTable;
+
 public class TypeFormalParameterDeclaration implements AstType {
 
 	private Variance variance;
@@ -39,5 +41,15 @@ public class TypeFormalParameterDeclaration implements AstType {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public AstType resolve(SymbolTable symbolTable) {
+		throw new UnsupportedOperationException("Unsupported TypeFormalParameter.resolve() for " + formalName.getText());
+	}
+
+	@Override
+	public void visit(AstVisitor visitor) {
+		visitor.start(this);
+		visitor.end(this);		
+	}
 	
 }

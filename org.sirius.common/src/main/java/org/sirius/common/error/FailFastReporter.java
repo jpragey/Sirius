@@ -1,0 +1,28 @@
+package org.sirius.common.error;
+
+import java.util.Optional;
+
+import org.sirius.common.core.Token;
+
+public class FailFastReporter implements Reporter {
+	private Reporter delegate;
+	
+	
+	public FailFastReporter(Reporter delegate) {
+		super();
+		this.delegate = delegate;
+	}
+
+	@Override
+	public void message(Severity severity, String message, Optional<Token> token, Optional<Exception> exception) {
+		delegate.message(severity, message, token, exception);
+		if(severity == Severity.ERROR)
+			throw new RuntimeException(message);
+	}
+
+	@Override
+	public int getErrorCount() {
+		return delegate.getErrorCount();
+	}
+
+}
