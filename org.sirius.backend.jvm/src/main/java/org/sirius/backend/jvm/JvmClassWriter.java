@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Type;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.Expression;
@@ -25,6 +26,7 @@ import org.sirius.frontend.api.ExpressionStatement;
 import org.sirius.frontend.api.FunctionCall;
 import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.MemberFunction;
+import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.StringConstantExpression;
 import org.sirius.frontend.api.TopLevelFunction;
@@ -197,11 +199,37 @@ public class JvmClassWriter {
 		
 		@Override
 		public void start(Statement statement) {
-//			System.out.println("Starting statement " + statement);
+			System.out.println("Starting statement " + statement);
+			MethodVisitor mv = methodStack.peek();
+			
+//			if(statement instanceof IntegerConstantExpression) {
+////				Integer stmtValue = ((IntegerConstantExpression) statement).getValue();
+////				mv.visitLdcInsn(stmtValue);
+//			} else {
+				reporter.error("Backend: statement type not supported: " + statement);
+//			}
+			
 		}
-		@Override
+//		@Override
 		public void end(Statement statement) {
-//			System.out.println("Ending statement " + statement);
+			System.out.println("Ending statement " + statement);
+		}
+
+		@Override
+		public void start(ReturnStatement statement) {
+			MethodVisitor mv = methodStack.peek();
+//		    mv.visitInsn(ICONST_5);
+//		    mv.visitInsn(IRETURN);
+//	    mv.visitMaxs(2, 1);
+//	    mv.visitEnd();
+			System.out.println("start ReturnStatement " + statement);
+		}
+		public void end(ReturnStatement statement) {
+			MethodVisitor mv = methodStack.peek();
+		    mv.visitInsn(IRETURN);
+//	    mv.visitMaxs(2, 1);
+//	    mv.visitEnd();
+			System.out.println("end ReturnStatement " + statement);
 		}
 		
 		@Override
@@ -247,7 +275,18 @@ public class JvmClassWriter {
 		private void processIntegerConstant(MethodVisitor mv, IntegerConstantExpression expression) {
 		    mv.visitLdcInsn(expression.getValue());
 		}
-		
+
+		// -- Expressions
+		@Override
+		public void start(IntegerConstantExpression expression) {
+			MethodVisitor mv = methodStack.peek();
+		    mv.visitLdcInsn(expression.getValue());
+		}
+		@Override
+		public void end(IntegerConstantExpression expression) {
+			
+		}
+
 		private void processFunctionCall(MethodVisitor mv, FunctionCall call) {
 			String funcName = call.getFunctionName().getText();
 			if(funcName.equals("println")) {

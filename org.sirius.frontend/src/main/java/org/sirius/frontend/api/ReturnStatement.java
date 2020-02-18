@@ -6,7 +6,7 @@ public interface ReturnStatement extends Statement {
 	
 	default void visitMe(Visitor visitor) {
 		visitor.start(this);
-//		visitContent(visitor);
+		getExpression().visitMe(visitor);
 		visitor.end(this);
 	}
 

@@ -8,6 +8,7 @@ import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ArrayType;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.IntegerType;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.VoidType;
@@ -47,6 +48,8 @@ public class DescriptorFactory {
 		} else if(type instanceof ArrayType) {
 			ArrayType arrayType = (ArrayType)type;
 			return "[" + fieldDescriptor(arrayType.getElementType());
+		} else if(type instanceof IntegerType) {
+			return "I";
 		} else {
 			reporter.error("JVM backend: internal error creating fieldDescriptor, type " + type + ":" + type.getClass() + " has no mapping to JVM type descriptor.");
 			return "";
