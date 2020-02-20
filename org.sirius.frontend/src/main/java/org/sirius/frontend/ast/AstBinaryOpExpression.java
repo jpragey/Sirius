@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.antlr.v4.runtime.Token;
 import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.Type;
 
 public class AstBinaryOpExpression implements AstExpression {
 //	public enum Operator {Add, Substract, Mult, Divide}
@@ -79,6 +80,11 @@ public class AstBinaryOpExpression implements AstExpression {
 			@Override
 			public Expression getRight() {
 				return right.getExpression();
+			}
+
+			@Override
+			public Type getType() {
+				throw new UnsupportedOperationException("No support of getType() in AstBinaryOpExpression yet.");
 			}
 		};
 	}

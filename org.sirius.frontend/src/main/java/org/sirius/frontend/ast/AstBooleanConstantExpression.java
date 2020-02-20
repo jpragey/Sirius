@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.sirius.frontend.api.BooleanConstantExpression;
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.Type;
 
 public class AstBooleanConstantExpression implements AstExpression {
 	
@@ -34,6 +35,11 @@ public class AstBooleanConstantExpression implements AstExpression {
 	public Expression getExpression() {
 		
 		return new BooleanConstantExpression() {
+
+			@Override
+			public Type getType() {
+				return Type.booleanType;
+			}
 		};
 	}
 }

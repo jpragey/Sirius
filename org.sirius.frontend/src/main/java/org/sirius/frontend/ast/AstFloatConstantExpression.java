@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FloatConstantExpression;
+import org.sirius.frontend.api.Type;
 
 public class AstFloatConstantExpression implements AstExpression {
 	
@@ -33,6 +34,11 @@ public class AstFloatConstantExpression implements AstExpression {
 	@Override
 	public Expression getExpression() {
 		return new FloatConstantExpression() {
+			@Override
+			public Type getType() {
+				return Type.integerType;
+			}
+
 		};
 	}
 	

@@ -33,6 +33,7 @@ public class DescriptorFactory {
 		
 		switch(siriusName) {
 		case "String": return "java/lang/String";
+		case "sirius/lang/String": return "java/lang/String";
 		default: return siriusName;
 		}
 	}

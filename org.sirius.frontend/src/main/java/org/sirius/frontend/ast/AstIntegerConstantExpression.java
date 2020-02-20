@@ -6,6 +6,7 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.IntegerConstantExpression;
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.GlobalSymbolTable;
 
@@ -64,6 +65,11 @@ public class AstIntegerConstantExpression implements AstExpression {
 			@Override
 			public int getValue() {
 				return value;
+			}
+
+			@Override
+			public Type getType() {
+				return Type.integerType;
 			}
 			
 		} ;

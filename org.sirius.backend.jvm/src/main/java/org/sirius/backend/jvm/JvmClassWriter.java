@@ -21,10 +21,12 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.ExpressionStatement;
 import org.sirius.frontend.api.FunctionCall;
 import org.sirius.frontend.api.IntegerConstantExpression;
+import org.sirius.frontend.api.IntegerType;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
@@ -226,7 +228,16 @@ public class JvmClassWriter {
 		}
 		public void end(ReturnStatement statement) {
 			MethodVisitor mv = methodStack.peek();
-		    mv.visitInsn(IRETURN);
+			
+			org.sirius.frontend.api.Type type = statement.getExpressionType();
+			if(type instanceof IntegerType) {
+			    mv.visitInsn(IRETURN);
+			} else if(type instanceof ClassType) {
+			    mv.visitInsn(ARETURN);
+			} else {
+				reporter.error("Currently unsupported expression type in return statement: " + type);
+			}
+			
 //	    mv.visitMaxs(2, 1);
 //	    mv.visitEnd();
 			System.out.println("end ReturnStatement " + statement);
@@ -284,6 +295,17 @@ public class JvmClassWriter {
 		}
 		@Override
 		public void end(IntegerConstantExpression expression) {
+			
+		}
+
+		@Override
+		public void start(StringConstantExpression expression) {
+			MethodVisitor mv = methodStack.peek();
+			String text = expression.getText();
+		    mv.visitLdcInsn(text);
+		}
+		@Override
+		public void end(StringConstantExpression expression) {
 			
 		}
 

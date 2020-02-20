@@ -108,6 +108,11 @@ public class AstFunctionCallExpression implements AstExpression {
 				@Override
 				public Type targetType() {
 					return argType.getApiType();
+				}
+
+				@Override
+				public Type getType() {
+					return expr.getType();
 				}};
 			return Optional.of(castExpression);
 		}
@@ -164,6 +169,10 @@ public class AstFunctionCallExpression implements AstExpression {
 			
 			return Optional.empty();
 		}
+		@Override
+		public Type getType() {
+			return functionDeclaration.getReturnType().getApiType();
+		}
 		
 	}
 	
@@ -205,6 +214,11 @@ public class AstFunctionCallExpression implements AstExpression {
 			@Override
 			public Optional<TopLevelFunction> getDeclaration() {
 				return Optional.empty();
+			}
+
+			@Override
+			public Type getType() {
+				return Type.voidType;
 			}
 		};
 	}

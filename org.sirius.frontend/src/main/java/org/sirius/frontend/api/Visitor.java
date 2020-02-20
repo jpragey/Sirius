@@ -21,6 +21,9 @@ public interface Visitor {
 	public default void start(IntegerConstantExpression expression) {}
 	public default void end(IntegerConstantExpression expression) {}
 	
+	public default void start(StringConstantExpression expression) {}
+	public default void end(StringConstantExpression expression) {}
+	
 	
 	public default void start(ReturnStatement statement) {}
 	public default void end(ReturnStatement statement) {}
