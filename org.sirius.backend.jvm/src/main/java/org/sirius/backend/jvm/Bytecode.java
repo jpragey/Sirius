@@ -1,14 +1,11 @@
 package org.sirius.backend.jvm;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 import org.objectweb.asm.ClassWriter;
 import org.sirius.common.core.QName;
@@ -57,7 +54,7 @@ public class Bytecode {
 		File classFile = classDirPath.resolve(Paths.get(classFilePath.getFileName().toString() + ".class")).toFile();
 
 		try(FileOutputStream writer = new FileOutputStream(classFile)) {
-//			reporter.info("Writing bytecode to: " + classFile.getAbsolutePath());
+reporter.info("Writing bytecode of " + classQName + " to: " + classFile.getAbsolutePath());
 			
 			writer.write(bytes);
 			

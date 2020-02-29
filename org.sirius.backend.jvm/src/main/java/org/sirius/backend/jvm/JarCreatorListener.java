@@ -22,10 +22,8 @@ public class JarCreatorListener implements ClassWriterListener {
 	private Reporter reporter;
 	private String modulePath;
 	private Optional<String> classDir;
-//	private QName moduleQName;
 	private Optional<JarOutputStream> outputStream = Optional.empty();
 	private Path jarPath;
-	
 	
 	/**
 	 * 
@@ -38,13 +36,6 @@ public class JarCreatorListener implements ClassWriterListener {
 		this.reporter = reporter;
 		this.modulePath = modulePath;
 		this.classDir = classDir;
-//		this.moduleQName = moduleQName;
-
-//		QName effectiveQName = moduleQName.isEmpty() ?
-//			new QName("unnamed.jar") :
-//			moduleQName.parent().get().child(moduleQName.getLast() + ".jar");
-//		
-//		this.jarPath = Paths.get(modulePath, effectiveQName.toArray());
 	}
 
 	@Override

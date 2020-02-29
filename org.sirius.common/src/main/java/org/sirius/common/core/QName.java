@@ -97,6 +97,10 @@ public class QName {
 		return getStringElements().stream()
 				.collect(Collectors.joining("."));
 	}
+	public String slashSeparated() {
+		return getStringElements().stream()
+				.collect(Collectors.joining("/"));
+	}
 	@Override
 	public String toString() {
 		return dotSeparated();

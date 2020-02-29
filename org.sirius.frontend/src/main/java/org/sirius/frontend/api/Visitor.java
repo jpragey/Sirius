@@ -8,6 +8,9 @@ public interface Visitor {
 	public default void start(InterfaceDeclaration declaration) {}
 	public default void end(InterfaceDeclaration declaration) {}
 	
+	public default void start(ConstructorDeclaration declaration) {}
+	public default void end(ConstructorDeclaration declaration) {}
+	
 	public default void start(MemberFunction declaration) {}
 	public default void end(MemberFunction declaration) {}
 	
@@ -23,6 +26,9 @@ public interface Visitor {
 	
 	public default void start(StringConstantExpression expression) {}
 	public default void end(StringConstantExpression expression) {}
+	
+	public default void start(ConstructorCall expression) {}
+	public default void end(ConstructorCall expression) {}
 	
 	
 	public default void start(ReturnStatement statement) {}
