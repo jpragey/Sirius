@@ -50,7 +50,7 @@ public class ImplicitTypeCast {
 //	}
 
 	
-	@Test
+	@Test(enabled = false)
 	public void runHelloWorld() throws Exception {
 		
 		String script = "#!\n "

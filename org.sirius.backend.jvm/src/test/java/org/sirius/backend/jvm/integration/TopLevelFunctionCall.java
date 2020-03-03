@@ -33,7 +33,7 @@ public class TopLevelFunctionCall {
 	}
 	
 
-	@Test
+	@Test(enabled = false)
 	public void callTopLevelFunctionTest() throws Exception {
 		
 		String script = "#!\n "

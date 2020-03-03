@@ -15,6 +15,7 @@ import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.parser.Compiler;
 import org.testng.annotations.Test;
@@ -45,7 +46,10 @@ public class MethodTests {
 		MemberValue lvs = cd.getValues().get(0);
 
 		assertEquals(lvs.getName().getText(), "s");
-////		assertEquals(lvs.getType().getClass(), "s");
+
+		Type type = lvs.getType();
+		assert(type instanceof ClassDeclaration);
+		assertEquals( ((ClassDeclaration)type).getQName(), new QName("p", "k", "C"));
 
 	}
 }
