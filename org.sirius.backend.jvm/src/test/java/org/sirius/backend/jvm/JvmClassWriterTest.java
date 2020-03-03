@@ -12,9 +12,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import org.objectweb.asm.util.TraceClassVisitor;
 import org.sirius.common.core.QName;
+import org.sirius.common.core.Token;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
@@ -31,7 +33,9 @@ import org.sirius.frontend.api.testimpl.ClassTypeImpl;
 import org.sirius.frontend.api.testimpl.ConstructorCallImpl;
 import org.sirius.frontend.api.testimpl.IntegerConstantExpressionTestImpl;
 import org.sirius.frontend.api.testimpl.IntegerTypeTestImpl;
+import org.sirius.frontend.api.testimpl.LocalVariableStatementTestImpl;
 import org.sirius.frontend.api.testimpl.MemberFunctionTestImpl;
+import org.sirius.frontend.api.testimpl.MemberValueImpl;
 import org.sirius.frontend.api.testimpl.ReturnStatementTestImpl;
 import org.sirius.frontend.api.testimpl.StringConstantExpressionTestImpl;
 import org.sirius.frontend.api.testimpl.StringTypeTestImpl;
@@ -249,7 +253,135 @@ public class JvmClassWriterTest {
 		assertEquals(r.getClass().getName(), "a.b.CC");
 //		System.out.println("Result: " + r);
 	}
-	private static Bytecode createBytecode(ClassDeclaration cd, Reporter reporter) {
+
+	@Test
+	public void memberValueInClass() throws Exception {
+		AccumulatingReporter reporter = new AccumulatingReporter(new ShellReporter()); 
+
+		/**
+		 * class a.b.CC {
+		 * }
+		 * class a.b.DD {
+		 * 	 a.b.CC cc;
+		 * }
+		 */
+		ClassDeclaration cdCC = new ClassDeclarationTestImpl(new QName("a", "b", "CC"), Collections.emptyList()/*fields*/, Arrays.asList( /*memberFunction*/));
+		ClassDeclaration cdDD = new ClassDeclarationTestImpl(new QName("a", "b", "DD"), 
+				Arrays.asList(
+						new MemberValueImpl(cdCC, AstToken.internal("cc"), Optional.empty() /*initial value*/)
+						), 
+				Arrays.asList(
+				new MemberFunctionTestImpl(
+						new QName("a", "b", "CC", "cc"), Collections.emptyList() /* formal args*/, 
+						new ClassTypeImpl(new QName("a", "b", "CC")),
+						Arrays.asList(new ReturnStatementTestImpl(
+								new ConstructorCallImpl(cdCC, Arrays.asList() /*List<Expression> arguments*/)
+								))
+						)
+				));
+		
+		
+//		JvmClassWriter writer = new JvmClassWriter(reporter, Collections.emptyList(), false /* verbose 'ast' */);
+		Bytecode bytecodeCC = createBytecode(cdCC, reporter);
+		Bytecode bytecodeDD = createBytecode(cdDD, reporter);
+//		Bytecode bytecodeCC = writer.createByteCode(cdCC);
+		
+		bytecodeCC.createClassFiles(reporter, "/tmp", new QName("a", "b", "CC"));
+		bytecodeDD.createClassFiles(reporter, "/tmp", new QName("a", "b", "DD"));
+		
+		
+		MyClassLoader cll = new MyClassLoader(getClass().getClassLoader(), bytecodeCC.getBytes(), Arrays.asList("a.b.CC"));
+		cll.appendClassBytecode(bytecodeDD.getBytes(), Arrays.asList("a.b.DD"));
+		
+		Class<? extends Object> clsCC = cll.loadClass("a.b.CC");
+		Class<? extends Object> clsDD = cll.loadClass("a.b.DD");
+		Object newCC = clsCC.getDeclaredConstructor().newInstance();
+		Object newDD = clsDD.getDeclaredConstructor().newInstance();
+
+
+		Method[] methods = newDD.getClass().getDeclaredMethods();
+		
+		assertEquals(methods.length, 1);
+//		assertEquals(methods[0].toString(), "public static int a.b.C.main(java.lang.String)");
+		assertEquals(methods[0].toString(), "public static a.b.CC a.b.DD.cc()");	// TODO: int ???
+		assertEquals(methods[0].getName(), "cc");
+
+		for(Method m: methods)
+			System.out.println("-- Method: " + m);
+
+		Method mainMethod = methods[0];
+		Object r = mainMethod.invoke(null/*ignored(static func*/ /*, args */);
+		assertEquals(r.getClass().getName(), "a.b.CC");
+//		System.out.println("Result: " + r);
+	}
+	
+	
+	
+	@Test
+	public void functionLocalVariable() throws Exception {
+		AccumulatingReporter reporter = new AccumulatingReporter(new ShellReporter()); 
+
+		/**
+		 * class a.b.CC {
+		 * }
+		 * class a.b.DD {
+		 * 	 a.b.CC cc;
+		 * }
+		 */
+		ClassDeclaration cdCC = new ClassDeclarationTestImpl(new QName("a", "b", "CC"), Collections.emptyList()/*fields*/, Arrays.asList( /*memberFunction*/));
+		ClassDeclaration cdDD = new ClassDeclarationTestImpl(new QName("a", "b", "DD"), 
+				Arrays.asList(
+						new MemberValueImpl(cdCC, AstToken.internal("cc"), Optional.empty() /*initial value*/)
+						), 
+				Arrays.asList(
+				new MemberFunctionTestImpl(
+						new QName("a", "b", "CC", "cc"), 
+						Collections.emptyList() /* formal args*/,
+						
+						new VoidType() {},
+						Arrays.asList(
+								new LocalVariableStatementTestImpl(cdCC, AstToken.internal("myvar"), Optional.empty() /*initialValue*/),
+								new ReturnStatementTestImpl(new ConstructorCallImpl(cdCC, Arrays.asList())))
+						)
+				));
+		
+		
+//		JvmClassWriter writer = new JvmClassWriter(reporter, Collections.emptyList(), false /* verbose 'ast' */);
+		Bytecode bytecodeCC = createBytecode(cdCC, reporter);
+		Bytecode bytecodeDD = createBytecode(cdDD, reporter);
+//		Bytecode bytecodeCC = writer.createByteCode(cdCC);
+		
+		bytecodeCC.createClassFiles(reporter, "/tmp", new QName("a", "b", "CC"));
+		bytecodeDD.createClassFiles(reporter, "/tmp", new QName("a", "b", "DD"));
+		
+//		
+//		MyClassLoader cll = new MyClassLoader(getClass().getClassLoader(), bytecodeCC.getBytes(), Arrays.asList("a.b.CC"));
+//		cll.appendClassBytecode(bytecodeDD.getBytes(), Arrays.asList("a.b.DD"));
+//		
+//		Class<? extends Object> clsCC = cll.loadClass("a.b.CC");
+//		Class<? extends Object> clsDD = cll.loadClass("a.b.DD");
+//		Object newCC = clsCC.getDeclaredConstructor().newInstance();
+//		Object newDD = clsDD.getDeclaredConstructor().newInstance();
+//
+//
+//		Method[] methods = newDD.getClass().getDeclaredMethods();
+//		
+//		assertEquals(methods.length, 1);
+////		assertEquals(methods[0].toString(), "public static int a.b.C.main(java.lang.String)");
+//		assertEquals(methods[0].toString(), "public static a.b.CC a.b.DD.cc()");	// TODO: int ???
+//		assertEquals(methods[0].getName(), "cc");
+//
+//		for(Method m: methods)
+//			System.out.println("-- Method: " + m);
+//
+//		Method mainMethod = methods[0];
+//		Object r = mainMethod.invoke(null/*ignored(static func*/ /*, args */);
+//		assertEquals(r.getClass().getName(), "a.b.CC");
+////		System.out.println("Result: " + r);
+	}
+
+	
+private static Bytecode createBytecode(ClassDeclaration cd, Reporter reporter) {
 		JvmClassWriter writer = new JvmClassWriter(reporter, Collections.emptyList(), false /* verbose 'ast' */);
 		Bytecode bytecode = writer.createByteCode(cd);
 		return bytecode;

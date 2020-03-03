@@ -17,6 +17,9 @@ public interface Visitor {
 	public default void start(Statement statement) {}
 	public default void end(Statement statement) {}
 	
+	public default void start(LocalVariableStatement statement) {}
+	public default void end(LocalVariableStatement statement) {}
+	
 	public default void start(ExpressionStatement statement) {}
 	public default void end(ExpressionStatement statement) {}
 	

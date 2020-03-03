@@ -20,6 +20,7 @@ import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.ast.AstExpressionStatement;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
+import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstStatement;
@@ -167,6 +168,19 @@ public class TopLevelFunctionTest {
 		assert (argType.getElementType() instanceof ClassType);
 		ClassType classType = (ClassType)argType.getElementType();
 		System.out.println("API element type: " + classType.getQName());
+	}
+	
+	@Test
+	public void checkFunctionLocalArgument() {
+		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(){String s ;}");
+		
+		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
+		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
+		AstFunctionDeclaration fd = pd.getFunctionDeclarations().get(0);
+
+		assertEquals(fd.getStatements().size(), 1);
+		AstStatement st0 = fd.getStatements().get(0);
+		assert(st0 instanceof AstLocalVariableStatement);
 	}
 	
 }

@@ -3,20 +3,18 @@ package org.sirius.frontend.symbols;
 import java.util.Optional;
 import java.util.Stack;
 
-import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
-import org.sirius.frontend.ast.AstPackageDeclaration;
+import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstReturnStatement;
+import org.sirius.frontend.ast.AstStringConstantExpression;
 import org.sirius.frontend.ast.AstVisitor;
-import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.StandardCompilationUnit;
-import org.sirius.frontend.ast.AstStringConstantExpression;
 
 /** Visitor that sets the 'parent' symbol table field throughout the AST.
  * 
@@ -129,10 +127,8 @@ public class SymbolResolutionVisitor implements AstVisitor {
 		simpleType.resolve(stack.peek());
 	}
 	
-//	// TODO: move it?
-//	@Override
-//	public void startPackageDeclaration(AstPackageDeclaration declaration) {
-//		declaration.updateContentContainerRefs();	
-//	}
+	public void start (AstLocalVariableStatement statement) {
+		
+	}
 
 }

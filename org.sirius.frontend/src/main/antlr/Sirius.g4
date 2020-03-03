@@ -161,6 +161,9 @@ valueDeclaration returns [AstValueDeclaration declaration]
 		annotationList
 		type
 		LOWER_ID		{$declaration = factory.valueDeclaration($annotationList.annotations, $type.declaration, $LOWER_ID);}
+		('=' expression	{$declaration.setInitialValue($expression.express); }
+			
+		)?
 		';'
 	;
 
@@ -196,7 +199,7 @@ functionDeclaration returns [AstFunctionDeclaration declaration]
 	  ')' 
 	  '{' 
 	  		(
-	  			statement ';'	{ $declaration.addStatement($statement.stmt); }
+	  			statement	{ $declaration.addStatement($statement.stmt); }
 	  		)*
 	   '}'
 	;
@@ -211,11 +214,12 @@ functionFormalArgument returns [AstFunctionFormalArgument argument]
 
 statement returns [AstStatement stmt]
 	: returnStatement	{ $stmt = $returnStatement.stmt; }
-	| expression		{ $stmt = new AstExpressionStatement($expression.express); }
+	| expression ';'		{ $stmt = new AstExpressionStatement($expression.express); }
+	| valueDeclaration	{ $stmt = new AstLocalVariableStatement($valueDeclaration.declaration); }
 	;
 
 returnStatement returns [AstReturnStatement stmt]
-	: 'return' expression { $stmt = new AstReturnStatement($expression.express); }
+	: 'return' expression ';' { $stmt = new AstReturnStatement($expression.express); }
 	; 
 
 // -------------------- EXPRESSION

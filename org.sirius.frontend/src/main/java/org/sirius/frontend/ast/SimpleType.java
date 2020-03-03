@@ -77,15 +77,6 @@ public final class SimpleType implements AstType {
 		assert(resolvedElementType.isPresent());
 		AstType type = resolvedElementType.get();
 		return type.getApiType();
-		
-//		return new ClassType() {
-//			QName qName = new QName(name.getText());	// TODO : must be a full class name
-//			@Override
-//			public QName getQName() {
-//				return qName;
-//			}
-//			
-//		};
 	}
 
 	private boolean isExactlyAClassDeclaration(AstClassDeclaration thisClassDeclaration, AstType otherType) {

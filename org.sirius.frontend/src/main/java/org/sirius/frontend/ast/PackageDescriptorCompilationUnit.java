@@ -1,5 +1,9 @@
 package org.sirius.frontend.ast;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.AbstractCompilationUnit;
 
@@ -27,6 +31,26 @@ public class PackageDescriptorCompilationUnit implements AbstractCompilationUnit
 	
 	public AstPackageDeclaration getPackageDeclaration() {
 		return packageDeclaration;
+	}
+
+	@Override
+	public void updateParentsDeeply() {
+		// Nothing to do
+	}
+
+	@Override
+	public List<AstModuleDeclaration> getModuleDeclarations() {
+		throw new UnsupportedOperationException("PackageDescriptorCompilationUnit.getModuleDeclarations() should be removed."); // TODO
+	}
+
+	@Override
+	public Optional<ShebangDeclaration> getShebangDeclaration() {
+		return Optional.empty();
+	}
+
+	@Override
+	public AstModuleDeclaration getCurrentModule() {
+		throw new UnsupportedOperationException("PackageDescriptorCompilationUnit.getCurrentModule() should be removed."); // TODO
 	}
 
 }

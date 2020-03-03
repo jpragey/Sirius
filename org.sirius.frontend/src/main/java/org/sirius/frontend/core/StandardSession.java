@@ -8,24 +8,18 @@ import java.util.stream.Collectors;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Session;
 import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
-import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.QualifiedName;
-import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.parser.SiriusParser.ModuleDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.StandardCompilationUnitContext;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
-import org.sirius.frontend.symbols.GlobalSymbolTable;
-import org.sirius.frontend.symbols.SymbolResolutionVisitor;
-import org.sirius.frontend.symbols.SymbolTableFillingVisitor;
 
 public class StandardSession implements Session {
 
@@ -74,39 +68,22 @@ public class StandardSession implements Session {
 		ModuleDeclarationContext ctxt = parser.moduleDeclaration();
 		return ctxt.declaration;
 	}
-	
-	private void parseInput(InputTextProvider input) {
 
+	private void parseStandardInput(InputTextProvider input) {
 		SiriusParser parser = createParser(input, new AstFactory(reporter, globalSymbolTable));
 		// -- Parsing
 		StandardCompilationUnitContext unitContext = parser.standardCompilationUnit();
-		StandardCompilationUnit compilationUnit = unitContext.stdUnit;
+		AbstractCompilationUnit compilationUnit = unitContext.stdUnit;
+		
+		parseInput(input, compilationUnit);
+	}
 
-		// -- Package
-//		List<String> packageQName = Arrays.asList(input.getResourcePhysicalName().split("/"));
-		QName packageQName = new PhysicalResourceQName(input.getResourcePhysicalName()).toQName();
 
+	private void parseInput(InputTextProvider input, AbstractCompilationUnit compilationUnit) {
 
-		// -- Root class transformer
-//		String rootClassName = "$root$";
-//		AstToken name = new AstToken(0, 0, 0, 0, rootClassName, "<unknown>");
-//		AstClassDeclaration rootClass = new AstClassDeclaration(reporter, false /*is interface*/, name);
-//		CreateRootClassTransformer createRootClassTransformer = new CreateRootClassTransformer(reporter, rootClass);
 
 		// -- Various transformations
-		applyVisitors(reporter, compilationUnit, 
-				// Add top-level functions in a 'root' class
-//				createRootClassTransformer, 
-					
-				// Set symbol tables parents (thus create the ST tree), add symbols to tables
-				new SymbolTableFillingVisitor(globalSymbolTable)	
-				);
-
-
-		// -- Resolve symbols in expressions
-		applyVisitors(reporter, compilationUnit, 
-				new SymbolResolutionVisitor(reporter, globalSymbolTable)
-				);
+		stdTransform(reporter, input, compilationUnit, globalSymbolTable);
 		
 		List<AstModuleDeclaration> moduleDeclarations = compilationUnit.getModuleDeclarations();
 		for(AstModuleDeclaration moduleDeclaration: moduleDeclarations) {
@@ -165,7 +142,7 @@ public class StandardSession implements Session {
 	}
 	
 	void parseCodeInput(InputTextProvider input, AstPackageDeclaration packageContent, ModuleContent  moduleContent) {
-		parseInput(input);
+		parseStandardInput(input);
 	}
 	
 //	@Override
@@ -201,15 +178,6 @@ public class StandardSession implements Session {
 		for(ModuleContent mc: this.moduleContents) {
 			mc.createDefaultPackageIfNeeded();
 		}		
-	}
-
-	private void applyVisitors(Reporter reporter, StandardCompilationUnit compilationUnit, AstVisitor... visitors) {
-		for(AstVisitor v: visitors) {
-			compilationUnit.visit(v);
-			if(reporter.hasErrors()) {
-				return;
-			}
-		}
 	}
 
 	@Override

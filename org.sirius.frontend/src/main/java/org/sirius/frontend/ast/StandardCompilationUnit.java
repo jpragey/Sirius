@@ -20,6 +20,7 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 	private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
 	
 	private List<AstModuleDeclaration> moduleDeclarations = new ArrayList<>();
+//	private Optional<AstModuleDeclaration> moduleDeclarations = Optional.empty();
 
 	private Reporter reporter; 
 	
@@ -85,10 +86,6 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 		this.moduleDeclarations.add(declaration);
 	}
 	
-//	public void setSymbolTableParent(SymbolTable newParent) {
-//		this.symbolTable.setParentSymbolTable(newParent);
-//	}
-	
 	public List<AstModuleDeclaration> getModuleDeclarations() {
 		return moduleDeclarations;
 	}
@@ -96,6 +93,16 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 	@Override
 	public DefaultSymbolTable getSymbolTable() {
 		return symbolTable;
+	}
+
+	@Override
+	public void updateParentsDeeply() {
+		// Nothing to do
+	}
+
+	@Override
+	public AstModuleDeclaration getCurrentModule() {
+		return moduleDeclarations.get(0);
 	}
 
 }

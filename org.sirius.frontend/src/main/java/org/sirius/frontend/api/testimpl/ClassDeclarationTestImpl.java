@@ -43,4 +43,8 @@ public class ClassDeclarationTestImpl implements ClassDeclaration {
 		return qname;
 	}
 
+	@Override
+	public String toString() {
+		return "ClassDeclarationTestImpl : " + qname.dotSeparated();
+	}
 }

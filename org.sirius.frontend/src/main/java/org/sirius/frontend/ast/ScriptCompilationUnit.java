@@ -22,21 +22,17 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	private List<ImportDeclaration> importDeclarations = new ArrayList<>();
 
 	private LinkedList<AstModuleDeclaration> moduleDeclarations = new LinkedList<>();
-//	private AstModuleDeclaration currentModule;
 	
 	private Reporter reporter; 
 	
-//	private LocalSymbolTable symbolTable; 
 	private DefaultSymbolTable symbolTable; 
 
 	
 	public ScriptCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
 		super();
 		this.reporter = reporter;
-//		this.symbolTable = new DefaultSymbolTable(globalSymbolTable);
 		this.symbolTable = globalSymbolTable;
 	
-//		this.addModuleDeclaration(new AstModuleDeclaration(reporter));
 	}
 
 	public void setShebang(ShebangDeclaration declaration) {
@@ -73,7 +69,7 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		visitor.endScriptCompilationUnit(this);
 	}
 	
-	
+	@Override
 	public AstModuleDeclaration getCurrentModule() {
 		AstModuleDeclaration last = moduleDeclarations.peekLast();
 		if(last == null) {
@@ -87,6 +83,7 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		return getCurrentModule().getCurrentPackage();
 	}
 
+	@Override
 	public List<AstModuleDeclaration> getModuleDeclarations() {
 		return moduleDeclarations;
 	}
@@ -117,6 +114,8 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		return symbolTable;
 	}
 
+	// TODO: could (?) be a visitor
+	@Override
 	public void updateParentsDeeply() {
 		
 		this.moduleDeclarations.stream()

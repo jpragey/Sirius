@@ -1,5 +1,8 @@
 package org.sirius.frontend.api;
 
-public interface AbstractValue {
+import org.sirius.common.core.Token;
 
+public interface AbstractValue {
+	Type getType();
+	Token getName();
 }

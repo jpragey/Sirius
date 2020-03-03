@@ -18,7 +18,6 @@ public interface AstType {
 	public boolean isExactlyA(AstType type);
 	
 	public boolean isStrictDescendantOf(AstType type);
-//	public boolean isStrictAncestorOf(AstType type);
 	public boolean isAncestorOrSameAs(AstType type);
 	
 }

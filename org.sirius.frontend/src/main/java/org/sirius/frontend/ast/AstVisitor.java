@@ -84,6 +84,9 @@ public interface AstVisitor {
 	public default void startExpressionStatement (AstExpressionStatement statement) {}
 	public default void endExpressionStatement (AstExpressionStatement statement) {}
 	
+	public default void start (AstLocalVariableStatement statement) {}
+	public default void end   (AstLocalVariableStatement statement) {}
+	
 	// -- Types
 	public default void start(AstArrayType type) {}
 	public default void end(AstArrayType type) {}
