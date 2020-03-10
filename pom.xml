@@ -15,6 +15,7 @@
   <modules>
     <module>org.sirius.common</module>
     <module>org.sirius.sdk</module>
+    <module>org.sirius.runtime</module>
     <module>org.sirius.frontend</module>
     <module>org.sirius.compiler</module>
     <module>org.sirius.backend.core</module>
@@ -33,6 +34,12 @@
 		<dependency>
 			<groupId>org.sirius</groupId>
 			<artifactId>org.sirius.sdk</artifactId>
+			<version>${sirius.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.sirius</groupId>
+			<artifactId>org.sirius.runtime</artifactId>
 			<version>${sirius.version}</version>
 		</dependency>
 
@@ -59,6 +66,14 @@
 			<artifactId>org.sirius.backend.jvm</artifactId>
 			<version>${sirius.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.sirius</groupId>
+			<artifactId>runtime</artifactId>
+			<version>${sirius.version}</version>
+		</dependency>
+
+  
 
 		<dependency>
 		    <groupId>org.testng</groupId>

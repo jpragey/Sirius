@@ -6,6 +6,7 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstValueDeclaration;
+import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
 import org.sirius.frontend.ast.TypeFormalParameterDeclaration;
 
@@ -19,6 +20,7 @@ public class Symbol {
 	private Optional<AstFunctionFormalArgument> functionArgument = Optional.empty();
 
 	private Optional<AstValueDeclaration> valueDeclaration = Optional.empty();
+	private Optional<ImportedSymbol> importDeclaration = Optional.empty();
 
 	public Symbol(AstToken name, AstClassDeclaration classDeclaration) {
 		super();
@@ -50,6 +52,11 @@ public class Symbol {
 		this.functionArgument = Optional.of(argument);
 	}
 
+	public Symbol(AstToken name, ImportedSymbol argument) {
+		super();
+		this.name = name;
+		this.importDeclaration = Optional.of(argument);
+	}
 
 	public AstToken getName() {
 		return name;
@@ -71,6 +78,10 @@ public class Symbol {
 		return valueDeclaration;
 	}
 	
+	public Optional<ImportedSymbol> getImportDeclaration() {
+		return importDeclaration;
+	}
+
 	@Override
 	public String toString() {
 		
@@ -79,7 +90,8 @@ public class Symbol {
 				(formalParameterDeclaration.isPresent() ? formalParameterDeclaration.get().toString() : "") +
 				(functionDeclaration.isPresent() ? functionDeclaration.toString() : "") +
 				(functionArgument.isPresent() ? functionArgument.toString() : "") +
-				(valueDeclaration.isPresent() ? functionArgument.toString() : "")
+				(valueDeclaration.isPresent() ? valueDeclaration.toString() : "")+
+				(importDeclaration.isPresent() ? importDeclaration.toString() : "")
 				;
 	}
 }

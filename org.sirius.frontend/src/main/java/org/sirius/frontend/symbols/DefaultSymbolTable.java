@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
@@ -12,6 +13,7 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstValueDeclaration;
+import org.sirius.frontend.ast.ImportDeclarationElement;
 import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.ast.TypeFormalParameterDeclaration;
 
@@ -100,8 +102,32 @@ public class DefaultSymbolTable implements SymbolTable {
 		symbols.forEach(action);;
 	}
 
-	public void addImportSymbol(QualifiedName pkgQname, AstToken simpleName, Optional<AstToken> aliasName) {
-		throw new UnsupportedOperationException("addImportSymbol() not supported yet.");
+	
+	public void addImportSymbol(QualifiedName pkgQname, ImportDeclarationElement e /* AstToken simpleName, Optional<AstToken> aliasName*/) {
+//		private HashMap<String, Symbol> symbolsBySimpleName = new HashMap<>();
+		// import org.example.metasyntax { ExampleFoo=Foo, Bar } :
+		//	Bar => org.example.metasyntax.Bar
+		//	ExampleFoo => org.example.metasyntax.Foo
+		
+		AstToken simpleName = e.getImportedTypeName();
+		Optional<AstToken> aliasName = e.getAlias();
+		
+		AstToken effectiveNameTk = aliasName.orElse(simpleName);
+		String effectiveName = effectiveNameTk.getText();
+		
+		QName symbolQName = pkgQname.toQName().child(simpleName.getText());
+
+//		addSymbol(paramQName, new Symbol(paramName, formalParameter));
+//
+//		symbols.put(symbolQName, symbol);
+		
+		ImportedSymbol is = new ImportedSymbol(simpleName, symbolQName, e);
+		Symbol s = new Symbol(simpleName, is);
+		
+		 
+		symbolsBySimpleName.put(effectiveName, s);
+
+//		throw new UnsupportedOperationException("addImportSymbol() not supported yet.");
 	}
 	
 	@Override
@@ -115,4 +141,20 @@ public class DefaultSymbolTable implements SymbolTable {
 		
 		return s;
 	}
+	
+	public void dump() {
+		dump(System.out::println);
+	}
+	public void dump(Consumer<String> print) {
+		dump("Symbol table: ", print);
+	}
+	public void dump(String prefix, Consumer<String> print) {
+		
+		print.accept(prefix + this.getClass());
+		for(Map.Entry<String, Symbol> e : symbolsBySimpleName.entrySet()) {
+			print.accept("  " + e.getKey() + " => " + e.getValue());
+		}
+		parent.ifPresent(p-> p.dump(prefix+"parent: ", print));
+	}
+	
 }

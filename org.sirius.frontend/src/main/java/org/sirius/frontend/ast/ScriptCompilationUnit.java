@@ -51,7 +51,7 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		this.importDeclarations.add(importDeclaration);
 		
 		for(ImportDeclarationElement e: importDeclaration.getElements()) {
-			this.symbolTable.addImportSymbol(importDeclaration.getPack(), e.getImportedTypeName(), e.getAlias());
+			this.symbolTable.addImportSymbol(importDeclaration.getPack(), e /* e.getImportedTypeName(), e.getAlias()*/);
 		}
 	}
 

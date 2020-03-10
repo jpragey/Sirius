@@ -81,8 +81,12 @@ public class AstFactory {
 		return new ImportDeclaration(reporter, pack);
 	}
 	
-	public ImportDeclarationElement createImportDeclarationElement(Token importedTypeName, Optional<Token> alias) {
-		return new ImportDeclarationElement(importedTypeName, alias);
+	
+	public ImportDeclarationElement createImportDeclarationElement(Token importedTypeName, Token alias) {
+		return new ImportDeclarationElement(importedTypeName, Optional.of(alias));
+	}
+	public ImportDeclarationElement createImportDeclarationElement(Token importedTypeName) {
+		return new ImportDeclarationElement(importedTypeName, Optional.empty());
 	}
 
 	// -- Expressions

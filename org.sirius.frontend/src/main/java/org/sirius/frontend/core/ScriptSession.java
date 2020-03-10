@@ -10,6 +10,7 @@ import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Session;
 import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstModuleDeclaration;
+import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.parser.SiriusParser.ScriptCompilationUnitContext;
@@ -25,6 +26,8 @@ public class ScriptSession implements Session {
 
 	private DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable();
 
+	private ScriptCompilationUnit compilationUnit;
+
 	public ScriptSession(Reporter reporter, InputTextProvider input) {
 		super();
 		this.reporter = reporter;
@@ -37,15 +40,20 @@ public class ScriptSession implements Session {
 	}
 	
 	
+	public ScriptCompilationUnit getCompilationUnit() {
+		return compilationUnit;
+	}
+
 	public DefaultSymbolTable getGlobalSymbolTable() {
 		return globalSymbolTable;
 	}
 
+	
 	private void addInput(InputTextProvider input) {
 		SdkTools sdkTools = new SdkTools(reporter);
 		sdkTools.parseSdk(globalSymbolTable);
 
-		AbstractCompilationUnit compilationUnit = parseScriptInput(reporter, input, globalSymbolTable);
+		this.compilationUnit = parseScriptInput(reporter, input, globalSymbolTable);
 		
 		compilationUnit.updateParentsDeeply();
 		
@@ -60,7 +68,7 @@ public class ScriptSession implements Session {
 
 	}
 	
-	private AbstractCompilationUnit parseScriptInput(Reporter reporter, InputTextProvider input, DefaultSymbolTable globalSymbolTable) {
+	private ScriptCompilationUnit parseScriptInput(Reporter reporter, InputTextProvider input, DefaultSymbolTable globalSymbolTable) {
 		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
 		SiriusParser parser = createParser(reporter, input, astFactory);
 		
@@ -75,7 +83,7 @@ public class ScriptSession implements Session {
 
 		// -- Parsing
 		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
-		AbstractCompilationUnit compilationUnit = unitContext.unit;
+		ScriptCompilationUnit compilationUnit = unitContext.unit;
 		
 		stdTransform(reporter, input, compilationUnit, globalSymbolTable);
 

@@ -32,6 +32,11 @@
 	    <artifactId>org.sirius.backend.core</artifactId>
   	</dependency>
   
+   	<dependency>
+	    <groupId>org.sirius</groupId>
+	    <artifactId>org.sirius.sdk</artifactId>
+  	</dependency>
+  
       <!-- https://mvnrepository.com/artifact/org.ow2.asm/asm -->
 	<dependency>
 	    <groupId>org.ow2.asm</groupId>

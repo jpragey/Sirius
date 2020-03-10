@@ -140,19 +140,22 @@ importDeclaration returns [ImportDeclaration declaration]
 	   //package
 	  qname								{ $declaration = factory.createImportDeclaration($qname.content); }
 	  '{'
-	  	e=importDeclarationElement		{ $declaration.add($e.declaration); }
-	  	(',' e=importDeclarationElement	{ $declaration.add($e.declaration); })*
+	  	  ( e=importDeclarationElement		{ $declaration.add($e.declaration); }
+	  	    (',' e=importDeclarationElement	{ $declaration.add($e.declaration); })*
+	  	  )?
 	  '}'
 	;
 
 
 importDeclarationElement returns [ImportDeclarationElement declaration]
-	:									{ Optional<Token> alias = Optional.empty();}		
-	  		(al=TYPE_ID '=' 			{ alias = Optional.of($al);} )? 
-	  		t=TYPE_ID 					{ $declaration = factory.createImportDeclarationElement($t, alias); }
-	  		( '{'
-	  			
-	  		'}')?
+	: 
+	//	al=ID '=' t=ID		{ $declaration = factory.createImportDeclarationElement($t, $al); }
+		t=(LOWER_ID | TYPE_ID)				{ $declaration = factory.createImportDeclarationElement($t); }
+	|	al=(LOWER_ID | TYPE_ID) '=' t=(LOWER_ID | TYPE_ID)				{ $declaration = factory.createImportDeclarationElement($t, $al); }
+
+	( '{'
+		
+	'}')?
 	;
 
 // -------------------- VALUE
@@ -366,6 +369,8 @@ locals [
 TYPE_ID : [A-Z][a-zA-Z0-9_]* ;	// start by uppercase
 
 LOWER_ID : [a-z][a-zA-Z0-9_]* ;	// start by lowercase
+
+//ALIAS_ID : [a-zA-Z][a-zA-Z0-9_]* ;
 
 //ANNOTATION_ID : '@'[a-zA-Z][a-zA-Z0-9_]* ;
 

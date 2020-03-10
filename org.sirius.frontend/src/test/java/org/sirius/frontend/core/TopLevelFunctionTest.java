@@ -71,7 +71,7 @@ public class TopLevelFunctionTest {
 		assertEquals(tlf.getArguments().get(1).getQName().dotSeparated(), "a.b.f.j");
 	}
 
-	@Test(description = "")
+	@Test(description = "", enabled = false)
 	public void checkFunctionBodyContainsAnExpressionStatement() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(){println(\"Hello World\");}");
 		

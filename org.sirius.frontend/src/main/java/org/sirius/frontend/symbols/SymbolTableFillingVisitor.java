@@ -44,7 +44,8 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 		for(ImportDeclaration importDecl: compilationUnit.getImportDeclarations()) {
 			for(ImportDeclarationElement element: importDecl.getElements()) {
 				
-				st.addImportSymbol(importDecl.getPack(), element.getImportedTypeName(), element.getAlias());
+//				st.addImportSymbol(importDecl.getPack(), element.getImportedTypeName(), element.getAlias());
+				st.addImportSymbol(importDecl.getPack(), element);
 			}
 		}
 	}

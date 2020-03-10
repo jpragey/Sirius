@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>org.sirius.runtime</artifactId>
+
+  <parent>
+    <groupId>org.sirius</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  
+  
+  <build>
+  	<plugins>
+  	  <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.2</version>
+        <configuration>
+          <archive>
+            <index>true</index>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <!-- <classpathLayoutType>repository</classpathLayoutType> -->
+              <mainClass>org.sirius.backend.jvm.launcher.Main</mainClass>
+            </manifest>
+            <manifestEntries>
+              <mode>development</mode>
+              <url>${project.url}</url>
+              <key>value</key>
+            </manifestEntries>
+          </archive>
+        </configuration>
+        
+      </plugin>
+  	
+  	</plugins>
+  
+  </build>
+  
+    <dependencies>
+  
+    <dependency>
+      <groupId>org.sirius</groupId>
+      <artifactId>org.sirius.common</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.sirius</groupId>
+      <artifactId>org.sirius.sdk</artifactId>
+    </dependency>
+  </dependencies>
+  
+</project>

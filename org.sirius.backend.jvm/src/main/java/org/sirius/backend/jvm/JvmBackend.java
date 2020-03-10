@@ -68,8 +68,13 @@ public class JvmBackend implements Backend {
 	
 	@Override
 	public void process(Session session) {
+		processSDK();
 		printIfVerbose("JVM: starting session, nb of modules: " + session.getModuleDeclarations().size());
 		session.getModuleDeclarations().stream().forEach(this::processModule);
+	}
+	
+	private void processSDK() {
+		
 	}
 	
 	private void processModule(ModuleDeclaration declaration) {

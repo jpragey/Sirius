@@ -50,12 +50,15 @@ public class ImplicitTypeCast {
 //	}
 
 	
-	@Test(enabled = false)
+	@Test(enabled = true)
 	public void runHelloWorld() throws Exception {
 		
 		String script = "#!\n "
 //				+ "String getVal() {return \"Hello\";}"
-				+ "void main(String[] args) {println(\"42\");}";
+				+ "import a.b {}"
+//				+ "void main(String[] args) {println(\"42\");}"
+				+ "void main() {String s; println(\"42\");}"
+				;
 //		+ "void main(String args, String[] args2) {println(\"42\");}";
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
@@ -68,6 +71,7 @@ public class ImplicitTypeCast {
 		
 		HashMap<String, Bytecode> map = l.getByteCodesMap();
 		System.out.println(map.keySet());
+		session.getGlobalSymbolTable().dump();
 
 		
 		ClassLoader classLoader = l.getClassLoader();
@@ -82,12 +86,12 @@ public class ImplicitTypeCast {
 			System.out.println("Method: " + m);
 
 		Method main = cls.getMethod("main", new Class[] {
-				String[].class
+////				String[].class
 		});
 		System.out.println("Main: " + main);
 		
 		Object[] argTypes = new Object[] {
-				new String[]{""}
+////				new String[]{""}
 		};
 		
 		Object result = main.invoke(null, argTypes /*, args*/);
