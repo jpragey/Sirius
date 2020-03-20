@@ -46,7 +46,6 @@ public class ScriptSessionTest {
 
 		List<PackageDeclaration> packDecls = md.getPackages();
 		assertEquals(packDecls.size(), 2);
-//		assertEquals(md.getPackages()dotSeparated(), "p.k");
 
 		PackageDeclaration pack = md.getPackages().get(1);
 		assertEquals(pack.getQName().dotSeparated(), "p.k");

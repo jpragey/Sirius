@@ -11,8 +11,4 @@ public interface AbstractCompilationUnit extends Visitable {
 	
 	List<AstModuleDeclaration> getModuleDeclarations();
 
-//	Optional<ShebangDeclaration> getShebangDeclaration();
-
-//	AstModuleDeclaration getCurrentModule();
-
 }

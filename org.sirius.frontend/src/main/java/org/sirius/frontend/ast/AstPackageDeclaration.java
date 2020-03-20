@@ -1,22 +1,17 @@
 package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.Token;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.InterfaceDeclaration;
-import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.TopLevelValue;
-import org.sirius.frontend.core.PhysicalPath;
 import org.sirius.frontend.symbols.LocalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
@@ -66,9 +61,6 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 	public QName getQname() {
 		return qname;
 	}
-//	public List<String> getPathElements() { // TODO: cache (?)
-//		return qname.getElements();
-//	}
 
 	public void addFunctionDeclaration(AstFunctionDeclaration declaration) {
 		this.functionDeclarations.add(declaration);

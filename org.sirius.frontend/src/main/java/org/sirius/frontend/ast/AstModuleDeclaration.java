@@ -16,7 +16,6 @@ import org.sirius.frontend.core.PhysicalPath;
 
 public class AstModuleDeclaration implements Visitable {
 
-//	private QualifiedName qName = new QualifiedName();
 	private QName qName = new QName();
 	private AstToken version = new AstToken(0,0,0,0,"","");
 	
@@ -95,7 +94,6 @@ public class AstModuleDeclaration implements Visitable {
 	private List<ModuleImport> moduleImports = new ArrayList<>(); 
 	
 	private List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
-	//private Optional<AstPackageDeclaration> currentPackage = Optional.empty();
 	
 	private AstPackageDeclaration currentPackage;
 	
@@ -104,7 +102,6 @@ public class AstModuleDeclaration implements Visitable {
 		this.reporter = reporter;
 		this.currentPackage = new AstPackageDeclaration(reporter, qualifiedName);
 		this.addPackageDeclaration(this.currentPackage);
-		//setQName(qualifiedName);
 
 		this.qName = qualifiedName;
 		PhysicalPath pp = new PhysicalPath(qName/*.toQName()*/.getStringElements());
@@ -128,36 +125,15 @@ public class AstModuleDeclaration implements Visitable {
 		return packageDeclarations;
 	}
 
-//	private void setQName(QName qualifiedName) {
-//		this.qName = qualifiedName;
-//		PhysicalPath pp = new PhysicalPath(qName/*.toQName()*/.getStringElements());
-//		this.modulePPath = Optional.of(pp);
-//	}
-	
-//	public void addQNameElement(Token element) {
-//		this.qName.add(element);
-//	}
-	
-//	public AstPackageDeclaration getRootPackageDeclaration() {
-//		return rootPackageDeclaration;
-//	}
-
 	public Optional<PhysicalPath> getModulePPath() {
 		return modulePPath;
 	}
-
-
 
 	/** Check there's a current package (otherwise create it) and return it.
 	 * 
 	 * @return
 	 */
 	public AstPackageDeclaration getCurrentPackage() {
-//		if(currentPackage.isEmpty()) {
-//			AstPackageDeclaration pd = new AstPackageDeclaration(reporter, qName/*.toQName()*/);
-//			addPackageDeclaration(pd);
-//		}
-//		return currentPackage.get();
 		return currentPackage;
 	}
 	
@@ -177,11 +153,6 @@ public class AstModuleDeclaration implements Visitable {
 		this.getCurrentPackage().addClassDeclaration(d);
 	}
 
-	
-//	private void setVersion(Token version) {
-//		this.version = new AstToken(version); 
-//	}
-	
 	public void addValueEquivalent(Token name, Token value) {
 		
 		equivalents.put(name.getText(), new AstToken(value));
@@ -272,6 +243,5 @@ public class AstModuleDeclaration implements Visitable {
 			moduleDeclaration = new ModuleDeclarationImpl(qName);		}
 		return moduleDeclaration;
 	}
-	
 	
 }

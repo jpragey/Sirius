@@ -38,7 +38,7 @@ public class SymbolTableCreation {
 		ScriptSession session = Compiler.compileScript(
 				"#!\n"
 				+ "import sirius.lang {String} "
-				+ " module a.b \"1.0\" {} "
+				+ "module a.b \"1.0\" {} "
 				+ "void f(){println(\"Hello World\");}");
 		
 		DefaultSymbolTable st = session.getGlobalSymbolTable();

@@ -3,7 +3,6 @@ package org.sirius.frontend.core;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -25,8 +24,6 @@ public class ScriptSession implements Session {
 
 	private Reporter reporter;
 	
-//	private List<ModuleContent> moduleContents = new ArrayList<>();
-//	private List<AstModuleDeclaration> modules0 = new ArrayList<>();
 	@Override
 	public Reporter getReporter() {
 		return reporter;
@@ -46,11 +43,6 @@ public class ScriptSession implements Session {
 		addInput(input);
 	}
 
-//	@Override
-//	public List<ModuleContent> getModuleContents() {
-//		return moduleContents;
-//	}
-	
 	
 	public ScriptCompilationUnit getCompilationUnit() {
 		return compilationUnit;
@@ -73,48 +65,15 @@ public class ScriptSession implements Session {
 		
 		this.shebang = compilationUnit.getShebangDeclaration();
 
-//		this.moduleContents.addAll(compilationUnit.getModuleDeclarations().stream()
-//				.map(mod -> new ModuleContent(reporter, compilationUnit.getCurrentModule()))
-//				.collect(Collectors.toList())
-//				);
-		
-		
 		this.modules = new ArrayList<>();
 		for(AstModuleDeclaration astMd: compilationUnit.getModuleDeclarations()) {
 			ModuleDeclaration md = astMd.getModuleDeclaration();
 			this.modules.add(md);
 		}
-//		this.modules.addAll(
-//				compilationUnit.getModuleDeclarations().stream().map( AstModuleDeclaration::getModuleDeclaration)
-//				.collect(Collectors.toList())
-//				);
-
-//		stdTransform(reporter, input, compilationUnit, globalSymbolTable);
-
 	}
 	
-//	private SiriusParser createParser(Reporter reporter, InputTextProvider input, AstFactory astFactory) {
-//		String sourceCode = input.getText();
-//		
-//		CharStream stream = CharStreams.fromString(sourceCode); 
-//		
-//		SiriusLexer lexer = new SiriusLexer(stream);
-//		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-//		
-//		SiriusParser parser = new SiriusParser(tokenStream);
-//
-//		parser.factory = astFactory;
-//		
-////		parser.currentModule = new AstModuleDeclaration(reporter);
-//		parser.currentModule = AstModuleDeclaration.createUnnamed(reporter);	// TODO: WTF ???
-//
-//		parser.removeErrorListeners();
-//		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
-//		
-//		return parser;
-//	}
 
-	private ScriptCompilationUnit parseScriptInput(/*Reporter reporter, */InputTextProvider input /*, DefaultSymbolTable globalSymbolTable*/) {
+	private ScriptCompilationUnit parseScriptInput(InputTextProvider input) {
 		
 		String sourceCode = input.getText();
 		
@@ -128,29 +87,16 @@ public class ScriptSession implements Session {
 		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
 		parser.factory = astFactory;
 		
-//		parser.currentModule = new AstModuleDeclaration(reporter);
 		parser.currentModule = AstModuleDeclaration.createUnnamed(reporter);	// TODO: WTF ???
 
 		parser.removeErrorListeners();
 		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
 
-//		SiriusParser parser = createParser(reporter, input, astFactory);
-		
-//		parser.factory = astFactory;
-		
-//		AstModuleDeclaration moduleDeclaration = AstModuleDeclaration.createUnnamed(reporter);
-//		
-//		parser.currentModule = moduleDeclaration;
-//
-//		parser.removeErrorListeners();
-//		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
 
 		// -- Parsing
 		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
 		ScriptCompilationUnit compilationUnit = unitContext.unit;
 		
-//		stdTransform(reporter, input, compilationUnit, globalSymbolTable);
-
 		return compilationUnit;
 	}
 
@@ -161,11 +107,5 @@ public class ScriptSession implements Session {
 	@Override
 	public List<ModuleDeclaration> getModuleDeclarations() {
 		return this.modules;
-//		return this.modules.stream()
-//				.map( AstModuleDeclaration::getModuleDeclaration)
-//				.collect(Collectors.toList());
-//		return this.moduleContents.stream()
-//				.map( (ModuleContent mc ) -> mc.getModuleDeclaration().getModuleDeclaration())
-//				.collect(Collectors.toList());
 	}
 }

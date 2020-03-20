@@ -10,8 +10,6 @@ public class AstFactory {
 
 	private Reporter reporter;
 	private DefaultSymbolTable globalSymbolTable;
-//	private Optional<AstModuleDeclaration> currentModule = Optional.empty();
-//	private AstModuleDeclaration currentModule;
 	
 	public AstFactory(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
 		super();
@@ -59,7 +57,6 @@ public class AstFactory {
 		return new ScriptCompilationUnit(reporter, globalSymbolTable, rootModule);
 	}
 	public ModuleDescriptor createModuleDescriptorCompilationUnit(AstModuleDeclaration moduleDeclaration) {
-//		this.currentModule = moduleDeclaration;
 		return new ModuleDescriptor(reporter, moduleDeclaration);
 	}
 	public PackageDescriptorCompilationUnit createPackageDescriptorCompilationUnit(AstPackageDeclaration packageDeclaration) {
@@ -71,16 +68,9 @@ public class AstFactory {
 	public AstPackageDeclaration createPackageDeclaration(QualifiedName qname) {
 		return new AstPackageDeclaration(reporter, qname.toQName());
 	}
-//	public AstPackageDeclaration createPackageDeclaration() {
-//		AstPackageDeclaration pd = new AstPackageDeclaration(reporter);
-////		this.currentModule.ifPresent(mod -> mod.addPackageDeclaration(pd));
-////		this.currentModule.
-//		return pd;
-//	}
 
 	public AstModuleDeclaration createModuleDeclaration(QualifiedName qualifiedName, Token version) {
 		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, qualifiedName.toQName(), version);
-//		this.currentModule = Optional.of(mod);
 		return mod;
 	}
 	

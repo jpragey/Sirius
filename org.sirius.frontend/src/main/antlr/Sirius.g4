@@ -7,22 +7,18 @@ grammar Sirius;
 	package org.sirius.frontend.parser;
 	import org.sirius.frontend.ast.AstFactory;
 	import org.sirius.frontend.ast.AstModuleDeclaration;
-//	import org.sirius.frontend.core.ScriptCurrentState;
 }
 @parser::header {
 	package org.sirius.frontend.parser;
 	import org.sirius.frontend.ast.*;
 	import org.sirius.common.core.QName;
-//	import org.sirius.frontend.core.ScriptCurrentState;
 	
 	import java.util.Optional;
 }
 
 @members {
-	//public SiriusLangPackage languagePackage; 
 	public AstFactory factory;
 	public AstModuleDeclaration currentModule;
-//	public ScriptCurrentState scriptCurrentState;
 }
 
 
@@ -31,7 +27,6 @@ grammar Sirius;
 /** Usual compilation unit */
 standardCompilationUnit returns [StandardCompilationUnit stdUnit]
 locals[
-//	AstPackageDeclaration currentPackage
 ]
 @init {     
 /*	currentPackage = factory.createPackageDeclaration();*/
@@ -67,7 +62,6 @@ scriptCompilationUnit returns [ScriptCompilationUnit unit]
 		  moduleDeclaration 		{
 		  								$unit.addModuleDeclaration($moduleDeclaration.declaration);
 		  								currentModule = $moduleDeclaration.declaration;
-//		  								scriptCurrentState.addModule($moduleDeclaration.declaration);
 		  							} 
 		| packageDeclaration 		{
 										//$unit.addPackageDeclaration($packageDeclaration.declaration);
@@ -98,14 +92,7 @@ packageDescriptorCompilationUnit returns [PackageDescriptorCompilationUnit unit]
 // -------------------- MODULE DECLARATION
 
 moduleDeclaration returns [AstModuleDeclaration declaration]
-	: 'module'		
-	  qname			
-	  STRING			{ 
-	  	//$declaration.setVersion($STRING);
-	  	$declaration = factory.createModuleDeclaration($qname.content, $STRING);
-	  	/*currentModule = $declaration;*/
-	  	
-	  }
+	: 'module' qname STRING				{ $declaration = factory.createModuleDeclaration($qname.content, $STRING); }
 	  '{'
 	  		(	
 	  			  'value' name=LOWER_ID '=' value=STRING ';' 	{ $declaration.addValueEquivalent($name, $value); }

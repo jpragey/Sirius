@@ -86,8 +86,6 @@ public class SdkToolsTest {
 		assertEquals(arg0.getName().getText(), "text"); // TODO
 		assert(arg0.getType() instanceof QNameRefType);
 		QNameRefType arg0Type = (QNameRefType)arg0.getType();
-//		assertEquals(arg0Type.getName().getText(), "sirius.lang.String");
-//		assertEquals(arg0Type.getqName(), new QName("sirius","lang","Stringifiable"));
 		assertEquals(arg0Type.getqName(), new QName("sirius","lang","String"));
 		
 	}

@@ -10,15 +10,12 @@ import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 public class StandardCompilationUnit implements AbstractCompilationUnit, Visitable, Scoped {
 
-//	private Optional<ShebangDeclaration> shebangDeclaration = Optional.empty();
-
 	private List<ImportDeclaration> importDeclarations = new ArrayList<>();
 	
 	private List<AstFunctionDeclaration> functionDeclarations = new ArrayList<>();
 	private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
 	
 	private ArrayList<AstModuleDeclaration> moduleDeclarations = new ArrayList<>();
-//	private Optional<AstModuleDeclaration> moduleDeclarations = Optional.empty();
 
 	private Reporter reporter; 
 	
@@ -31,13 +28,6 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 		this.symbolTable = new DefaultSymbolTable(globalSymbolTable);
 	}
 
-//	public void setShebang(ShebangDeclaration declaration) {
-//		this.shebangDeclaration = Optional.of(declaration);
-//	}
-//	
-//	public Optional<ShebangDeclaration> getShebangDeclaration() {
-//		return shebangDeclaration;
-//	}
 
 	public List<ImportDeclaration> getImportDeclarations() {
 		return importDeclarations;
@@ -84,10 +74,6 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 		this.moduleDeclarations.add(declaration);
 	}
 	
-//	public void addPackageDeclaration(AstPackageDeclaration declaration) {
-//		getCurrentModule().addPackageDeclaration(declaration);
-//	}
-
 	public List<AstModuleDeclaration> getModuleDeclarations() {
 		return moduleDeclarations;
 	}
@@ -101,12 +87,5 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 	public void updateParentsDeeply() {
 		// Nothing to do
 	}
-
-//	@Override
-//	public AstModuleDeclaration getCurrentModule() {
-//		assert(! moduleDeclarations.isEmpty());
-//		AstModuleDeclaration md = moduleDeclarations.get( moduleDeclarations.size() -1);
-//		return md;
-//	}
 
 }

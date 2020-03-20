@@ -38,11 +38,6 @@ public class StandardSession implements Session {
 	}
 
 
-//	@Override
-//	public List<ModuleContent> getModuleContents() {
-//		return this.moduleContents;
-//	}
-
 	@Override
 	public Reporter getReporter() {
 		return reporter;
@@ -163,9 +158,7 @@ public class StandardSession implements Session {
 		
 		// -- Add packages descriptors
 		for(ModuleContent mc: this.moduleContents) {
-// 			List<PackageContent> modulePackages = 
- 					parsePackagesDescriptors(inputs, mc);
-//			mc.addPackageContents(modulePackages);
+			parsePackagesDescriptors(inputs, mc);
 		}
 
 		// -- Add code to packages

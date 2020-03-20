@@ -30,13 +30,6 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		this.reporter = reporter;
 		this.symbolTable = globalSymbolTable;
 		this.moduleDeclarations.add(rootModule);
-		
-//		AstModuleDeclaration unnamedModule = new AstModuleDeclaration(reporter);
-//		moduleDeclarations.add(unnamedModule);
-//		addModuleDeclaration(unnamedModule);
-		
-//		addPackageDeclaration(new AstPackageDeclaration(reporter));
-	
 	}
 
 	public void setShebang(ShebangDeclaration declaration) {
@@ -73,20 +66,6 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		visitor.endScriptCompilationUnit(this);
 	}
 	
-//	@Override
-//	public AstModuleDeclaration getCurrentModule() {
-//		AstModuleDeclaration last = moduleDeclarations.peekLast();
-//		if(last == null) {
-//			last = AstModuleDeclaration.createUnnamed(reporter);
-//			moduleDeclarations.add(last);
-//		}
-//		return last;
-//	}
-
-//	public AstPackageDeclaration getCurrentPackage() {
-//		return getCurrentModule().getCurrentPackage();
-//	}
-
 	@Override
 	public List<AstModuleDeclaration> getModuleDeclarations() {
 		return moduleDeclarations;
@@ -97,22 +76,6 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		this.moduleDeclarations.add(moduleDeclaration);
 	}
 
-//	public void setSymbolTableParent(SymbolTable newParent) {
-//		this.symbolTable.setParentSymbolTable(newParent);
-//	}
-	
-//	public void addPackageDeclaration(AstPackageDeclaration declaration) {
-//		getCurrentModule().addPackageDeclaration(declaration);
-//	}
-//
-//	public void addFunctionDeclaration(AstFunctionDeclaration d) {
-//		getCurrentModule().addFunctionDeclaration(d);
-//	}
-//	public void addClassDeclaration(AstClassDeclaration d) {
-//		getCurrentModule().addClassDeclaration(d);
-//	}
-	
-	
 	@Override
 	public SymbolTable getSymbolTable() {
 		return symbolTable;
