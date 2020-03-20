@@ -20,6 +20,7 @@ import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.parser.SiriusParser.ModuleDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.StandardCompilationUnitContext;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.common.core.QName;
 
 public class StandardSession implements Session {
 
@@ -37,9 +38,14 @@ public class StandardSession implements Session {
 	}
 
 
+//	@Override
+//	public List<ModuleContent> getModuleContents() {
+//		return this.moduleContents;
+//	}
+
 	@Override
-	public List<ModuleContent> getModuleContents() {
-		return this.moduleContents;
+	public Reporter getReporter() {
+		return reporter;
 	}
 
 	private SiriusParser createParser(InputTextProvider input, AstFactory astFactory) {
@@ -55,8 +61,9 @@ public class StandardSession implements Session {
 //		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
 		parser.factory = astFactory;
 		
-		parser.currentModule = new AstModuleDeclaration(reporter);
-		
+		//parser.currentModule = new AstModuleDeclaration(reporter);
+////		parser.currentModule = AstModuleDeclaration.createUnnamed(reporter);	// TODO: WTF ???
+
 		parser.removeErrorListeners();
 		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
 		
@@ -133,8 +140,8 @@ public class StandardSession implements Session {
 		
 		if(packageDeclarations.isEmpty()) {
 			// -- Add initial package (name is module qname)
-			QualifiedName name = moduleContent.getModuleDeclaration().getqName();
-			AstPackageDeclaration unnamedPackage = new AstPackageDeclaration (reporter, name.toQName());
+			QName name = moduleContent.getModuleDeclaration().getqName();
+			AstPackageDeclaration unnamedPackage = new AstPackageDeclaration (reporter, name);
 			packageDeclarations.add(unnamedPackage);
 		}
 		

@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.sirius.frontend.api.ArrayType;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.symbols.GlobalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
 /** java-like array

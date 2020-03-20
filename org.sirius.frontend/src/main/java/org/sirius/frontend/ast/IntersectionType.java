@@ -2,7 +2,6 @@ package org.sirius.frontend.ast;
 
 import java.util.Optional;
 
-import org.sirius.frontend.symbols.GlobalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
 public class IntersectionType implements AstType{

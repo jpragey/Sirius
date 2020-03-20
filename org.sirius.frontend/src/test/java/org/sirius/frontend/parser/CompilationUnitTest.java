@@ -6,6 +6,9 @@ import static org.testng.Assert.assertTrue;
 import java.util.List;
 import java.util.Optional;
 
+import org.sirius.frontend.api.ModuleDeclaration;
+import org.sirius.frontend.api.PackageDeclaration;
+import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.ShebangDeclaration;
@@ -24,30 +27,36 @@ public class CompilationUnitTest {
 		assertTrue(shebang.isPresent());
 	}
 	
-	@Test(enabled = false)
+	@Test(enabled = true)
 	void testCUcontainsTopLevelFunctions() {
-		String source = "#!\n Void ff(){} Void gg () {}";
+		String source = "#!\n void ff(){} void gg () {} void hh () {}";
 		ScriptSession session = Compiler.compileScript(source);
 		
-		List<ModuleContent> modules = session
-				.getModuleContents();
+//		List<ModuleContent> modules = session
+//				.getModuleContents();
+		List<ModuleDeclaration> modules = session
+				.getModuleDeclarations();
 		assertEquals(modules.size(), 1);
 				
-		List<AstPackageDeclaration> packageDeclarations = modules
+		List<PackageDeclaration> packageDeclarations = modules
 				.get(0)
-				.getPackageContents();
+				.getPackages();
 		assertEquals(packageDeclarations.size(), 1);
 				
-		List<AstFunctionDeclaration> fds = packageDeclarations
+//		List<AstFunctionDeclaration> fds = packageDeclarations
+//				.get(0)
+//				.getFunctionDeclarations();
+		List<TopLevelFunction> fds = packageDeclarations
 				.get(0)
-				.getFunctionDeclarations();
+				.getFunctions();
 		
-		AstPackageDeclaration pd = packageDeclarations.get(0);
+//		AstPackageDeclaration pd = packageDeclarations.get(0);
 		
 		
-		assertEquals(fds.size(), 2);
-		assertEquals(fds.get(0).getName().getText(), "ff");
-		assertEquals(fds.get(1).getName().getText(), "gg");
+		assertEquals(fds.size(), 3);
+		assertEquals(fds.get(0).getQName().getLast(), "ff");
+		assertEquals(fds.get(1).getQName().getLast(), "gg");
+		assertEquals(fds.get(2).getQName().getLast(), "hh");
 	}
 	
 	@Test(enabled = false)

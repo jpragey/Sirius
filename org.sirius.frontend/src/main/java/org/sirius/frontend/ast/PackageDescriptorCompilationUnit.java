@@ -43,14 +43,9 @@ public class PackageDescriptorCompilationUnit implements AbstractCompilationUnit
 		throw new UnsupportedOperationException("PackageDescriptorCompilationUnit.getModuleDeclarations() should be removed."); // TODO
 	}
 
-	@Override
-	public Optional<ShebangDeclaration> getShebangDeclaration() {
-		return Optional.empty();
-	}
-
-	@Override
-	public AstModuleDeclaration getCurrentModule() {
-		throw new UnsupportedOperationException("PackageDescriptorCompilationUnit.getCurrentModule() should be removed."); // TODO
-	}
+//	@Override
+//	public AstModuleDeclaration getCurrentModule() {
+//		throw new UnsupportedOperationException("PackageDescriptorCompilationUnit.getCurrentModule() should be removed."); // TODO
+//	}
 
 }

@@ -10,9 +10,9 @@ import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.symbols.GlobalSymbolTable;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 
-public class SiriusLangPackage {
+public class SiriusLangPackage { // TODO: remove, unused ???
 
 	private Reporter reporter;
 
@@ -22,6 +22,7 @@ public class SiriusLangPackage {
 			);
 	
 	public static QName siriusLangQName = new QName("sirius", "lang");
+	private final static AstToken versionToken = new AstToken(0,0,0,0,"1.0","");
 //	public static QualifiedName siriusLangQName = new QualifiedName(Arrays.asList(
 //			AstToken.internal("sirius", "<no source>"),
 //			AstToken.internal("lang", "<no source>")
@@ -46,12 +47,12 @@ public class SiriusLangPackage {
 	
 	private AstClassDeclaration stringifiableClassDeclaration;
 	
-	public SiriusLangPackage(Reporter reporter, GlobalSymbolTable globalSymbolTable) {
+	public SiriusLangPackage(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
 		super();
 		this.reporter = reporter;
 		
 
-		this.siriusLangModule = new AstModuleDeclaration(reporter);
+		this.siriusLangModule = new AstModuleDeclaration(reporter, siriusLangPackage.getQname(), versionToken);	// TODO: WTF ???
 
 		this.siriusLangPackage = new AstPackageDeclaration(reporter, siriusLangQName);
 

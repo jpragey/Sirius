@@ -8,7 +8,6 @@ import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
-import org.sirius.frontend.symbols.GlobalSymbolTable;
 
 public class AstIntegerConstantExpression implements AstExpression {
 	
@@ -73,5 +72,9 @@ public class AstIntegerConstantExpression implements AstExpression {
 			}
 			
 		} ;
+	}
+	@Override
+	public String toString() {
+		return "AstIntegerConstantExpression:" + this.value;
 	}
 }

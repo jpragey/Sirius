@@ -113,7 +113,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 
 	@Override
 	public String toString() {
-		return getQnameString();
+		return "\"" + getQnameString() + "\"";
 	}
 	
 	/** Set package refs for children (classes, values, functions */
@@ -125,49 +125,61 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 //		private List<AstValueDeclaration> valueDeclarations = new ArrayList<>();
 	}
 	
+	private PackageDeclaration packageDeclaration = null;
+	
+	private class PackageDeclarationImpl implements PackageDeclaration {
+
+		@Override
+		public List<ClassDeclaration> getClasses() {
+			return classDeclarations.stream()
+					.filter(cd -> !cd.isInterfaceType())
+					.map(cd -> cd.getClassDeclaration(qname))
+					.collect(Collectors.toList());
+		}
+
+		@Override
+		public List<InterfaceDeclaration> getInterfaces() {
+			return classDeclarations.stream()
+					.filter(cd -> !cd.isInterfaceType())
+					.map(cd -> cd.getInterfaceDeclaration(qname))
+					.collect(Collectors.toList());
+		}
+
+		@Override
+		public List<TopLevelValue> getValues() {
+			return valueDeclarations.stream()
+					.map(AstValueDeclaration::getTopLevelValue)
+					.filter(v -> v.isPresent())
+					.map(v -> v.get())
+					.collect(Collectors.toList());
+		}
+
+		@Override
+		public List<TopLevelFunction> getFunctions() {
+			return functionDeclarations.stream()
+					.map(fd -> fd.getTopLevelFunction())
+					.filter(fd -> fd.isPresent())
+					.map(fd -> fd.get())
+					.collect(Collectors.toList());
+		}
+
+		@Override
+		public QName getQName() {
+			return qname;
+		}
+		@Override
+		public String toString() {
+			return "Pack: \"" + qname + "\"";
+		}
+
+	};
+		
+	
 	public PackageDeclaration getPackageDeclaration() {
-		return new PackageDeclaration() {
-
-			@Override
-			public List<ClassDeclaration> getClasses() {
-				return classDeclarations.stream()
-						.filter(cd -> !cd.isInterfaceType())
-						.map(cd -> cd.getClassDeclaration(qname))
-						.collect(Collectors.toList());
-			}
-
-			@Override
-			public List<InterfaceDeclaration> getInterfaces() {
-				return classDeclarations.stream()
-						.filter(cd -> !cd.isInterfaceType())
-						.map(cd -> cd.getInterfaceDeclaration(qname))
-						.collect(Collectors.toList());
-			}
-
-			@Override
-			public List<TopLevelValue> getValues() {
-				return valueDeclarations.stream()
-						.map(AstValueDeclaration::getTopLevelValue)
-						.filter(v -> v.isPresent())
-						.map(v -> v.get())
-						.collect(Collectors.toList());
-			}
-
-			@Override
-			public List<TopLevelFunction> getFunctions() {
-				return functionDeclarations.stream()
-						.map(fd -> fd.getTopLevelFunction())
-						.filter(fd -> fd.isPresent())
-						.map(fd -> fd.get())
-						.collect(Collectors.toList());
-			}
-
-			@Override
-			public QName getQName() {
-				return qname;
-			}
-			
-		};
+		if(packageDeclaration == null) {
+			packageDeclaration = new PackageDeclarationImpl();
+		}
+		return packageDeclaration;
 	}
 
 }

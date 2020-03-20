@@ -1,7 +1,6 @@
 package org.sirius.frontend.ast;
 
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.symbols.GlobalSymbolTable;
 
 public class ResolvedClassDeclaration implements ResolvedType {
 

@@ -2,6 +2,8 @@ package org.sirius.frontend.parser;
 
 import static org.testng.Assert.assertEquals;
 
+import java.util.List;
+
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.LocalVariableStatement;
@@ -21,7 +23,8 @@ public class LocalVariablesTest {
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
-		PackageDeclaration pack = md.getPackages().get(0);
+		List<PackageDeclaration> packages = md.getPackages();
+		PackageDeclaration pack = packages.get(1);
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		
@@ -45,7 +48,7 @@ public class LocalVariablesTest {
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
-		PackageDeclaration pack = md.getPackages().get(0);
+		PackageDeclaration pack = md.getPackages().get(1);
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		

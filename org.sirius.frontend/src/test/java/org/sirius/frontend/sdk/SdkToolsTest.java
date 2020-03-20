@@ -8,14 +8,11 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
-import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
 import org.sirius.frontend.ast.QNameRefType;
-import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
-import org.sirius.frontend.symbols.GlobalSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -36,7 +33,14 @@ public class SdkToolsTest {
 			throw new Exception("SDK error, see logs in shell");
 		
 	}
-	
+
+	@Test
+	public void sdkSLClassesCanBeRetrievedBySimpleName() {
+		assertTrue(symbolTable.lookup("String").isPresent());
+		
+		
+		
+	}
 	@Test
 	public void sdkParsingMustCreateBasicClasses() {
 		assertEquals(reporter.getErrorCount(), 0);
@@ -45,9 +49,11 @@ public class SdkToolsTest {
 		checkSymbolTableContains(symbolTable, new QName("sirius", "lang", "String"));
 		checkSymbolTableContains(symbolTable, new QName("sirius", "lang", "Addable"));
 		checkSymbolTableContains(symbolTable, new QName("sirius", "lang", "Integer"));
+		
 	}
 	
 	private void checkSymbolTableContains(DefaultSymbolTable symbolTable, QName symbolQName) {
+		
 		Symbol symbol = symbolTable.lookup(symbolQName).get();
 //		Symbol simpleSymbol = symbolTable.lookup(new QName(simpleName)).get();
 		
@@ -82,7 +88,7 @@ public class SdkToolsTest {
 		QNameRefType arg0Type = (QNameRefType)arg0.getType();
 //		assertEquals(arg0Type.getName().getText(), "sirius.lang.String");
 //		assertEquals(arg0Type.getqName(), new QName("sirius","lang","Stringifiable"));
-		assertEquals(arg0Type.getqName(), new QName("sirius","lang","SiriusString"));
+		assertEquals(arg0Type.getqName(), new QName("sirius","lang","String"));
 		
 	}
 

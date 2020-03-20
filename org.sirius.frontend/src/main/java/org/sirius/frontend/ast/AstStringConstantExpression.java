@@ -50,7 +50,6 @@ public class AstStringConstantExpression implements AstExpression {
 		return Optional.of(stringType);
 	}
 
-
 	@Override
 	public StringConstantExpression getExpression() {
 		return new StringConstantExpression() {
@@ -66,4 +65,10 @@ public class AstStringConstantExpression implements AstExpression {
 			}
 		};
 	}
+	
+	@Override
+	public String toString() {
+		return "AstIntegerConstantExpression:\"" + this.contentString + "\"";
+	}
+
 }

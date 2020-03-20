@@ -1,7 +1,6 @@
 package org.sirius.frontend.core;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -11,6 +10,7 @@ import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.ExpressionStatement;
 import org.sirius.frontend.api.FunctionCall;
 import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.Statement;
@@ -18,12 +18,6 @@ import org.sirius.frontend.api.StringConstantExpression;
 import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.ast.AstExpressionStatement;
-import org.sirius.frontend.ast.AstFunctionDeclaration;
-import org.sirius.frontend.ast.AstFunctionFormalArgument;
-import org.sirius.frontend.ast.AstLocalVariableStatement;
-import org.sirius.frontend.ast.AstModuleDeclaration;
-import org.sirius.frontend.ast.AstPackageDeclaration;
-import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.parser.Compiler;
 import org.testng.annotations.Test;
@@ -34,21 +28,20 @@ public class TopLevelFunctionTest {
 	public void findTopLevelFunction() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(){}");
 
-		assertEquals(session.getModuleContents().size(), 1);
+		List<ModuleDeclaration> moduleDeclarations = session.getModuleDeclarations();
+		assertEquals(moduleDeclarations.size(), 2);
 		
-		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
-		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
+		ModuleDeclaration md = moduleDeclarations.get(1);
+		PackageDeclaration pd = md.getPackages().get(0);
 		
-		assertEquals(pd.getFunctionDeclarations().size(), 1);
-		AstFunctionDeclaration fd = pd.getFunctionDeclarations().get(0);
+		assertEquals(pd.getFunctions().size(), 1);
+		TopLevelFunction fd = pd.getFunctions().get(0);
 		
-		assertEquals(fd.getName().getText(), "f");
+		assertEquals(fd.getQName().getLast(), "f");
 		
 		// -- As API
-		List<ModuleDeclaration> mds = session.getModuleDeclarations();
-		assertEquals(mds.size(), 1);
-		assertEquals(mds.get(0).getPackages().size(), 1);
-		PackageDeclaration apiPd = mds.get(0).getPackages().get(0);
+		assertEquals(md.getPackages().size(), 1);
+		PackageDeclaration apiPd = md.getPackages().get(0);
 		
 		assertEquals(apiPd.getFunctions().size(), 1);
 		TopLevelFunction tlf = apiPd.getFunctions().get(0);
@@ -64,39 +57,60 @@ public class TopLevelFunctionTest {
 //		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
 //		AstFunctionDeclaration fd = pd.getFunctionDeclarations().get(0);
 
-		TopLevelFunction tlf = session.getModuleDeclarations().get(0).getPackages().get(0).getFunctions().get(0);
+		TopLevelFunction tlf = session.getModuleDeclarations().get(1).getPackages().get(0).getFunctions().get(0);
 		
 		assertEquals(tlf.getArguments().size(), 2);
 		assertEquals(tlf.getArguments().get(0).getQName().dotSeparated(), "a.b.f.i");
 		assertEquals(tlf.getArguments().get(1).getQName().dotSeparated(), "a.b.f.j");
 	}
 
-	@Test(description = "", enabled = false)
+	
+//	@Test(description = "", enabled = true)
+//	public void checkPartialParsingCausesAnError() {
+//		ScriptSession session = Compiler.compileScript(
+//				"#!\n module a.b \"1.0\" {} "
+//				//+ "import sirius.lang {String} "
+//				+ "void f(){println(\"Hello World\");}"
+//				//+ "impor t sirius.lang1 {String1 "
+//				);
+//		assertEquals(session.getReporter().getErrorCount(), 1);
+//	}
+	
+	@Test(description = "", enabled = true)
 	public void checkFunctionBodyContainsAnExpressionStatement() {
-		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(){println(\"Hello World\");}");
+		ScriptSession session = Compiler.compileScript(
+				"#!\n "
+				+ "import sirius.lang {String} "
+				+ "module a.b \"1.0\" {} "
+				+ "void f(){println(\"Hello World\");}");
 		
-		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
-		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
-		AstFunctionDeclaration fd = pd.getFunctionDeclarations().get(0);
+		ModuleDeclaration md0 = session.getModuleDeclarations().get(0);
+		
+		ModuleDeclaration md1 = session.getModuleDeclarations().get(1);
+		PackageDeclaration pd = md1.getPackages().get(0);
+		
+		List<TopLevelFunction> funcs = pd.getFunctions();
+		TopLevelFunction fd = funcs.get(0);
 
-		List<AstStatement> statements = fd.getStatements();
+		List<Statement> statements = fd.getBodyStatements();
 		assertEquals(statements.size(), 1);
+		Statement statement0 = statements.get(0);
+		ExpressionStatement printCallStmt = (ExpressionStatement)statement0;	// NOTE: type casting is used as an assertion
+		//Expression fctCallExpr = printCallStmt.getExpression();
+		FunctionCall functionCall = (FunctionCall)printCallStmt.getExpression();
+//		assertEquals(functionCall.getFunctionName().getText(), "println");
 		
-		AstExpressionStatement printCallStmt = (AstExpressionStatement)statements.get(0);	// NOTE: type casting is used as an assertion
-		AstFunctionCallExpression callExpression = (AstFunctionCallExpression)printCallStmt.getExpression();
-		assertEquals(callExpression.getName().getText(), "println");
 		
 		
-		
-		// -- API
-		TopLevelFunction tlf = session.getModuleDeclarations().get(0).getPackages().get(0).getFunctions().get(0);
-		assertEquals(tlf.getQName().dotSeparated(), "a.b.f");
-		
-		List<Statement> apiStatements = tlf.getBodyStatements();
-		assertEquals(apiStatements.size(), 1);
-		ExpressionStatement functionCallst = (ExpressionStatement)apiStatements.get(0);
-		
-		FunctionCall functionCall = (FunctionCall)functionCallst.getExpression();
+//		// -- API
+//		TopLevelFunction tlf = session.getModuleDeclarations().get(0).getPackages().get(0).getFunctions().get(0);
+//		assertEquals(tlf.getQName().dotSeparated(), "a.b.f");
+//		
+//		List<Statement> apiStatements = tlf.getBodyStatements();
+//		assertEquals(apiStatements.size(), 1);
+//		ExpressionStatement functionCallst = (ExpressionStatement)apiStatements.get(0);
+//		
+//		FunctionCall functionCall = (FunctionCall)functionCallst.getExpression();
 		assertEquals(functionCall.getFunctionName().getText(), "println");
 		assertEquals(functionCall.getArguments().size(), 1);
 
@@ -118,17 +132,20 @@ public class TopLevelFunctionTest {
 	public void checkFunctionArgumentFoundInApi() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(String s){}");
 		
-		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
-		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
-		AstFunctionDeclaration fd = pd.getFunctionDeclarations().get(0);
+		List<ModuleDeclaration> moduleDeclarations = session.getModuleDeclarations();
+		assertEquals(moduleDeclarations.size(), 2);
+
+		ModuleDeclaration md = moduleDeclarations.get(1);
+		PackageDeclaration pd = md.getPackages().get(0);
+		TopLevelFunction fd = pd.getFunctions().get(0);
 		
-		assertEquals(fd.getFormalArguments().size(), 1);
-		AstFunctionFormalArgument fctArg0 = fd.getFormalArguments().get(0);
+		assertEquals(fd.getArguments().size(), 1);
+		FunctionFormalArgument fctArg0 = fd.getArguments().get(0);
 		
-		System.out.println("Arg: type=" + fctArg0.getType().getClass() + " : " + fctArg0.getType() + ", name=" + fctArg0.getName());
+		System.out.println("Arg: type=" + fctArg0.getType().getClass() + " : " + fctArg0.getType() + ", name=" + fctArg0.getQName().getLast());
 		
 		// -- API
-		List<FunctionFormalArgument> apiArgs = session.getModuleDeclarations().get(0).getPackages().get(0).getFunctions().get(0).getArguments();
+		List<FunctionFormalArgument> apiArgs = moduleDeclarations.get(1).getPackages().get(0).getFunctions().get(0).getArguments();
 		assertEquals(apiArgs.size(), 1);
 		FunctionFormalArgument apiArg0 = apiArgs.get(0);
 		
@@ -145,17 +162,19 @@ public class TopLevelFunctionTest {
 	public void checkArrayFunctionArgumentFoundInApi() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(String[] s){}");
 		
-		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
-		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
-		AstFunctionDeclaration fd = pd.getFunctionDeclarations().get(0);
+		List<ModuleDeclaration> moduleDeclarations = session.getModuleDeclarations();
+		assertEquals(moduleDeclarations.size(), 2);
+		ModuleDeclaration md = moduleDeclarations.get(1);
+		PackageDeclaration pd = md.getPackages().get(0);
+		TopLevelFunction fd = pd.getFunctions().get(0);
 		
-		assertEquals(fd.getFormalArguments().size(), 1);
-		AstFunctionFormalArgument fctArg0 = fd.getFormalArguments().get(0);
+		assertEquals(fd.getArguments().size(), 1);
+		FunctionFormalArgument fctArg0 = fd.getArguments().get(0);
 		
-		System.out.println("Arg: type=" + fctArg0.getType().getClass() + " : " + fctArg0.getType() + ", name=" + fctArg0.getName());
+		System.out.println("Arg: type=" + fctArg0.getType().getClass() + " : " + fctArg0.getType() + ", name=" + fctArg0.getQName().getLast());
 		
 		// -- API
-		List<FunctionFormalArgument> apiArgs = session.getModuleDeclarations().get(0).getPackages().get(0).getFunctions().get(0).getArguments();
+		List<FunctionFormalArgument> apiArgs = moduleDeclarations.get(1).getPackages().get(0).getFunctions().get(0).getArguments();
 		assertEquals(apiArgs.size(), 1);
 		FunctionFormalArgument apiArg0 = apiArgs.get(0);
 		
@@ -174,13 +193,16 @@ public class TopLevelFunctionTest {
 	public void checkFunctionLocalArgument() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(){String s ;}");
 		
-		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
-		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
-		AstFunctionDeclaration fd = pd.getFunctionDeclarations().get(0);
+		List<ModuleDeclaration> moduleDeclarations = session.getModuleDeclarations();
+		assertEquals(moduleDeclarations.size(), 2);
+		
+		ModuleDeclaration md = session.getModuleDeclarations().get(1);
+		PackageDeclaration pd = md.getPackages().get(0);
+		TopLevelFunction fd = pd.getFunctions().get(0);
 
-		assertEquals(fd.getStatements().size(), 1);
-		AstStatement st0 = fd.getStatements().get(0);
-		assert(st0 instanceof AstLocalVariableStatement);
+		assertEquals(fd.getBodyStatements().size(), 1);
+		Statement st0 = fd.getBodyStatements().get(0);
+		assert(st0 instanceof LocalVariableStatement);
 	}
 	
 }

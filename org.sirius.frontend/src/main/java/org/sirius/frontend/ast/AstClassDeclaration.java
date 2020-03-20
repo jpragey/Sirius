@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ClassDeclaration;
@@ -16,7 +15,6 @@ import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
-import org.sirius.frontend.symbols.GlobalSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTable;
 
@@ -230,7 +228,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 
 	@Override
 	public String toString() {
-		return "class " + name.getText();
+		return "class " + qName;
 	}
 	public boolean isAnnotationType() {
 		return annotationType;

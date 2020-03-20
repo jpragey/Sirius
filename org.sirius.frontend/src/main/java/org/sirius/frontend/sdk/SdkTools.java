@@ -36,9 +36,10 @@ public class SdkTools {
 	private Map<QName, AstPackageDeclaration> packagesMap = new HashMap<QName, AstPackageDeclaration>();
 
 	private QName siriusLangQName = new QName("sirius", "lang"); 
-	private AstPackageDeclaration rootPd = new AstPackageDeclaration(reporter, siriusLangQName);
+	private final static AstToken versionToken = new AstToken(0,0,0,0,"1.0","");
+//	private AstPackageDeclaration rootPd0 = new AstPackageDeclaration(reporter, siriusLangQName);
 
-	/** Class containing top-level functions */
+	/** Class containing top-level functions (named $package$ )*/
 	private AstClassDeclaration topLevelClass;
 
 	private AstModuleDeclaration sdkModule;
@@ -53,12 +54,12 @@ public class SdkTools {
 		super();
 		this.reporter = reporter;
 		
-		this.topLevelClass = createClassInPackage(reporter, rootPd, "$package$");
-		
-		packagesMap.put(siriusLangQName, rootPd);
-		
-		this.sdkModule = new AstModuleDeclaration(reporter);
 		this.langPackage = new AstPackageDeclaration(reporter, siriusLangQName);
+		this.topLevelClass = createClassInPackage(reporter, this.langPackage, "$package$");
+		
+		packagesMap.put(siriusLangQName, langPackage);
+		
+		this.sdkModule = new AstModuleDeclaration(reporter, siriusLangQName, versionToken);
 		sdkModule.addPackageDeclaration(langPackage);
 	}
 
@@ -105,7 +106,7 @@ public class SdkTools {
 			reporter.error("SDK class/interface " + clss + " doesn't belong to the language SDK package " +
 					siriusLangQName.dotSeparated() + " (found : " + classPkgQName + ")");
 			
-			pd = rootPd;	// Just to allow compilation to keep on  
+			pd = langPackage;	// Just to allow compilation to keep on  
 		}
 
 		AstClassDeclaration cd = createClassInPackage(reporter, pd, name);
@@ -154,7 +155,7 @@ public class SdkTools {
 		fd.setContainerQName(classPkgQName);
 		this.topLevelClass.addFunctionDeclaration(fd);
 		
-		fd.setContainerQName(classPkgQName);
+//		fd.setContainerQName(classPkgQName);
 
 		// -- function arguments
 		for(Parameter parameter: method.getParameters()) {

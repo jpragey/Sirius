@@ -1,7 +1,6 @@
 package org.sirius.frontend.ast;
 
 import org.sirius.frontend.api.VoidType;
-import org.sirius.frontend.symbols.GlobalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
 public class AstVoidType implements AstType {

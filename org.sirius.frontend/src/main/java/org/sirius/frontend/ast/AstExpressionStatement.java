@@ -24,15 +24,20 @@ public class AstExpressionStatement implements AstStatement {
 		visitor.endExpressionStatement(this);
 	}
 
+	private class ExpressionStatementImpl implements ExpressionStatement {
+		
+		@Override
+		public Expression getExpression() {
+			return expression.getExpression();
+		}
+	};
+
+	private ExpressionStatementImpl apiImpl = null;
 	@Override
 	public ExpressionStatement toAPI() {
-		return new ExpressionStatement() {
-			
-			@Override
-			public Expression getExpression() {
-				return expression.getExpression();
-			}
-		};
+		if(apiImpl == null)
+			apiImpl = new ExpressionStatementImpl();
+		return apiImpl;
 	}
 
 }

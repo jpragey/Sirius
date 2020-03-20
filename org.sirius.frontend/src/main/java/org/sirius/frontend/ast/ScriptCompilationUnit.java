@@ -7,10 +7,7 @@ import java.util.Optional;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.AbstractCompilationUnit;
-import org.sirius.frontend.symbols.AliasingSymbolTable;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
-import org.sirius.frontend.symbols.GlobalSymbolTable;
-import org.sirius.frontend.symbols.LocalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
 public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable, Scoped {
@@ -28,10 +25,17 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	private DefaultSymbolTable symbolTable; 
 
 	
-	public ScriptCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
+	public ScriptCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable, AstModuleDeclaration rootModule) {
 		super();
 		this.reporter = reporter;
 		this.symbolTable = globalSymbolTable;
+		this.moduleDeclarations.add(rootModule);
+		
+//		AstModuleDeclaration unnamedModule = new AstModuleDeclaration(reporter);
+//		moduleDeclarations.add(unnamedModule);
+//		addModuleDeclaration(unnamedModule);
+		
+//		addPackageDeclaration(new AstPackageDeclaration(reporter));
 	
 	}
 
@@ -69,19 +73,19 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		visitor.endScriptCompilationUnit(this);
 	}
 	
-	@Override
-	public AstModuleDeclaration getCurrentModule() {
-		AstModuleDeclaration last = moduleDeclarations.peekLast();
-		if(last == null) {
-			last = new AstModuleDeclaration(reporter);
-			moduleDeclarations.add(last);
-		}
-		return last;
-	}
+//	@Override
+//	public AstModuleDeclaration getCurrentModule() {
+//		AstModuleDeclaration last = moduleDeclarations.peekLast();
+//		if(last == null) {
+//			last = AstModuleDeclaration.createUnnamed(reporter);
+//			moduleDeclarations.add(last);
+//		}
+//		return last;
+//	}
 
-	public AstPackageDeclaration getCurrentPackage() {
-		return getCurrentModule().getCurrentPackage();
-	}
+//	public AstPackageDeclaration getCurrentPackage() {
+//		return getCurrentModule().getCurrentPackage();
+//	}
 
 	@Override
 	public List<AstModuleDeclaration> getModuleDeclarations() {
@@ -97,16 +101,16 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 //		this.symbolTable.setParentSymbolTable(newParent);
 //	}
 	
-	public void addPackageDeclaration(AstPackageDeclaration declaration) {
-		getCurrentModule().addPackageDeclaration(declaration);
-	}
-
-	public void addFunctionDeclaration(AstFunctionDeclaration d) {
-		getCurrentModule().addFunctionDeclaration(d);
-	}
-	public void addClassDeclaration(AstClassDeclaration d) {
-		getCurrentModule().addClassDeclaration(d);
-	}
+//	public void addPackageDeclaration(AstPackageDeclaration declaration) {
+//		getCurrentModule().addPackageDeclaration(declaration);
+//	}
+//
+//	public void addFunctionDeclaration(AstFunctionDeclaration d) {
+//		getCurrentModule().addFunctionDeclaration(d);
+//	}
+//	public void addClassDeclaration(AstClassDeclaration d) {
+//		getCurrentModule().addClassDeclaration(d);
+//	}
 	
 	
 	@Override

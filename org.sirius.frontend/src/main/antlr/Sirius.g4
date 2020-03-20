@@ -31,18 +31,21 @@ grammar Sirius;
 /** Usual compilation unit */
 standardCompilationUnit returns [StandardCompilationUnit stdUnit]
 locals[
-	AstPackageDeclaration currentPackage
+//	AstPackageDeclaration currentPackage
 ]
 @init {     
-	$currentPackage = factory.createPackageDeclaration();
+/*	currentPackage = factory.createPackageDeclaration();*/
 	$stdUnit = factory.createStandardCompilationUnit();
 }
     : 						
-    ( shebangDeclaration 		{ $stdUnit.setShebang($shebangDeclaration.declaration); } )?
     ( importDeclaration 		{ $stdUnit.addImport($importDeclaration.declaration);  })*
     (
     	  moduleDeclaration 	{ $stdUnit.addModuleDeclaration($moduleDeclaration.declaration);    } 
-    	| packageDeclaration	{ $currentPackage = $packageDeclaration.declaration; }
+    	| packageDeclaration	{ 
+										currentModule.addPackageDeclaration($packageDeclaration.declaration);
+    								// currentPackage = $packageDeclaration.declaration; 
+    								// currentModule.addPackageDeclaration($packageDeclaration.declaration);
+    	}
     	| functionDeclaration	{
     								$stdUnit.addFunctionDeclaration($functionDeclaration.declaration);
     	}
@@ -56,23 +59,26 @@ locals[
 /** CompilationUnit from script */
 scriptCompilationUnit returns [ScriptCompilationUnit unit]
 @init {     
-	$unit = factory.createScriptCompilationUnit();
+	$unit = factory.createScriptCompilationUnit(currentModule);
 }
 	: shebangDeclaration			{$unit.setShebang($shebangDeclaration.declaration); }
     ( importDeclaration 			{$unit.addImport($importDeclaration.declaration);  })*
 	(
 		  moduleDeclaration 		{
 		  								$unit.addModuleDeclaration($moduleDeclaration.declaration);
+		  								currentModule = $moduleDeclaration.declaration;
 //		  								scriptCurrentState.addModule($moduleDeclaration.declaration);
 		  							} 
 		| packageDeclaration 		{
-										$unit.addPackageDeclaration($packageDeclaration.declaration);
-//										scriptCurrentState.getCurrentModule().addPackageDeclaration($packageDeclaration.declaration);
+										//$unit.addPackageDeclaration($packageDeclaration.declaration);
+										currentModule.addPackageDeclaration($packageDeclaration.declaration);
+										//scriptCurrentState.getCurrentModule().addPackageDeclaration($packageDeclaration.declaration);
+
 									} 
-		| functionDeclaration 		{$unit.addFunctionDeclaration($functionDeclaration.declaration);	}
-		| classDeclaration 			{$unit.addClassDeclaration($classDeclaration.declaration);	}
+		| functionDeclaration 		{currentModule.addFunctionDeclaration($functionDeclaration.declaration);	}
+		| classDeclaration 			{currentModule.addClassDeclaration($classDeclaration.declaration);	}
 	)*
-	
+	EOF
 	;
 
 /** CompilationUnit from module descriptor */
@@ -92,9 +98,14 @@ packageDescriptorCompilationUnit returns [PackageDescriptorCompilationUnit unit]
 // -------------------- MODULE DECLARATION
 
 moduleDeclaration returns [AstModuleDeclaration declaration]
-	: 'module'			{ $declaration = factory.createModuleDeclaration(); }
-	  qname				{ $declaration.setQName($qname.content); }
-	  STRING			{ $declaration.setVersion($STRING); }
+	: 'module'		
+	  qname			
+	  STRING			{ 
+	  	//$declaration.setVersion($STRING);
+	  	$declaration = factory.createModuleDeclaration($qname.content, $STRING);
+	  	/*currentModule = $declaration;*/
+	  	
+	  }
 	  '{'
 	  		(	
 	  			  'value' name=LOWER_ID '=' value=STRING ';' 	{ $declaration.addValueEquivalent($name, $value); }

@@ -19,7 +19,7 @@ public class TopLevel {
 	@SiriusMethod
 	public void println(
 //			@Parameter(typeQName = "sirius.lang.Stringifiable")
-			@Parameter(typeQName = "sirius.lang.SiriusString")
+			@Parameter(typeQName = "sirius.lang.String")
 //			Stringifiable text
 			SiriusString text
 			) 

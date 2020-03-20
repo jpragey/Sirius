@@ -5,12 +5,13 @@ import java.util.Optional;
 import org.antlr.v4.runtime.Token;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
-import org.sirius.frontend.symbols.GlobalSymbolTable;
 
 public class AstFactory {
 
 	private Reporter reporter;
 	private DefaultSymbolTable globalSymbolTable;
+//	private Optional<AstModuleDeclaration> currentModule = Optional.empty();
+//	private AstModuleDeclaration currentModule;
 	
 	public AstFactory(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
 		super();
@@ -54,10 +55,11 @@ public class AstFactory {
 	public StandardCompilationUnit createStandardCompilationUnit() {
 		return new StandardCompilationUnit(reporter, globalSymbolTable);
 	}
-	public ScriptCompilationUnit createScriptCompilationUnit() {
-		return new ScriptCompilationUnit(reporter, globalSymbolTable);
+	public ScriptCompilationUnit createScriptCompilationUnit(AstModuleDeclaration rootModule /* initially empty module*/) {
+		return new ScriptCompilationUnit(reporter, globalSymbolTable, rootModule);
 	}
 	public ModuleDescriptor createModuleDescriptorCompilationUnit(AstModuleDeclaration moduleDeclaration) {
+//		this.currentModule = moduleDeclaration;
 		return new ModuleDescriptor(reporter, moduleDeclaration);
 	}
 	public PackageDescriptorCompilationUnit createPackageDescriptorCompilationUnit(AstPackageDeclaration packageDeclaration) {
@@ -69,12 +71,17 @@ public class AstFactory {
 	public AstPackageDeclaration createPackageDeclaration(QualifiedName qname) {
 		return new AstPackageDeclaration(reporter, qname.toQName());
 	}
-	public AstPackageDeclaration createPackageDeclaration() {
-		return new AstPackageDeclaration(reporter);
-	}
+//	public AstPackageDeclaration createPackageDeclaration() {
+//		AstPackageDeclaration pd = new AstPackageDeclaration(reporter);
+////		this.currentModule.ifPresent(mod -> mod.addPackageDeclaration(pd));
+////		this.currentModule.
+//		return pd;
+//	}
 
-	public AstModuleDeclaration createModuleDeclaration() {
-		return new AstModuleDeclaration(reporter);
+	public AstModuleDeclaration createModuleDeclaration(QualifiedName qualifiedName, Token version) {
+		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, qualifiedName.toQName(), version);
+//		this.currentModule = Optional.of(mod);
+		return mod;
 	}
 	
 	public ImportDeclaration createImportDeclaration(QualifiedName pack) {

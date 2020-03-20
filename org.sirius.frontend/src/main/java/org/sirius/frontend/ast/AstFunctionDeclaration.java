@@ -162,7 +162,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 
 	@Override
 	public String toString() {
-		return name.getText() + "(" + formalArguments.size() + " args)";
+		return qName.toString() + "(" + formalArguments.size() + " args)";
 	}
 	
 	public Optional<TopLevelFunction> getTopLevelFunction() 

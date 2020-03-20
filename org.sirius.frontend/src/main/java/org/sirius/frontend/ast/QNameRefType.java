@@ -6,10 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
-import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
-import org.sirius.frontend.symbols.GlobalSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTable;
 
@@ -94,6 +92,9 @@ public final class QNameRefType implements AstType {
 
 	private Optional<AstClassDeclaration> getClassDeclaration() {
 		Optional<Symbol> optSymbol = symbolTable.lookup(qName);
+		
+		symbolTable.dump();
+		
 		if(optSymbol.isPresent()) {
 			Symbol symbol = optSymbol.get();
 			Optional<AstClassDeclaration> optClassDeclaration = symbol.getClassDeclaration();

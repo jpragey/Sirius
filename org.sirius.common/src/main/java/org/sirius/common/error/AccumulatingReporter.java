@@ -56,6 +56,13 @@ public class AccumulatingReporter implements Reporter {
 	public List<String> getErrors() {
 		return errors;
 	}
-
+	
+	@Override
+	public String toString() {
+		return "AccumulatingReporter: " + 
+				errors.size() + " errors, " + 
+				warnings.size() + " warnings, " + 
+				messages.size() + " messages.";
+	}
 	
 }

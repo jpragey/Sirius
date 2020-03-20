@@ -42,14 +42,9 @@ public class ModuleDescriptor implements AbstractCompilationUnit, Visitable {
 		return Arrays.asList(moduleDeclaration);
 	}
 
-	@Override
-	public Optional<ShebangDeclaration> getShebangDeclaration() {
-		return Optional.empty();
-	}
-
-	@Override
-	public AstModuleDeclaration getCurrentModule() {
-		return moduleDeclaration;
-	}
+//	@Override
+//	public AstModuleDeclaration getCurrentModule() {
+//		return moduleDeclaration;
+//	}
 
 }

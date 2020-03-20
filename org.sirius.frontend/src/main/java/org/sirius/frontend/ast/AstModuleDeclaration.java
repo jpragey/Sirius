@@ -12,18 +12,22 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
+import org.sirius.frontend.core.PhysicalPath;
 
 public class AstModuleDeclaration implements Visitable {
 
 //	private QualifiedName qName = new QualifiedName();
-	private QualifiedName qName = new QualifiedName();
+	private QName qName = new QName();
 	private AstToken version = new AstToken(0,0,0,0,"","");
 	
 	private Reporter reporter; 
 	
+	private Optional<PhysicalPath> modulePPath = Optional.empty(); 
+
 	private Map<String, AstToken> equivalents = new HashMap<>();
 	
-	public class ModuleImport {
+	public static class ModuleImport {
+		private Reporter reporter; 
 		private boolean shared = false; 
 		private Optional<AstToken> origin = Optional.empty();
 		// The real value, even for if parsed as QName
@@ -32,9 +36,13 @@ public class AstModuleDeclaration implements Visitable {
 		private AstToken groupId; 
 //		private AstToken artefactId; 
 		private AstToken version;
-		public ModuleImport(boolean shared) {
+		private Map<String, AstToken> equivalents;
+		
+		public ModuleImport(Reporter reporter, boolean shared, Map<String, AstToken> equivalents) {
 			super();
+			this.reporter = reporter;
 			this.shared = shared;
+			this.equivalents = equivalents;
 		}
 		public boolean isShared() {
 			return shared;
@@ -87,36 +95,70 @@ public class AstModuleDeclaration implements Visitable {
 	private List<ModuleImport> moduleImports = new ArrayList<>(); 
 	
 	private List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
-	private Optional<AstPackageDeclaration> currentPackage = Optional.empty();
+	//private Optional<AstPackageDeclaration> currentPackage = Optional.empty();
 	
-	public AstModuleDeclaration(Reporter reporter) {
+	private AstPackageDeclaration currentPackage;
+	
+	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, AstToken version) {
 		super();
 		this.reporter = reporter;
-//		this.addPackageDeclaration(new PackageDeclaration(reporter));
+		this.currentPackage = new AstPackageDeclaration(reporter, qualifiedName);
+		this.addPackageDeclaration(this.currentPackage);
+		//setQName(qualifiedName);
+
+		this.qName = qualifiedName;
+		PhysicalPath pp = new PhysicalPath(qName/*.toQName()*/.getStringElements());
+		this.modulePPath = Optional.of(pp);
+
+		this.version = version; 
 	}
 
+	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, Token version) {
+		this(reporter, qualifiedName, new AstToken(version));
+	}
+	
+	public static AstModuleDeclaration createUnnamed(Reporter reporter) {
+		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, new QName(), new AstToken(0,0,0,0,"",""));
+		return mod;
+	}
+
+	
 	
 	public List<AstPackageDeclaration> getPackageDeclarations() {
 		return packageDeclarations;
 	}
 
-	public void setQName(QualifiedName qualifiedName) {
-		this.qName = qualifiedName;
-	}
+//	private void setQName(QName qualifiedName) {
+//		this.qName = qualifiedName;
+//		PhysicalPath pp = new PhysicalPath(qName/*.toQName()*/.getStringElements());
+//		this.modulePPath = Optional.of(pp);
+//	}
+	
 //	public void addQNameElement(Token element) {
 //		this.qName.add(element);
 //	}
 	
+//	public AstPackageDeclaration getRootPackageDeclaration() {
+//		return rootPackageDeclaration;
+//	}
+
+	public Optional<PhysicalPath> getModulePPath() {
+		return modulePPath;
+	}
+
+
+
 	/** Check there's a current package (otherwise create it) and return it.
 	 * 
 	 * @return
 	 */
 	public AstPackageDeclaration getCurrentPackage() {
-		if(currentPackage.isEmpty()) {
-			AstPackageDeclaration pd = new AstPackageDeclaration(reporter, qName.toQName());
-			addPackageDeclaration(pd);
-		}
-		return currentPackage.get();
+//		if(currentPackage.isEmpty()) {
+//			AstPackageDeclaration pd = new AstPackageDeclaration(reporter, qName/*.toQName()*/);
+//			addPackageDeclaration(pd);
+//		}
+//		return currentPackage.get();
+		return currentPackage;
 	}
 	
 	/** Add a new package, update current package reference
@@ -124,7 +166,7 @@ public class AstModuleDeclaration implements Visitable {
 	 * @param packageDeclaration
 	 */
 	public void addPackageDeclaration(AstPackageDeclaration packageDeclaration) {
-		this.currentPackage = Optional.of(packageDeclaration);
+		this.currentPackage = packageDeclaration;
 		this.packageDeclarations.add(packageDeclaration);
 	}
 	
@@ -136,9 +178,9 @@ public class AstModuleDeclaration implements Visitable {
 	}
 
 	
-	public void setVersion(Token version) {
-		this.version = new AstToken(version); 
-	}
+//	private void setVersion(Token version) {
+//		this.version = new AstToken(version); 
+//	}
 	
 	public void addValueEquivalent(Token name, Token value) {
 		
@@ -146,7 +188,7 @@ public class AstModuleDeclaration implements Visitable {
 	}
 	
 	public ModuleImport addImport(boolean shared) {
-		ModuleImport moduleImport = new ModuleImport(shared);
+		ModuleImport moduleImport = new ModuleImport(reporter, shared, equivalents);
 		this.moduleImports.add(moduleImport);
 		return moduleImport;
 		
@@ -164,7 +206,7 @@ public class AstModuleDeclaration implements Visitable {
 		this.equivalents = equivalents;
 	}
 
-	public QualifiedName getqName() {
+	public QName getqName() {
 		return qName;
 	}
 
@@ -181,7 +223,7 @@ public class AstModuleDeclaration implements Visitable {
 	
 	@Override
 	public String toString() {
-		return qName.toString();
+		return "[Mod:" + qName.toString() + "-" + version.getText() + "]";
 	}
 	
 	public void updatePackagesContainer() {
@@ -189,25 +231,46 @@ public class AstModuleDeclaration implements Visitable {
 			.forEach(AstPackageDeclaration::updateContentContainerRefs);
 	}
 	
+	private ModuleDeclaration moduleDeclaration = null;
+ 
+	private class ModuleDeclarationImpl implements ModuleDeclaration {
+		private QName moduleQName = qName/*.toQName()*/;
+
+		private List<PackageDeclaration> packageDeclarationList;
+		
+		public ModuleDeclarationImpl(QName moduleQName) {
+			super();
+			this.moduleQName = moduleQName;
+			this.packageDeclarationList = AstModuleDeclaration.this.packageDeclarations.stream()
+					.map(AstPackageDeclaration::getPackageDeclaration)
+					.collect(Collectors.toList());
+		}
+
+		@Override
+		public List<PackageDeclaration> getPackages() {
+			return packageDeclarationList;
+		}
+
+		@Override
+		public QName getQName() {
+			return moduleQName;
+		}
+
+		@Override
+		public PhysicalPath getPhysicalPath() {
+			return modulePPath.get();	// TODO: check ???
+		}
+		@Override
+		public String toString() {
+			return "\"" + getQName().toString() + "\"";
+		}
+	}
+	
 	public ModuleDeclaration getModuleDeclaration() {
 		
-		
-		return new ModuleDeclaration() {
-			private QName moduleQName = qName.toQName();
-			
-			@Override
-			public List<PackageDeclaration> getPackages() {
-				return packageDeclarations.stream()
-						.map(AstPackageDeclaration::getPackageDeclaration)
-						.collect(Collectors.toList());
-			}
-
-			@Override
-			public QName getQName() {
-				return moduleQName;
-			}
-			
-		};
+		if(moduleDeclaration == null) {
+			moduleDeclaration = new ModuleDeclarationImpl(qName);		}
+		return moduleDeclaration;
 	}
 	
 	

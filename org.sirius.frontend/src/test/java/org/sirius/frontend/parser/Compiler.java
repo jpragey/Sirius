@@ -9,6 +9,7 @@ import java.util.List;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
+import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.core.FrontEnd;
 import org.sirius.frontend.core.InputTextProvider;
 import org.sirius.frontend.core.ModuleContent;
@@ -45,7 +46,7 @@ public class Compiler {
 		}
 	}
 	
-	public static List<ModuleContent> compileStandard(InputTextProvider... providers) {
+	public static List<ModuleDeclaration> compileStandard(InputTextProvider... providers) {
 		
 		AccumulatingReporter reporter = new AccumulatingReporter(new ShellReporter());
 		
@@ -54,7 +55,7 @@ public class Compiler {
 		
 		assertReporter(reporter);
 		
-		List<ModuleContent> cus = session.getModuleContents();
+		List<ModuleDeclaration> cus = session.getModuleDeclarations();
 		
 		assertTrue(reporter.ok());
 		

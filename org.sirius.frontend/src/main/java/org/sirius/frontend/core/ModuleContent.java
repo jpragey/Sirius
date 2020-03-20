@@ -23,7 +23,7 @@ public class ModuleContent {
 		this.reporter = reporter;
 		this.moduleDeclaration = moduleDeclaration;
 		
-		this.modulePath = new PhysicalPath(moduleDeclaration.getqName().toQName().getStringElements());
+		this.modulePath = new PhysicalPath(moduleDeclaration.getqName().getStringElements());
 		
 		this.packageContents.addAll(moduleDeclaration.getPackageDeclarations());
 	}
@@ -48,7 +48,7 @@ public class ModuleContent {
 	public void createDefaultPackageIfNeeded() {
 		if(packageContents.isEmpty()) {
 			
-			AstPackageDeclaration pc = new AstPackageDeclaration(reporter, moduleDeclaration.getqName().toQName());
+			AstPackageDeclaration pc = new AstPackageDeclaration(reporter, moduleDeclaration.getqName());
 			packageContents.add(pc);
 		}
 	}
@@ -58,7 +58,7 @@ public class ModuleContent {
 	}
 
 	public QName getQName() {
-		return moduleDeclaration.getqName().toQName();
+		return moduleDeclaration.getqName();
 	}
 
 	public PhysicalPath getModulePath() {
