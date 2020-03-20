@@ -30,6 +30,12 @@ public class ImportDeclarationElement {
 	}
 	
 	
-	
+	@Override
+	public String toString() {
+		if(alias.isPresent())
+			return alias.get().getText() + "->" + importedTypeName.getText();
+		else
+			return importedTypeName.getText();
+	}
 	
 }

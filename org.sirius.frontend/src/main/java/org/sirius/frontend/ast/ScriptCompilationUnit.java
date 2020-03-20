@@ -77,7 +77,7 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	}
 
 	@Override
-	public SymbolTable getSymbolTable() {
+	public DefaultSymbolTable getSymbolTable() {
 		return symbolTable;
 	}
 

@@ -11,9 +11,9 @@ import org.sirius.frontend.ast.ImportDeclarationElement;
  */
 public class ImportedSymbol {
 
-	Token simpleName;
-	QName symbolQName;
-	ImportDeclarationElement e;	// TODO: optional?
+	private Token simpleName;
+	private QName symbolQName;
+	private ImportDeclarationElement e;	// TODO: optional?
 	
 	
 	public ImportedSymbol(Token simpleName, QName symbolQName, ImportDeclarationElement e) {
@@ -32,5 +32,9 @@ public class ImportedSymbol {
 		return e;
 	}
 	
+	@Override
+	public String toString() {
+		return simpleName.getText() + "->" + symbolQName.toString();
+	}
 	
 }

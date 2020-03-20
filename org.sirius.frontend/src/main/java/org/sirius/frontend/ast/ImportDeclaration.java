@@ -2,6 +2,7 @@ package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
 
@@ -41,5 +42,12 @@ public class ImportDeclaration implements Visitable {
 	public List<ImportDeclarationElement> getElements() {
 		return elements;
 	}
-
+	@Override
+	public String toString() {
+		return 
+				pack.toString() + 
+				"{" + 
+				String.join(", ", elements.stream().map(elem -> elem.toString()).collect(Collectors.toList())) +  
+				"}";
+	}
 }
