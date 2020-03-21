@@ -83,13 +83,34 @@ public class ImplicitTypeCast {
 	
 	@Test(enabled = true)
 	public void returnIntSum() throws Exception {
-
-		String script = "#!\n "
-				+ "import a.b {}"
-				+ "Integer main() {return 42 + 43;}";
+		String script = "#!\n Integer main() {return 42 + 43;}";
 		Object result = compileRunAndReturn(script);
 
 		assertEquals(result, 85);
+	}
+	
+	@Test(enabled = true)
+	public void returnIntSubstraction() throws Exception {
+		String script = "#!\n Integer main() {return 42 - 43;}";
+		Object result = compileRunAndReturn(script);
+
+		assertEquals(result, -1);
+	}
+	
+	@Test(enabled = true)
+	public void returnIntMult() throws Exception {
+		String script = "#!\n Integer main() {return 10 * 11;}";
+		Object result = compileRunAndReturn(script);
+		
+		assertEquals(result, 110);
+	}
+	
+	@Test(enabled = true)
+	public void returnIntDiv() throws Exception {
+		String script = "#!\n Integer main() {return 100 / 3;}";
+		Object result = compileRunAndReturn(script);
+		
+		assertEquals(result, 33);
 	}
 	
 	@Test(enabled = true)

@@ -104,6 +104,11 @@ public class AstBinaryOpExpression implements AstExpression {
 		public String toString() {
 			return left.getExpression() + " " + operator + " " + right.getExpression();
 		}
+
+		@Override
+		public Operator getOperator() {
+			return operator;
+		}
 	};
 	private BinaryOpExpressionImpl impl = null;
 	

@@ -14,6 +14,9 @@ import static org.objectweb.asm.Opcodes.NEW;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.NOP;
 import static org.objectweb.asm.Opcodes.IADD;
+import static org.objectweb.asm.Opcodes.IMUL;
+import static org.objectweb.asm.Opcodes.ISUB;
+import static org.objectweb.asm.Opcodes.IDIV;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,7 @@ import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.api.Visitor;
+
 
 public class CodeCreationVisitor implements Visitor {
 //	private final static int VERSION = 49;
@@ -306,12 +310,25 @@ public class CodeCreationVisitor implements Visitor {
 	@Override
 	public void end(BinaryOpExpression expression) {
 		MethodVisitor mv = methodStack.peek().mv;
-		mv.visitInsn(IADD);
+		BinaryOpExpression.Operator operator = expression.getOperator();
+		
+		switch(operator) {
+		case Add:
+			mv.visitInsn(IADD);
+			break;
+		case Mult:
+			mv.visitInsn(IMUL);
+			break;
+		case Substract:
+			mv.visitInsn(ISUB);
+			break;
+		case Divide:
+			mv.visitInsn(IDIV);
+			break;
+		default:
+			throw new UnsupportedOperationException("Binary operator not supported in JVM: " + operator);
+		}
 	}
-	
-	
-	
-	
 
 	@Override
 	public void start(StringConstantExpression expression) {

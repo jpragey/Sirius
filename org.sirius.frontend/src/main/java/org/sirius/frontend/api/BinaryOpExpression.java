@@ -5,4 +5,5 @@ public interface BinaryOpExpression extends Expression {
 
 	Expression getLeft();
 	Expression getRight();
+	Operator getOperator();
 }
