@@ -5,6 +5,7 @@ import static org.testng.Assert.assertEquals;
 import java.util.List;
 
 import org.sirius.frontend.api.ArrayType;
+import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.ExpressionStatement;
@@ -16,6 +17,7 @@ import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.StringConstantExpression;
 import org.sirius.frontend.api.TopLevelFunction;
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.ast.AstExpressionStatement;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
@@ -204,5 +206,44 @@ public class TopLevelFunctionTest {
 		Statement st0 = fd.getBodyStatements().get(0);
 		assert(st0 instanceof LocalVariableStatement);
 	}
+	
+	@Test(description = "Check that a function returning a String return in fact a sirius.lang.String")
+	public void checkFunctionReturnsConvertsStringIntoSiriusLangString() {
+		ScriptSession session = Compiler.compileScript("#!\n String f(){ return \"\";}");
+		
+		List<ModuleDeclaration> moduleDeclarations = session.getModuleDeclarations();
+		assertEquals(moduleDeclarations.size(), 1);
+		
+		ModuleDeclaration md = session.getModuleDeclarations().get(0);
+		PackageDeclaration pd = md.getPackages().get(0);
+		TopLevelFunction fd = pd.getFunctions().get(0);
+		Type type = fd.getReturnType();
+		
+		assert(type instanceof ClassDeclaration);
+		ClassDeclaration classDeclaration = (ClassDeclaration)type;
+		assertEquals(classDeclaration.getQName().dotSeparated(), "sirius.lang.String");
+	}
+	
+	@Test(description = "Check that a String function parameter takes in fact a sirius.lang.String")
+	public void checkStringFunctionParameterIsASiriusLangString() {
+		ScriptSession session = Compiler.compileScript("#!\n void f(String s){}");
+		
+		List<ModuleDeclaration> moduleDeclarations = session.getModuleDeclarations();
+		assertEquals(moduleDeclarations.size(), 1);
+		
+		ModuleDeclaration md = session.getModuleDeclarations().get(0);
+		PackageDeclaration pd = md.getPackages().get(0);
+		TopLevelFunction fd = pd.getFunctions().get(0);
+		
+		List<FunctionFormalArgument> args = fd.getArguments();
+		assertEquals(args.size(), 1);
+		FunctionFormalArgument arg = args.get(0);
+		
+		ClassDeclaration argType = (ClassDeclaration)arg.getType();
+		assertEquals(argType.getQName().dotSeparated(), "sirius.lang.String");
+	}
+	
+	
+	
 	
 }

@@ -366,7 +366,10 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		public QName getQName() {
 			return qName;
 		}
-		
+		@Override
+		public String toString() {
+			return qName.toString();
+		}
 	}
 	
 	@Override
