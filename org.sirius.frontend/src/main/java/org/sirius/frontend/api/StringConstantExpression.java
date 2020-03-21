@@ -24,4 +24,11 @@ public interface StringConstantExpression extends Expression {
 	default StringType getType() {
 		return type;
 	}
+	
+	default void visitMe(Visitor visitor) {
+		visitor.start(this);
+		visitor.end(this);
+	}
+
+	
 }

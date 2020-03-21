@@ -331,8 +331,6 @@ public class CodeCreationVisitor implements Visitor {
 		
 	}
 	
-
-
 	private void processFunctionCall(MethodVisitor mv, FunctionCall call) {
 		String funcName = call.getFunctionName().getText();
 		

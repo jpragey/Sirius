@@ -1,5 +1,6 @@
 package org.sirius.backend.jvm.integration;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
@@ -36,30 +37,17 @@ public class ImplicitTypeCast {
 		assertTrue(reporter.ok());
 	}
 	
-//	// TODO: factorise
-//	public static ScriptSession compileScript(String sourceCode) {
-//		
-//		Reporter reporter = new AccumulatingReporter(new ShellReporter());
-//		
-//		FrontEnd frontEnd = new FrontEnd(reporter);
-//		TextInputTextProvider provider = new TextInputTextProvider("some/package", "script.sirius", sourceCode);
-//		ScriptSession session = frontEnd.createScriptSession(provider);
-//		assertTrue(reporter.ok());
-//		
-//		return session;
-//	}
 
-	
-	@Test(enabled = false)
-	public void runHelloWorld() throws Exception {
+	public Object compileRunAndReturn(String script) throws Exception {
 		
-		String script = "#!\n "
-//				+ "String getVal() {return \"Hello\";}"
-				+ "import a.b {}"
-//				+ "void main(String[] args) {println(\"42\");}"
-				+ "void main() {String s; println(\"42\");}"
-				;
-//		+ "void main(String args, String[] args2) {println(\"42\");}";
+//		String script = "#!\n "
+////				+ "String getVal() {return \"Hello\";}"
+//				+ "import a.b {}"
+////				+ "void main(String[] args) {println(\"42\");}"
+//// + "void main() {String s; println(\"42\");}"
+//+ "void main() {println(\"42\");}"
+//				;
+////		+ "void main(String args, String[] args2) {println(\"42\");}";
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
 //		ScriptSession session = compileScript("#!\n void main(String s) {println(42);}");
@@ -88,15 +76,40 @@ public class ImplicitTypeCast {
 		Method main = cls.getMethod("main", new Class[] {
 ////				String[].class
 		});
-		System.out.println("Main: " + main);
+//		System.out.println("Main: " + main);
 		
-		Object[] argTypes = new Object[] {
-////				new String[]{""}
-		};
+		Object[] argTypes = new Object[] {};
 		
 		Object result = main.invoke(null, argTypes /*, args*/);
 		System.out.println("Result: " + result);
-		//		return result;
 		
+		return result;
+	}
+
+	
+	
+	
+	
+	
+	@Test(enabled = true)
+	public void returnConstantInt() throws Exception {
+
+		String script = "#!\n "
+				+ "import a.b {}"
+				+ "Integer main() {return 42;}";
+		Object result = compileRunAndReturn(script);
+
+		assertEquals(result, 42);
+	}
+	
+	@Test(enabled = true)
+	public void returnConstantString() throws Exception {
+
+		String script = "#!\n "
+				+ "import a.b {}"
+				+ "void main() {println(\"42\");}";
+		Object result = compileRunAndReturn(script);
+
+		assertEquals(result, null);
 	}
 }

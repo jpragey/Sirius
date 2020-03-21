@@ -1,8 +1,11 @@
 package org.sirius.backend.jvm;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ArrayType;
@@ -38,12 +41,32 @@ public class DescriptorFactory {
 		}
 	}
 	
+	private static HashMap<QName, String> siriusToJvmTypeMap = new HashMap<QName, String>() {{
+		put(new QName("sirius", "lang", "Integer"), "I");
+	}};
+			
+	private String mapStandardSiriusType(ClassType classType) {
+		QName n = classType.getQName();
+		String internalName = siriusToJvmTypeMap.get(n);
+		if(internalName != null) {
+			return internalName;
+		}
+		
+		String classIName = classType.getQName().getStringElements().stream().collect(Collectors.joining("/"));
+		classIName = tempMapClassInternalName(classIName);
+		return "L" + classIName + ";";
+	}
+	
+	
 	public String fieldDescriptor(Type type) {
 		if(type instanceof ClassType) {
 			ClassType classType = (ClassType)type;
-			String internalName = classType.getQName().getStringElements().stream().collect(Collectors.joining("/"));
-			internalName = tempMapClassInternalName(internalName);
-			return "L" + internalName + ";";
+			String descriptor = mapStandardSiriusType(classType);
+			return descriptor;
+			
+//			String internalName = classType.getQName().getStringElements().stream().collect(Collectors.joining("/"));
+//			internalName = tempMapClassInternalName(internalName);
+//			return "L" + internalName + ";";
 		} else if(type instanceof VoidType) {
 			return "V";
 		} else if(type instanceof ArrayType) {
