@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.Token;
 import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.api.Visitor;
 
 public class AstBinaryOpExpression implements AstExpression {
 //	public enum Operator {Add, Substract, Mult, Divide}
@@ -68,25 +69,51 @@ public class AstBinaryOpExpression implements AstExpression {
 		visitor.endBinaryOpExpression(this);
 	}
 
+	class BinaryOpExpressionImpl implements BinaryOpExpression {
+
+		@Override
+		public Expression getLeft() {
+			return left.getExpression();
+		}
+
+		@Override
+		public Expression getRight() {
+			return right.getExpression();
+		}
+
+		@Override
+		public Type getType() {
+			Type leftType = left.getExpression().getType();
+			Type rightType = right.getExpression().getType();
+			
+			if(leftType == Type.integerType && rightType == Type.integerType ) {
+				return Type.integerType;
+			}
+			
+			throw new UnsupportedOperationException("Partial support of getType() in AstBinaryOpExpression yet (only integer are supported)");
+		}
+
+		@Override
+		public void visitMe(Visitor visitor) {
+			visitor.start(this);
+			getLeft().visitMe(visitor);
+			getRight().visitMe(visitor);
+			visitor.end(this);
+		}
+		@Override
+		public String toString() {
+			return left.getExpression() + " " + operator + " " + right.getExpression();
+		}
+	};
+	private BinaryOpExpressionImpl impl = null;
+	
 	@Override
 	public Expression getExpression() {
-		return new BinaryOpExpression() {
-
-			@Override
-			public Expression getLeft() {
-				return left.getExpression();
-			}
-
-			@Override
-			public Expression getRight() {
-				return right.getExpression();
-			}
-
-			@Override
-			public Type getType() {
-				throw new UnsupportedOperationException("No support of getType() in AstBinaryOpExpression yet.");
-			}
-		};
+		
+		if(impl == null)
+			impl = new BinaryOpExpressionImpl();
+		return impl;
 	}
+
 
 }

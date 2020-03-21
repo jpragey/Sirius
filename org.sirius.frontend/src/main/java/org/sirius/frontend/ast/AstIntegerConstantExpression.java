@@ -70,7 +70,11 @@ public class AstIntegerConstantExpression implements AstExpression {
 			public Type getType() {
 				return Type.integerType;
 			}
-			
+
+			@Override
+			public String toString() {
+				return Integer.toString(value);
+			}
 		} ;
 	}
 	@Override

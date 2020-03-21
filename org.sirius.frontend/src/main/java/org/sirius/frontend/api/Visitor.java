@@ -30,6 +30,12 @@ public interface Visitor {
 	public default void start(StringConstantExpression expression) {}
 	public default void end(StringConstantExpression expression) {}
 	
+	public default void start(BinaryOpExpression expression) {}
+	public default void end(BinaryOpExpression expression) {}
+	
+	
+	
+	
 	public default void start(ConstructorCall expression) {}
 	public default void end(ConstructorCall expression) {}
 	

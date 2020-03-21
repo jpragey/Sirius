@@ -13,6 +13,7 @@ import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.NEW;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.NOP;
+import static org.objectweb.asm.Opcodes.IADD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ConstructorCall;
@@ -295,6 +297,21 @@ public class CodeCreationVisitor implements Visitor {
 	public void end(IntegerConstantExpression expression) {
 		
 	}
+	
+	@Override
+	public void start(BinaryOpExpression expression) {
+		MethodVisitor mv = methodStack.peek().mv;
+//	    mv.visitLdcInsn(expression.getValue());
+	}
+	@Override
+	public void end(BinaryOpExpression expression) {
+		MethodVisitor mv = methodStack.peek().mv;
+		mv.visitInsn(IADD);
+	}
+	
+	
+	
+	
 
 	@Override
 	public void start(StringConstantExpression expression) {
