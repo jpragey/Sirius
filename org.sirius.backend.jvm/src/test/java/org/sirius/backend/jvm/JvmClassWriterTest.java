@@ -338,7 +338,7 @@ public class JvmClassWriterTest {
 						new QName("a", "b", "CC", "cc"), 
 						Collections.emptyList() /* formal args*/,
 						
-						new VoidType() {},
+						VoidType.instance,
 						Arrays.asList(
 								new LocalVariableStatementTestImpl(cdCC, AstToken.internal("myvar"), Optional.empty() /*initialValue*/),
 								new ReturnStatementTestImpl(new ConstructorCallImpl(cdCC, Arrays.asList())))

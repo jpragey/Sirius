@@ -37,6 +37,8 @@ public class ScriptSession implements Session {
 
 	private ScriptCompilationUnit compilationUnit;
 
+	private List<AstModuleDeclaration> astModules = new ArrayList<>();
+
 	public ScriptSession(Reporter reporter, InputTextProvider input) {
 		super();
 		this.reporter = reporter;
@@ -65,8 +67,9 @@ public class ScriptSession implements Session {
 		
 		this.shebang = compilationUnit.getShebangDeclaration();
 
+		this.astModules = compilationUnit.getModuleDeclarations();
 		this.modules = new ArrayList<>();
-		for(AstModuleDeclaration astMd: compilationUnit.getModuleDeclarations()) {
+		for(AstModuleDeclaration astMd: astModules) {
 			ModuleDeclaration md = astMd.getModuleDeclaration();
 			this.modules.add(md);
 		}
@@ -108,4 +111,11 @@ public class ScriptSession implements Session {
 	public List<ModuleDeclaration> getModuleDeclarations() {
 		return this.modules;
 	}
+
+
+	public List<AstModuleDeclaration> getAstModules() {
+		return astModules;
+	}
+	
+	
 }

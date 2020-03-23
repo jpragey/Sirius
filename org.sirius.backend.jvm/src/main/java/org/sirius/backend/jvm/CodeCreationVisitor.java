@@ -371,7 +371,11 @@ public class CodeCreationVisitor implements Visitor {
 		if(funcName.equals("println")) {
 			mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
 
-			call.getArguments().forEach(expr -> processExpression(mv, expr) );
+			for(Expression argExpr:call.getArguments()) {
+				processExpression(mv, argExpr);
+			}
+
+//			call.getArguments().forEach(expr -> processExpression(mv, expr) );
 
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false /*isInterface*/);
 		} else {

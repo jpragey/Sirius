@@ -132,7 +132,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		@Override
 		public List<InterfaceDeclaration> getInterfaces() {
 			return classDeclarations.stream()
-					.filter(cd -> !cd.isInterfaceType())
+					.filter(cd -> cd.isInterfaceType())
 					.map(cd -> cd.getInterfaceDeclaration(qname))
 					.collect(Collectors.toList());
 		}
@@ -173,5 +173,10 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		}
 		return packageDeclaration;
 	}
+
+	public List<AstClassDeclaration> getClassDeclarations() {
+		return classDeclarations;
+	}
+	
 
 }

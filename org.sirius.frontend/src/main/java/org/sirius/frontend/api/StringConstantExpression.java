@@ -12,6 +12,10 @@ public interface StringConstantExpression extends Expression {
 		public QName getQName() {
 			return typeClassName;
 		}
+		@Override
+		public boolean isAncestorOrSame(Type type) {
+			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
+		}
 	};
 	
 	/** Get content as given in source code, eg with starting and terminating quotes. */

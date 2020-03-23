@@ -43,7 +43,25 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	
 	/** directly implemented interfaces or extended classes */
 //	private List<AstClassQName> ancestors = new ArrayList<>();
-	private List<QName> ancestors = new ArrayList<>();
+//	private List<QName> ancestors = new ArrayList<>();
+	
+	public static class AncestorInfo {
+		/** Name in declaration ( extends/implements NAME clause)*/
+		private AstToken simpleName;
+		private Optional<AstClassDeclaration> astClassDecl = Optional.empty();
+		public AncestorInfo(AstToken simpleName) {
+			super();
+			this.simpleName = simpleName;
+		}
+		public AstToken getSimpleName() {
+			return simpleName;
+		}
+		public Optional<AstClassDeclaration> getAstClassDecl() {
+			return astClassDecl;
+		}
+	}
+	
+	private List<AncestorInfo> ancestors = new ArrayList<>();
 
 	private DefaultSymbolTable symbolTable /*= new SymbolTable()*/; 
 	
@@ -78,6 +96,8 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		return newInterface(reporter, name, Optional.of(packageQName));
 	}
 
+	
+	
 	public void setSymbolTable(DefaultSymbolTable symbolTable) {
 		if(symbolTable == null)
 			throw new NullPointerException();
@@ -171,16 +191,22 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	public List<AstFunctionFormalArgument> getAnonConstructorArguments() {
 		return anonConstructorArguments;
 	}
-	public List<QName> getAncestors() {
+	public List<AncestorInfo> getAncestors() {
 		return ancestors;
 	}
-	public void addAncestor(QName ancestor) {
-		this.ancestors.add(ancestor);
+//	public void addAncestor(QName ancestor) {
+//		this.ancestors.add(ancestor);
+//	}
+	public void addAncestor(Token ancestor) {// TODO: remove
+		this.ancestors.add(new AncestorInfo(new AstToken(ancestor)));	
 	}
-	public void addAncestor(QName packageQName, String className /* class or interface */ ) {
-//		this.ancestors.add(new AstClassQName(packageQName, className));
-		this.ancestors.add(packageQName.child(className));
+	public void addAncestor(AstToken ancestor) {// TODO: remove
+		this.ancestors.add(new AncestorInfo(ancestor));	
 	}
+//	public void addAncestor(QName packageQName, String className /* class or interface */ ) {
+////		this.ancestors.add(new AstClassQName(packageQName, className));
+//		this.ancestors.add(packageQName.child(className));
+//	}
 
 	public Optional<AstType> apply(AstType parameter) {
 		TypeFormalParameterDeclaration formalParam = typeParameters.get(0);
@@ -262,6 +288,10 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 			public QName getQName() {
 				return qName;
 			}
+			@Override
+			public boolean isAncestorOrSame(Type type) {
+				throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
+			}
 		};
 	}
 
@@ -289,60 +319,72 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 			public QName getQName() {
 				return qName;
 			}
+			@Override
+			public boolean isAncestorOrSame(Type type) {
+				throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
+			}
 		};
 	}
 
 	@Override
-	public boolean isAncestorOrSameAs(AstType type) {
-		if(isExactlyA(type))
+	public boolean isAncestorOrSameAs(AstType descType) {
+		if(isExactlyA(descType))
 			return true;
 		
-		type = type.resolve(symbolTable);	// TODO: it's for SimpleType ref -> refactor ???
+		descType = descType.resolve(symbolTable);	// TODO: it's for SimpleType ref -> refactor ???
 		
-		if(type instanceof AstClassDeclaration) {
-			AstClassDeclaration otherClassDecl = (AstClassDeclaration)type;
+		// Check descendant is a class
+		if(! (descType instanceof AstClassDeclaration)) {
+			return false;
+		}
+		AstClassDeclaration descDecl = (AstClassDeclaration)descType;
 
-			for(QName ancestorQName: otherClassDecl.ancestors) {
-				Optional<Symbol> optSymbol = symbolTable.lookup(ancestorQName);
+		for(AncestorInfo ai: descDecl.ancestors) {
+			AstToken ancTk = ai.getSimpleName();
+//			AstToken ancestorQName: ai...ancestors) 
+			
+//			Optional<Symbol> optSymbol = symbolTable.lookup(ancestorQName.getText());
+			Optional<Symbol> optSymbol = symbolTable.lookup(ancTk.getText());
+			if(! optSymbol.isPresent())
+				continue;
+			
+			Symbol symbol = optSymbol.get();
+			Optional<AstClassDeclaration> optClassDecl = symbol.getClassDeclaration();
+			if(optClassDecl.isPresent()) {
+				AstClassDeclaration ancestorCD = optClassDecl.get();
+				if(isAncestorOrSameAs(ancestorCD)) {
+					return true;
+				}
 
-				if(optSymbol.isPresent()) {
-					Symbol symbol = optSymbol.get();
-					Optional<AstClassDeclaration> optClassDecl = symbol.getClassDeclaration();
-					if(optClassDecl.isPresent()) {
-						AstClassDeclaration ancestorCD = optClassDecl.get();
-						if(isAncestorOrSameAs(ancestorCD)) {
-							return true;
-						}
-					}
-
-				};
-			}
+			};
 		}
 		
 		return false;
 	}
+	
 	@Override
 	public boolean isStrictDescendantOf(AstType type) {
 		for(AstClassDeclaration ancestor: getAncestorClasses()) {
 			if(ancestor.isExactlyA(type))
 				return true;
-			
+
 			if(ancestor.isStrictDescendantOf(type))
 				return true;
 		}
 		return false;
 	}
-	
+
 	List<AstClassDeclaration> getAncestorClasses() {
 		return this.ancestors.stream()
-				.map(qname -> symbolTable.lookup(qname))
+				.filter(ancestorInfo -> ancestorInfo.getAstClassDecl().isPresent())
+				.map(ancestorInfo -> symbolTable.lookup(ancestorInfo.getSimpleName().getText()))
 				.filter(optSymbol -> optSymbol.isPresent())
 				.map(optSymbol -> optSymbol.get())
 				.map(symbol -> symbol.getClassDeclaration())
 				.filter(optCD -> optCD.isPresent())
 				.map(optCD -> optCD.get())
 				.collect(Collectors.toList());
-				
+
 	}
 	@Override
 	public AstType resolve(SymbolTable symbolTable) {
@@ -369,6 +411,10 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		@Override
 		public String toString() {
 			return qName.toString();
+		}
+		@Override
+		public boolean isAncestorOrSame(Type type) {
+			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
 		}
 	}
 	

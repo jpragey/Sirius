@@ -118,7 +118,9 @@ public class SdkTools {
 		Inherit [] annos = clss.getAnnotationsByType(Inherit.class);
 		for(Inherit inherit: annos ) {
 			QName pkg = QName.parseDotSeparated(inherit.packageQName());
-			cd.addAncestor(pkg, inherit.name());
+			QName inheritName = pkg.child(inherit.name());
+//			cd.addAncestor(inheritName /*pkg, inherit.name()*/);
+			cd.addAncestor(AstToken.internal(inheritName.getLast()) /*pkg, inherit.name()*/);	// TODO: WTF ???
 		}
 
 		this.langPackage.addClassDeclaration(cd);;

@@ -288,11 +288,14 @@ packageDeclaration returns [AstPackageDeclaration declaration]
 classDeclaration /*[PackageDeclaration currentPackage]*/ returns [AstClassDeclaration declaration]
 @init {
 //	List<Annotation> annos = new ArrayList<Annotation> ();
+	boolean isInterface;
 }
 	: 
 //	  (annotation {annos.add($annotation.anno); } )*
-	  'class'
-	  TYPE_ID		{ $declaration = factory.createClassDeclaration($TYPE_ID /* , currentPackage*/); }
+	  (   'class' 		{isInterface = false;}
+	  	| 'interface'	{isInterface = true;}
+	  )
+	  TYPE_ID		{ $declaration = factory.createClassOrInterface($TYPE_ID /* , currentPackage*/, isInterface); }
 	  '('
 	  	(  functionFormalArgument		{ $declaration.addAnonConstructorArgument($functionFormalArgument.argument); }
 	  	  (  ',' functionFormalArgument	{ $declaration.addAnonConstructorArgument($functionFormalArgument.argument); } )*
@@ -308,8 +311,11 @@ classDeclaration /*[PackageDeclaration currentPackage]*/ returns [AstClassDeclar
 	  		)*
 	  	)?
 	  	'>'
+	  )? 
+	  ( 'implements' TYPE_ID { $declaration.addAncestor($TYPE_ID);} 
+	  	
 	  )?
-	  
+			  
 	  '{'
 	  (
 	  	  functionDeclaration	{ $declaration.addFunctionDeclaration($functionDeclaration.declaration);}

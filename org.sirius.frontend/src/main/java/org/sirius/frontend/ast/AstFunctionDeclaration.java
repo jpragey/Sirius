@@ -165,6 +165,14 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 		return qName.toString() + "(" + formalArguments.size() + " args)";
 	}
 	
+	/** Convert 'simple' return type using symbol table
+	 * 
+	 */
+	private Type resolveReturnType() {
+		Type resolved = returnType.getApiType();
+		return resolved;
+	}
+	
 	public Optional<TopLevelFunction> getTopLevelFunction() 
 	{// TODO: filter top-level
 		return Optional.of(new TopLevelFunction() {
@@ -191,7 +199,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 
 			@Override
 			public Type getReturnType() {
-				return AstFunctionDeclaration.this.getReturnType().getApiType();
+				return resolveReturnType();
 			}
 		});
 	}
@@ -219,7 +227,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 			}
 			@Override
 			public Type getReturnType() {
-				return AstFunctionDeclaration.this.getReturnType().getApiType();
+				return resolveReturnType();
 			}
 		});
 	}

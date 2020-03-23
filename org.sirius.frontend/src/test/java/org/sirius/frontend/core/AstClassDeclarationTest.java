@@ -42,7 +42,9 @@ public class AstClassDeclarationTest {
 		
 		AstClassDeclaration child = AstClassDeclaration.newClass(reporter, AstToken.internal("child"), pkgQName);
 		
-		child.addAncestor(ancestor.getQName());
+		
+//		child.addAncestor(ancestor.getQName());
+		child.addAncestor(ancestor.getName());
 		
 		symbolTable.addClass(ancestor);
 		symbolTable.addClass(child);

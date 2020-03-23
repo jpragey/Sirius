@@ -15,7 +15,7 @@ public class MemberFunctionTestImpl implements MemberFunction {
 	private QName qname;
 
 	public ArrayList<FunctionFormalArgument> formalArguments = new ArrayList<>();
-	public Type returnType = new VoidType() {}; // TODO: ???
+	public Type returnType = VoidType.instance;
 	public ArrayList<Statement> bodyStatements = new ArrayList<>();
 
 	public MemberFunctionTestImpl(QName qname, List<FunctionFormalArgument> formalArguments, Type returnType,

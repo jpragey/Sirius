@@ -47,6 +47,10 @@ public class AstArrayType implements AstType {
 			public Type getElementType() {
 				return apiType;
 			}
+			@Override
+			public boolean isAncestorOrSame(Type type) {
+				throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
+			}
 		};
 	}
 

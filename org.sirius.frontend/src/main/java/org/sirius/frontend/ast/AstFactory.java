@@ -3,6 +3,7 @@ package org.sirius.frontend.ast;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.Token;
+import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 
@@ -18,12 +19,17 @@ public class AstFactory {
 	}
 
 	// -- Types
-	public AstClassDeclaration createClassDeclaration(Token name) {
-		return AstClassDeclaration.newClass(reporter, new AstToken(name), Optional.empty());
-	}
+//	public AstClassDeclaration createClassDeclaration(Token name) {
+//		return AstClassDeclaration.newClass(reporter, new AstToken(name), Optional.empty());
+//	}
+//
+//	public AstClassDeclaration createInterfaceDeclaration(Token name) {
+//		return AstClassDeclaration.newInterface(reporter, new AstToken(name), Optional.empty());
+//	}
 
-	public AstClassDeclaration createInterfaceDeclaration(Token name) {
-		return AstClassDeclaration.newInterface(reporter, new AstToken(name), Optional.empty());
+	public AstClassDeclaration createClassOrInterface(Token name, boolean isInterface) {
+		return new AstClassDeclaration(reporter,  isInterface, new AstToken(name), Optional.empty());
+//		return AstClassDeclaration.newInterface(reporter, new AstToken(name), Optional.empty());
 	}
 
 	public TypeFormalParameterDeclaration createTypeFormalParameter(Variance variance, Token formalName) {

@@ -68,9 +68,11 @@ public class SdkToolsTest {
 		
 		assertEquals(cd.getAncestors().size(), 2);
 		
-		assertEquals(cd.getAncestors().get(0), new QName("sirius", "lang", "Addable"));
+//		assertEquals(cd.getAncestors().get(0), new QName("sirius", "lang", "Addable"));
+		assertEquals(cd.getAncestors().get(0).getSimpleName().getText(), "Addable");
 		
-		assertEquals(cd.getAncestors().get(1), new QName("sirius", "lang", "Stringifiable"));
+//		assertEquals(cd.getAncestors().get(1), new QName("sirius", "lang", "Stringifiable"));
+		assertEquals(cd.getAncestors().get(1).getSimpleName().getText(), "Stringifiable");
 	}
 	
 	@Test

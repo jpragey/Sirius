@@ -7,6 +7,7 @@ import org.sirius.common.core.QName;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
+import org.sirius.frontend.api.Type;
 
 public class ClassDeclarationTestImpl implements ClassDeclaration {
 
@@ -47,4 +48,10 @@ public class ClassDeclarationTestImpl implements ClassDeclaration {
 	public String toString() {
 		return "ClassDeclarationTestImpl : " + qname.dotSeparated();
 	}
+
+	@Override
+	public boolean isAncestorOrSame(Type type) {
+		throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
+	}
+
 }

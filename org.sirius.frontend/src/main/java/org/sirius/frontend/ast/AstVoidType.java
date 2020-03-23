@@ -1,9 +1,17 @@
 package org.sirius.frontend.ast;
 
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.VoidType;
 import org.sirius.frontend.symbols.SymbolTable;
 
 public class AstVoidType implements AstType {
+
+	private static VoidType voidType = new VoidType() {
+		@Override
+		public boolean isAncestorOrSame(Type type) {
+			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
+		}
+	};
 
 	@Override
 	public String messageStr() {
@@ -12,7 +20,7 @@ public class AstVoidType implements AstType {
 
 	@Override
 	public VoidType getApiType() {
-		return new VoidType() {};
+		return voidType;
 	}
 
 	@Override
