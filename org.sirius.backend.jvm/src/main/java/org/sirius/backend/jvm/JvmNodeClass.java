@@ -1,6 +1,8 @@
 package org.sirius.backend.jvm;
 
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.ACC_FINAL;
+import static org.objectweb.asm.Opcodes.ACC_STATIC;
 import static org.objectweb.asm.Opcodes.ACC_SUPER;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
@@ -18,8 +20,12 @@ import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassOrInterfaceDeclaration;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.MemberFunction;
+import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.PackageDeclaration;
+import org.sirius.frontend.api.ReturnStatement;
+import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.TopLevelFunction;
+import org.sirius.frontend.api.Type;
 
 public class JvmNodeClass {
 	
@@ -32,6 +38,40 @@ public class JvmNodeClass {
 	
 	private ArrayList<JvmMemberFunction> memberFunctions = new ArrayList<>();
 	
+	public class JvmMemberValue {
+		private MemberValue memberValue;
+		private boolean isStatic = false;	// TODO
+		private boolean isFinal = false;	// TODO
+		private boolean isPublic = true;	// TODO
+		public JvmMemberValue(MemberValue memberValue) {
+			this.memberValue = memberValue;
+		}
+		@Override
+		public String toString() {
+			return memberValue.toString();
+		}
+		public void writeBytecode(ClassWriter classWriter/*, MemberFunction declaration*/) {
+
+			int access = 0;
+			if(isPublic)
+				access |= ACC_PUBLIC;
+			if(isStatic)
+				access |= ACC_STATIC;
+			if(isFinal)
+				access |= ACC_FINAL;
+			
+			String name = memberValue.getName().getText();
+			
+			Type type = memberValue.getType();
+			String descriptor = descriptorFactory.fieldDescriptor(type);
+			String signature = null;	// Used for generics
+			Object value = 666;
+			classWriter.visitField(access, name, descriptor, signature, value);
+			classWriter.visitEnd();
+		}
+	}
+	private ArrayList<JvmMemberValue> memberValues = new ArrayList<>();
+	
 	public JvmNodeClass(Reporter reporter, QName qName) {
 		super();
 		this.reporter = reporter;
@@ -42,16 +82,26 @@ public class JvmNodeClass {
 		super();
 		this.qName = cd.getQName();
 		addMemberFunctions(cd);
+		addMemberValues(cd);
 	}
 	public JvmNodeClass(InterfaceDeclaration cd) {
 		super();
 		this.qName = cd.getQName();
 		addMemberFunctions(cd);
+		addMemberValues(cd);
 	}
 	// For Package class
 	public JvmNodeClass(PackageDeclaration pd) {
 		super();
 		this.qName = pd.getQName().child("$package$");	// TODO
+	}
+
+	private void addMemberValues(ClassOrInterfaceDeclaration cd) {
+		for(MemberValue mv: cd.getValues()) {
+//			System.out.println(" MemberValue: " + mv);
+			JvmMemberValue jvmMv = new JvmMemberValue(mv);
+			this.memberValues.add(jvmMv);
+		}
 	}
 	
 	private void addMemberFunctions(ClassOrInterfaceDeclaration cd) {
@@ -97,6 +147,10 @@ public class JvmNodeClass {
 
 		// -- Member functions
 		for(JvmMemberFunction mf: this.memberFunctions) {
+			mf.writeBytecode(classWriter);
+		}
+		
+		for(JvmMemberValue mf: this.memberValues) {
 			mf.writeBytecode(classWriter);
 		}
 

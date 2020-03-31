@@ -63,6 +63,10 @@ public class AstValueDeclaration implements /*Type, Scoped, */Visitable  {
 			public Optional<Expression> getInitialValue() {
 				return getInitialValue();
 			}
+			@Override
+			public String toString() {
+				return "TopLevelValue: " + getType() + " " + getName().getText();
+			}
 			
 		});
 	}
@@ -84,7 +88,10 @@ public class AstValueDeclaration implements /*Type, Scoped, */Visitable  {
 			public Optional<Expression> getInitialValue() {
 				return getInitialValue();
 			}
-			
+			@Override
+			public String toString() {
+				return "MemberValue: " + getType() + " " + getName().getText();
+			}
 		});
 	}
 	
