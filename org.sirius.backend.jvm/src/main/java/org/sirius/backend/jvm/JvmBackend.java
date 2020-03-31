@@ -79,90 +79,15 @@ public class JvmBackend implements Backend {
 	
 	private void processModule(ModuleDeclaration declaration) {
 		printIfVerbose("Jvm: processing module " + declaration);
-//				System.out.println("Jvm: processing module " + declaration);
-		////		reporter.info("Jvm: processing module " + declaration.getQName());
 
-		
-		// -- Listener to create jar
-//		moduleDir.ifPresent(modulePath ->  listeners.add(new JarCreatorListener(reporter, modulePath, declaration.getQName())));
-
-		
 		listeners.forEach(l ->  l.start(declaration) );
 
-		declaration.getPackages().stream().forEach(this::processPackage);
+		CodeTreeBuilder codeTreeBuilder = new CodeTreeBuilder();
+		declaration.visitMe(codeTreeBuilder);
+		codeTreeBuilder.createByteCode(listeners);
 		
 		listeners.forEach(ClassWriterListener::end);
 
 	}
-	private void processPackage(PackageDeclaration pkgDeclaration) {
-		printIfVerbose("Jvm: processing package '" + pkgDeclaration.getQName() + "'");
-		processTopLevelFunctions(pkgDeclaration.getFunctions(), pkgDeclaration.getQName());
-		pkgDeclaration.getClasses().forEach(classDecl -> processClass(classDecl) );
-	}
 	
-	
-	private void processTopLevelFunctions(List<TopLevelFunction> declarations, QName pkgQName) {
-		QName classQName = pkgQName.child("$package$");
-		printIfVerbose("Jvm: processing top-level function in package " + pkgQName.toString());
-		
-		ClassDeclaration classDeclaration = new ClassDeclaration() {
-			
-			@Override
-			public List<MemberValue> getValues() {
-				return Collections.emptyList();
-			}
-			
-			@Override
-			public QName getQName() {
-				return classQName;
-			}
-			
-			@Override
-			public List<MemberFunction> getFunctions() {
-				List<MemberFunction> memberFunctions = new ArrayList<>();
-				for(TopLevelFunction tlf:declarations ) {
-					MemberFunction mf = new MemberFunction() {
-
-						@Override
-						public QName getQName() {
-							return classQName.child(tlf.getQName());
-						}
-
-						@Override
-						public List<FunctionFormalArgument> getArguments() {
-							return tlf.getArguments();
-						}
-
-						@Override
-						public Type getReturnType() {
-							return tlf.getReturnType();
-						}
-
-						@Override
-						public List<Statement> getBodyStatements() {
-							return tlf.getBodyStatements();
-						}
-						
-					};
-					memberFunctions.add(mf);
-				}
-				return memberFunctions;
-			}
-			@Override
-			public boolean isAncestorOrSame(Type type) {
-				throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-			}
-
-		};
-		processClass(classDeclaration);
-	}
-	private void processClass(ClassDeclaration declaration) {
-		printIfVerbose("Jvm: processing class " + declaration.getQName().toString());
-
-		JvmClassWriter writer = new JvmClassWriter(reporter, /*classDir, */listeners, verboseAst);
-		Bytecode bytecode = writer.createByteCode(declaration);
-//		classDir.ifPresent(cdir -> bytecode.createClassFiles(reporter, cdir, declaration.getQName()));
-
-//		System.out.println("bytecode: " + bytecode.size() + " bytes: " + bytecode);
-	}
 }

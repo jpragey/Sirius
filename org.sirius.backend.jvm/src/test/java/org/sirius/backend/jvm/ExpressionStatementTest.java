@@ -3,12 +3,6 @@ package org.sirius.backend.jvm;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Optional;
-
-import org.sirius.backend.jvm.JvmClassWriterTest.MyClassLoader;
-import org.sirius.backend.jvm.mocktypes.MockClassType;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
@@ -76,43 +70,4 @@ public class ExpressionStatementTest {
 		backend.process(session);
 		
 	}
-
-	@Test 
-	public void checkFunctionCallIsPresentAsExpressionStatement0() {
-		
-		AccumulatingReporter reporter = new AccumulatingReporter(new ShellReporter()); 
-
-		
-//		
-//		
-//		
-//		ClassDeclaration cd = newClassDeclaration(new QName("a", "b", "C"), Arrays.asList(
-//				newMemberFunction(new QName("a", "b", "C", "main")))
-//		);
-//		JvmClassWriter writer = new JvmClassWriter(reporter, Optional.empty() /*class dir*/, false /* verbose 'ast' */);
-//		Bytecode bytecode = writer.createByteCode(cd);
-//		System.out.println("bytecode: " + bytecode.size() + " bytes");
-////		assertEquals( JvmClassWriter.classInternalName(cd), "a/b/C");
-//
-//		// -- Check bytecode by loading it
-//		MyClassLoader classloader = new MyClassLoader(getClass().getClassLoader(), bytecode.getBytes(), Arrays.asList("a.b.C")/*definedClasses*/);
-//
-//		@SuppressWarnings("rawtypes")
-//		Class cls = classloader.loadClass("a.b.C" /*mainClassQName*/);
-//		Object helloObj = cls.newInstance();
-//		Method[] methods = helloObj.getClass().getDeclaredMethods();
-//		
-//		assertEquals(methods.length, 1);
-////		assertEquals(methods[0].toString(), "public static int a.b.C.main(java.lang.String)");
-//		assertEquals(methods[0].toString(), "public static void a.b.C.main()");
-//		assertEquals(methods[0].getName(), "main");
-//
-//		for(Method m: methods)
-//			System.out.println("Method: " + m);
-//
-//////		Object result = runBytecode(bytecode, Arrays.asList("a.b.C")/*definedClasses*/, "a.b.C" /*mainClassQName*/);
-//
-		
-	}
-
 }

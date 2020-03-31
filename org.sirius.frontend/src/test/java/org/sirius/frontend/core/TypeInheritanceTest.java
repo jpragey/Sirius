@@ -18,52 +18,79 @@ import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.parser.Compiler;
 import org.testng.annotations.Test;
 
-public class TypeInheritanceTest {
 
-	@Test(description = "Check a class implementing an interface results in ClassDeclaration inheritance")
-	public void checkStringFunctionParameterIsASiriusLangString() {
-		ScriptSession session = Compiler.compileScript("#!\n "
+public class TypeInheritanceTest {
+	/**
+	 * 	+ "package p.a;"
+		+ "interface A(){}"	// TODO: interface
+		+ "class D () implements A {}"
+
+	 * @author jpragey
+	 *
+	 */
+	public class ParseDualClassSource {
+		List<AstClassDeclaration> astClasses;
+		
+		public ParseDualClassSource(String sourceCode) {
+			ScriptSession session = Compiler.compileScript(sourceCode);
+			List<ModuleDeclaration> moduleDeclarations = session.getModuleDeclarations();
+			assertEquals(moduleDeclarations.size(), 1);
+			
+			ModuleDeclaration md = session.getModuleDeclarations().get(0);
+			PackageDeclaration pd = md.getPackages().get(1);
+			
+			List<ClassDeclaration> classes = pd.getClasses();
+			assertEquals(classes.size(), 1);
+			ClassDeclaration classD = classes.get(0);
+			assertEquals(classD.getQName().dotSeparated(), "p.a.D");
+//			assertEquals(classA.isInterface(), true);
+			
+			List<InterfaceDeclaration> interfaces = pd.getInterfaces();
+			assertEquals(interfaces.size(), 1);
+
+			InterfaceDeclaration classA = interfaces.get(0);
+			assertEquals(classA.getQName().dotSeparated(), "p.a.A");
+			
+			////assertTrue(classA.isAncestorOrSame(classD));
+			
+			List<AstModuleDeclaration> astModules = session.getAstModules();
+			List<AstPackageDeclaration> astPackages = astModules.get(0).getPackageDeclarations();
+			AstPackageDeclaration astPack = astPackages.get(1);
+			
+			this.astClasses = astPack.getClassDeclarations();
+			assertEquals(astClasses.size(), 2);
+			
+		}
+	}
+	
+	@Test(description = "Check a class implementing an interface results in ClassDeclaration inheritance (ancestor declared before)")
+	public void checkAstClassInheritanceWithAncestorEarlyDeclared() {
+		TypeInheritanceTest.ParseDualClassSource code = new TypeInheritanceTest.ParseDualClassSource("#!\n "
 				+ "package p.a;"
 				+ "interface A(){}"	// TODO: interface
 				+ "class D () implements A {}"
-				+ ""
-				+ "void f(String s){}");
+				);
 		
-		List<ModuleDeclaration> moduleDeclarations = session.getModuleDeclarations();
-		assertEquals(moduleDeclarations.size(), 1);
-		
-		ModuleDeclaration md = session.getModuleDeclarations().get(0);
-		PackageDeclaration pd = md.getPackages().get(1);
-		
-		List<ClassDeclaration> classes = pd.getClasses();
-		assertEquals(classes.size(), 1);
-		ClassDeclaration classD = classes.get(0);
-		assertEquals(classD.getQName().dotSeparated(), "p.a.D");
-//		assertEquals(classA.isInterface(), true);
-		
-		List<InterfaceDeclaration> interfaces = pd.getInterfaces();
-		assertEquals(interfaces.size(), 1);
-
-		InterfaceDeclaration classA = interfaces.get(0);
-		assertEquals(classA.getQName().dotSeparated(), "p.a.A");
-		
-		////assertTrue(classA.isAncestorOrSame(classD));
-		
-		List<AstModuleDeclaration> astModules = session.getAstModules();
-		List<AstPackageDeclaration> astPackages = astModules.get(0).getPackageDeclarations();
-		AstPackageDeclaration astPack = astPackages.get(1);
-		
-		List<AstClassDeclaration> astClasses = astPack.getClassDeclarations();
-		assertEquals(astClasses.size(), 2);
-		
-		AstClassDeclaration astClassA = astClasses.get(0);
+		AstClassDeclaration astClassA = code.astClasses. get(0);
 		assertEquals(astClassA.getAncestors().size(), 0);
 
-		AstClassDeclaration astClassD = astClasses.get(1);
+		AstClassDeclaration astClassD = code.astClasses. get(1);
 		assertEquals(astClassD.getAncestors().size(), 1);
+	}
+
+	@Test(description = "Check a class implementing an interface results in ClassDeclaration inheritance (ancestor declared after)")
+	public void checkAstClassInheritanceWithAncestorLateDeclared() {
+		TypeInheritanceTest.ParseDualClassSource code = new TypeInheritanceTest.ParseDualClassSource("#!\n "
+				+ "package p.a;"
+				+ "class D () implements A {}"
+				+ "interface A(){}"
+				);
 		
-		assertTrue(astClassA.isAncestorOrSameAs(astClassD));
-		assertFalse(astClassD.isAncestorOrSameAs(astClassA));
+		AstClassDeclaration astClassA = code.astClasses. get(1);
+		assertEquals(astClassA.getAncestors().size(), 0);
+
+		AstClassDeclaration astClassD = code.astClasses. get(0);
+		assertEquals(astClassD.getAncestors().size(), 1);
 	}
 
 }

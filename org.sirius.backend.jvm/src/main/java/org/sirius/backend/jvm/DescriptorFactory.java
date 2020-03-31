@@ -64,9 +64,6 @@ public class DescriptorFactory {
 			String descriptor = mapStandardSiriusType(classType);
 			return descriptor;
 			
-//			String internalName = classType.getQName().getStringElements().stream().collect(Collectors.joining("/"));
-//			internalName = tempMapClassInternalName(internalName);
-//			return "L" + internalName + ";";
 		} else if(type instanceof VoidType) {
 			return "V";
 		} else if(type instanceof ArrayType) {
