@@ -27,7 +27,47 @@ public class ClassBasicTest {
 		
 	}
 
-	public Object compileRunAndReturn(String script) throws Exception {
+//	public Object compileRunAndReturn(String script) throws Exception {
+//		
+//		ScriptSession session = CompileTools.compileScript(script, reporter);
+//		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/);
+//		InMemoryClassWriterListener l = backend.addInMemoryOutput();
+//		
+//		backend.process(session);
+//		
+//		HashMap<String, Bytecode> map = l.getByteCodesMap();
+//		System.out.println(map.keySet());
+//		session.getGlobalSymbolTable().dump();
+//
+//		
+//		ClassLoader classLoader = l.getClassLoader();
+//		
+//		String mainClassQName = "$package$"; 
+//		
+//		Class<?> cls = classLoader.loadClass(mainClassQName);
+//		Object helloObj = cls.getDeclaredConstructor().newInstance();
+//		Method[] methods = helloObj.getClass().getDeclaredMethods();
+//
+//		for(Method m: methods)
+//			System.out.println("Method: " + m);
+//
+//		Method main = cls.getMethod("main", new Class[] { /* String[].class */});
+////		System.out.println("Main: " + main);
+//		
+//		Object[] argTypes = new Object[] {};
+//		
+//		Object result = main.invoke(null, argTypes /*, args*/);
+//		System.out.println("Result: " + result);
+//		
+//		return result;
+//	}
+
+	@Test
+	public void classTest() throws Exception {
+		String script = "#!\n "
+				+ "class A() {Integer mi;}   "
+				+ "A main() {return A();}";
+		
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
 		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/);
@@ -43,67 +83,34 @@ public class ClassBasicTest {
 		ClassLoader classLoader = l.getClassLoader();
 		
 		String mainClassQName = "$package$"; 
+//		String mainClassQName = "A"; 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
+
+//		System.out.println("Constructors:");
+//		for(Constructor<?> c: cls.getConstructors())
+//			System.out.println("  "+c);
+//		
+//		System.out.println("Fields:");
+//		for(Field f: cls.getDeclaredFields())
+//			System.out.println("  "+f);
+		
 		Object helloObj = cls.getDeclaredConstructor().newInstance();
 		Method[] methods = helloObj.getClass().getDeclaredMethods();
-
-		for(Method m: methods)
-			System.out.println("Method: " + m);
-
-		Method main = cls.getMethod("main", new Class[] { /* String[].class */});
-//		System.out.println("Main: " + main);
+//
+//		for(Method m: methods)
+//			System.out.println("Method: " + m);
 		
+		
+		Method main = cls.getMethod("main", new Class[] { /* String[].class */});
 		Object[] argTypes = new Object[] {};
 		
 		Object result = main.invoke(null, argTypes /*, args*/);
-		System.out.println("Result: " + result);
+//
+//		
+//		Object result = compileRunAndReturn(script);
 		
-		return result;
-	}
-
-	@Test
-	public void classTest() throws Exception {
-		String script = "#!\n class A() {Integer mi;}   Integer main() {return 33;}";
-		
-		
-		ScriptSession session = CompileTools.compileScript(script, reporter);
-		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/);
-		InMemoryClassWriterListener l = backend.addInMemoryOutput();
-		
-		backend.process(session);
-		
-		HashMap<String, Bytecode> map = l.getByteCodesMap();
-		System.out.println(map.keySet());
-		session.getGlobalSymbolTable().dump();
-
-		
-		ClassLoader classLoader = l.getClassLoader();
-		
-//		String mainClassQName = "$package$"; 
-		String mainClassQName = "A"; 
-		
-		Class<?> cls = classLoader.loadClass(mainClassQName);
-
-		System.out.println("Constructors:");
-		for(Constructor<?> c: cls.getConstructors())
-			System.out.println("  "+c);
-		
-		System.out.println("Fields:");
-		for(Field f: cls.getDeclaredFields())
-			System.out.println("  "+f);
-		
-		Object helloObj = cls.getDeclaredConstructor().newInstance();
-		Method[] methods = helloObj.getClass().getDeclaredMethods();
-
-		for(Method m: methods)
-			System.out.println("Method: " + m);
-		
-		
-		
-		Object result = compileRunAndReturn(script);
-		
-		assertEquals(result, 33);
+		assertEquals(result.getClass().getName(), "A");
 
 	}
 }

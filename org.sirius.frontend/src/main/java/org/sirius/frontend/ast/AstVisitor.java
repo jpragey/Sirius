@@ -58,6 +58,9 @@ public interface AstVisitor {
 	public default void startFunctionCallExpression (AstFunctionCallExpression expression) {}
 	public default void endFunctionCallExpression (AstFunctionCallExpression expression) {}
 	
+	public default void startConstructorCallExpression (ConstructorCallExpression expression) {}
+	public default void endConstructorCallExpression (ConstructorCallExpression expression) {}
+	
 	
 	
 	

@@ -232,13 +232,18 @@ expression returns [AstExpression express]
 	| left=expression op=('*'|'/') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
 	// Function call
 //	| LOWER_ID '('				{ AstFunctionCallExpression call = new AstFunctionCallExpression($LOWER_ID); $express = call;}
-	| LOWER_ID '('				{ AstFunctionCallExpression call = factory.functionCall($LOWER_ID); $express = call;
-	}
+	| LOWER_ID '('				{ AstFunctionCallExpression call = factory.functionCall($LOWER_ID); $express = call; }
 		(arg=expression 			{ call.addActualArgument($arg.express); }
 			( ',' arg=expression	{ call.addActualArgument($arg.express); } )*
 		)?
 	  ')'
-	
+	| TYPE_ID '('					{ ConstructorCallExpression call = factory.createConstructorCall($TYPE_ID); $express = call; }
+		
+		(arg=expression 			{ call.addArgument($arg.express); }
+			( ',' arg=expression	{ call.addArgument($arg.express); } )*
+		)?
+	  ')'
+		
 	;
 
 constantExpression returns [AstExpression express]

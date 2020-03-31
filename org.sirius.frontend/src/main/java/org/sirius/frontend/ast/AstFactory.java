@@ -40,6 +40,12 @@ public class AstFactory {
 		return new SimpleType(reporter, new AstToken(name));
 	}
 
+	public ConstructorCallExpression createConstructorCall(Token name) {
+		return new ConstructorCallExpression(reporter, new AstToken(name));
+	}
+
+		
+		
 	public UnionType createUnionType(AstType first, AstType second) {
 		return new UnionType(first, second);
 	}

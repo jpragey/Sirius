@@ -13,6 +13,7 @@ import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstStringConstantExpression;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstVisitor;
+import org.sirius.frontend.ast.ConstructorCallExpression;
 import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ImportDeclarationElement;
 import org.sirius.frontend.ast.Scoped;
@@ -137,7 +138,15 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 		
 		expression.setSymbolTable(symbolTable);
 	}
-	
+	@Override
+	public void startConstructorCallExpression (ConstructorCallExpression expression) {
+		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
+		assert(symbolTable != null);
+		
+		expression.setSymbolTable(symbolTable);
+		
+	}
+
 	@Override
 	public void start(SimpleType simpleType) {
 		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();

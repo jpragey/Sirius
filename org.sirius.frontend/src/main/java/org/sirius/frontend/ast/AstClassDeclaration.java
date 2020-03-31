@@ -419,7 +419,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	}
 	
 	@Override
-	public Type getApiType() {
+	public ClassDeclaration getApiType() {
 		return new ApiClassDeclaration();
 	}
 

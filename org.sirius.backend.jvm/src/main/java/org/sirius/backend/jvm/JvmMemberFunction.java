@@ -11,15 +11,20 @@ import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.ISUB;
 import static org.objectweb.asm.Opcodes.RETURN;
+import static org.objectweb.asm.Opcodes.NEW;
 
 import java.util.Optional;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.BinaryOpExpression;
+import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.ClassOrInterfaceDeclaration;
 import org.sirius.frontend.api.ClassType;
+import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionCall;
 import org.sirius.frontend.api.IntegerConstantExpression;
@@ -28,6 +33,7 @@ import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.StringConstantExpression;
 import org.sirius.frontend.api.TopLevelFunction;
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
 
 public class JvmMemberFunction {
@@ -61,6 +67,8 @@ public class JvmMemberFunction {
 //				processExpression(mv, tc.expression());
 			} else if(expression instanceof BinaryOpExpression) {
 				processBinaryOpExpression(mv, (BinaryOpExpression)expression);
+			} else if(expression instanceof ConstructorCall) {
+				processConstructorCall(mv, (ConstructorCall) expression);
 			}
 		}
 		private void processStringConstant(MethodVisitor mv, StringConstantExpression expression) {
@@ -94,7 +102,18 @@ public class JvmMemberFunction {
 				throw new UnsupportedOperationException("Binary operator not supported in JVM: " + operator);
 			}
 		}
+		public void processConstructorCall(MethodVisitor mv, ConstructorCall expression) {
 
+			Type type = expression.getType();
+			assert(type instanceof ClassDeclaration);
+			String internalName = Util.classInternalName((ClassDeclaration)type);
+
+			mv.visitTypeInsn(NEW, internalName);
+
+			mv.visitInsn(Opcodes.DUP);
+			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, internalName, "<init>", "()V", false);
+		}
+		
 		private void processFunctionCall(MethodVisitor mv, FunctionCall call) {
 			String funcName = call.getFunctionName().getText();
 			

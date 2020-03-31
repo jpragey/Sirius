@@ -38,11 +38,6 @@ public class ConstructorCallImpl implements ConstructorCall {
 	}
 
 	@Override
-	public QName getName() {
-		return classType.getQName();
-	}
-
-	@Override
 	public List<Expression> getArguments() {
 		return arguments;
 	}
