@@ -16,6 +16,7 @@ import static org.objectweb.asm.Opcodes.NEW;
 import java.util.Optional;
 
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.sirius.common.error.Reporter;
@@ -29,12 +30,15 @@ import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionCall;
 import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.IntegerType;
+import org.sirius.frontend.api.LocalVariableReference;
+import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.StringConstantExpression;
 import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
+import org.sirius.frontend.api.ValueAccessExpression;
 
 public class JvmMemberFunction {
 		private AbstractFunction memberFunction;
@@ -69,6 +73,12 @@ public class JvmMemberFunction {
 				processBinaryOpExpression(mv, (BinaryOpExpression)expression);
 			} else if(expression instanceof ConstructorCall) {
 				processConstructorCall(mv, (ConstructorCall) expression);
+			} else if(expression instanceof ValueAccessExpression) {
+				processValueAccessExpression(mv, (ValueAccessExpression) expression);
+			} else if(expression instanceof LocalVariableReference) {
+				processLocalVariableReference(mv, (LocalVariableReference) expression);
+			} else {
+				throw new UnsupportedOperationException("Try to create bytecode for unknown expression : " + expression);
 			}
 		}
 		private void processStringConstant(MethodVisitor mv, StringConstantExpression expression) {
@@ -113,7 +123,35 @@ public class JvmMemberFunction {
 			mv.visitInsn(Opcodes.DUP);
 			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, internalName, "<init>", "()V", false);
 		}
-		
+
+		public void processValueAccessExpression(MethodVisitor mv, ValueAccessExpression expression) {
+			Expression containerExpr = expression.getContainerExpression();
+			writeExpressionBytecode(mv, containerExpr);
+			
+////			mv.visitInsn(Opcodes.DUP);
+			String owner = "A"; // internal name
+			String name = "mi";
+			String descriptor = "B";
+			mv.visitFieldInsn(Opcodes.GETFIELD, owner, name, descriptor);
+			
+		}
+		public void processLocalVariableReference(MethodVisitor mv, LocalVariableReference varRef) {
+			
+			String varName = varRef.getName().getText();
+			
+			int varIndex = 1;
+			mv.visitVarInsn(Opcodes.ILOAD, varIndex);
+			
+//			Expression containerExpr = expression.getContainerExpression();
+//			writeExpressionBytecode(mv, containerExpr);
+//			
+//			String owner = "A"; // internal name
+//			String name = "mi";
+//			String descriptor = "B";
+//			mv.visitFieldInsn(Opcodes.GETFIELD, owner, name, descriptor);
+			
+		}
+
 		private void processFunctionCall(MethodVisitor mv, FunctionCall call) {
 			String funcName = call.getFunctionName().getText();
 			
@@ -163,7 +201,20 @@ public class JvmMemberFunction {
 				reporter.error("Currently unsupported expression type in return statement: " + type);
 			}
 		}
-		
+		/***
+		public void writeLocalVariableStatement(ClassWriter classWriter, MethodVisitor mv, LocalVariableStatement statement) {
+			String name = statement.getName().getText();
+			
+			statement.getType();
+			String descriptor = descriptorFactory.fieldDescriptor(statement.getType());		// TODO: field ???      var descriptor
+			String signature = null; // the type signature of this local variable. May be {@literal null} if the local variable type does not use generic types.
+			Label start;
+			Label end;
+			int index=1;
+			mv.visitLocalVariable(name, descriptor, signature, start, end, index);
+		}
+		*/
+			
 		public void writeBytecode(ClassWriter classWriter/*, MemberFunction declaration*/) {
 
 			String functionName = memberFunction.getQName().getLast();
@@ -177,8 +228,11 @@ public class JvmMemberFunction {
 					null /* String[] exceptions */);
 
 			for(Statement st: memberFunction.getBodyStatements() ) {
-				if(st instanceof ReturnStatement)
+				if(st instanceof ReturnStatement) {
 					writeReturnStatementBytecode(classWriter, mv, (ReturnStatement)st);
+////				} else if(st instanceof LocalVariableStatement) { 
+////					writeLocalVariableStatement(classWriter, mv, (LocalVariableStatement)st);
+				}
 			}
 			
 //			mv.visitInsn(RETURN);

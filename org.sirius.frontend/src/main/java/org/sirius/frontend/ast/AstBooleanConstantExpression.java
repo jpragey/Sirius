@@ -26,8 +26,8 @@ public class AstBooleanConstantExpression implements AstExpression {
 		visitor.endBooleanConstant(this);
 	}
 	@Override
-	public Optional<AstType> getType() {
-		return Optional.empty();
+	public AstType getType() {
+		return null;
 	}
 
 

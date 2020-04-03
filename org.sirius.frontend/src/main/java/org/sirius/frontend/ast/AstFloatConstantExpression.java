@@ -1,7 +1,5 @@
 package org.sirius.frontend.ast;
 
-import java.util.Optional;
-
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FloatConstantExpression;
 import org.sirius.frontend.api.Type;
@@ -26,20 +24,24 @@ public class AstFloatConstantExpression implements AstExpression {
 		visitor.endFloatConstant(this);
 	}
 	@Override
-	public Optional<AstType> getType() {
-		return Optional.empty();
+	public AstType getType() {
+		throw new UnsupportedOperationException("TODO");
 	}
 
+	private class FloatConstantExpressionImpl implements FloatConstantExpression {
+		@Override
+		public Type getType() {
+			return Type.floatType;
+		}
+	}
+	private FloatConstantExpressionImpl impl = null;
 
 	@Override
 	public Expression getExpression() {
-		return new FloatConstantExpression() {
-			@Override
-			public Type getType() {
-				return Type.integerType;
-			}
+		if(impl == null)
+			impl = new FloatConstantExpressionImpl();
 
-		};
+		return impl;
 	}
 	
 }

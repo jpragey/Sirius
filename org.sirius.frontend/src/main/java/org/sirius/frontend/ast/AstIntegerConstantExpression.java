@@ -51,31 +51,34 @@ public class AstIntegerConstantExpression implements AstExpression {
 		visitor.endIntegerConstant(this);
 	}
 	@Override
-	public Optional<AstType> getType() {
-		return Optional.of(intType);
+	public AstType getType() {
+		return intType;
 	}
 
+	private class IntegerConstantExpressionImpl implements IntegerConstantExpression {
+		@Override
+		public int getValue() {
+			return value;
+		}
 
+		@Override
+		public Type getType() {
+			return Type.integerType;
+		}
+
+		@Override
+		public String toString() {
+			return Integer.toString(value);
+		}
+	}
+	
+	private IntegerConstantExpressionImpl impl = null;
+	
 	@Override
 	public Expression getExpression() {
-		
-		return new IntegerConstantExpression() {
-
-			@Override
-			public int getValue() {
-				return value;
-			}
-
-			@Override
-			public Type getType() {
-				return Type.integerType;
-			}
-
-			@Override
-			public String toString() {
-				return Integer.toString(value);
-			}
-		} ;
+		if(impl == null)
+			impl = new IntegerConstantExpressionImpl();
+		return impl;
 	}
 	@Override
 	public String toString() {

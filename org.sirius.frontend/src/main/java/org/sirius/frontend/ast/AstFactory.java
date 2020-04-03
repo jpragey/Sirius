@@ -115,6 +115,20 @@ public class AstFactory {
 		return new AstFunctionCallExpression(reporter, funcName);
 	}
 
+	
+	public AstFieldAccessExpression valueAccess(AstExpression containerExpression, Token fieldName) {
+		return new AstFieldAccessExpression(reporter, containerExpression, new AstToken(fieldName));
+	}
+	public SimpleReferenceExpression simpleReference(Token referenceName) {
+		return new SimpleReferenceExpression(reporter, new AstToken(referenceName));
+	}
+
+	// -- Statements
+	
+	public AstLocalVariableStatement localVariableStatement(AnnotationList annotationList, AstType type, Token varName) {
+		return new AstLocalVariableStatement(annotationList, type, new AstToken(varName));
+	}
+	
 	// -- Values
 	public AstValueDeclaration valueDeclaration(AnnotationList annotationList, AstType type, Token name) {
 		return new AstValueDeclaration(annotationList, type, new AstToken(name));

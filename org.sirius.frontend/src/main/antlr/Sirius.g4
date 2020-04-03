@@ -215,13 +215,24 @@ functionFormalArgument returns [AstFunctionFormalArgument argument]
 
 statement returns [AstStatement stmt]
 	: returnStatement	{ $stmt = $returnStatement.stmt; }
-	| expression ';'		{ $stmt = new AstExpressionStatement($expression.express); }
-	| valueDeclaration	{ $stmt = new AstLocalVariableStatement($valueDeclaration.declaration); }
+	| expression ';'	{ $stmt = new AstExpressionStatement($expression.express); }
+	| localVariableStatement	{ $stmt = $localVariableStatement.lvStatement; }
 	;
 
 returnStatement returns [AstReturnStatement stmt]
 	: 'return' expression ';' { $stmt = new AstReturnStatement($expression.express); }
 	; 
+
+localVariableStatement returns [AstLocalVariableStatement lvStatement]
+	: /*Annotations*/
+		annotationList
+		type
+		LOWER_ID		{$lvStatement = factory.localVariableStatement($annotationList.annotations, $type.declaration, $LOWER_ID);}
+		('=' expression	{$lvStatement.setInitialValue($expression.express); }
+			
+		)?
+		';'
+	;
 
 // -------------------- EXPRESSION
 
@@ -230,20 +241,26 @@ expression returns [AstExpression express]
 	
 	| left=expression op=('+'|'-') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
 	| left=expression op=('*'|'/') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
-	// Function call
-//	| LOWER_ID '('				{ AstFunctionCallExpression call = new AstFunctionCallExpression($LOWER_ID); $express = call;}
+	// -- Function call
 	| LOWER_ID '('				{ AstFunctionCallExpression call = factory.functionCall($LOWER_ID); $express = call; }
 		(arg=expression 			{ call.addActualArgument($arg.express); }
 			( ',' arg=expression	{ call.addActualArgument($arg.express); } )*
 		)?
 	  ')'
-	| TYPE_ID '('					{ ConstructorCallExpression call = factory.createConstructorCall($TYPE_ID); $express = call; }
+	|	// -- Constructor call
+	  TYPE_ID '('					{ ConstructorCallExpression call = factory.createConstructorCall($TYPE_ID); $express = call; }
 		
 		(arg=expression 			{ call.addArgument($arg.express); }
 			( ',' arg=expression	{ call.addArgument($arg.express); } )*
 		)?
 	  ')'
-		
+	| // -- Field access
+	  lhs = expression '.' LOWER_ID		{
+	  	AstFieldAccessExpression expr = factory.valueAccess($lhs.express, $LOWER_ID); 
+	  	$express = expr;
+	  }
+	| // -- Local/member/global variable, function parameter
+	  ref = LOWER_ID						{ $express = factory.simpleReference($ref); }
 	;
 
 constantExpression returns [AstExpression express]

@@ -184,6 +184,9 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	}
 	
 	
+	public List<AstValueDeclaration> getValueDeclarations() {
+		return valueDeclarations;
+	}
 	public void addAnonConstructorArgument(AstFunctionFormalArgument argument) {
 		this.anonConstructorArguments.add(argument);
 	}

@@ -5,6 +5,8 @@ import org.sirius.frontend.symbols.SymbolTable;
 
 public interface AstType {
 
+	AstNoType noType = new AstNoType();
+	
 	public String messageStr();
 	
 	default public Type getApiType() {

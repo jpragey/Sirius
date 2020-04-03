@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstValueDeclaration;
 import org.sirius.frontend.ast.ImportDeclarationElement;
@@ -74,9 +75,25 @@ public class DefaultSymbolTable implements SymbolTable {
 	/** Top-level value */
 	public void addValue(AstValueDeclaration valueDeclaration) {
 		AstToken simpleName = valueDeclaration.getName();
-////		addSymbol(packageQName, simpleName, new Symbol(simpleName, valueDeclaration));	// TODO
+
+		// TODO: add symbol in qname-based 'symbols' map 
+		symbolsBySimpleName.put(simpleName.getText(), new Symbol(simpleName, valueDeclaration));
+		
+//		addSymbol(packageQName, simpleName, new Symbol(simpleName, valueDeclaration));
 	}
 
+	/** Local variable */
+	public void addLocalVariable(AstLocalVariableStatement localVariableDeclaration) {
+		AstToken simpleName = localVariableDeclaration.getVarName();
+
+		// TODO: add symbol in qname-based 'symbols' map 
+		symbolsBySimpleName.put(simpleName.getText(), new Symbol(simpleName, localVariableDeclaration));
+		
+//		addSymbol(packageQName, simpleName, new Symbol(simpleName, valueDeclaration));
+	}
+
+	
+	
 //	public Optional<Symbol> lookup(QName packageQName, String simpleName) {
 	public Optional<Symbol> lookup(QName symbolQName) {
 		Symbol symbol = symbols.get(symbolQName);

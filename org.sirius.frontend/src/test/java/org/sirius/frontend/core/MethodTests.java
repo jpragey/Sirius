@@ -1,6 +1,8 @@
 package org.sirius.frontend.core;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +52,55 @@ public class MethodTests {
 		Type type = lvs.getType();
 		assert(type instanceof ClassDeclaration);
 		assertEquals( ((ClassDeclaration)type).getQName(), new QName("p", "k", "C"));
+
+	}
+	
+	@Test (description = "A local variable can have an initializer")
+	public void localVariableInitializerTest() {
+//		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){String s;}}");
+		ScriptSession session = Compiler.compileScript("#!\n package p.k; "
+				+ "class C(){"
+				+ "   Integer s10 = 10; "
+				+ "   public void f(){Integer s11 = 11;}"
+				+ "}");
+		
+		ModuleDeclaration md = session.getModuleDeclarations().get(0);
+		
+		PackageDeclaration pack = md.getPackages().get(1);
+		assertEquals(pack.getQName().dotSeparated(), "p.k");
+		
+		
+		ClassDeclaration cd = pack.getClasses().get(0);
+		assertEquals(cd.getQName(), new QName("p", "k", "C"));
+		
+		// -- function local value
+		MemberFunction func = cd.getFunctions().get(0);
+		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
+
+		assertEquals(func.getBodyStatements().size(), 1);
+		LocalVariableStatement funcLvs = (LocalVariableStatement)func.getBodyStatements().get(0);
+		assertEquals(funcLvs.getName().getText(), "s11");
+
+		assertTrue(funcLvs.getInitialValue().isPresent());
+
+		Type funcLvstype = funcLvs.getType();
+		assert(funcLvstype instanceof ClassDeclaration);
+		
+		
+		assertEquals( ((ClassDeclaration)funcLvstype).getQName(), new QName("sirius", "lang", "Integer"));
+
+		
+		// -- class member
+		assertEquals(cd.getValues().size(), 1);
+		MemberValue lvs = cd.getValues().get(0);
+
+		assertEquals(lvs.getName().getText(), "s10");
+		
+		assertTrue(lvs.getInitialValue().isPresent());
+
+		Type type = lvs.getType();
+		assert(type instanceof ClassDeclaration);
+		assertEquals( ((ClassDeclaration)type).getQName(), new QName("sirius", "lang", "Integer"));
 
 	}
 }

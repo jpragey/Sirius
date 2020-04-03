@@ -45,7 +45,12 @@ public class AstValueDeclaration implements /*Type, Scoped, */Visitable  {
 //		initialValue.ifPresent(expr -> expr.visit(visitor));
 		visitor.endValueDeclaration(this);
 	}
-	
+
+	@Override
+	public String toString() {
+		return getType() + " " + getName().getText();
+	}
+
 	public Optional<TopLevelValue> getTopLevelValue() {
 		return Optional.of(new TopLevelValue() {
 
@@ -61,7 +66,7 @@ public class AstValueDeclaration implements /*Type, Scoped, */Visitable  {
 
 			@Override
 			public Optional<Expression> getInitialValue() {
-				return getInitialValue();
+				return AstValueDeclaration.this.getApiInitialValue();
 			}
 			@Override
 			public String toString() {
@@ -86,7 +91,7 @@ public class AstValueDeclaration implements /*Type, Scoped, */Visitable  {
 
 			@Override
 			public Optional<Expression> getInitialValue() {
-				return getInitialValue();
+				return AstValueDeclaration.this.getApiInitialValue();
 			}
 			@Override
 			public String toString() {

@@ -2,12 +2,14 @@ package org.sirius.frontend.symbols;
 
 import java.util.Optional;
 
+import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstValueDeclaration;
 import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
+import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.TypeFormalParameterDeclaration;
 
 public class Symbol {
@@ -21,7 +23,9 @@ public class Symbol {
 
 	private Optional<AstValueDeclaration> valueDeclaration = Optional.empty();
 	private Optional<ImportedSymbol> importDeclaration = Optional.empty();
-
+	private Optional<AstLocalVariableStatement> localVariableDeclaration = Optional.empty();
+	
+	
 	public Symbol(AstToken name, AstClassDeclaration classDeclaration) {
 		super();
 		this.name = name;
@@ -57,7 +61,12 @@ public class Symbol {
 		this.name = name;
 		this.importDeclaration = Optional.of(argument);
 	}
-
+	public Symbol(AstToken name, AstLocalVariableStatement argument) {
+		super();
+		this.name = name;
+		this.localVariableDeclaration = Optional.of(argument);
+	}
+	
 	public AstToken getName() {
 		return name;
 	}
@@ -82,6 +91,12 @@ public class Symbol {
 		return importDeclaration;
 	}
 
+	public Optional<AstLocalVariableStatement> getLocalVariableStatement() {
+		return localVariableDeclaration;
+	}
+
+	
+	
 	@Override
 	public String toString() {
 		

@@ -58,7 +58,7 @@ public class AstFunctionCallExpression implements AstExpression {
 	}
 
 	@Override
-	public Optional<AstType> getType() {
+	public AstType getType() {
 		String fctName = name.getText();
 		
 		Optional<Symbol> symbol = symbolTable.lookup(fctName);
@@ -67,7 +67,7 @@ public class AstFunctionCallExpression implements AstExpression {
 			if(fct.isPresent()) {
 				AstFunctionDeclaration decl = fct.get();
 				AstType returnType = decl.getReturnType();
-				return Optional.of(returnType);
+				return returnType;
 				
 			} else {
 				reporter.error("Symbol named '" + fctName + "' is not a  function.", name);
@@ -76,9 +76,7 @@ public class AstFunctionCallExpression implements AstExpression {
 			reporter.error("Function named '" + fctName + "' not found.", name);
 		}
 		
-		
-		// TODO Auto-generated method stub
-		return Optional.empty();
+		return AstType.noType;
 	}
 
 	@Override
@@ -89,7 +87,7 @@ public class AstFunctionCallExpression implements AstExpression {
 	}
 
 	private Optional<Expression> mapArg(AstExpression argExpression, AstFunctionFormalArgument formalArgument) {
-		AstType argType = argExpression.getType().get();
+		AstType argType = argExpression.getType();
 		AstType expectedType = formalArgument.getType();
 		if(argType.isExactlyA(expectedType)) {
 			return Optional.of(argExpression.getExpression());

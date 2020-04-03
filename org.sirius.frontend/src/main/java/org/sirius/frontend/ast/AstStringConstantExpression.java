@@ -46,8 +46,8 @@ public class AstStringConstantExpression implements AstExpression {
 		visitor.endStringConstant(this);
 	}
 	@Override
-	public Optional<AstType> getType() {
-		return Optional.of(stringType);
+	public AstType getType() {
+		return stringType;
 	}
 
 	@Override

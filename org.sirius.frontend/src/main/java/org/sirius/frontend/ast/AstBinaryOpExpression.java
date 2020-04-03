@@ -53,9 +53,8 @@ public class AstBinaryOpExpression implements AstExpression {
 	}
 		
 	@Override
-	public Optional<AstType> getType() {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+	public AstType getType() {
+		throw new UnsupportedOperationException("TODO");
 	}
 
 	@Override

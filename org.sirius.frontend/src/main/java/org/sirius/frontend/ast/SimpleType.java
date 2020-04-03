@@ -153,7 +153,10 @@ public final class SimpleType implements AstType {
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.start(this);
-		resolvedElementType.ifPresent(type -> type.visit(visitor));
+//		if(resolvedElementType.isPresent()) {
+//			AstType t = resolvedElementType.get();
+//			t.visit(visitor);
+//		}
 		visitor.end(this);		
 	}
 }

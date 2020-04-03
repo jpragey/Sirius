@@ -61,6 +61,11 @@ public interface AstVisitor {
 	public default void startConstructorCallExpression (ConstructorCallExpression expression) {}
 	public default void endConstructorCallExpression (ConstructorCallExpression expression) {}
 	
+	public default void startFieldAccess (AstFieldAccessExpression expression) {}
+	public default void endFieldAccess (AstFieldAccessExpression expression) {}
+	
+	public default void startSimpleReferenceExpression(SimpleReferenceExpression expression) {}
+	public default void endSimpleReferenceExpression(SimpleReferenceExpression expression) {}
 	
 	
 	
