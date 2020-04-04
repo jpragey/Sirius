@@ -81,7 +81,11 @@ public class AstLocalVariableStatement implements AstStatement {
 			}
 			return Optional.empty();
 		}
-		
+		@Override
+		public String toString() {
+			return stmt.toString();
+		}
+
 	}
 	LocalVariableStatementImpl impl = null;
 	
@@ -121,7 +125,10 @@ public class AstLocalVariableStatement implements AstStatement {
 //			}
 //		};
 	}
-	
+	@Override
+	public String toString() {
+		return type + "" + varName;
+	}
 }
 
 

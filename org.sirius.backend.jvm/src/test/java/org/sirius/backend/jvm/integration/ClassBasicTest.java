@@ -6,6 +6,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.sirius.backend.jvm.Bytecode;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
@@ -114,6 +115,57 @@ public class ClassBasicTest {
 
 	}
 	
+	@Test(description = "Create a class instance from SDK (sirius.lang.Integer) (in a return expression)")
+	public void classFromSDKTest() throws Exception {
+		String script = "#!\n "
+				+ "Integer main() {return Integer();}";
+		
+		
+		ScriptSession session = CompileTools.compileScript(script, reporter);
+		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/);
+		InMemoryClassWriterListener l = backend.addInMemoryOutput();
+		
+		backend.process(session);
+		
+//		HashMap<String, Bytecode> map = l.getByteCodesMap();
+//		System.out.println(map.keySet());
+//		session.getGlobalSymbolTable().dump();
+
+		
+		ClassLoader classLoader = l.getClassLoader();
+		
+		String mainClassQName = "$package$"; 
+//		String mainClassQName = "A"; 
+		
+		Class<?> cls = classLoader.loadClass(mainClassQName);
+
+//		System.out.println("Constructors:");
+//		for(Constructor<?> c: cls.getConstructors())
+//			System.out.println("  "+c);
+//		
+//		System.out.println("Fields:");
+//		for(Field f: cls.getDeclaredFields())
+//			System.out.println("  "+f);
+		
+		Object helloObj = cls.getDeclaredConstructor().newInstance();
+		Method[] methods = helloObj.getClass().getDeclaredMethods();
+//
+//		for(Method m: methods)
+//			System.out.println("Method: " + m);
+		
+		
+		Method main = cls.getMethod("main", new Class[] { /* String[].class */});
+		Object[] argTypes = new Object[] {};
+		
+		Object result = main.invoke(null, argTypes /*, args*/);
+//
+//		
+//		Object result = compileRunAndReturn(script);
+		
+		assertEquals(result.getClass().getName(), "sirius.lang.Integer");
+
+	}
+	
 	
 	@Test(description = "access to a member value", enabled = false)
 	public void fieldAccessTest() throws Exception {
@@ -170,16 +222,21 @@ public class ClassBasicTest {
 
 	}
 	
-	@Test(description = "", enabled = false)
+	@Test(description = "", enabled = true)
 	public void localVariableTest() throws Exception {
 		String script = "#!\n "
 		+ "class A(){}\n"
+//		+ "void main() {Integer a = 10;}";	// OK
+//		+ "Integer main() {return 10;}";
 		+ "Integer main() {Integer a = 10; return a;}";
 		
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
 		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/);
 		InMemoryClassWriterListener l = backend.addInMemoryOutput();
+		
+		backend.addFileOutput("/tmp/siriusTmp/module", Optional.of("/tmp/siriusTmp/classes"));
+		
 		
 		backend.process(session);
 		
@@ -218,8 +275,9 @@ public class ClassBasicTest {
 //		
 //		Object result = compileRunAndReturn(script);
 		
-		assertEquals(result.getClass().getName(), "java.lang.Integer");
-		assertEquals(result, 11);
+//		assertEquals(result.getClass().getName(), "java.lang.Integer");
+		assertEquals(result.getClass().getName(), "sirius.lang.Integer");
+		assertEquals( ((sirius.lang.Integer)result).getValue(), 10);
 
 	}
 }

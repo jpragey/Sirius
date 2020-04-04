@@ -53,6 +53,10 @@ public class SimpleReferenceExpression implements AstExpression {
 		return AstType.noType;
 	}
 
+	@Override
+	public String toString() {
+		return getType().toString() + " " + referenceName.getText() + "->" ;
+	}
 
 	@Override
 	public void visit(AstVisitor visitor) {
@@ -106,6 +110,12 @@ public class SimpleReferenceExpression implements AstExpression {
 		public Token getName() {
 			return referenceName;
 		}
+		
+		@Override
+		public String toString() {
+			return "loc.var " + getType() + " " + getName();
+		}
+		
 	}
 	
 	

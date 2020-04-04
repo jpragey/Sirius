@@ -76,15 +76,19 @@ public class ImplicitTypeCast {
 		String script = "#!\n "
 				+ "import a.b {}"
 				+ "Integer main() {return 42;}";
-		Object result = compileRunAndReturn(script);
-
+		Object sirResult = compileRunAndReturn(script);
+		assert(sirResult instanceof sirius.lang.Integer);
+		int result = ((sirius.lang.Integer)sirResult).getValue();
+		
 		assertEquals(result, 42);
 	}
 	
 	@Test(enabled = true)
 	public void returnIntSum() throws Exception {
 		String script = "#!\n Integer main() {return 42 + 43;}";
-		Object result = compileRunAndReturn(script);
+		Object sirResult = compileRunAndReturn(script);
+		assert(sirResult instanceof sirius.lang.Integer);
+		int result = ((sirius.lang.Integer)sirResult).getValue();
 
 		assertEquals(result, 85);
 	}
@@ -92,7 +96,9 @@ public class ImplicitTypeCast {
 	@Test(enabled = true)
 	public void returnIntSubstraction() throws Exception {
 		String script = "#!\n Integer main() {return 42 - 43;}";
-		Object result = compileRunAndReturn(script);
+		Object sirResult = compileRunAndReturn(script);
+		assert(sirResult instanceof sirius.lang.Integer);
+		int result = ((sirius.lang.Integer)sirResult).getValue();
 
 		assertEquals(result, -1);
 	}
@@ -100,7 +106,9 @@ public class ImplicitTypeCast {
 	@Test(enabled = true)
 	public void returnIntMult() throws Exception {
 		String script = "#!\n Integer main() {return 10 * 11;}";
-		Object result = compileRunAndReturn(script);
+		Object sirResult = compileRunAndReturn(script);
+		assert(sirResult instanceof sirius.lang.Integer);
+		int result = ((sirius.lang.Integer)sirResult).getValue();
 		
 		assertEquals(result, 110);
 	}
@@ -108,7 +116,9 @@ public class ImplicitTypeCast {
 	@Test(enabled = true)
 	public void returnIntDiv() throws Exception {
 		String script = "#!\n Integer main() {return 100 / 3;}";
-		Object result = compileRunAndReturn(script);
+		Object sirResult = compileRunAndReturn(script);
+		assert(sirResult instanceof sirius.lang.Integer);
+		int result = ((sirius.lang.Integer)sirResult).getValue();
 		
 		assertEquals(result, 33);
 	}

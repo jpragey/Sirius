@@ -35,7 +35,7 @@ public class CodeTreeBuilder implements Visitor {
 			}
 		}
 		public void createByteCode(List<ClassWriterListener> listeners) {
-			packageClass.toBytecode(listeners);
+//			packageClass.toBytecode(listeners);
 			for(JvmNodeClass c: jvmClasses) {
 				c.toBytecode(listeners);
 			}

@@ -42,7 +42,7 @@ public class DescriptorFactory {
 	}
 	
 	private static HashMap<QName, String> siriusToJvmTypeMap = new HashMap<QName, String>() {{
-		put(new QName("sirius", "lang", "Integer"), "I");
+////		put(new QName("sirius", "lang", "Integer"), "I");
 	}};
 			
 	private String mapStandardSiriusType(ClassType classType) {
