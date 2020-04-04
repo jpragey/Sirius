@@ -50,7 +50,7 @@ public class JvmScope {
 		this.descriptorFactory = descriptorFactory;
 	}
 	
-	public void markEndScope() {
+	public void markEnd() {
 		this.endLabel = new Label();
 	}
 

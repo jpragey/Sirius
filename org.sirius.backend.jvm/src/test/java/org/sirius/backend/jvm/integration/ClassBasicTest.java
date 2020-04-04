@@ -28,40 +28,6 @@ public class ClassBasicTest {
 		
 	}
 
-//	public Object compileRunAndReturn(String script) throws Exception {
-//		
-//		ScriptSession session = CompileTools.compileScript(script, reporter);
-//		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/);
-//		InMemoryClassWriterListener l = backend.addInMemoryOutput();
-//		
-//		backend.process(session);
-//		
-//		HashMap<String, Bytecode> map = l.getByteCodesMap();
-//		System.out.println(map.keySet());
-//		session.getGlobalSymbolTable().dump();
-//
-//		
-//		ClassLoader classLoader = l.getClassLoader();
-//		
-//		String mainClassQName = "$package$"; 
-//		
-//		Class<?> cls = classLoader.loadClass(mainClassQName);
-//		Object helloObj = cls.getDeclaredConstructor().newInstance();
-//		Method[] methods = helloObj.getClass().getDeclaredMethods();
-//
-//		for(Method m: methods)
-//			System.out.println("Method: " + m);
-//
-//		Method main = cls.getMethod("main", new Class[] { /* String[].class */});
-////		System.out.println("Main: " + main);
-//		
-//		Object[] argTypes = new Object[] {};
-//		
-//		Object result = main.invoke(null, argTypes /*, args*/);
-//		System.out.println("Result: " + result);
-//		
-//		return result;
-//	}
 
 	@Test(description = "Create a class instance (in a return expression)")
 	public void classTest() throws Exception {
@@ -76,11 +42,6 @@ public class ClassBasicTest {
 		
 		backend.process(session);
 		
-//		HashMap<String, Bytecode> map = l.getByteCodesMap();
-//		System.out.println(map.keySet());
-//		session.getGlobalSymbolTable().dump();
-
-		
 		ClassLoader classLoader = l.getClassLoader();
 		
 		String mainClassQName = "$package$"; 
@@ -88,14 +49,6 @@ public class ClassBasicTest {
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 
-//		System.out.println("Constructors:");
-//		for(Constructor<?> c: cls.getConstructors())
-//			System.out.println("  "+c);
-//		
-//		System.out.println("Fields:");
-//		for(Field f: cls.getDeclaredFields())
-//			System.out.println("  "+f);
-		
 		Object helloObj = cls.getDeclaredConstructor().newInstance();
 		Method[] methods = helloObj.getClass().getDeclaredMethods();
 //
@@ -107,9 +60,6 @@ public class ClassBasicTest {
 		Object[] argTypes = new Object[] {};
 		
 		Object result = main.invoke(null, argTypes /*, args*/);
-//
-//		
-//		Object result = compileRunAndReturn(script);
 		
 		assertEquals(result.getClass().getName(), "A");
 
@@ -127,11 +77,6 @@ public class ClassBasicTest {
 		
 		backend.process(session);
 		
-//		HashMap<String, Bytecode> map = l.getByteCodesMap();
-//		System.out.println(map.keySet());
-//		session.getGlobalSymbolTable().dump();
-
-		
 		ClassLoader classLoader = l.getClassLoader();
 		
 		String mainClassQName = "$package$"; 
@@ -139,39 +84,24 @@ public class ClassBasicTest {
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 
-//		System.out.println("Constructors:");
-//		for(Constructor<?> c: cls.getConstructors())
-//			System.out.println("  "+c);
-//		
-//		System.out.println("Fields:");
-//		for(Field f: cls.getDeclaredFields())
-//			System.out.println("  "+f);
-		
 		Object helloObj = cls.getDeclaredConstructor().newInstance();
-		Method[] methods = helloObj.getClass().getDeclaredMethods();
-//
-//		for(Method m: methods)
-//			System.out.println("Method: " + m);
 		
 		
 		Method main = cls.getMethod("main", new Class[] { /* String[].class */});
 		Object[] argTypes = new Object[] {};
 		
 		Object result = main.invoke(null, argTypes /*, args*/);
-//
-//		
-//		Object result = compileRunAndReturn(script);
 		
 		assertEquals(result.getClass().getName(), "sirius.lang.Integer");
 
 	}
 	
 	
-	@Test(description = "access to a member value", enabled = false)
+	@Test(description = "access to a member value", enabled = true)
 	public void fieldAccessTest() throws Exception {
 		String script = "#!\n "
 				+ "class B() {}   "
-				+ "class A() {B mi = B();}   "
+				+ "class A() {B mib = B();}   "
 //				+ "Integer main() {return 42;}";
 		+ "A main() {return A();}";
 		
@@ -240,11 +170,6 @@ public class ClassBasicTest {
 		
 		backend.process(session);
 		
-//		HashMap<String, Bytecode> map = l.getByteCodesMap();
-//		System.out.println(map.keySet());
-//		session.getGlobalSymbolTable().dump();
-
-		
 		ClassLoader classLoader = l.getClassLoader();
 		
 		String mainClassQName = "$package$"; 
@@ -252,30 +177,14 @@ public class ClassBasicTest {
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 
-//		System.out.println("Constructors:");
-//		for(Constructor<?> c: cls.getConstructors())
-//			System.out.println("  "+c);
-//		
-//		System.out.println("Fields:");
-//		for(Field f: cls.getDeclaredFields())
-//			System.out.println("  "+f);
-		
 		Object helloObj = cls.getDeclaredConstructor().newInstance();
 		Method[] methods = helloObj.getClass().getDeclaredMethods();
-//
-//		for(Method m: methods)
-//			System.out.println("Method: " + m);
-		
 		
 		Method main = cls.getMethod("main", new Class[] { /* String[].class */});
 		Object[] argTypes = new Object[] {};
 		
 		Object result = main.invoke(null, argTypes /*, args*/);
-//
-//		
-//		Object result = compileRunAndReturn(script);
 		
-//		assertEquals(result.getClass().getName(), "java.lang.Integer");
 		assertEquals(result.getClass().getName(), "sirius.lang.Integer");
 		assertEquals( ((sirius.lang.Integer)result).getValue(), 10);
 

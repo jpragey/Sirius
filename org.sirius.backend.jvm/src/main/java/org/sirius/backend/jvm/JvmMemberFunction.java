@@ -123,49 +123,38 @@ public class JvmMemberFunction {
 			writeExpressionBytecode(mv, expression.getRight(), scope);
 			
 			BinaryOpExpression.Operator operator = expression.getOperator();
-			
+			String opFuncName;
 			switch(operator) {
 			case Add:
-//				String descriptor = descriptorFactory.methodDescriptor(tlFunc.get());
-				mv.visitMethodInsn(
-						INVOKEVIRTUAL,	// opcode 
-						"sirius/lang/Integer", // owner "java/io/PrintStream", 
-						"add", //"println", 
-						"(Lsirius/lang/Integer;)Lsirius/lang/Integer;", // descriptor,	// "(Ljava/lang/String;)V",	// method descriptor 
-						false /*isInterface*/);
 				
+//				String descriptor = descriptorFactory.methodDescriptor(tlFunc.get());
+				opFuncName = "add";
 				//mv.visitInsn(IADD);
 				break;
 			case Mult:
-				mv.visitMethodInsn(
-						INVOKEVIRTUAL,	// opcode 
-						"sirius/lang/Integer", // owner "java/io/PrintStream", 
-						"mult", //"println", 
-						"(Lsirius/lang/Integer;)Lsirius/lang/Integer;", // descriptor,	// "(Ljava/lang/String;)V",	// method descriptor 
-						false /*isInterface*/);
+				opFuncName = "mult";
 //				mv.visitInsn(IMUL);
 				break;
 			case Substract:
-				mv.visitMethodInsn(
-						INVOKEVIRTUAL,	// opcode 
-						"sirius/lang/Integer", // owner "java/io/PrintStream", 
-						"sub", //"println", 
-						"(Lsirius/lang/Integer;)Lsirius/lang/Integer;", // descriptor,	// "(Ljava/lang/String;)V",	// method descriptor 
-						false /*isInterface*/);
+				opFuncName = "sub";
 //				mv.visitInsn(ISUB);
 				break;
 			case Divide:
-				mv.visitMethodInsn(
-						INVOKEVIRTUAL,	// opcode 
-						"sirius/lang/Integer", // owner "java/io/PrintStream", 
-						"div", //"println", 
-						"(Lsirius/lang/Integer;)Lsirius/lang/Integer;", // descriptor,	// "(Ljava/lang/String;)V",	// method descriptor 
-						false /*isInterface*/);
+				opFuncName = "div";
 //				mv.visitInsn(IDIV);
 				break;
 			default:
 				throw new UnsupportedOperationException("Binary operator not supported in JVM: " + operator);
 			}
+			
+			mv.visitMethodInsn(
+					INVOKEVIRTUAL,	// opcode 
+					"sirius/lang/Integer", // owner "java/io/PrintStream", 
+					opFuncName, //"println", 
+					"(Lsirius/lang/Integer;)Lsirius/lang/Integer;", // descriptor,	// "(Ljava/lang/String;)V",	// method descriptor 
+					false /*isInterface*/);
+
+			
 		}
 		public void processConstructorCall(MethodVisitor mv, ConstructorCall expression) {
 
@@ -249,9 +238,6 @@ public class JvmMemberFunction {
 				}
 			}
 		}
-
-		
-		
 		
 		
 		public void writeReturnStatementBytecode(ClassWriter classWriter/*, MemberFunction declaration*/, MethodVisitor mv, ReturnStatement statement, JvmScope scope) {
@@ -288,19 +274,6 @@ public class JvmMemberFunction {
 			mv.visitInsn(RETURN);
 		}
 		
-//		public void writeLocalVariableStatement(ClassWriter classWriter, MethodVisitor mv, LocalVariableStatement statement, 
-//				JvmScope scope /*Label start, Label end*/) {
-//			String name = statement.getName().getText();
-//			
-////			statement.getType();
-//			String descriptor = descriptorFactory.fieldDescriptor(statement.getType());		// TODO: field ???      var descriptor
-//			String signature = null; // the type signature of this local variable. May be {@literal null} if the local variable type does not use generic types.
-////			Label start;
-////			Label end;
-//			int index=locvarIndex;
-//			mv.visitLocalVariable(name, descriptor, signature, scope.getStartLabel(), scope.getEndLabel(), index);
-//		}
-			
 		public class JvmStatementBlock {
 			List<Statement> statements;
 			
@@ -324,8 +297,6 @@ public class JvmMemberFunction {
 			}
 			
 			public void writeByteCode(ClassWriter classWriter, MethodVisitor mv) {
-//				List<LocalVariableStatement> locVarsStmts = new ArrayList<>();
-				//Label startLabel = new Label();
 				
 				JvmScope scope = new JvmScope(descriptorFactory);
 				
@@ -335,8 +306,6 @@ public class JvmMemberFunction {
 					if(st instanceof LocalVariableStatement) { 
 						LocalVariableStatement locVarsStmt = (LocalVariableStatement)st;
 						scope.addLocalVariable(locVarsStmt);
-						
-//						writeLocalVarsInitCode(locVarsStmt, mv);
 					}
 				}
 				// Write local var init code
@@ -348,20 +317,12 @@ public class JvmMemberFunction {
 				for(Statement st: statements ) {
 					if(st instanceof ReturnStatement) {
 						writeReturnStatementBytecode(classWriter, mv, (ReturnStatement)st, scope);
-//					} else if(st instanceof LocalVariableStatement) { 
-////						writeLocalVariableStatement(classWriter, mv, (LocalVariableStatement)st);
-//						locVarsStmts.add((LocalVariableStatement)st);
 					}
 				}
 
-				scope.markEndScope();
+				scope.markEnd();
 				
-//				Label endLabel = new Label();
-//				for(LocalVariableStatement st : locVarsStmts) {
-//					writeLocalVariableStatement(classWriter, mv, st, scope);
-//				}
 				scope.writeLocalVariableStatements(classWriter, mv);
-				
 			}
 		}
 		
@@ -379,31 +340,8 @@ public class JvmMemberFunction {
 			
 			JvmStatementBlock bodyBlock = new JvmStatementBlock(memberFunction.getBodyStatements());
 			bodyBlock.writeByteCode(classWriter, mv);
-			
-			// 
-//			List<LocalVariableStatement> locVarsStmts = new ArrayList<>();
-//			//Label startLabel = new Label();
-//			
-//			JvmScope scope = new JvmScope();
-//			
-//			for(Statement st: memberFunction.getBodyStatements() ) {
-//				if(st instanceof ReturnStatement) {
-//					writeReturnStatementBytecode(classWriter, mv, (ReturnStatement)st);
-//				} else if(st instanceof LocalVariableStatement) { 
-////					writeLocalVariableStatement(classWriter, mv, (LocalVariableStatement)st);
-//					locVarsStmts.add((LocalVariableStatement)st);
-//				}
-//			}
-//
-//			scope.markEndScope();
-//			
-////			Label endLabel = new Label();
-//			for(LocalVariableStatement st : locVarsStmts) {
-//				writeLocalVariableStatement(classWriter, mv, st, scope);
-//			}
 
 			writeDummyDefaultReturn(mv);
-			
 			
 //			mv.visitInsn(RETURN);
 			mv.visitMaxs(-1, -1);
