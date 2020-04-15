@@ -9,7 +9,7 @@ import org.sirius.frontend.api.LocalVariableReference;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.api.ValueAccessExpression;
+import org.sirius.frontend.api.MemberValueAccessExpression;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTable;
 
@@ -39,13 +39,23 @@ public class SimpleReferenceExpression implements AstExpression {
 		Optional<Symbol> optSymbol = symbolTable.lookup(referenceName.getText());
 		if(optSymbol.isPresent()) {
 			Symbol symbol = optSymbol.get();
-			Optional<AstValueDeclaration> opt = symbol.getValueDeclaration();
-			if(opt.isPresent()) {
-				AstValueDeclaration vd = opt.get();
+			
+			Optional<AstMemberValueDeclaration> optVd = symbol.getValueDeclaration();
+			if(optVd.isPresent()) {
+				AstMemberValueDeclaration vd = optVd.get();
+				AstType t = vd.getType();
+				return t;
 //				vd.ge
-			} else {
-				reporter.error("Reference: " + referenceName.getText() + " is not a value declaration", referenceName);
-			}
+			} 
+			Optional<AstLocalVariableStatement> optVs = symbol.getLocalVariableStatement();
+			if(optVs.isPresent()) {
+				AstLocalVariableStatement vd = optVs.get();
+				AstType t = vd.getType();
+				return t;
+//				vd.ge
+			} 
+			reporter.error("Reference: " + referenceName.getText() + " is not a value declaration", referenceName);
+			
 					
 		} else {
 			reporter.error("Reference not found: " + referenceName.getText(), referenceName);
@@ -57,6 +67,10 @@ public class SimpleReferenceExpression implements AstExpression {
 	public String toString() {
 		return getType().toString() + " " + referenceName.getText() + "->" ;
 	}
+	@Override
+	public String asString() {
+		return toString();
+	}
 
 	@Override
 	public void visit(AstVisitor visitor) {
@@ -64,10 +78,10 @@ public class SimpleReferenceExpression implements AstExpression {
 		visitor.endSimpleReferenceExpression(this);
 	}
 
-	private class ValueAccessExpressionImpl implements ValueAccessExpression {
-		private AstValueDeclaration valueDecl;
+	private class ValueAccessExpressionImpl implements MemberValueAccessExpression {
+		private AstMemberValueDeclaration valueDecl;
 		
-		public ValueAccessExpressionImpl(AstValueDeclaration valueDecl) {
+		public ValueAccessExpressionImpl(AstMemberValueDeclaration valueDecl) {
 			super();
 			this.valueDecl = valueDecl;
 		}
@@ -134,9 +148,9 @@ public class SimpleReferenceExpression implements AstExpression {
 					return impl;
 				}
 				
-				Optional<AstValueDeclaration> valueDecl = symbol.getValueDeclaration();
+				Optional<AstMemberValueDeclaration> valueDecl = symbol.getValueDeclaration();
 				if(valueDecl.isPresent()) {
-					ValueAccessExpression expr = new ValueAccessExpressionImpl(valueDecl.get());
+					MemberValueAccessExpression expr = new ValueAccessExpressionImpl(valueDecl.get());
 					return expr;
 				} else {
 					reporter.error("Reference: " + referenceName.getText() + " is not a container (class/interface)", referenceName);

@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.Session;
 import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
@@ -53,14 +54,18 @@ public class SdkTools {
 	public SdkTools(Reporter reporter) {
 		super();
 		this.reporter = reporter;
+
+		this.sdkModule = new AstModuleDeclaration(reporter, siriusLangQName, versionToken);
+
+//		this.langPackage = this.sdkModule.createPackageDeclaration(siriusLangQName);
+		this.langPackage = this.sdkModule.getCurrentPackage();
 		
-		this.langPackage = new AstPackageDeclaration(reporter, siriusLangQName);
 		this.topLevelClass = createClassInPackage(reporter, this.langPackage, "$package$");
 		
 		packagesMap.put(siriusLangQName, langPackage);
 		
-		this.sdkModule = new AstModuleDeclaration(reporter, siriusLangQName, versionToken);
-		sdkModule.addPackageDeclaration(langPackage);
+//		this.sdkModule.addPackageDeclaration(packageDeclaration);
+//		sdkModule.addPackageDeclaration(langPackage);
 	}
 
 	private static AstClassDeclaration createClassInPackage(Reporter reporter, AstPackageDeclaration pkg, String name) {
@@ -87,10 +92,14 @@ public class SdkTools {
 //				System.out.println("- Top-level methods: " + clss + ", anno: " + topLevelmethodsAnno);
 			}
 		}
+		QNameSetterVisitor qNameSetterVisitor = new QNameSetterVisitor();
+		this.sdkModule.visit(qNameSetterVisitor);
 		
-		this.sdkModule.visit(new QNameSetterVisitor());
-		this.sdkModule.visit(new SymbolTableFillingVisitor(symbolTable));
-		this.sdkModule.visit(new SymbolResolutionVisitor(reporter, symbolTable));
+		SymbolTableFillingVisitor fillingVisitor = new SymbolTableFillingVisitor(symbolTable);
+		this.sdkModule.visit(fillingVisitor);
+		
+		SymbolResolutionVisitor resolutionVisitor = new SymbolResolutionVisitor(reporter, symbolTable);
+		this.sdkModule.visit(resolutionVisitor);
 		
 	}
 	

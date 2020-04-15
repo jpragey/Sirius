@@ -225,6 +225,10 @@ public class AstFunctionCallExpression implements AstExpression {
 	public String toString() {
 		return "AstFunctionCallExpression " + name.getText() + "()";
 	}
-	
+	@Override
+	public String asString() {
+		return toString();
+	}
+
 }
 

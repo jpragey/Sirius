@@ -14,7 +14,7 @@ public class AstNoType implements AstType {
 	}
 
 	@Override
-	public AstType resolve(SymbolTable symbolTable) {
+	public AstType resolve() {
 		return this;
 	}
 
@@ -33,4 +33,8 @@ public class AstNoType implements AstType {
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		return "AstNoType";
+	}
 }

@@ -119,5 +119,13 @@ public class AstBinaryOpExpression implements AstExpression {
 		return impl;
 	}
 
+	@Override
+	public String asString() {
+		return toString();
+	}
+	@Override
+	public String toString() {
+		return left.toString() + " " + operator.toString() + " " + right.toString();
+	}
 
 }

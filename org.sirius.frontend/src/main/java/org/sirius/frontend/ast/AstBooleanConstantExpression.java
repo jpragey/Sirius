@@ -42,4 +42,14 @@ public class AstBooleanConstantExpression implements AstExpression {
 			}
 		};
 	}
+
+
+	@Override
+	public String asString() {
+		return toString();
+	}
+	@Override
+	public String toString() {
+		return content.getText();
+	}
 }

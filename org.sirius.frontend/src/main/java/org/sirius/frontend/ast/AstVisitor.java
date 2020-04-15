@@ -42,8 +42,8 @@ public interface AstVisitor {
 	
 	
 	
-	public default void startValueDeclaration (AstValueDeclaration valueDeclaration) {}
-	public default void endValueDeclaration (AstValueDeclaration valueDeclaration) {}
+	public default void startValueDeclaration (AstMemberValueDeclaration valueDeclaration) {}
+	public default void endValueDeclaration (AstMemberValueDeclaration valueDeclaration) {}
 	
 //	public default void startSimpleType (SimpleType simpleType) {}
 //	public default void endSimpleType (SimpleType simpleType) {}
@@ -61,8 +61,8 @@ public interface AstVisitor {
 	public default void startConstructorCallExpression (ConstructorCallExpression expression) {}
 	public default void endConstructorCallExpression (ConstructorCallExpression expression) {}
 	
-	public default void startFieldAccess (AstFieldAccessExpression expression) {}
-	public default void endFieldAccess (AstFieldAccessExpression expression) {}
+	public default void startFieldAccess (AstMemberAccessExpression expression) {}
+	public default void endFieldAccess (AstMemberAccessExpression expression) {}
 	
 	public default void startSimpleReferenceExpression(SimpleReferenceExpression expression) {}
 	public default void endSimpleReferenceExpression(SimpleReferenceExpression expression) {}

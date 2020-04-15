@@ -39,9 +39,9 @@ public class UnionType implements AstType{
 	}
 	
 	@Override
-	public UnionType resolve(SymbolTable symbolTable) {
+	public UnionType resolve() {
 		if(resolvedElementType.isEmpty())
-			resolvedElementType = Optional.of(new UnionType(first.resolve(symbolTable), second.resolve(symbolTable)));
+			resolvedElementType = Optional.of(new UnionType(first.resolve(), second.resolve()));
 		
 		return resolvedElementType.get();
 	}

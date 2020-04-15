@@ -31,10 +31,10 @@ public class AstArrayType implements AstType {
 	}
 	
 	@Override
-	public AstType resolve(SymbolTable symbolTable) {
+	public AstType resolve() {
 		// TODO: style ?
 		if(resolvedElementType.isEmpty())
-			resolvedElementType = Optional.of(new AstArrayType(elementType.resolve(symbolTable)));
+			resolvedElementType = Optional.of(new AstArrayType(elementType.resolve()));
 		
 		return resolvedElementType.get();
 	}

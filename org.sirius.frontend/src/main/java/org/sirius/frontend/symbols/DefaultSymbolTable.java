@@ -13,7 +13,7 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.ast.AstValueDeclaration;
+import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.ImportDeclarationElement;
 import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.ast.TypeFormalParameterDeclaration;
@@ -73,7 +73,7 @@ public class DefaultSymbolTable implements SymbolTable {
 	}
 
 	/** Top-level value */
-	public void addValue(AstValueDeclaration valueDeclaration) {
+	public void addValue(AstMemberValueDeclaration valueDeclaration) {
 		AstToken simpleName = valueDeclaration.getName();
 
 		// TODO: add symbol in qname-based 'symbols' map 

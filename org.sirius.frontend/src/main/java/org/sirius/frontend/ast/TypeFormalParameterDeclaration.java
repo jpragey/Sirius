@@ -42,7 +42,7 @@ public class TypeFormalParameterDeclaration implements AstType {
 	}
 
 	@Override
-	public AstType resolve(SymbolTable symbolTable) {
+	public AstType resolve() {
 		throw new UnsupportedOperationException("Unsupported TypeFormalParameter.resolve() for " + formalName.getText());
 	}
 

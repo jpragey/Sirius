@@ -35,13 +35,14 @@ import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.IntegerType;
 import org.sirius.frontend.api.LocalVariableReference;
 import org.sirius.frontend.api.LocalVariableStatement;
+import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.StringConstantExpression;
 import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
-import org.sirius.frontend.api.ValueAccessExpression;
+import org.sirius.frontend.api.MemberValueAccessExpression;
 
 public class JvmMemberFunction {
 		private AbstractFunction memberFunction;
@@ -83,8 +84,8 @@ public class JvmMemberFunction {
 				processBinaryOpExpression(mv, (BinaryOpExpression)expression, scope);
 			} else if(expression instanceof ConstructorCall) {
 				processConstructorCall(mv, (ConstructorCall) expression);
-			} else if(expression instanceof ValueAccessExpression) {
-				processValueAccessExpression(mv, (ValueAccessExpression) expression, scope);
+			} else if(expression instanceof MemberValueAccessExpression) {
+				processValueAccessExpression(mv, (MemberValueAccessExpression) expression, scope);
 			} else if(expression instanceof LocalVariableReference) {
 				processLocalVariableReference(mv, (LocalVariableReference) expression, scope);
 			} else {
@@ -168,11 +169,14 @@ public class JvmMemberFunction {
 			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, internalName, "<init>", "()V", false);
 		}
 
-		public void processValueAccessExpression(MethodVisitor mv, ValueAccessExpression expression, JvmScope scope) {
+		public void processValueAccessExpression(MethodVisitor mv, MemberValueAccessExpression expression, JvmScope scope) {
 			Expression containerExpr = expression.getContainerExpression();
 			writeExpressionBytecode(mv, containerExpr, scope);
 			
 ////			mv.visitInsn(Opcodes.DUP);
+			Type type = expression.getType();
+			MemberValue memberValue = expression.getMemberValue();
+			
 			String owner = "A"; // internal name
 			String name = "mi";
 			String descriptor = "B";
@@ -186,7 +190,7 @@ public class JvmMemberFunction {
 			
 			Optional<JvmScope.LocalVarHolder> h = scope.getVarByName(varName);
 			if(h.isEmpty()) {
-				reporter.error("(JVM backend): Internal error: loval variable not found: " + varName, varRef.getName());
+				reporter.error("(JVM backend): Internal error: local variable not found: " + varName, varRef.getName());
 				return;
 			}
 			

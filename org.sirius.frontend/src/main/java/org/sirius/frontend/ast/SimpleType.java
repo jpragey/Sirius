@@ -70,9 +70,9 @@ public final class SimpleType implements AstType {
 	
 	@Override
 	public Type getApiType() {
-		
-		assert(resolvedElementType.isPresent());
-		AstType type = resolvedElementType.get();
+//		assert(resolvedElementType.isPresent());
+//		AstType type = resolvedElementType.get();
+		AstType type = resolve();
 		return type.getApiType();
 	}
 
@@ -142,7 +142,7 @@ public final class SimpleType implements AstType {
 	}
 	
 	@Override
-	public AstType resolve(SymbolTable symbolTable) {
+	public AstType resolve() {
 		if(resolvedElementType.isEmpty()) {
 			resolvedElementType = fetchResolveType(symbolTable);
 		}

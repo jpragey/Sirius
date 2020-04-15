@@ -59,7 +59,7 @@ public class AstLocalVariableStatement implements AstStatement {
 		public LocalVariableStatementImpl(AstLocalVariableStatement stmt) {
 			super();
 			this.stmt = stmt;
-			AstLocalVariableStatement.this.type.resolve(symbolTable);
+//			AstLocalVariableStatement.this.type.resolve();
 			this.type = AstLocalVariableStatement.this.type.getApiType();
 		}
 
@@ -92,6 +92,7 @@ public class AstLocalVariableStatement implements AstStatement {
 	@Override
 	public LocalVariableStatement toAPI() {
 		if(impl == null) {
+//			impl = new LocalVariableStatementImpl(this);	// TODO: restore
 			Optional<Symbol> optSymbol = symbolTable.lookup(varName.getText());
 			if(optSymbol.isPresent()) {
 				Symbol symbol = optSymbol.get();

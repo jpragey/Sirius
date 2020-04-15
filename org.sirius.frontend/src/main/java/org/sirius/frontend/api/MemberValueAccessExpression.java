@@ -1,6 +1,6 @@
 package org.sirius.frontend.api;
 
-public interface ValueAccessExpression extends Expression {
+public interface MemberValueAccessExpression extends Expression {
 
 	default void visitMe(Visitor visitor) {
 		visitor.start(this);

@@ -2,21 +2,22 @@ package org.sirius.frontend.ast;
 
 import java.util.Optional;
 
+import org.sirius.common.core.Token;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.api.ValueAccessExpression;
+import org.sirius.frontend.api.MemberValueAccessExpression;
 import org.sirius.frontend.symbols.SymbolTable;
 
-public class AstFieldAccessExpression implements AstExpression {
+public class AstMemberAccessExpression implements AstExpression {
 
 	private Reporter reporter; 
 	private AstExpression containerExpression;
 	private AstToken valueName;
 	private SymbolTable symbolTable = null;
 
-	public AstFieldAccessExpression(Reporter reporter, AstExpression containerExpression, AstToken valueName) {
+	public AstMemberAccessExpression(Reporter reporter, AstExpression containerExpression, AstToken valueName) {
 		super();
 		this.reporter = reporter;
 		this.containerExpression = containerExpression;
@@ -32,6 +33,17 @@ public class AstFieldAccessExpression implements AstExpression {
 	}
 
 	@Override
+	public String toString() {
+		String cs = containerExpression.toString();
+		return "AstMemberAccessExpression: <container>." + valueName.getText();
+//		return "AstMemberAccessExpression: " + containerExpression.toString() + "." + valueName.getText();
+	}
+	@Override
+	public String asString() {
+		return toString();
+	}
+	
+	@Override
 	public AstType getType() {
 		// Check container type is Class or Inteface
 		AstType containerType = containerExpression.getType();
@@ -42,7 +54,7 @@ public class AstFieldAccessExpression implements AstExpression {
 		
 		if(containerType instanceof AstClassDeclaration) {
 			AstClassDeclaration cd = (AstClassDeclaration)containerType;
-			Optional<AstValueDeclaration> astVd = cd.getValueDeclarations().stream()	// TODO: cd.getValueDeclarations should be a map
+			Optional<AstMemberValueDeclaration> astVd = cd.getValueDeclarations().stream()	// TODO: cd.getValueDeclarations should be a map
 					.filter(v -> v.getName().getText().equals(valueName.getText()))
 					.findFirst();
 			if(astVd.isPresent()) {
@@ -64,12 +76,19 @@ public class AstFieldAccessExpression implements AstExpression {
 		visitor.endFieldAccess(this);
 	}
 
-	private class ValueAccessExpressionImpl implements ValueAccessExpression {
+	private class MemberValueAccessExpressionImpl implements MemberValueAccessExpression {
 //		Optional<AstType> optType = containerExpression.getType();
+
+		MemberValue memberValue;
+		public MemberValueAccessExpressionImpl(MemberValue memberValue) {
+			super();
+			this.memberValue = memberValue;
+		}
+
 
 		@Override
 		public Type getType() {
-			AstType astType = AstFieldAccessExpression.this.getType();
+			AstType astType = AstMemberAccessExpression.this.getType();
 			Type type = astType.getApiType();
 			return type;
 		}
@@ -82,18 +101,33 @@ public class AstFieldAccessExpression implements AstExpression {
 
 		@Override
 		public MemberValue getMemberValue() {
-			// TODO Auto-generated method stub
-			return null;
+			return memberValue;
 		}
 		
 	}
 	
-	private ValueAccessExpressionImpl impl = null;
+	private Expression impl = null;
 	
 	@Override
 	public Expression getExpression() {
-		if(impl == null)
-			impl = new ValueAccessExpressionImpl();
+		if(impl == null) {
+			AstType contType = containerExpression.getType().resolve();
+			assert(contType instanceof AstClassDeclaration);	// TODO
+			AstClassDeclaration contClassDef = (AstClassDeclaration)contType;
+			
+			for(AstMemberValueDeclaration vd: contClassDef.getValueDeclarations()) { // TODO should be a map vdName -> VD
+				String vdName = vd.getName().getText();
+				if(vdName.equals(valueName.getText())) {
+//					Optional<MemberValue> optVd = vd.getMemberValue();
+//					assert(optVd.isPresent());	// TODO : ok for now, we have only member values (no top level)
+					MemberValue mv = vd.getMemberValue();
+					impl = new MemberValueAccessExpressionImpl(mv);
+					return impl;
+				}
+			}
+		}
+		
+		impl = containerExpression.getExpression(); // default if member value can't be evaluated
 		return impl;
 	}
 	

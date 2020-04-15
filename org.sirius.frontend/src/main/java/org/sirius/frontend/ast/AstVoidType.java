@@ -39,7 +39,7 @@ public class AstVoidType implements AstType {
 	}
 
 	@Override
-	public AstType resolve(SymbolTable symbolTable) {
+	public AstType resolve() {
 		return this;
 	}
 

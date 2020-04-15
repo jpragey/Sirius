@@ -27,7 +27,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	private List<TypeFormalParameterDeclaration> typeParameters = new ArrayList<>();
 	
 	private List<AstFunctionDeclaration> functionDeclarations = new ArrayList<>();
-	private List<AstValueDeclaration> valueDeclarations = new ArrayList<>();
+	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	private List<AstFunctionFormalArgument> anonConstructorArguments = new ArrayList<>(); 
 
 	/** Root package at first */
@@ -122,7 +122,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		this.functionDeclarations.add(declaration);
 //		this.symbolTable.addFunction(declaration);
 	}
-	public void addValueDeclaration(AstValueDeclaration valueDeclaration) {
+	public void addValueDeclaration(AstMemberValueDeclaration valueDeclaration) {
 		this.valueDeclarations.add(valueDeclaration);
 		// TODO: add to symbol table
 	}
@@ -184,7 +184,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	}
 	
 	
-	public List<AstValueDeclaration> getValueDeclarations() {
+	public List<AstMemberValueDeclaration> getValueDeclarations() {
 		return valueDeclarations;
 	}
 	public void addAnonConstructorArgument(AstFunctionFormalArgument argument) {
@@ -266,15 +266,18 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		this.annotationType = annotationType;
 	}
 
+	private ClassDeclaration classDeclarationImpl = null;
+	
 	public ClassDeclaration getClassDeclaration(/* Containing package/class/interface qname */QName containerQName) {
-		return new ClassDeclaration() {
+		if(classDeclarationImpl == null)
+			classDeclarationImpl =  new ClassDeclaration() {
 			QName qName = containerQName.child(name.getText());
 			@Override
 			public List<MemberValue> getValues() {
 				return valueDeclarations.stream()
 					.map(v->v.getMemberValue())
-					.filter(v ->v.isPresent())
-					.map(v->v.get())
+//					.filter(v ->v.isPresent())
+//					.map(v->v.get())
 					.collect(Collectors.toList());
 			}
 
@@ -296,6 +299,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 				throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
 			}
 		};
+		return classDeclarationImpl;
 	}
 
 	public InterfaceDeclaration getInterfaceDeclaration(/* Containing package/class/interface qname */QName containerQName) {
@@ -305,8 +309,8 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 			public List<MemberValue> getValues() {
 				return valueDeclarations.stream()
 						.map(v->v.getMemberValue())
-						.filter(v -> v.isPresent())
-						.map(v->v.get())
+//						.filter(v -> v.isPresent())
+//						.map(v->v.get())
 						.collect(Collectors.toList());
 			}
 
@@ -334,7 +338,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		if(isExactlyA(descType))
 			return true;
 		
-		descType = descType.resolve(symbolTable);	// TODO: it's for SimpleType ref -> refactor ???
+		descType = descType.resolve();	// TODO: it's for SimpleType ref -> refactor ???
 		
 		// Check descendant is a class
 		if(! (descType instanceof AstClassDeclaration)) {
@@ -390,7 +394,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 
 	}
 	@Override
-	public AstType resolve(SymbolTable symbolTable) {
+	public AstType resolve() {
 //		reporter.error("Symbol \"" + name.getText() + "\" not found.", name);
 		return this; // TODO
 	}
@@ -399,7 +403,14 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 
 		@Override
 		public List<MemberValue> getValues() {
-			return Collections.emptyList();	// TODO
+//			AstMemberValueDeclaration
+			List<MemberValue> result = 
+					AstClassDeclaration.this.getValueDeclarations()
+					.stream()
+					.map(vd -> vd.getMemberValue())
+					.collect(Collectors.toList());
+			
+			return result;
 		}
 
 		@Override

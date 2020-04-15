@@ -157,7 +157,7 @@ importDeclarationElement returns [ImportDeclarationElement declaration]
 	;
 
 // -------------------- VALUE
-valueDeclaration returns [AstValueDeclaration declaration]
+memberValueDeclaration returns [AstMemberValueDeclaration declaration]
 	: /*Annotations*/
 		annotationList
 		type
@@ -256,7 +256,7 @@ expression returns [AstExpression express]
 	  ')'
 	| // -- Field access
 	  lhs = expression '.' LOWER_ID		{
-	  	AstFieldAccessExpression expr = factory.valueAccess($lhs.express, $LOWER_ID); 
+	  	AstMemberAccessExpression expr = factory.valueAccess($lhs.express, $LOWER_ID); 
 	  	$express = expr;
 	  }
 	| // -- Local/member/global variable, function parameter
@@ -340,8 +340,8 @@ classDeclaration /*[PackageDeclaration currentPackage]*/ returns [AstClassDeclar
 			  
 	  '{'
 	  (
-	  	  functionDeclaration	{ $declaration.addFunctionDeclaration($functionDeclaration.declaration);}
-	  	| valueDeclaration		{ $declaration.addValueDeclaration($valueDeclaration.declaration);}
+	  	  functionDeclaration		{ $declaration.addFunctionDeclaration($functionDeclaration.declaration);}
+	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
 	  )*
 	  '}'
 	;

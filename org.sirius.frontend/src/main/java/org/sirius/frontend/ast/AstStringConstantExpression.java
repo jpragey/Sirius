@@ -70,5 +70,9 @@ public class AstStringConstantExpression implements AstExpression {
 	public String toString() {
 		return "AstIntegerConstantExpression:\"" + this.contentString + "\"";
 	}
+	@Override
+	public String asString() {
+		return toString();
+	}
 
 }

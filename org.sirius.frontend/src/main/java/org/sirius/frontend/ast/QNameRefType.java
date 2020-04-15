@@ -136,7 +136,7 @@ public final class QNameRefType implements AstType {
 	}
 
 	@Override
-	public AstType resolve(SymbolTable symbolTable) {
+	public AstType resolve() {
 		throw new UnsupportedOperationException("QNameRefType.resolve(not supported)");
 	}
 

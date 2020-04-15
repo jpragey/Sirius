@@ -5,7 +5,7 @@ import java.util.Stack;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFieldAccessExpression;
+import org.sirius.frontend.ast.AstMemberAccessExpression;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
@@ -14,7 +14,7 @@ import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstStringConstantExpression;
 import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.ast.AstValueDeclaration;
+import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ConstructorCallExpression;
 import org.sirius.frontend.ast.ImportDeclaration;
@@ -158,7 +158,7 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 		expression.setSymbolTable(symbolTable);
 	}
 
-	public void startFieldAccess (AstFieldAccessExpression expression) {
+	public void startFieldAccess (AstMemberAccessExpression expression) {
 		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
 		assert(symbolTable != null);
 		expression.setSymbolTable(symbolTable);

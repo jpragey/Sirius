@@ -100,10 +100,10 @@ public class ClassBasicTest {
 	@Test(description = "access to a member value", enabled = true)
 	public void fieldAccessTest() throws Exception {
 		String script = "#!\n "
-				+ "class B() {}   "
-				+ "class A() {B mib = B();}   "
+//				+ "class B() {}   "
+				+ "class A() {Integer mib = 42;}   "
 //				+ "Integer main() {return 42;}";
-		+ "A main() {return A();}";
+				+ "A main() {A a = A(); return a.mib;}";
 		
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);

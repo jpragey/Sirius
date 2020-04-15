@@ -107,5 +107,13 @@ public class ConstructorCallExpression implements AstExpression {
 			impl = new ConstructorCallImpl();
 		return impl;
 	}
+	@Override
+	public String toString() {
+		return "ctor: " + name.getText() + "(" + "..." + ")";
+	}
+	@Override
+	public String asString() {
+		return toString();
+	}
 
 }

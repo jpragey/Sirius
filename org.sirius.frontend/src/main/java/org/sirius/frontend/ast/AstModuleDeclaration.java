@@ -146,6 +146,15 @@ public class AstModuleDeclaration implements Visitable {
 		this.packageDeclarations.add(packageDeclaration);
 	}
 	
+	public AstPackageDeclaration createPackageDeclaration(QName packageQName) {
+		AstPackageDeclaration packageDeclaration = new AstPackageDeclaration(reporter, packageQName);
+		addPackageDeclaration(packageDeclaration);
+		return packageDeclaration;
+	}
+	
+	
+	
+	
 	public void addFunctionDeclaration(AstFunctionDeclaration d) {
 		this.getCurrentPackage().addFunctionDeclaration(d);
 	}
@@ -188,7 +197,9 @@ public class AstModuleDeclaration implements Visitable {
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startModuleDeclaration(this);
-		packageDeclarations.stream().forEach(pd -> pd.visit(visitor));
+		for(AstPackageDeclaration pd : packageDeclarations)
+			pd.visit(visitor);
+//		packageDeclarations.stream().forEach(pd -> pd.visit(visitor));
 		visitor.endModuleDeclaration(this);		
 	}
 	

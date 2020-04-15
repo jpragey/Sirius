@@ -19,4 +19,7 @@ public interface AstExpression {
 	 */
 	Expression getExpression();
 
+	String asString();
+	@Override
+	String toString();
 }

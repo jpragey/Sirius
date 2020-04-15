@@ -38,9 +38,9 @@ public class IntersectionType implements AstType{
 	}
 	
 	@Override
-	public IntersectionType resolve(SymbolTable symbolTable) {
+	public IntersectionType resolve() {
 		if(resolvedElementType.isEmpty())
-			resolvedElementType = Optional.of(new IntersectionType(first.resolve(symbolTable), second.resolve(symbolTable)));
+			resolvedElementType = Optional.of(new IntersectionType(first.resolve(), second.resolve()));
 		
 		return resolvedElementType.get();
 	}

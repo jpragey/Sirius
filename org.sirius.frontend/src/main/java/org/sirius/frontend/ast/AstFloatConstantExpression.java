@@ -44,4 +44,12 @@ public class AstFloatConstantExpression implements AstExpression {
 		return impl;
 	}
 	
+	@Override
+	public String asString() {
+		return toString();
+	}
+	@Override
+	public String toString() {
+		return content.getText();
+	}
 }

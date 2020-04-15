@@ -12,15 +12,25 @@ import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.ExpressionStatement;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
+import org.sirius.frontend.api.MemberValueAccessExpression;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
+import org.sirius.frontend.api.ReturnStatement;
+import org.sirius.frontend.api.Statement;
+import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.ast.AstMemberAccessExpression;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.parser.Compiler;
+import org.sirius.sdk.org.sirius.TopLevel;
 import org.testng.annotations.Test;
+
+import jdk.jfr.ValueDescriptor;
 
 public class MethodTests {
 
@@ -53,6 +63,69 @@ public class MethodTests {
 		assert(type instanceof ClassDeclaration);
 		assertEquals( ((ClassDeclaration)type).getQName(), new QName("p", "k", "C"));
 
+	}
+	
+	@Test 
+	public void checkMemberValueParsing() {
+		String script = "#!\n "
+//				+ "class B() {}   "
+				+ "class A() {Integer mib = 42;}   "
+//				+ "Integer main() {return 42;}";
+				+ "A main() {A a = A(); return a.mib;}";
+//		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){String s;}}");
+		ScriptSession session = Compiler.compileScript(script);
+		
+		ModuleDeclaration md = session.getModuleDeclarations().get(0);
+		
+		List<PackageDeclaration> packages = md.getPackages();
+		PackageDeclaration pack = packages.get(0);
+		assertEquals(pack.getQName().dotSeparated(), "");
+		
+		List<ClassDeclaration> classes = pack.getClasses();
+		ClassDeclaration cd = classes.get(0);
+		assertEquals(cd.getQName(), new QName("A"));
+		
+//		ClassDeclaration packCd = pack.getClasses().get(1);
+//		assertEquals(cd.getQName(), new QName("A"));
+		List<TopLevelFunction> tlFuncs = pack.getFunctions();
+		TopLevelFunction mainFunc = tlFuncs.get(0);
+		assertEquals(mainFunc.getQName().dotSeparated(), "main");
+		
+		List<Statement> body = mainFunc.getBodyStatements();
+		assertEquals(body.size(), 2);
+		
+		LocalVariableStatement locVarStmt = (LocalVariableStatement)body.get(0);
+		Type locVarType = locVarStmt.getType();
+		assert(locVarType instanceof ClassDeclaration);
+		ClassDeclaration locVarCD = (ClassDeclaration)locVarType;
+		List<MemberValue> members = locVarCD.getValues();
+		MemberValue member0 = members.get(0);
+		
+		Type member0Type = member0.getType();
+		
+		ReturnStatement retStmt = (ReturnStatement)body.get(1);
+		
+		Expression retExpr = retStmt.getExpression();
+		MemberValueAccessExpression maccExpr = (MemberValueAccessExpression)retExpr;
+		
+		Expression ex = maccExpr.getContainerExpression();
+		
+//		MemberFunction func = cd.getFunctions().get(0);
+//		assertEquals(func.getQName(), new QName("A", "f"));
+//
+//		assertEquals(func.getBodyStatements().size(), 1);
+//		LocalVariableStatement lvs = (LocalVariableStatement)func.getBodyStatements().get(0);
+		
+//
+//		assertEquals(cd.getValues().size(), 1);
+//		MemberValue lvs = cd.getValues().get(0);
+//
+//		assertEquals(lvs.getName().getText(), "s");
+//
+//		Type type = lvs.getType();
+//		assert(type instanceof ClassDeclaration);
+//		assertEquals( ((ClassDeclaration)type).getQName(), new QName("p", "k", "C"));
+//
 	}
 	
 	@Test (description = "A local variable can have an initializer")

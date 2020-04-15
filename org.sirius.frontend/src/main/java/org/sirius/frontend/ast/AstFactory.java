@@ -116,8 +116,8 @@ public class AstFactory {
 	}
 
 	
-	public AstFieldAccessExpression valueAccess(AstExpression containerExpression, Token fieldName) {
-		return new AstFieldAccessExpression(reporter, containerExpression, new AstToken(fieldName));
+	public AstMemberAccessExpression valueAccess(AstExpression containerExpression, Token fieldName) {
+		return new AstMemberAccessExpression(reporter, containerExpression, new AstToken(fieldName));
 	}
 	public SimpleReferenceExpression simpleReference(Token referenceName) {
 		return new SimpleReferenceExpression(reporter, new AstToken(referenceName));
@@ -130,8 +130,8 @@ public class AstFactory {
 	}
 	
 	// -- Values
-	public AstValueDeclaration valueDeclaration(AnnotationList annotationList, AstType type, Token name) {
-		return new AstValueDeclaration(annotationList, type, new AstToken(name));
+	public AstMemberValueDeclaration valueDeclaration(AnnotationList annotationList, AstType type, Token name) {
+		return new AstMemberValueDeclaration(annotationList, type, new AstToken(name));
 	}
 	
 	// -- Annotations

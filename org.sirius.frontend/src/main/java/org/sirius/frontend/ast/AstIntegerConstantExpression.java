@@ -84,4 +84,8 @@ public class AstIntegerConstantExpression implements AstExpression {
 	public String toString() {
 		return "AstIntegerConstantExpression:" + this.value;
 	}
+	@Override
+	public String asString() {
+		return toString();
+	}
 }

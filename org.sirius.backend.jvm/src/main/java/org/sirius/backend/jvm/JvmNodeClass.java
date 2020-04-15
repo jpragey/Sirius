@@ -114,6 +114,10 @@ public class JvmNodeClass {
 		
 	}
 	
+	@Override
+	public String toString() {
+		return qName.toString();
+	}
 
 	public Bytecode toBytecode(List<ClassWriterListener> listeners) {
 

@@ -32,7 +32,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 
 	private List<AstFunctionDeclaration> functionDeclarations = new ArrayList<>();
 	private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
-	private List<AstValueDeclaration> valueDeclarations = new ArrayList<>();
+	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	
 	private LocalSymbolTable symbolTable; 
 
@@ -72,7 +72,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		this.visitables.add(declaration);
 	}
 
-	public void addValueDeclaration(AstValueDeclaration declaration) {
+	public void addValueDeclaration(AstMemberValueDeclaration declaration) {
 		this.valueDeclarations.add(declaration);
 		this.visitables.add(declaration);
 	}
@@ -140,7 +140,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		@Override
 		public List<TopLevelValue> getValues() {
 			return valueDeclarations.stream()
-					.map(AstValueDeclaration::getTopLevelValue)
+					.map(AstMemberValueDeclaration::getTopLevelValue)
 					.filter(v -> v.isPresent())
 					.map(v -> v.get())
 					.collect(Collectors.toList());

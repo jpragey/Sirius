@@ -9,14 +9,14 @@ import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.TopLevelValue;
 import org.sirius.frontend.api.Type;
 
-public class AstValueDeclaration implements /*Type, Scoped, */Visitable  {
+public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable  {
 
 	private AstType type;
 	private AstToken name;
 	private List<Annotation> annotations;
 	private Optional<AstExpression> initialValue;
 	
-	public AstValueDeclaration(AnnotationList annotations, AstType type, AstToken name) {
+	public AstMemberValueDeclaration(AnnotationList annotations, AstType type, AstToken name) {
 		super();
 		this.annotations = annotations.getAnnotations();
 		this.type = type;
@@ -41,7 +41,7 @@ public class AstValueDeclaration implements /*Type, Scoped, */Visitable  {
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startValueDeclaration(this);
-//		type.visit(visitor);
+		type.visit(visitor);	// TODO: ok for SimpleType, but ClassDeclaration soon done
 //		initialValue.ifPresent(expr -> expr.visit(visitor));
 		visitor.endValueDeclaration(this);
 	}
@@ -66,7 +66,7 @@ public class AstValueDeclaration implements /*Type, Scoped, */Visitable  {
 
 			@Override
 			public Optional<Expression> getInitialValue() {
-				return AstValueDeclaration.this.getApiInitialValue();
+				return AstMemberValueDeclaration.this.getApiInitialValue();
 			}
 			@Override
 			public String toString() {
@@ -76,8 +76,8 @@ public class AstValueDeclaration implements /*Type, Scoped, */Visitable  {
 		});
 	}
 	
-	public Optional<MemberValue> getMemberValue() {
-		return Optional.of(new MemberValue() {
+	public MemberValue getMemberValue() {
+		return new MemberValue() {
 
 			@Override
 			public Type getType() {
@@ -91,13 +91,13 @@ public class AstValueDeclaration implements /*Type, Scoped, */Visitable  {
 
 			@Override
 			public Optional<Expression> getInitialValue() {
-				return AstValueDeclaration.this.getApiInitialValue();
+				return AstMemberValueDeclaration.this.getApiInitialValue();
 			}
 			@Override
 			public String toString() {
 				return "MemberValue: " + getType() + " " + getName().getText();
 			}
-		});
+		};
 	}
 	
 	public Optional<Expression> getApiInitialValue() {

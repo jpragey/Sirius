@@ -14,7 +14,7 @@ public interface AstType {
 	}
 	public void visit(AstVisitor visitor);
 
-	public AstType resolve(SymbolTable symbolTable);
+	public AstType resolve();
 	
 	
 	public boolean isExactlyA(AstType type);

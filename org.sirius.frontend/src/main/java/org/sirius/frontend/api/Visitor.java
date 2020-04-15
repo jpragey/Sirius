@@ -33,8 +33,8 @@ public interface Visitor {
 	public default void start(BinaryOpExpression expression) {}
 	public default void end(BinaryOpExpression expression) {}
 	
-	public default void start(ValueAccessExpression expression) {}
-	public default void end(ValueAccessExpression expression) {}
+	public default void start(MemberValueAccessExpression expression) {}
+	public default void end(MemberValueAccessExpression expression) {}
 	
 	public default void start(LocalVariableReference expression) {}
 	public default void end(LocalVariableReference expression) {}

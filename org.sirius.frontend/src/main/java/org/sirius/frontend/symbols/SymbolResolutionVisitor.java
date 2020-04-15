@@ -11,7 +11,7 @@ import org.sirius.frontend.ast.AstFunctionFormalArgument;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstReturnStatement;
 import org.sirius.frontend.ast.AstStringConstantExpression;
-import org.sirius.frontend.ast.AstValueDeclaration;
+import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.SimpleType;
@@ -125,7 +125,8 @@ public class SymbolResolutionVisitor implements AstVisitor {
 	
 	@Override
 	public void start(SimpleType simpleType) {
-		simpleType.resolve(stack.peek());
+		System.out.println(" -- SymbolResolutionVisitor for SimpleType: " + simpleType);
+//		simpleType.resolve(stack.peek());
 	}
 	
 	public void start (AstLocalVariableStatement statement) {
@@ -133,11 +134,11 @@ public class SymbolResolutionVisitor implements AstVisitor {
 	}
 
 	@Override
-	public void startValueDeclaration (AstValueDeclaration valueDeclaration) {
-		valueDeclaration.getType().resolve(stack.peek());
+	public void startValueDeclaration (AstMemberValueDeclaration valueDeclaration) {
+		//valueDeclaration.getType().resolve();
 	}
 	@Override
-	public void endValueDeclaration (AstValueDeclaration valueDeclaration) {
+	public void endValueDeclaration (AstMemberValueDeclaration valueDeclaration) {
 		
 	}
 
