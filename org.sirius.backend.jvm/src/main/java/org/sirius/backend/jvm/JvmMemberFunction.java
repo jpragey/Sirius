@@ -63,199 +63,14 @@ public class JvmMemberFunction {
 			
 			this.scopes.push(new JvmScope(descriptorFactory));
 		};
-
-		
-		
-		public void writeExpressionBytecode(MethodVisitor mv, Expression expression, JvmScope scope) {
-			if(expression instanceof FunctionCall) {
-				FunctionCall call = (FunctionCall)expression;
-				processFunctionCall(mv, call, scope);
-			} 
-			else if(expression instanceof StringConstantExpression) {
-				processStringConstant(mv, (StringConstantExpression) expression);
-			} 
-			else if(expression instanceof IntegerConstantExpression) {
-				processIntegerConstant(mv, (IntegerConstantExpression) expression);
-			} 
-			else if(expression instanceof TypeCastExpression) {
-//				TypeCastExpression tc = (TypeCastExpression)expression;
-//				processExpression(mv, tc.expression());
-			} else if(expression instanceof BinaryOpExpression) {
-				processBinaryOpExpression(mv, (BinaryOpExpression)expression, scope);
-			} else if(expression instanceof ConstructorCall) {
-				processConstructorCall(mv, (ConstructorCall) expression);
-			} else if(expression instanceof MemberValueAccessExpression) {
-				processValueAccessExpression(mv, (MemberValueAccessExpression) expression, scope);
-			} else if(expression instanceof LocalVariableReference) {
-				processLocalVariableReference(mv, (LocalVariableReference) expression, scope);
-			} else {
-				throw new UnsupportedOperationException("Try to create bytecode for unknown expression : " + expression);
-			}
-		}
-		private void processStringConstant(MethodVisitor mv, StringConstantExpression expression) {
-		    mv.visitLdcInsn(expression.getText());
-		}
-		
-		private void processIntegerConstant(MethodVisitor mv, IntegerConstantExpression expression) {
-			int expessionVal = expression.getValue();
-			boolean debugUseJavaInt = false;
-			if(debugUseJavaInt) {
-			    mv.visitLdcInsn(expessionVal);
-			} else {	// use sirius.lang.Integer
-
-				
-				String internalName = "sirius/lang/Integer";
-
-				mv.visitTypeInsn(NEW, internalName);
-
-				mv.visitInsn(Opcodes.DUP);
-				mv.visitIntInsn(Opcodes.BIPUSH, expessionVal);
-				String initDescriptor = "(I)V";		// "()V" for void constructor
-				mv.visitMethodInsn(Opcodes.INVOKESPECIAL, internalName, "<init>", initDescriptor, false);
-
-				
-				
-				
-			}
-		}
-		public void processBinaryOpExpression(MethodVisitor mv, BinaryOpExpression expression, JvmScope scope) {
-//			MethodVisitor mv = methodStack.peek().mv;
-			writeExpressionBytecode(mv, expression.getLeft(), scope);
-			writeExpressionBytecode(mv, expression.getRight(), scope);
-			
-			BinaryOpExpression.Operator operator = expression.getOperator();
-			String opFuncName;
-			switch(operator) {
-			case Add:
-				
-//				String descriptor = descriptorFactory.methodDescriptor(tlFunc.get());
-				opFuncName = "add";
-				//mv.visitInsn(IADD);
-				break;
-			case Mult:
-				opFuncName = "mult";
-//				mv.visitInsn(IMUL);
-				break;
-			case Substract:
-				opFuncName = "sub";
-//				mv.visitInsn(ISUB);
-				break;
-			case Divide:
-				opFuncName = "div";
-//				mv.visitInsn(IDIV);
-				break;
-			default:
-				throw new UnsupportedOperationException("Binary operator not supported in JVM: " + operator);
-			}
-			
-			mv.visitMethodInsn(
-					INVOKEVIRTUAL,	// opcode 
-					"sirius/lang/Integer", // owner "java/io/PrintStream", 
-					opFuncName, //"println", 
-					"(Lsirius/lang/Integer;)Lsirius/lang/Integer;", // descriptor,	// "(Ljava/lang/String;)V",	// method descriptor 
-					false /*isInterface*/);
-
-			
-		}
-		public void processConstructorCall(MethodVisitor mv, ConstructorCall expression) {
-
-			Type type = expression.getType();
-			assert(type instanceof ClassDeclaration);
-			String internalName = Util.classInternalName((ClassDeclaration)type);
-
-			mv.visitTypeInsn(NEW, internalName);
-
-			mv.visitInsn(Opcodes.DUP);
-			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, internalName, "<init>", "()V", false);
-		}
-
-		public void processValueAccessExpression(MethodVisitor mv, MemberValueAccessExpression expression, JvmScope scope) {
-			Expression containerExpr = expression.getContainerExpression();
-			writeExpressionBytecode(mv, containerExpr, scope);
-			
-////			mv.visitInsn(Opcodes.DUP);
-			Type type = expression.getType();
-			MemberValue memberValue = expression.getMemberValue();
-			
-			String owner = "A"; // internal name
-			String name = "mi";
-			String descriptor = "B";
-			mv.visitFieldInsn(Opcodes.GETFIELD, owner, name, descriptor);
-			
-		}
-		public void processLocalVariableReference(MethodVisitor mv, LocalVariableReference varRef, JvmScope scope) {
-			
-			String varName = varRef.getName().getText();
-			Type type = varRef.getType();
-			
-			Optional<JvmScope.LocalVarHolder> h = scope.getVarByName(varName);
-			if(h.isEmpty()) {
-				reporter.error("(JVM backend): Internal error: local variable not found: " + varName, varRef.getName());
-				return;
-			}
-			
-			int varIndex = h.get().getIndex();
-
-			if(type instanceof ClassOrInterfaceDeclaration) {
-				mv.visitVarInsn(Opcodes.ALOAD, varIndex);
-			} else {
-				mv.visitVarInsn(Opcodes.ILOAD, varIndex);
-			}
-
-			
-//			Expression containerExpr = expression.getContainerExpression();
-//			writeExpressionBytecode(mv, containerExpr);
-//			
-//			String owner = "A"; // internal name
-//			String name = "mi";
-//			String descriptor = "B";
-//			mv.visitFieldInsn(Opcodes.GETFIELD, owner, name, descriptor);
-			
-		}
-
-		private void processFunctionCall(MethodVisitor mv, FunctionCall call, JvmScope scope) {
-			String funcName = call.getFunctionName().getText();
-			
-			if(funcName.equals("println")) {
-				mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-
-				for(Expression argExpr:call.getArguments()) {
-					writeExpressionBytecode(mv, argExpr, scope);
-				}
-
-				mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false /*isInterface*/);
-			} else {
-				
-				call.getArguments().forEach(expr -> writeExpressionBytecode(mv, expr, scope));
-
-				Optional<TopLevelFunction> tlFunc = call.getDeclaration();
-				if(tlFunc.isPresent()) {
-					String descriptor = descriptorFactory.methodDescriptor(tlFunc.get());
-					mv.visitMethodInsn(
-							INVOKEVIRTUAL,	// opcode 
-							"$package$", // owner "java/io/PrintStream", 
-							call.getFunctionName().getText(), //"println", 
-							descriptor,	// "(Ljava/lang/String;)V",	// method descriptor 
-							false /*isInterface*/);
-				} else {
-					reporter.error("Backend: top-level function not defined: " + funcName);
-				}
-			}
-		}
-		
 		
 		public void writeReturnStatementBytecode(ClassWriter classWriter/*, MemberFunction declaration*/, MethodVisitor mv, ReturnStatement statement, JvmScope scope) {
 			
 			// -- write return expression
-			writeExpressionBytecode(mv, statement.getExpression(), scope);
+			new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, statement.getExpression(), scope);
 
 			// -- write return
 			org.sirius.frontend.api.Type type = statement.getExpressionType();
-//			// TODO: remove
-//			if(type instanceof ClassType && ((ClassType)type).getQName().dotSeparated().equals("sirius.lang.Integer") ) {
-//			    mv.visitInsn(IRETURN);
-//				return;
-//			}
 			
 			if(type instanceof IntegerType) {
 			    mv.visitInsn(ARETURN);	// TODO ???
@@ -293,7 +108,7 @@ public class JvmMemberFunction {
 				Optional<Expression> optInitExp = st.getInitialValue();
 				if(optInitExp.isPresent()) {
 					Expression expr = optInitExp.get();
-					writeExpressionBytecode(mv, expr, scope);
+					new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, expr, scope);
 					
 					mv.visitVarInsn(Opcodes.ASTORE, locvarIndex);
 

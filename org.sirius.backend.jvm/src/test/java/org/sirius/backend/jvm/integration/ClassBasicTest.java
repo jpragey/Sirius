@@ -103,13 +103,15 @@ public class ClassBasicTest {
 //				+ "class B() {}   "
 				+ "class A() {Integer mib = 42;}   "
 //				+ "Integer main() {return 42;}";
-				+ "A main() {A a = A(); return a.mib;}";
+				+ "Integer main() {A a = A(); return a.mib;}";
 		
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
 		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/);
 		InMemoryClassWriterListener l = backend.addInMemoryOutput();
 		
+		backend.addFileOutput("/tmp/siriusTmp/module", Optional.of("/tmp/siriusTmp/classes"));
+
 		backend.process(session);
 		
 //		HashMap<String, Bytecode> map = l.getByteCodesMap();
@@ -147,7 +149,8 @@ public class ClassBasicTest {
 //		
 //		Object result = compileRunAndReturn(script);
 		
-//		assertEquals(result, 42);
+		assert(result instanceof sirius.lang.Integer);
+		assertEquals(((sirius.lang.Integer)result ).value, 42);
 //		assertEquals(result, 0);
 
 	}

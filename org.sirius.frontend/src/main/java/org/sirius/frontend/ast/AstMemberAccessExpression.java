@@ -46,7 +46,7 @@ public class AstMemberAccessExpression implements AstExpression {
 	@Override
 	public AstType getType() {
 		// Check container type is Class or Inteface
-		AstType containerType = containerExpression.getType();
+		AstType containerType = containerExpression.getType().resolve();
 		if(containerType instanceof AstNoType) {
 			return AstType.noType; // Error message has soon been reported
 		}
@@ -127,7 +127,9 @@ public class AstMemberAccessExpression implements AstExpression {
 			}
 		}
 		
-		impl = containerExpression.getExpression(); // default if member value can't be evaluated
+		if(impl == null)
+			impl = containerExpression.getExpression(); // default if member value can't be evaluated
+		
 		return impl;
 	}
 	
