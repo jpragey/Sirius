@@ -37,10 +37,14 @@ public class QNameSetterVisitor implements AstVisitor {
 	@Override
 	public void startClassDeclaration(AstClassDeclaration classDeclaration) {
 
-		String className = classDeclaration.getName().getText();
-		QName classQName = qnameStack.lastElement().child(className);
+//		String className = classDeclaration.getName().getText();
+		QName packageQName = qnameStack.lastElement();
+		classDeclaration.setPackageQName(packageQName);
+		
+//		QName classQName = packageQName.child(className);
+		QName classQName = classDeclaration.getQName();
 		qnameStack.push(classQName);
-		classDeclaration.setqName(classQName);
+//		classDeclaration.setqName(classQName);
 		
 		for(TypeFormalParameterDeclaration formalParameter: classDeclaration.getTypeParameters()) {
 			classDeclaration.getSymbolTable().addFormalParameter(classDeclaration.getQName(), formalParameter);

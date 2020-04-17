@@ -60,7 +60,7 @@ public class JvmNodeClass {
 	}
 
 	private void addMemberValues(ClassOrInterfaceDeclaration cd) {
-		for(MemberValue mv: cd.getValues()) {
+		for(MemberValue mv: cd.getMemberValues()) {
 //			System.out.println(" MemberValue: " + mv);
 			JvmMemberValue jvmMv = new JvmMemberValue(mv, descriptorFactory, reporter);
 			this.memberValues.add(jvmMv);

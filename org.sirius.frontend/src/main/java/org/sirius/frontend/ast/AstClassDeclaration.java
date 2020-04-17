@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.Token;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.ClassOrInterfaceDeclaration;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
@@ -31,13 +32,10 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	private List<AstFunctionFormalArgument> anonConstructorArguments = new ArrayList<>(); 
 
 	/** Root package at first */
-//	private AstPackageDeclaration packageDeclaration;
 	private Optional<QName> packageQName;
 	
 	/** True for annotation classes (ConstrainedAnnotation subtypes, ie OptionalAnnotation or SequencedAnnotation) */
 	private boolean annotationType = false; 
-	
-//	public enum Type {Interface, Class}
 	
 	private boolean interfaceType;
 	
@@ -127,17 +125,6 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		// TODO: add to symbol table
 	}
 	
-	
-//	public AstPackageDeclaration getPackageDeclaration() {
-//		assert(this.packageDeclaration != null);
-//		return packageDeclaration;
-//	}
-	
-	
-//	public void setPackageDeclaration(AstPackageDeclaration packageDeclaration) {
-//		this.packageDeclaration = packageDeclaration;
-//		this.qName = packageDeclaration.getQname().child(this.name.getText());
-//	}
 	public void setPackageQName(QName packageQName) {
 		this.packageQName = Optional.of(packageQName);
 		this.qName = packageQName.child(this.name.getText());
@@ -152,14 +139,6 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	
 	public boolean isInterfaceType() {
 		return interfaceType;
-	}
-//	public String getQname() {	// TODO: remove
-//		String pkgQname = packageDeclaration.getQnameString();
-//		String classname = name.getText();
-//		return pkgQname.isEmpty() ? classname : pkgQname + "." + classname;
-//	}
-	public void setqName(QName qName) {
-		this.qName = qName;
 	}
 	public QName getQName() {
 		return this.qName;
@@ -176,9 +155,6 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	public DefaultSymbolTable getSymbolTable() {
 		return symbolTable;
 	}
-//	public void setSymbolTableParent(SymbolTable newParent) {
-//		this.symbolTable.setParentSymbolTable(newParent);
-//	}
 	public List<TypeFormalParameterDeclaration> getTypeParameters() {
 		return typeParameters;
 	}
@@ -197,19 +173,12 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	public List<AncestorInfo> getAncestors() {
 		return ancestors;
 	}
-//	public void addAncestor(QName ancestor) {
-//		this.ancestors.add(ancestor);
-//	}
 	public void addAncestor(Token ancestor) {// TODO: remove
 		this.ancestors.add(new AncestorInfo(new AstToken(ancestor)));	
 	}
 	public void addAncestor(AstToken ancestor) {// TODO: remove
 		this.ancestors.add(new AncestorInfo(ancestor));	
 	}
-//	public void addAncestor(QName packageQName, String className /* class or interface */ ) {
-////		this.ancestors.add(new AstClassQName(packageQName, className));
-//		this.ancestors.add(packageQName.child(className));
-//	}
 
 	public Optional<AstType> apply(AstType parameter) {
 		TypeFormalParameterDeclaration formalParam = typeParameters.get(0);
@@ -267,13 +236,25 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	}
 
 	private ClassDeclaration classDeclarationImpl = null;
-	
-	public ClassDeclaration getClassDeclaration(/* Containing package/class/interface qname */QName containerQName) {
+
+	public List<InterfaceDeclaration> createDirectInterfaces() {
+		List<InterfaceDeclaration> interfaces = new ArrayList<>(ancestors.size());
+		for(AncestorInfo ai: ancestors) {
+			Optional<AstClassDeclaration> opt = ai.getAstClassDecl();
+			AstClassDeclaration ancestorCD = opt.get();
+			InterfaceDeclaration interf = ancestorCD.getInterfaceDeclaration();
+			interfaces.add(interf);
+		}
+		return interfaces;
+	}
+
+	public ClassDeclaration getClassDeclaration() {
+		QName containerQName = packageQName.get();
 		if(classDeclarationImpl == null)
 			classDeclarationImpl =  new ClassDeclaration() {
 			QName qName = containerQName.child(name.getText());
 			@Override
-			public List<MemberValue> getValues() {
+			public List<MemberValue> getMemberValues() {
 				return valueDeclarations.stream()
 					.map(v->v.getMemberValue())
 //					.filter(v ->v.isPresent())
@@ -298,15 +279,26 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 			public boolean isAncestorOrSame(Type type) {
 				throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
 			}
+
+			List<InterfaceDeclaration> interfaces = null;
+			@Override
+			public List<InterfaceDeclaration> getDirectInterfaces() {
+				if(interfaces == null) {
+					interfaces = createDirectInterfaces();
+				}
+				return interfaces;
+			}
+
 		};
 		return classDeclarationImpl;
 	}
 
-	public InterfaceDeclaration getInterfaceDeclaration(/* Containing package/class/interface qname */QName containerQName) {
+	public InterfaceDeclaration getInterfaceDeclaration() {
+		QName containerQName = packageQName.get();
 		return new InterfaceDeclaration() {
 			QName qName = containerQName.child(name.getText());
 			@Override
-			public List<MemberValue> getValues() {
+			public List<MemberValue> getMemberValues() {
 				return valueDeclarations.stream()
 						.map(v->v.getMemberValue())
 //						.filter(v -> v.isPresent())
@@ -329,6 +321,14 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 			@Override
 			public boolean isAncestorOrSame(Type type) {
 				throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
+			}
+			List<InterfaceDeclaration> interfaces = null;
+			@Override
+			public List<InterfaceDeclaration> getDirectInterfaces() {
+				if(interfaces == null) {
+					interfaces = createDirectInterfaces();
+				}
+				return interfaces;
 			}
 		};
 	}
@@ -398,43 +398,19 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 //		reporter.error("Symbol \"" + name.getText() + "\" not found.", name);
 		return this; // TODO
 	}
-	
-	private class ApiClassDeclaration implements ClassDeclaration {
 
-		@Override
-		public List<MemberValue> getValues() {
-//			AstMemberValueDeclaration
-			List<MemberValue> result = 
-					AstClassDeclaration.this.getValueDeclarations()
-					.stream()
-					.map(vd -> vd.getMemberValue())
-					.collect(Collectors.toList());
-			
-			return result;
-		}
-
-		@Override
-		public List<MemberFunction> getFunctions() {
-			return Collections.emptyList();	// TODO
-		}
-
-		@Override
-		public QName getQName() {
-			return qName;
-		}
-		@Override
-		public String toString() {
-			return qName.toString();
-		}
-		@Override
-		public boolean isAncestorOrSame(Type type) {
-			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-		}
-	}
+	private ClassOrInterfaceDeclaration type = null;
 	
 	@Override
-	public ClassDeclaration getApiType() {
-		return new ApiClassDeclaration();
+	public ClassOrInterfaceDeclaration getApiType() {
+		if(type == null) {
+			if(isInterfaceType())
+				type = getInterfaceDeclaration();
+			else
+				type = getClassDeclaration();
+		}
+		
+		return type;
 	}
 
 }

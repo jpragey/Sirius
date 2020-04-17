@@ -6,8 +6,11 @@ import org.sirius.common.core.QName;
 
 public interface ClassOrInterfaceDeclaration extends ClassType {
 
-	List<MemberValue> getValues();
+	List<MemberValue> getMemberValues();
 	List<MemberFunction> getFunctions();
+	
+	// get implemented interfaces of first level  (no grandparent)
+	List<InterfaceDeclaration> getDirectInterfaces();
 	
 	/** This class/interface qualified name */
 	QName getQName();
@@ -15,12 +18,10 @@ public interface ClassOrInterfaceDeclaration extends ClassType {
 	
 	default void visitContent(Visitor visitor) {
 		
-		getValues().stream().forEach(
-				val -> val.visitMe(visitor)
-		);
-//		getFunctions().stream().forEach(
-//				fct -> fct.visitMe(visitor)
-//		);
+		for(MemberValue mv: getMemberValues()) {
+			mv.visitMe(visitor);
+		}
+		
 		for(MemberFunction fct: getFunctions()) {
 			fct.visitMe(visitor);
 		}

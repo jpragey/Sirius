@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.ClassOrInterfaceDeclaration;
 import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.Type;
@@ -76,7 +77,9 @@ public class ConstructorCallExpression implements AstExpression {
 			if(s.isPresent()) {
 				Optional<AstClassDeclaration> cd = s.get().getClassDeclaration();
 				if(cd.isPresent()) {
-					return cd.get().getApiType();
+					ClassOrInterfaceDeclaration d = cd.get().getApiType();
+					assert(d instanceof ClassDeclaration);	// TODO
+					return (ClassDeclaration)d;
 				} else {
 					reporter.error("Symbol is not a class or interface declaration: ", name);
 				}

@@ -54,8 +54,8 @@ public class MethodTests {
 //		assertEquals(func.getBodyStatements().size(), 1);
 //		LocalVariableStatement lvs = (LocalVariableStatement)func.getBodyStatements().get(0);
 
-		assertEquals(cd.getValues().size(), 1);
-		MemberValue lvs = cd.getValues().get(0);
+		assertEquals(cd.getMemberValues().size(), 1);
+		MemberValue lvs = cd.getMemberValues().get(0);
 
 		assertEquals(lvs.getName().getText(), "s");
 
@@ -98,7 +98,7 @@ public class MethodTests {
 		Type locVarType = locVarStmt.getType();
 		assert(locVarType instanceof ClassDeclaration);
 		ClassDeclaration locVarCD = (ClassDeclaration)locVarType;
-		List<MemberValue> members = locVarCD.getValues();
+		List<MemberValue> members = locVarCD.getMemberValues();
 		MemberValue member0 = members.get(0);
 		
 		Type member0Type = member0.getType();
@@ -164,8 +164,8 @@ public class MethodTests {
 
 		
 		// -- class member
-		assertEquals(cd.getValues().size(), 1);
-		MemberValue lvs = cd.getValues().get(0);
+		assertEquals(cd.getMemberValues().size(), 1);
+		MemberValue lvs = cd.getMemberValues().get(0);
 
 		assertEquals(lvs.getName().getText(), "s10");
 		

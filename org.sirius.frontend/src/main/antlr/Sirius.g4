@@ -44,9 +44,11 @@ locals[
     	| functionDeclaration	{
     								$stdUnit.addFunctionDeclaration($functionDeclaration.declaration);
     	}
-    	| classDeclaration 		{ 
-    								$stdUnit.addClassDeclaration($classDeclaration.declaration);
-    	}
+    	| classDeclaration 		{	$stdUnit.addClassDeclaration($classDeclaration.declaration);	}
+    	| interfaceDeclaration	{	$stdUnit.addClassDeclaration($interfaceDeclaration.declaration);	}
+    	
+    	
+    	
     )*
 	EOF
 	;
@@ -71,6 +73,7 @@ scriptCompilationUnit returns [ScriptCompilationUnit unit]
 									} 
 		| functionDeclaration 		{currentModule.addFunctionDeclaration($functionDeclaration.declaration);	}
 		| classDeclaration 			{currentModule.addClassDeclaration($classDeclaration.declaration);	}
+    	| interfaceDeclaration		{currentModule.addClassDeclaration($interfaceDeclaration.declaration);	}
 	)*
 	EOF
 	;
@@ -307,13 +310,12 @@ packageDeclaration returns [AstPackageDeclaration declaration]
 
 // -------------------- CLASS 
 //
-classDeclaration /*[PackageDeclaration currentPackage]*/ returns [AstClassDeclaration declaration]
+classDeclaration returns [AstClassDeclaration declaration]
 @init {
 //	List<Annotation> annos = new ArrayList<Annotation> ();
 	boolean isInterface;
 }
 	: 
-//	  (annotation {annos.add($annotation.anno); } )*
 	  (   'class' 		{isInterface = false;}
 	  	| 'interface'	{isInterface = true;}
 	  )
@@ -323,6 +325,37 @@ classDeclaration /*[PackageDeclaration currentPackage]*/ returns [AstClassDeclar
 	  	  (  ',' functionFormalArgument	{ $declaration.addAnonConstructorArgument($functionFormalArgument.argument); } )*
 	    )?
 	  ')'
+	  (
+	  	'<'
+	  	(
+	  		d=typeFormalParameterDeclaration 		{$declaration.addTypeParameterDeclaration($d.declaration);}
+	  		(
+	  			','
+		  		d=typeFormalParameterDeclaration 	{$declaration.addTypeParameterDeclaration($d.declaration);}
+	  		)*
+	  	)?
+	  	'>'
+	  )? 
+	  ( 'implements' TYPE_ID { $declaration.addAncestor($TYPE_ID);} 
+	  	
+	  )?
+			  
+	  '{'
+	  (
+	  	  functionDeclaration		{ $declaration.addFunctionDeclaration($functionDeclaration.declaration);}
+	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
+	  )*
+	  '}'
+	;
+interfaceDeclaration returns [AstClassDeclaration declaration]
+@init {
+//	List<Annotation> annos = new ArrayList<Annotation> ();
+	boolean isInterface;
+}
+	: 
+	  ('interface'	{isInterface = true;} // TODO: no need of isInterface
+	  )
+	  TYPE_ID		{ $declaration = factory.createClassOrInterface($TYPE_ID /* , currentPackage*/, isInterface); }
 	  (
 	  	'<'
 	  	(

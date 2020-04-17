@@ -31,8 +31,8 @@ public class LocalVariablesTest {
 		ClassDeclaration cd = pack.getClasses().get(0);
 		assertEquals(cd.getQName(), new QName("p", "k", "C"));
 		
-		assertEquals(cd.getValues().size(), 1);
-		MemberValue lvs = cd.getValues().get(0);
+		assertEquals(cd.getMemberValues().size(), 1);
+		MemberValue lvs = cd.getMemberValues().get(0);
 
 		assertEquals(lvs.getName().getText(), "s");
 		
