@@ -125,7 +125,7 @@ public class SymbolResolutionVisitor implements AstVisitor {
 	
 	@Override
 	public void start(SimpleType simpleType) {
-		System.out.println(" -- SymbolResolutionVisitor for SimpleType: " + simpleType);
+//		System.out.println(" -- SymbolResolutionVisitor for SimpleType: " + simpleType);
 //		simpleType.resolve(stack.peek());
 	}
 	

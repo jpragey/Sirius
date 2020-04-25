@@ -216,7 +216,11 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 			AstClassDeclaration other = (AstClassDeclaration)type;
 			if(this.interfaceType != other.interfaceType)
 				return false;
+			
 			if(!this.qName.equals(other.qName))
+				return false;
+			
+			if(typeParameters != other.typeParameters)
 				return false;
 			
 			return true;
@@ -413,4 +417,19 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		return type;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof AstClassDeclaration) {
+			return isExactlyA( (AstClassDeclaration)obj );
+		}
+		return false;
+	}
+	@Override
+	public int hashCode() {
+		int h = qName.hashCode();
+		for(TypeFormalParameterDeclaration formalParam : typeParameters)
+			h = 31 * h + formalParam.hashCode();
+
+		return h;
+	}
 }

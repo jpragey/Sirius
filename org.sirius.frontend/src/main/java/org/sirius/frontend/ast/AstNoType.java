@@ -37,4 +37,15 @@ public class AstNoType implements AstType {
 	public String toString() {
 		return "AstNoType";
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return (obj instanceof AstNoType);
+	}
+	
+	@Override
+	public int hashCode() {
+		return 0x78029453;	// arbitrary
+	}
+
 }

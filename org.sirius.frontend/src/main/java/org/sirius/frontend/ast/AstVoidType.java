@@ -48,6 +48,17 @@ public class AstVoidType implements AstType {
 		visitor.start(this);
 		visitor.end(this);		
 	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		return (obj instanceof AstVoidType);
+	}
+	
+	@Override
+	public int hashCode() {
+		return 0x32029453;	// arbitrary
+	}
 
 	
 }

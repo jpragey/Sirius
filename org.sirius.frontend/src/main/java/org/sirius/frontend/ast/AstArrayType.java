@@ -1,5 +1,6 @@
 package org.sirius.frontend.ast;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import org.sirius.frontend.api.ArrayType;
@@ -11,7 +12,7 @@ import org.sirius.frontend.symbols.SymbolTable;
  * @author jpragey
  *
  */
-public class AstArrayType implements AstType {
+public class AstArrayType implements AstType{
 
 	private AstType elementType;
 	private Optional<AstType> resolvedElementType = Optional.empty();
@@ -79,6 +80,19 @@ public class AstArrayType implements AstType {
 		elementType.visit(visitor);
 		resolvedElementType.ifPresent(type -> type.visit(visitor));	// TODO: ???
 		visitor.end(this);		
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof AstArrayType) {
+			return isExactlyA( (AstArrayType)obj );
+		}
+		return false;
+	}
+	@Override
+	public int hashCode() {
+		int h = 20303108 ^ resolvedElementType.get().hashCode();
+		return h;
 	}
 
 }
