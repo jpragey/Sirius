@@ -164,7 +164,7 @@ public class SdkTools {
 				AstToken.internal(methodName), 
 				returnType);
 		fd.setContainerQName(classPkgQName);
-		this.topLevelClass.addFunctionDeclaration(fd);
+		this.topLevelClass = this.topLevelClass .withFunctionDeclaration(fd);
 		
 //		fd.setContainerQName(classPkgQName);
 
@@ -182,7 +182,7 @@ public class SdkTools {
 			
 			AstFunctionFormalArgument arg = new AstFunctionFormalArgument(type, AstToken.internal(name));
 			arg.setSymbolTable(symbolTable);
-			fd.addFormalArgument(arg);
+			fd = fd.withFunctionArgument(arg);
 		}
 		
 		symbolTable.addFunction(fd);

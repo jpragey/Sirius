@@ -186,10 +186,10 @@ functionDeclaration returns [AstFunctionDeclaration declaration]
 	  (
 	    '<'
 	  		  	(
-	  		d=typeFormalParameterDeclaration 		{$declaration.addTypeParameterDeclaration($d.declaration);}
+	  		d=typeFormalParameterDeclaration 		{ $declaration = $declaration.withFormalParameter($d.declaration); }
 	  		(
 	  			','
-		  		d=typeFormalParameterDeclaration 	{$declaration.addTypeParameterDeclaration($d.declaration);}
+		  		d=typeFormalParameterDeclaration 	{ $declaration = $declaration.withFormalParameter($d.declaration); }
 	  		)*
 	  	)?
 	  	'>'
@@ -197,8 +197,8 @@ functionDeclaration returns [AstFunctionDeclaration declaration]
 	  
 	    
 	  '('
-	  	(  functionFormalArgument		{ $declaration.addFormalArgument($functionFormalArgument.argument); }
-	  	  (  ',' functionFormalArgument	{ $declaration.addFormalArgument($functionFormalArgument.argument); } )*
+	  	(  functionFormalArgument		{ $declaration = $declaration.withFunctionArgument($functionFormalArgument.argument); }
+	  	  (  ',' functionFormalArgument	{ $declaration = $declaration.withFunctionArgument($functionFormalArgument.argument); } )*
 	    )?
 	  ')' 
 	  '{' 
@@ -328,10 +328,10 @@ classDeclaration returns [AstClassDeclaration declaration]
 	  (
 	  	'<'
 	  	(
-	  		d=typeFormalParameterDeclaration 		{$declaration.addTypeParameterDeclaration($d.declaration);}
+	  		d=typeFormalParameterDeclaration 		{$declaration = $declaration.withFormalParameter($d.declaration);}
 	  		(
 	  			','
-		  		d=typeFormalParameterDeclaration 	{$declaration.addTypeParameterDeclaration($d.declaration);}
+		  		d=typeFormalParameterDeclaration 	{$declaration = $declaration.withFormalParameter($d.declaration);}
 	  		)*
 	  	)?
 	  	'>'
@@ -342,7 +342,7 @@ classDeclaration returns [AstClassDeclaration declaration]
 			  
 	  '{'
 	  (
-	  	  functionDeclaration		{ $declaration.addFunctionDeclaration($functionDeclaration.declaration);}
+	  	  functionDeclaration		{ $declaration = $declaration.withFunctionDeclaration($functionDeclaration.declaration);}
 	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
 	  )*
 	  '}'
@@ -359,10 +359,10 @@ interfaceDeclaration returns [AstClassDeclaration declaration]
 	  (
 	  	'<'
 	  	(
-	  		d=typeFormalParameterDeclaration 		{$declaration.addTypeParameterDeclaration($d.declaration);}
+	  		d=typeFormalParameterDeclaration 		{$declaration = $declaration.withFormalParameter($d.declaration);}
 	  		(
 	  			','
-		  		d=typeFormalParameterDeclaration 	{$declaration.addTypeParameterDeclaration($d.declaration);}
+		  		d=typeFormalParameterDeclaration 	{$declaration = $declaration.withFormalParameter($d.declaration);}
 	  		)*
 	  	)?
 	  	'>'
@@ -373,7 +373,7 @@ interfaceDeclaration returns [AstClassDeclaration declaration]
 			  
 	  '{'
 	  (
-	  	  functionDeclaration		{ $declaration.addFunctionDeclaration($functionDeclaration.declaration);}
+	  	  functionDeclaration		{ $declaration = $declaration.withFunctionDeclaration($functionDeclaration.declaration);}
 	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
 	  )*
 	  '}'

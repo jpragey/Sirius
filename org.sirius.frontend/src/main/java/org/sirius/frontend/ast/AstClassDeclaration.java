@@ -19,15 +19,20 @@ import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTable;
 
+import com.google.common.collect.ImmutableList;
+
 public class AstClassDeclaration implements AstType, Scoped, Visitable {
 
 	private AstToken name;
 	private QName qName; 
 	
 	// Formal parameters
-	private List<TypeFormalParameterDeclaration> typeParameters = new ArrayList<>();
+	//private List<TypeFormalParameterDeclaration> typeParameters = new ArrayList<>();
+	private ImmutableList<TypeFormalParameterDeclaration> typeParameters;
 	
-	private List<AstFunctionDeclaration> functionDeclarations = new ArrayList<>();
+//	private List<AstFunctionDeclaration> functionDeclarations = new ArrayList<>();
+	private ImmutableList<AstFunctionDeclaration> functionDeclarations;
+	
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	private List<AstFunctionFormalArgument> anonConstructorArguments = new ArrayList<>(); 
 
@@ -66,7 +71,12 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 
 	private Reporter reporter;
 	
-	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/, Optional<QName> packageQName) {
+	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/, Optional<QName> packageQName,
+			ImmutableList<TypeFormalParameterDeclaration> typeParameters,
+			ImmutableList<AstFunctionDeclaration> functionDeclarations,
+			List<AstMemberValueDeclaration> valueDeclarations,
+			List<AstFunctionFormalArgument> anonConstructorArguments 
+			) {
 		super();
 		this.reporter = reporter;
 		this.interfaceType = interfaceType;
@@ -75,7 +85,52 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		
 		this.qName = null;
 		packageQName.ifPresent((pkgQName) -> {this.qName = pkgQName.child(name.getText());});
+		
+		this.typeParameters = typeParameters;
+		this.functionDeclarations = functionDeclarations;
+		this.valueDeclarations = valueDeclarations;
+		this.anonConstructorArguments = anonConstructorArguments; 
 	}
+
+	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/, Optional<QName> packageQName) {
+		this(reporter,interfaceType, name, packageQName,
+		ImmutableList.of(),//<TypeFormalParameterDeclaration> typeParameters,
+		ImmutableList.of(), //new ArrayList<AstFunctionDeclaration>(), // functionDeclarations,
+		new ArrayList<AstMemberValueDeclaration>(), //List valueDeclarations,
+		new ArrayList<AstFunctionFormalArgument>() //List anonConstructorArguments
+		);
+	}
+	public AstClassDeclaration withFormalParameter(TypeFormalParameterDeclaration param) {
+		
+		ImmutableList.Builder<TypeFormalParameterDeclaration> builder = ImmutableList.builderWithExpectedSize(typeParameters.size() + 1);
+		ImmutableList<TypeFormalParameterDeclaration> newTypeParams = builder.addAll(typeParameters).add(param).build();
+
+		AstClassDeclaration fd = new AstClassDeclaration(reporter,
+				interfaceType,
+				name, 
+				packageQName, 
+				newTypeParams,
+				functionDeclarations,
+				valueDeclarations, anonConstructorArguments);
+		return fd;
+	}
+
+	public AstClassDeclaration withFunctionDeclaration(AstFunctionDeclaration fd) {
+		
+		ImmutableList.Builder<AstFunctionDeclaration> builder = ImmutableList.builderWithExpectedSize(functionDeclarations.size() + 1);
+		ImmutableList<AstFunctionDeclaration> newFunctions = builder.addAll(functionDeclarations).add(fd).build();
+
+		AstClassDeclaration cd = new AstClassDeclaration(reporter,
+				interfaceType,
+				name, 
+				packageQName, 
+				typeParameters,
+				newFunctions,
+				valueDeclarations, anonConstructorArguments);
+		return cd;
+	}
+
+	
 	public AstClassDeclaration(Reporter reporter, boolean interfaceType, Token name/*, PackageDeclaration packageDeclaration*/, Optional<QName> packageQName) {
 		this(reporter, interfaceType, new AstToken(name), packageQName);
 	}
@@ -116,10 +171,10 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		return functionDeclarations;
 	}
 	
-	public void addFunctionDeclaration(AstFunctionDeclaration declaration) {
-		this.functionDeclarations.add(declaration);
-//		this.symbolTable.addFunction(declaration);
-	}
+//	public void addFunctionDeclaration(AstFunctionDeclaration declaration) {
+//		this.functionDeclarations.add(declaration);
+////		this.symbolTable.addFunction(declaration);
+//	}
 	public void addValueDeclaration(AstMemberValueDeclaration valueDeclaration) {
 		this.valueDeclarations.add(valueDeclaration);
 		// TODO: add to symbol table
@@ -131,10 +186,10 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	}
 	
 	
-	public void addTypeParameterDeclaration(TypeFormalParameterDeclaration d) {
-		typeParameters.add(d);
-//		this.symbolTable.addFormalParameter(this.qName, d);
-	}
+//	public void addTypeParameterDeclaration(TypeFormalParameterDeclaration d) {
+//		typeParameters.add(d);
+////		this.symbolTable.addFormalParameter(this.qName, d);
+//	}
 
 	
 	public boolean isInterfaceType() {
