@@ -43,8 +43,8 @@ public class InterfaceTest {
 		ClassDeclaration implClass = pack.getClasses().get(0);
 		assertEquals(implClass.getQName(), new QName("p", "k", "C"));
 		
-//		MemberFunction inheritedFunc = implClass.getFunctions().get(0);
-//		assertEquals(inheritedFunc.getQName(), new QName("p", "k", "C", "f"));
+		MemberFunction inheritedFunc = implClass.getFunctions().get(0);
+		assertEquals(inheritedFunc.getQName(), new QName("p", "k", "I", "f"));
 	}
 	
 }

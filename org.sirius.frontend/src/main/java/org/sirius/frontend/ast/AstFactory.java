@@ -32,8 +32,8 @@ public class AstFactory {
 //		return AstClassDeclaration.newInterface(reporter, new AstToken(name), Optional.empty());
 	}
 
-	public TypeFormalParameterDeclaration createTypeFormalParameter(Variance variance, Token formalName) {
-		return new TypeFormalParameterDeclaration(variance, new AstToken(formalName));
+	public TypeParameter createTypeFormalParameter(Variance variance, Token formalName) {
+		return new TypeParameter(variance, new AstToken(formalName));
 	}
 	
 	public SimpleType createSimpleType(Token name) {
@@ -58,8 +58,8 @@ public class AstFactory {
 	}
 	
 	
-	public AstFunctionDeclaration createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType) {
-		return new AstFunctionDeclaration(reporter, annotationList, new AstToken(name), returnType);
+	public AstFunctionDeclaration createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType, boolean concrete) {
+		return new AstFunctionDeclaration(reporter, annotationList, new AstToken(name), returnType, concrete);
 	}
 
 	public StandardCompilationUnit createStandardCompilationUnit() {

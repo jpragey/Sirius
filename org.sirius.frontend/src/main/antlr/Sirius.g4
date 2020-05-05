@@ -36,16 +36,10 @@ locals[
     ( importDeclaration 		{ $stdUnit.addImport($importDeclaration.declaration);  })*
     (
     	  moduleDeclaration 	{ $stdUnit.addModuleDeclaration($moduleDeclaration.declaration);    } 
-    	| packageDeclaration	{ 
-										currentModule.addPackageDeclaration($packageDeclaration.declaration);
-    								// currentPackage = $packageDeclaration.declaration; 
-    								// currentModule.addPackageDeclaration($packageDeclaration.declaration);
-    	}
-    	| functionDeclaration	{
-    								$stdUnit.addFunctionDeclaration($functionDeclaration.declaration);
-    	}
-    	| classDeclaration 		{	$stdUnit.addClassDeclaration($classDeclaration.declaration);	}
-    	| interfaceDeclaration	{	$stdUnit.addClassDeclaration($interfaceDeclaration.declaration);	}
+    	| packageDeclaration	{ currentModule.addPackageDeclaration($packageDeclaration.declaration);}
+    	| functionDeclaration	{ $stdUnit.addFunctionDeclaration($functionDeclaration.declaration); }
+    	| classDeclaration 		{ $stdUnit.addClassDeclaration($classDeclaration.declaration);	}
+    	| interfaceDeclaration	{ $stdUnit.addClassDeclaration($interfaceDeclaration.declaration);	}
     	
     	
     	
@@ -182,7 +176,7 @@ functionDeclaration returns [AstFunctionDeclaration declaration]
 	  (	  rt=type	{retType = $rt.declaration; } 
 	  	| 'void' 	{retType = new AstVoidType();}
 	  )
-	  LOWER_ID		{ $declaration = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType); }
+	  LOWER_ID		{ $declaration = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, false /*concrete*/); }
 	  (
 	    '<'
 	  		  	(
@@ -201,7 +195,7 @@ functionDeclaration returns [AstFunctionDeclaration declaration]
 	  	  (  ',' functionFormalArgument	{ $declaration = $declaration.withFunctionArgument($functionFormalArgument.argument); } )*
 	    )?
 	  ')' 
-	  '{' 
+	  '{' 					{ $declaration.setConcrete(true); }
 	  		(
 	  			statement	{ $declaration.addStatement($statement.stmt); }
 	  		)*
@@ -379,7 +373,7 @@ interfaceDeclaration returns [AstClassDeclaration declaration]
 	  '}'
 	;
 
-typeFormalParameterDeclaration returns [TypeFormalParameterDeclaration declaration]
+typeFormalParameterDeclaration returns [TypeParameter declaration]
 locals [
 	Variance variance = Variance.INVARIANT;
 ]

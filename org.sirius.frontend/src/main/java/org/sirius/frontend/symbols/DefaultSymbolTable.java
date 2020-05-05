@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
+import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
@@ -16,7 +17,7 @@ import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.ImportDeclarationElement;
 import org.sirius.frontend.ast.QualifiedName;
-import org.sirius.frontend.ast.TypeFormalParameterDeclaration;
+import org.sirius.frontend.ast.TypeParameter;
 
 /**
  * Table of all symbols that can be accessed globally (in external package or module).
@@ -66,7 +67,7 @@ public class DefaultSymbolTable implements SymbolTable {
 	}
 
 	/** Add type formal parameter */
-	public void addFormalParameter(QName containerQName, TypeFormalParameterDeclaration formalParameter) {
+	public void addFormalParameter(QName containerQName, TypeParameter formalParameter) {
 		AstToken paramName = formalParameter.getFormalName();
 		QName paramQName = containerQName.child(paramName.getText());
 		addSymbol(paramQName, new Symbol(paramName, formalParameter));
@@ -113,6 +114,19 @@ public class DefaultSymbolTable implements SymbolTable {
 			return parent.get().lookup(simpleName);
 		}
 		return Optional.ofNullable(symbol);
+	}
+
+	public Optional<AstClassDeclaration> lookupClassDeclaration(String simpleName) {
+		Symbol symbol = symbolsBySimpleName.get(simpleName);
+
+		if(symbol == null && parent.isPresent()) {
+			return parent.get().lookupClassDeclaration(simpleName);
+		}
+		if(symbol == null) {
+			return Optional.empty();
+		}
+		
+		return symbol.getClassDeclaration();
 	}
 
 	public void forEach( BiConsumer<QName, Symbol> action) {

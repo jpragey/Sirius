@@ -162,7 +162,9 @@ public class SdkTools {
 		AstFunctionDeclaration fd = new AstFunctionDeclaration(reporter, 
 				new AnnotationList() ,	// TODO 
 				AstToken.internal(methodName), 
-				returnType);
+				returnType,
+				true /*TODO: concrete ???*/
+				);
 		fd.setContainerQName(classPkgQName);
 		this.topLevelClass = this.topLevelClass .withFunctionDeclaration(fd);
 		

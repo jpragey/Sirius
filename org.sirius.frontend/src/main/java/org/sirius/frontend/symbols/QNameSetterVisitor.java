@@ -9,7 +9,7 @@ import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.ast.TypeFormalParameterDeclaration;
+import org.sirius.frontend.ast.TypeParameter;
 
 /** Visitor that sets the qnames throughout the AST.
  * 
@@ -46,7 +46,7 @@ public class QNameSetterVisitor implements AstVisitor {
 		qnameStack.push(classQName);
 //		classDeclaration.setqName(classQName);
 		
-		for(TypeFormalParameterDeclaration formalParameter: classDeclaration.getTypeParameters()) {
+		for(TypeParameter formalParameter: classDeclaration.getTypeParameters()) {
 			classDeclaration.getSymbolTable().addFormalParameter(classDeclaration.getQName(), formalParameter);
 		}
 	}

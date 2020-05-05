@@ -18,11 +18,11 @@ import org.sirius.frontend.symbols.SymbolTable;
 
 import com.google.common.collect.ImmutableList;
 
-public class AstFunctionDeclaration implements Scoped, Visitable {
+public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<AstFunctionDeclaration> {
 
 	private AstToken name;
 	
-	private ImmutableList<TypeFormalParameterDeclaration> typeParameters;
+	private ImmutableList<TypeParameter> typeParameters;
 	
 	private ImmutableList<AstFunctionFormalArgument> formalArguments;
 	
@@ -37,17 +37,17 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 
 	private DefaultSymbolTable symbolTable; 
 
+	private boolean concrete;
 	// 
 	private Optional<QName> containerQName = Optional.empty();
 	private QName qName;
 	
 	public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType,
-			ImmutableList<TypeFormalParameterDeclaration> typeParameters,
+			ImmutableList<TypeParameter> typeParameters,
 			ImmutableList<AstFunctionFormalArgument> formalArguments,
 			Optional<QName> containerQName,
-			QName qName
-
-			
+			QName qName,
+			boolean concrete
 			) {
 		super();
 		this.reporter = reporter;
@@ -59,18 +59,18 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 		
 		this.containerQName = containerQName;
 		this.qName = qName;
-		
+		this.concrete = concrete;
 	}
 
-	public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType) {
-		this(reporter, annotationList, name, returnType, ImmutableList.of(), ImmutableList.of(), Optional.empty(), null /*qName*/);	// TODO: oops qName
+	public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType, boolean concrete) {
+		this(reporter, annotationList, name, returnType, ImmutableList.of(), ImmutableList.of(), Optional.empty(), null /*qName*/, concrete);	// TODO: oops qName
 	}
 	
 	
-	public AstFunctionDeclaration withFormalParameter(TypeFormalParameterDeclaration param) {
+	public AstFunctionDeclaration withFormalParameter(TypeParameter param) {
 		
-		ImmutableList.Builder<TypeFormalParameterDeclaration> builder = ImmutableList.builderWithExpectedSize(typeParameters.size() + 1);
-		ImmutableList<TypeFormalParameterDeclaration> newTypeParams = builder.addAll(typeParameters).add(param).build();
+		ImmutableList.Builder<TypeParameter> builder = ImmutableList.builderWithExpectedSize(typeParameters.size() + 1);
+		ImmutableList<TypeParameter> newTypeParams = builder.addAll(typeParameters).add(param).build();
 		
 		AstFunctionDeclaration fd = new AstFunctionDeclaration(reporter,
 				annotationList, 
@@ -78,7 +78,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 				returnType, 
 				newTypeParams,
 				formalArguments,
-				containerQName, qName);
+				containerQName, qName, concrete);
 		return fd;
 	}
 	
@@ -93,7 +93,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 				returnType, 
 				typeParameters,
 				newFormalArguments,
-				containerQName, qName);
+				containerQName, qName, concrete);
 		return fd;
 	}
 	
@@ -121,6 +121,14 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 
 	}
 
+	public boolean isConcrete() {
+		return concrete;
+	}
+
+	public void setConcrete(boolean concrete) {
+		this.concrete = concrete;
+	}
+
 	public void visit(AstVisitor visitor) {
 		visitor.startFunctionDeclaration(this);
 		formalArguments.stream().forEach(formalArg -> formalArg.visit(visitor));
@@ -146,7 +154,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 		return symbolTable;
 	}
 
-	public List<TypeFormalParameterDeclaration> getTypeParameters() {
+	public List<TypeParameter> getTypeParameters() {
 		return typeParameters;
 	}
 
@@ -177,9 +185,10 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 				(typeParams.isEmpty() ? "" : ("<" + String.join(", ", typeParams) + ">")) +
 				"(" + ")"; // TODO: parameters
 	}
-	
+
+	@Override
 	public Optional<AstFunctionDeclaration> apply(AstType parameter) {
-		TypeFormalParameterDeclaration formalParam = typeParameters.get(0);
+		TypeParameter formalParam = typeParameters.get(0);
 		if(formalParam == null) {
 			reporter.error("Can't apply type " + parameter.messageStr() + " to function " + messageStr() + ", it has no formal parameter." );
 			return Optional.empty();
@@ -188,7 +197,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable {
 		AstFunctionDeclaration cd = new AstFunctionDeclaration(reporter, annotationList, name, returnType, 
 				typeParameters.subList(1, typeParameters.size()), 
 				formalArguments,
-				containerQName, qName);
+				containerQName, qName, concrete);
 		
 //		cd.typeParameters.addAll(typeParameters.subList(1, typeParameters.size()));
 	

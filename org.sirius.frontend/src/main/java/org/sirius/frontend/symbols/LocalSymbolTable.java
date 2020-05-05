@@ -9,7 +9,7 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
-import org.sirius.frontend.ast.TypeFormalParameterDeclaration;
+import org.sirius.frontend.ast.TypeParameter;
 
 public class LocalSymbolTable implements SymbolTable {
 	private Optional<SymbolTable> parent = Optional.empty();
@@ -61,7 +61,7 @@ public class LocalSymbolTable implements SymbolTable {
 	}
 	
 	/** Add type formal parameter */
-	public void addFormalParameter(AstToken simpleName, TypeFormalParameterDeclaration formalParameter) {
+	public void addFormalParameter(AstToken simpleName, TypeParameter formalParameter) {
 		addSymbol(simpleName, new Symbol(simpleName, formalParameter));
 	}
 

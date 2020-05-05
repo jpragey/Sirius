@@ -111,8 +111,8 @@ public interface AstVisitor {
 	public default void start(SimpleType type) {}
 	public default void end(SimpleType type) {}
 	
-	public default void start(TypeFormalParameterDeclaration type) {}
-	public default void end(TypeFormalParameterDeclaration type) {}
+	public default void start(TypeParameter type) {}
+	public default void end(TypeParameter type) {}
 	
 	public default void start(UnionType type) {}
 	public default void end(UnionType type) {}

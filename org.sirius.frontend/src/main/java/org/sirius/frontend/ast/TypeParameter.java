@@ -2,13 +2,13 @@ package org.sirius.frontend.ast;
 
 import org.sirius.frontend.symbols.SymbolTable;
 
-public class TypeFormalParameterDeclaration implements AstType {
+public class TypeParameter implements AstType {
 
 	private Variance variance;
 	
 	private AstToken formalName;
 
-	public TypeFormalParameterDeclaration(Variance variance, AstToken formalName) {
+	public TypeParameter(Variance variance, AstToken formalName) {
 		super();
 		this.variance = variance;
 		this.formalName = formalName;

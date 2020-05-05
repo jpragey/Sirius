@@ -1,9 +1,13 @@
 package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.Token;
@@ -15,22 +19,20 @@ import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.ast.AstClassOrInterface.MapOfList;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
-import org.sirius.frontend.symbols.SymbolTable;
 
 import com.google.common.collect.ImmutableList;
 
-public class AstClassDeclaration implements AstType, Scoped, Visitable {
+public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParametric<AstClassDeclaration>, AstClassOrInterface {
 
 	private AstToken name;
 	private QName qName; 
 	
 	// Formal parameters
-	//private List<TypeFormalParameterDeclaration> typeParameters = new ArrayList<>();
-	private ImmutableList<TypeFormalParameterDeclaration> typeParameters;
+	private ImmutableList<TypeParameter> typeParameters;
 	
-//	private List<AstFunctionDeclaration> functionDeclarations = new ArrayList<>();
 	private ImmutableList<AstFunctionDeclaration> functionDeclarations;
 	
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
@@ -44,27 +46,26 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	
 	private boolean interfaceType;
 	
-	/** directly implemented interfaces or extended classes */
-//	private List<AstClassQName> ancestors = new ArrayList<>();
-//	private List<QName> ancestors = new ArrayList<>();
-	
-	public static class AncestorInfo {
-		/** Name in declaration ( extends/implements NAME clause)*/
-		private AstToken simpleName;
-		private Optional<AstClassDeclaration> astClassDecl = Optional.empty();
-		public AncestorInfo(AstToken simpleName) {
-			super();
-			this.simpleName = simpleName;
-		}
-		public AstToken getSimpleName() {
-			return simpleName;
-		}
-		public Optional<AstClassDeclaration> getAstClassDecl() {
-			return astClassDecl;
-		}
-	}
+//	/** directly implemented interfaces or extended classes */
+//	public static class AncestorInfo {
+//		/** Name in declaration ( extends/implements NAME clause)*/
+//		private AstToken simpleName;
+//		private Optional<AstClassDeclaration> astClassDecl = Optional.empty();
+//		public AncestorInfo(AstToken simpleName) {
+//			super();
+//			this.simpleName = simpleName;
+//		}
+//		public AstToken getSimpleName() {
+//			return simpleName;
+//		}
+//		public Optional<AstClassDeclaration> getAstClassDecl() {
+//			return astClassDecl;
+//		}
+//	}
 	
 	private List<AncestorInfo> ancestors = new ArrayList<>();
+	
+	private List<AstClassDeclaration> interfaces = new ArrayList<>();
 
 	private DefaultSymbolTable symbolTable /*= new SymbolTable()*/; 
 	
@@ -72,7 +73,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	private Reporter reporter;
 	
 	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/, Optional<QName> packageQName,
-			ImmutableList<TypeFormalParameterDeclaration> typeParameters,
+			ImmutableList<TypeParameter> typeParameters,
 			ImmutableList<AstFunctionDeclaration> functionDeclarations,
 			List<AstMemberValueDeclaration> valueDeclarations,
 			List<AstFunctionFormalArgument> anonConstructorArguments 
@@ -100,10 +101,10 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		new ArrayList<AstFunctionFormalArgument>() //List anonConstructorArguments
 		);
 	}
-	public AstClassDeclaration withFormalParameter(TypeFormalParameterDeclaration param) {
+	public AstClassDeclaration withFormalParameter(TypeParameter param) {
 		
-		ImmutableList.Builder<TypeFormalParameterDeclaration> builder = ImmutableList.builderWithExpectedSize(typeParameters.size() + 1);
-		ImmutableList<TypeFormalParameterDeclaration> newTypeParams = builder.addAll(typeParameters).add(param).build();
+		ImmutableList.Builder<TypeParameter> builder = ImmutableList.builderWithExpectedSize(typeParameters.size() + 1);
+		ImmutableList<TypeParameter> newTypeParams = builder.addAll(typeParameters).add(param).build();
 
 		AstClassDeclaration fd = new AstClassDeclaration(reporter,
 				interfaceType,
@@ -157,7 +158,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		
 		this.symbolTable = symbolTable;
 
-		for(TypeFormalParameterDeclaration d: typeParameters)
+		for(TypeParameter d: typeParameters)
 			this.symbolTable.addFormalParameter(this.qName, d);
 	}
 
@@ -167,6 +168,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	public AstToken getName() {
 		return name;
 	}
+	@Override
 	public List<AstFunctionDeclaration> getFunctionDeclarations() {
 		return functionDeclarations;
 	}
@@ -185,7 +187,11 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		this.qName = packageQName.child(this.name.getText());
 	}
 	
-	
+	@Override
+	public List<AstClassDeclaration> getInterfaces() {
+		return interfaces;
+	}
+
 //	public void addTypeParameterDeclaration(TypeFormalParameterDeclaration d) {
 //		typeParameters.add(d);
 ////		this.symbolTable.addFormalParameter(this.qName, d);
@@ -210,7 +216,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	public DefaultSymbolTable getSymbolTable() {
 		return symbolTable;
 	}
-	public List<TypeFormalParameterDeclaration> getTypeParameters() {
+	public List<TypeParameter> getTypeParameters() {
 		return typeParameters;
 	}
 	
@@ -235,20 +241,20 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		this.ancestors.add(new AncestorInfo(ancestor));	
 	}
 
-	public Optional<AstType> apply(AstType parameter) {
-		TypeFormalParameterDeclaration formalParam = typeParameters.get(0);
+	@Override
+	public Optional<AstClassDeclaration> apply(AstType parameter) {
+		TypeParameter formalParam = typeParameters.get(0);
 		if(formalParam == null) {
 			reporter.error("Can't apply type " + parameter.messageStr() + " to class/interface " + messageStr() + ", it has no formal parameter." );
 			return Optional.empty();
 		}
 		
-		AstClassDeclaration cd = new AstClassDeclaration(reporter, interfaceType, name, packageQName);
-		
-		cd.typeParameters.addAll(typeParameters.subList(1, typeParameters.size()));
-	
-//		for(FunctionDeclaration fd: functionDeclarations) {
-//			cd.addFunctionDeclaration(fd.apply(parameter));
-//		}
+		AstClassDeclaration cd = new AstClassDeclaration(reporter, interfaceType, name, packageQName,
+				typeParameters.subList(1, typeParameters.size()),
+				functionDeclarations,
+				valueDeclarations,
+				anonConstructorArguments
+				);
 		
 		return Optional.ofNullable(cd);
 	}
@@ -307,6 +313,113 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		return interfaces;
 	}
 
+	private void scanFunctions(AstClassDeclaration cd, ArrayList<AstFunctionDeclaration> cds) {
+		for(AstFunctionDeclaration func: this.functionDeclarations) {
+			cds.add(func);
+		}
+		for(AncestorInfo ai: ancestors) {
+			Optional<AstClassDeclaration> optClassDecl = ai.getAstClassDecl();
+			if(optClassDecl.isPresent()) {
+				AstClassDeclaration ancestorCd = optClassDecl.get();
+				scanFunctions(ancestorCd, cds); // TODO: check infinite recursion
+			}
+		}
+	}
+
+	
+//	public static class MapOfList<K, T> {
+//		private HashMap<K, List<T>> map = new HashMap<>();
+//		private Supplier<List<T>> listSupplier;
+//
+//		public MapOfList(Supplier<List<T>> listSupplier) {
+//			super();
+//			this.listSupplier = listSupplier;
+//		}
+//		public MapOfList() {
+//			this(() -> new ArrayList<T>());
+//		}
+//		public void put(K key, T value) {
+//			List<T> list = map.get(key);
+//			if(list == null) {
+//				list = listSupplier.get();
+//				map.put(key, list);
+//			}
+//			list.add(value);
+//		}
+//
+//		public HashMap<K, List<T>> getMap() {
+//			return map;
+//		}
+//		public void forEach(K key, Consumer<T> action) {
+//			List<T> actual = map.get(key);
+//			if(actual != null) {
+//				actual.forEach(action);
+//			}
+//		}
+//		
+//		public void insert(MapOfList<K, T> other) {
+//			for(Map.Entry<K, List<T>> e: other.map.entrySet()) {
+//				K key = e.getKey();
+//				for(T value: e.getValue()) {
+//					put(key, value);
+//				}
+//			}
+//		}
+//		public List<T> get(K key) {
+//			return map.get(key);
+//		}
+//	}
+	
+	
+//	public MapOfList<QName, AstFunctionDeclaration> getAllFunctions() {
+//		MapOfList<QName, AstFunctionDeclaration> map = new MapOfList<>();
+//
+//		// -- 
+//		for(AstFunctionDeclaration func : this.functionDeclarations) {
+//			QName fqn = func.getQName();
+//			map.put(fqn, func);
+//		}
+//		
+//		// -- add ancestor-defined functions
+//		for(AncestorInfo ai: ancestors) {
+//			Optional<AstClassDeclaration> optClassDecl = ai.getAstClassDecl();
+//			optClassDecl.ifPresent(acd -> {
+//				MapOfList<QName, AstFunctionDeclaration> amap  = acd.getAllFunctions();
+//				map.insert(amap);
+//			});
+//		}
+//		
+//		return map;
+//	}
+//	
+//	private List<MemberFunction> getAllFunctions() {
+//		ArrayList<AstFunctionDeclaration> astFunctions = new ArrayList<>();
+//		scanFunctions(this, astFunctions);
+//		
+//		HashMap<QName, List<AstFunctionDeclaration>> funcMap = new HashMap<>();
+//		
+//		// -- group by name
+//		for(AstFunctionDeclaration func :astFunctions) {
+//			QName fqn = func.getQName();
+//			
+//			List<AstFunctionDeclaration> funcList = funcMap.get(fqn);
+//			if(funcList == null) {
+//				funcList= new ArrayList<>();
+//				funcMap.put(fqn, funcList);
+//			}
+//			
+//			funcList.add(func);
+//					
+//			if(existing != null) {
+//				reporter.error("Class/interface defines function " + qName.dotSeparated() + " twice", name);
+//			}
+//		}
+//		return astFunctions.stream().map(astFd -> astFd.getMemberFunction()).
+//	}
+//
+	
+	
+	
 	public ClassDeclaration getClassDeclaration() {
 		QName containerQName = packageQName.get();
 		if(classDeclarationImpl == null)
@@ -323,11 +436,29 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 
 			@Override
 			public List<MemberFunction> getFunctions() {
-				return functionDeclarations.stream()
-						.map(AstFunctionDeclaration::getMemberFunction)
-						.filter(fd -> fd.isPresent())
-						.map(fd -> fd.get())
-						.collect(Collectors.toList());
+				
+				MapOfList<QName, AstFunctionDeclaration> allFctMap = getAllFunctions();
+				
+				ArrayList<MemberFunction> memberFunctions = new ArrayList<>();
+				
+				for(QName qn: allFctMap.keySet()) {
+					List<AstFunctionDeclaration> functions = allFctMap.get(qn);
+					for(AstFunctionDeclaration func: functions) {
+						if(func.isConcrete()) {
+//							if(!func.getStatements().isEmpty()) {	// TODO: wrong criteria for concrete function implementation
+							func.getMemberFunction().ifPresent((MemberFunction mf) -> {
+								memberFunctions.add(mf);
+							} );
+						}
+					}
+					
+				}
+				return memberFunctions;
+//								return getAllFunctions().stream()
+//						.map(AstFunctionDeclaration::getMemberFunction)
+//						.filter(fd -> fd.isPresent())
+//						.map(fd -> fd.get())
+//						.collect(Collectors.toList());
 			}
 
 			@Override
@@ -458,6 +589,25 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 		return this; // TODO
 	}
 
+	
+	
+	public void resolveAncestors() {
+		for(AncestorInfo ai: ancestors) {
+			AstToken simpleNameTok  = ai.getSimpleName();
+			String simpleName  = simpleNameTok.getText();
+			//Optional<Symbol> optSymb = symbolTable.lookup(simpleName);	// TODO: package/qname
+			
+			Optional<AstClassDeclaration> optSymb = symbolTable.lookupClassDeclaration(simpleName);
+			
+			if(optSymb.isEmpty()) {
+				reporter.error("Interface not found.", simpleNameTok);
+				continue;
+			}
+			AstClassDeclaration intf = optSymb.get();
+			this.interfaces.add(intf);
+		}
+	}
+
 	private ClassOrInterfaceDeclaration type = null;
 	
 	@Override
@@ -482,7 +632,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable {
 	@Override
 	public int hashCode() {
 		int h = qName.hashCode();
-		for(TypeFormalParameterDeclaration formalParam : typeParameters)
+		for(TypeParameter formalParam : typeParameters)
 			h = 31 * h + formalParam.hashCode();
 
 		return h;

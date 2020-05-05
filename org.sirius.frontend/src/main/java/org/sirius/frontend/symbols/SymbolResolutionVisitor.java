@@ -74,6 +74,7 @@ public class SymbolResolutionVisitor implements AstVisitor {
 
 	@Override
 	public void startClassDeclaration(AstClassDeclaration classDeclaration) {
+		classDeclaration.resolveAncestors();
 //		startScope(classDeclaration);
 	}
 	@Override
