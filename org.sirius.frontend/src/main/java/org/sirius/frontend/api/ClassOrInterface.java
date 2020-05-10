@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.sirius.common.core.QName;
 
-public interface ClassOrInterfaceDeclaration extends ClassType {
+public interface ClassOrInterface extends ClassType {
 
 	List<MemberValue> getMemberValues();
 	List<MemberFunction> getFunctions();

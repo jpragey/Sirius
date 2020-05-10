@@ -12,6 +12,7 @@ import org.sirius.common.core.QName;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
@@ -55,6 +56,12 @@ public class DefaultSymbolTable implements SymbolTable {
 	}
 	
 	public void addClass(AstClassDeclaration classDeclaration) {
+		AstToken simpleName = classDeclaration.getName();
+		QName classQName = classDeclaration.getQName();
+		addSymbol(classQName, new Symbol(simpleName, classDeclaration));
+	}
+	
+	public void addInterface(AstInterfaceDeclaration classDeclaration) {
 		AstToken simpleName = classDeclaration.getName();
 		QName classQName = classDeclaration.getQName();
 		addSymbol(classQName, new Symbol(simpleName, classDeclaration));
@@ -129,12 +136,25 @@ public class DefaultSymbolTable implements SymbolTable {
 		return symbol.getClassDeclaration();
 	}
 
+	public Optional<AstInterfaceDeclaration> lookupInterfaceDeclaration(String simpleName) {
+		Symbol symbol = symbolsBySimpleName.get(simpleName);
+
+		if(symbol == null && parent.isPresent()) {
+			return parent.get().lookupInterfaceDeclaration(simpleName);
+		}
+		if(symbol == null) {
+			return Optional.empty();
+		}
+		
+		return symbol.getInterfaceDeclaration();
+	}
+
 	public void forEach( BiConsumer<QName, Symbol> action) {
 		symbols.forEach(action);;
 	}
 
 	
-	public void addImportSymbol(QualifiedName pkgQname, ImportDeclarationElement e /* AstToken simpleName, Optional<AstToken> aliasName*/) {
+	public void addImportSymbol(QualifiedName pkgQname, ImportDeclarationElement e) {
 //		private HashMap<String, Symbol> symbolsBySimpleName = new HashMap<>();
 		// import org.example.metasyntax { ExampleFoo=Foo, Bar } :
 		//	Bar => org.example.metasyntax.Bar
@@ -148,17 +168,10 @@ public class DefaultSymbolTable implements SymbolTable {
 		
 		QName symbolQName = pkgQname.toQName().child(simpleName.getText());
 
-//		addSymbol(paramQName, new Symbol(paramName, formalParameter));
-//
-//		symbols.put(symbolQName, symbol);
-		
 		ImportedSymbol is = new ImportedSymbol(simpleName, symbolQName, e);
 		Symbol s = new Symbol(simpleName, is);
 		
-		 
 		symbolsBySimpleName.put(effectiveName, s);
-
-//		throw new UnsupportedOperationException("addImportSymbol() not supported yet.");
 	}
 	
 	@Override

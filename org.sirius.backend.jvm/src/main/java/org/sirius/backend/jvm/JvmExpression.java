@@ -11,7 +11,7 @@ import org.objectweb.asm.Opcodes;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.ClassDeclaration;
-import org.sirius.frontend.api.ClassOrInterfaceDeclaration;
+import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionCall;
@@ -171,7 +171,7 @@ public class JvmExpression {
 		
 		int varIndex = h.get().getIndex();
 
-		if(type instanceof ClassOrInterfaceDeclaration) {
+		if(type instanceof ClassOrInterface) {
 			mv.visitVarInsn(Opcodes.ALOAD, varIndex);
 		} else {
 			mv.visitVarInsn(Opcodes.ILOAD, varIndex);

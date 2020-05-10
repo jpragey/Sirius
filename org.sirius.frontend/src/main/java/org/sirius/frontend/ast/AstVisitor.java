@@ -34,6 +34,13 @@ public interface AstVisitor {
 	public default void startClassDeclaration (AstClassDeclaration classDeclaration) {}
 	public default void endClassDeclaration (AstClassDeclaration classDeclaration) {}
 	
+	public default void startInterfaceDeclaration (AstInterfaceDeclaration interfaceDeclaration) {}
+	public default void endInterfaceDeclaration (AstInterfaceDeclaration interfaceDeclaration) {}
+	
+	
+	
+	
+	
 	public default void startFunctionDeclaration (AstFunctionDeclaration functionDeclaration) {}
 	public default void endFunctionDeclaration (AstFunctionDeclaration functionDeclaration) {}
 	

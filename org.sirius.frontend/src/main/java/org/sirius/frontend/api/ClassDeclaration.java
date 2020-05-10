@@ -1,6 +1,6 @@
 package org.sirius.frontend.api;
 
-public interface ClassDeclaration extends ClassOrInterfaceDeclaration {
+public interface ClassDeclaration extends ClassOrInterface {
 
 	default void visitMe(Visitor visitor) {
 		visitor.start(this);

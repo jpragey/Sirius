@@ -9,6 +9,7 @@ import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
+import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.TypeParameter;
 
@@ -17,6 +18,7 @@ public class Symbol {
 	private AstToken name;
 
 	private Optional<AstClassDeclaration> classDeclaration = Optional.empty();
+	private Optional<AstInterfaceDeclaration> interfaceDeclaration = Optional.empty();
 	private Optional<TypeParameter> formalParameterDeclaration = Optional.empty();
 	private Optional<AstFunctionDeclaration> functionDeclaration = Optional.empty();
 	private Optional<AstFunctionFormalArgument> functionArgument = Optional.empty();
@@ -30,6 +32,12 @@ public class Symbol {
 		super();
 		this.name = name;
 		this.classDeclaration = Optional.of(classDeclaration);
+	}
+	
+	public Symbol(AstToken name, AstInterfaceDeclaration interfaceDeclaration) {
+		super();
+		this.name = name;
+		this.interfaceDeclaration = Optional.of(interfaceDeclaration);
 	}
 	
 	public Symbol(AstToken name, TypeParameter declaration) {
@@ -75,6 +83,10 @@ public class Symbol {
 		return classDeclaration;
 	}
 
+	public Optional<AstInterfaceDeclaration> getInterfaceDeclaration() {
+		return interfaceDeclaration;
+	}
+
 	public Optional<TypeParameter> getFormalParameterDeclaration() {
 		return formalParameterDeclaration;
 	}
@@ -102,11 +114,12 @@ public class Symbol {
 		
 		return name.getText() + ":" + 
 				(classDeclaration.isPresent() 			? classDeclaration.get().toString() : "") +
+				(interfaceDeclaration.isPresent() 		? interfaceDeclaration.get().toString() : "") +
 				(formalParameterDeclaration.isPresent() ? formalParameterDeclaration.get().toString() : "") +
-				(functionDeclaration.isPresent() ? functionDeclaration.toString() : "") +
-				(functionArgument.isPresent() ? functionArgument.toString() : "") +
-				(valueDeclaration.isPresent() ? valueDeclaration.toString() : "")+
-				(importDeclaration.isPresent() ? importDeclaration.toString() : "")
+				(functionDeclaration.isPresent() 		? functionDeclaration.toString() : "") +
+				(functionArgument.isPresent() 			? functionArgument.toString() : "") +
+				(valueDeclaration.isPresent() 			? valueDeclaration.toString() : "")+
+				(importDeclaration.isPresent() 			? importDeclaration.toString() : "")
 				;
 	}
 }

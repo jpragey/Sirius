@@ -161,6 +161,9 @@ public class AstModuleDeclaration implements Visitable {
 	public void addClassDeclaration(AstClassDeclaration d) {
 		this.getCurrentPackage().addClassDeclaration(d);
 	}
+	public void addInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
+		this.getCurrentPackage().addInterfaceDeclaration(interfaceDeclaration);
+	}
 
 	public void addValueEquivalent(Token name, Token value) {
 		

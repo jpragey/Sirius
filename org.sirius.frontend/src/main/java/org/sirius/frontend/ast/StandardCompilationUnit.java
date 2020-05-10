@@ -14,6 +14,7 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 	
 	private List<AstFunctionDeclaration> functionDeclarations = new ArrayList<>();
 	private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
+	private List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
 	
 	private ArrayList<AstModuleDeclaration> moduleDeclarations = new ArrayList<>();
 
@@ -64,6 +65,10 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 	
 	public void addClassDeclaration(AstClassDeclaration classDeclaration) {
 		this.classDeclarations.add(classDeclaration);
+	}
+
+	public void addInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
+		this.interfaceDeclarations.add(interfaceDeclaration);
 	}
 
 	public List<AstClassDeclaration> getClassDeclarations() {

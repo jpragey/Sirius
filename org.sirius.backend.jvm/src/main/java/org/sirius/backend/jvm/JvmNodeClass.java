@@ -15,7 +15,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ClassDeclaration;
-import org.sirius.frontend.api.ClassOrInterfaceDeclaration;
+import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
@@ -59,7 +59,7 @@ public class JvmNodeClass {
 		this.qName = pd.getQName().child("$package$");	// TODO
 	}
 
-	private void addMemberValues(ClassOrInterfaceDeclaration cd) {
+	private void addMemberValues(ClassOrInterface cd) {
 		for(MemberValue mv: cd.getMemberValues()) {
 //			System.out.println(" MemberValue: " + mv);
 			JvmMemberValue jvmMv = new JvmMemberValue(mv, descriptorFactory, reporter);
@@ -67,7 +67,7 @@ public class JvmNodeClass {
 		}
 	}
 	
-	private void addMemberFunctions(ClassOrInterfaceDeclaration cd) {
+	private void addMemberFunctions(ClassOrInterface cd) {
 		for(MemberFunction mf: cd.getFunctions())
 			memberFunctions.add(new JvmMemberFunction(reporter, descriptorFactory, mf, false /*isStatic*/));
 	}

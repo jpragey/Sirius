@@ -12,8 +12,10 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.Session;
 import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstClassOrInterface;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
+import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
@@ -60,7 +62,8 @@ public class SdkTools {
 //		this.langPackage = this.sdkModule.createPackageDeclaration(siriusLangQName);
 		this.langPackage = this.sdkModule.getCurrentPackage();
 		
-		this.topLevelClass = createClassInPackage(reporter, this.langPackage, "$package$");
+//		this.topLevelClass = createClassInPackage(reporter, this.langPackage, "$package$");
+		this.topLevelClass = AstClassDeclaration.newClass(reporter, AstToken.internal("$package$"), this.langPackage.getQname());
 		
 		packagesMap.put(siriusLangQName, langPackage);
 		
@@ -68,12 +71,12 @@ public class SdkTools {
 //		sdkModule.addPackageDeclaration(langPackage);
 	}
 
-	private static AstClassDeclaration createClassInPackage(Reporter reporter, AstPackageDeclaration pkg, String name) {
-		AstClassDeclaration cd = new AstClassDeclaration(reporter, false/*interfaceType*/, AstToken.internal(name), Optional.of(pkg.getQname()));
-//		cd.setPackageQName(pkg.getQname());
-		return cd;
-		
-	}
+//	private static AstClassDeclaration createClassInPackage(Reporter reporter, AstPackageDeclaration pkg, String name) {
+//		AstClassDeclaration cd = new AstClassDeclaration(reporter, false/*interfaceType*/, AstToken.internal(name), Optional.of(pkg.getQname()));
+////		cd.setPackageQName(pkg.getQname());
+//		return cd;
+//		
+//	}
 	
 	public void parseSdk(DefaultSymbolTable symbolTable) {
 		
@@ -118,9 +121,24 @@ public class SdkTools {
 			pd = langPackage;	// Just to allow compilation to keep on  
 		}
 
-		AstClassDeclaration cd = createClassInPackage(reporter, pd, name);
+		AstClassOrInterface classOrIntf;
+		if(clss.isInterface()) {
+//			AstInterfaceDeclaration cd = AstInterfaceDeclaration.newClass(reporter, AstToken.internal(name), pd.getQname());
+			AstInterfaceDeclaration cd = new AstInterfaceDeclaration(reporter, AstToken.internal(name), Optional.of(pd.getQname()));
+			symbolTable.addInterface(cd);	// TODO: check correctness (sirius.lang content is known by default)
+			classOrIntf = cd;
+			this.langPackage.addInterfaceDeclaration(cd);
+
+		} else {
+//			AstClassDeclaration cd = new AstClassDeclaration(reporter, false/*interfaceType*/, AstToken.internal(name), Optional.of(pkg.getQname()));
+			AstClassDeclaration cd = AstClassDeclaration.newClass(reporter, AstToken.internal(name), pd.getQname());
+			symbolTable.addClass(cd);	// TODO: check correctness (sirius.lang content is known by default)
+			classOrIntf = cd;
+			this.langPackage.addClassDeclaration(cd);
+		}
+//		AstClassDeclaration cd = createClassInPackage(reporter, pd, name);
 		
-		symbolTable.addClass(cd);	// TODO: check correctness (sirius.lang content is known by default)
+//		symbolTable.addClass(cd);	// TODO: check correctness (sirius.lang content is known by default)
 
 		
 		// -- ancestors/implemented interfaces
@@ -129,10 +147,10 @@ public class SdkTools {
 			QName pkg = QName.parseDotSeparated(inherit.packageQName());
 			QName inheritName = pkg.child(inherit.name());
 //			cd.addAncestor(inheritName /*pkg, inherit.name()*/);
-			cd.addAncestor(AstToken.internal(inheritName.getLast()) /*pkg, inherit.name()*/);	// TODO: WTF ???
+			classOrIntf.addAncestor(AstToken.internal(inheritName.getLast()) /*pkg, inherit.name()*/);	// TODO: WTF ???
 		}
 
-		this.langPackage.addClassDeclaration(cd);;
+//		this.langPackage.addClassDeclaration(cd);
 
 	}
 	

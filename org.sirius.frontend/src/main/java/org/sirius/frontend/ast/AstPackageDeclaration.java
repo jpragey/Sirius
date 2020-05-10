@@ -32,6 +32,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 
 	private List<AstFunctionDeclaration> functionDeclarations = new ArrayList<>();
 	private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
+	private List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	
 	private LocalSymbolTable symbolTable; 
@@ -71,7 +72,12 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		this.classDeclarations.add(declaration);
 		this.visitables.add(declaration);
 	}
-
+	public void addInterfaceDeclaration(AstInterfaceDeclaration declaration) {
+		this.interfaceDeclarations.add(declaration);
+		this.visitables.add(declaration);	// TODO: ???
+	}
+	
+	
 	public void addValueDeclaration(AstMemberValueDeclaration declaration) {
 		this.valueDeclarations.add(declaration);
 		this.visitables.add(declaration);
@@ -131,9 +137,8 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 
 		@Override
 		public List<InterfaceDeclaration> getInterfaces() {
-			return classDeclarations.stream()
-					.filter(cd -> cd.isInterfaceType())
-					.map(cd -> cd.getInterfaceDeclaration(/*qname*/))
+			return interfaceDeclarations.stream()
+					.map(cd -> cd.getInterfaceDeclaration())
 					.collect(Collectors.toList());
 		}
 
@@ -176,6 +181,10 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 
 	public List<AstClassDeclaration> getClassDeclarations() {
 		return classDeclarations;
+	}
+	
+	public List<AstInterfaceDeclaration> getInterfaceDeclarations() {
+		return interfaceDeclarations;
 	}
 	
 

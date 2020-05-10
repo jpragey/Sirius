@@ -26,7 +26,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.ClassDeclaration;
-import org.sirius.frontend.api.ClassOrInterfaceDeclaration;
+import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;

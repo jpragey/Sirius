@@ -144,18 +144,18 @@ public class TopLevelFunctionTest {
 		assertEquals(fd.getArguments().size(), 1);
 		FunctionFormalArgument fctArg0 = fd.getArguments().get(0);
 		
-		System.out.println("Arg: type=" + fctArg0.getType().getClass() + " : " + fctArg0.getType() + ", name=" + fctArg0.getQName().getLast());
+//		System.out.println("Arg: type=" + fctArg0.getType().getClass() + " : " + fctArg0.getType() + ", name=" + fctArg0.getQName().getLast());
 		
 		// -- API
 		List<FunctionFormalArgument> apiArgs = moduleDeclarations.get(1).getPackages().get(0).getFunctions().get(0).getArguments();
 		assertEquals(apiArgs.size(), 1);
 		FunctionFormalArgument apiArg0 = apiArgs.get(0);
 		
-		System.out.println("Arg: type=" + apiArg0.getType().getClass() + " : " + apiArg0.getType() + ", name=" + apiArg0.getQName());
+//		System.out.println("Arg: type=" + apiArg0.getType().getClass() + " : " + apiArg0.getType() + ", name=" + apiArg0.getQName());
 		assert (apiArg0.getType() instanceof ClassType);
 		ClassType argType = (ClassType)apiArg0.getType();
 		
-		System.out.println("API arg type qname: " + argType.getQName());
+//		System.out.println("API arg type qname: " + argType.getQName());
 		
 		
 	}
@@ -173,22 +173,22 @@ public class TopLevelFunctionTest {
 		assertEquals(fd.getArguments().size(), 1);
 		FunctionFormalArgument fctArg0 = fd.getArguments().get(0);
 		
-		System.out.println("Arg: type=" + fctArg0.getType().getClass() + " : " + fctArg0.getType() + ", name=" + fctArg0.getQName().getLast());
+//		System.out.println("Arg: type=" + fctArg0.getType().getClass() + " : " + fctArg0.getType() + ", name=" + fctArg0.getQName().getLast());
 		
 		// -- API
 		List<FunctionFormalArgument> apiArgs = moduleDeclarations.get(1).getPackages().get(0).getFunctions().get(0).getArguments();
 		assertEquals(apiArgs.size(), 1);
 		FunctionFormalArgument apiArg0 = apiArgs.get(0);
 		
-		System.out.println("Arg: type=" + apiArg0.getType().getClass() + " : " + apiArg0.getType() + ", name=" + apiArg0.getQName());
+//		System.out.println("Arg: type=" + apiArg0.getType().getClass() + " : " + apiArg0.getType() + ", name=" + apiArg0.getQName());
 		assert (apiArg0.getType() instanceof ArrayType);
 		ArrayType argType = (ArrayType)apiArg0.getType();
 		
-		System.out.println("API arg type qname: " + argType.getElementType());
+//		System.out.println("API arg type qname: " + argType.getElementType());
 		
 		assert (argType.getElementType() instanceof ClassType);
 		ClassType classType = (ClassType)argType.getElementType();
-		System.out.println("API element type: " + classType.getQName());
+//		System.out.println("API element type: " + classType.getQName());
 	}
 	
 	@Test

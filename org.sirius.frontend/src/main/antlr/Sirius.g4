@@ -39,7 +39,7 @@ locals[
     	| packageDeclaration	{ currentModule.addPackageDeclaration($packageDeclaration.declaration);}
     	| functionDeclaration	{ $stdUnit.addFunctionDeclaration($functionDeclaration.declaration); }
     	| classDeclaration 		{ $stdUnit.addClassDeclaration($classDeclaration.declaration);	}
-    	| interfaceDeclaration	{ $stdUnit.addClassDeclaration($interfaceDeclaration.declaration);	}
+    	| interfaceDeclaration	{ $stdUnit.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
     	
     	
     	
@@ -67,7 +67,7 @@ scriptCompilationUnit returns [ScriptCompilationUnit unit]
 									} 
 		| functionDeclaration 		{currentModule.addFunctionDeclaration($functionDeclaration.declaration);	}
 		| classDeclaration 			{currentModule.addClassDeclaration($classDeclaration.declaration);	}
-    	| interfaceDeclaration		{currentModule.addClassDeclaration($interfaceDeclaration.declaration);	}
+    	| interfaceDeclaration		{currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
 	)*
 	EOF
 	;
@@ -311,7 +311,7 @@ classDeclaration returns [AstClassDeclaration declaration]
 }
 	: 
 	  (   'class' 		{isInterface = false;}
-	  	| 'interface'	{isInterface = true;}
+	  	/*| 'interface'	{isInterface = true;}*/
 	  )
 	  TYPE_ID		{ $declaration = factory.createClassOrInterface($TYPE_ID /* , currentPackage*/, isInterface); }
 	  '('
@@ -341,7 +341,7 @@ classDeclaration returns [AstClassDeclaration declaration]
 	  )*
 	  '}'
 	;
-interfaceDeclaration returns [AstClassDeclaration declaration]
+interfaceDeclaration returns [AstInterfaceDeclaration declaration]
 @init {
 //	List<Annotation> annos = new ArrayList<Annotation> ();
 	boolean isInterface;
@@ -349,7 +349,7 @@ interfaceDeclaration returns [AstClassDeclaration declaration]
 	: 
 	  ('interface'	{isInterface = true;} // TODO: no need of isInterface
 	  )
-	  TYPE_ID		{ $declaration = factory.createClassOrInterface($TYPE_ID /* , currentPackage*/, isInterface); }
+	  TYPE_ID		{ $declaration = factory.createInterface($TYPE_ID); }
 	  (
 	  	'<'
 	  	(

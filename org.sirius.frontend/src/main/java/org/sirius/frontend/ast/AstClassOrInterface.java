@@ -10,66 +10,22 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.sirius.common.core.MapOfList;
 import org.sirius.common.core.QName;
+import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.ast.AstClassOrInterface.AncestorInfo;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.Symbol;
+import org.sirius.frontend.symbols.SymbolTable;
 
-public interface AstClassOrInterface {
-
-	public static class MapOfList<K, T> {
-		private HashMap<K, List<T>> map = new HashMap<>();
-		private Supplier<List<T>> listSupplier;
-
-		public MapOfList(Supplier<List<T>> listSupplier) {
-			super();
-			this.listSupplier = listSupplier;
-		}
-		public MapOfList() {
-			this(() -> new ArrayList<T>());
-		}
-		public void put(K key, T value) {
-			List<T> list = map.get(key);
-			if(list == null) {
-				list = listSupplier.get();
-				map.put(key, list);
-			}
-			list.add(value);
-		}
-
-		public HashMap<K, List<T>> getMap() {
-			return map;
-		}
-		public Set<K> keySet() {
-			return map.keySet();
-		}
-		public Collection<List<T>> values() {
-			return map.values();
-		}
-		
-		public void forEach(K key, Consumer<T> action) {
-			List<T> actual = map.get(key);
-			if(actual != null) {
-				actual.forEach(action);
-			}
-		}
-		
-		public void insert(MapOfList<K, T> other) {
-			for(Map.Entry<K, List<T>> e: other.map.entrySet()) {
-				K key = e.getKey();
-				for(T value: e.getValue()) {
-					put(key, value);
-				}
-			}
-		}
-		public List<T> get(K key) {
-			return map.get(key);
-		}
-	}
+public interface AstClassOrInterface extends AstType {
 
 	/** directly implemented interfaces or extended classes */
 	public static class AncestorInfo {
 		/** Name in declaration ( extends/implements NAME clause)*/
 		private AstToken simpleName;
-		private Optional<AstClassDeclaration> astClassDecl = Optional.empty();
+		private Optional<AstInterfaceDeclaration> astClassDecl = Optional.empty();
 		public AncestorInfo(AstToken simpleName) {
 			super();
 			this.simpleName = simpleName;
@@ -77,23 +33,49 @@ public interface AstClassOrInterface {
 		public AstToken getSimpleName() {
 			return simpleName;
 		}
-		public Optional<AstClassDeclaration> getAstClassDecl() {
+		public Optional<AstInterfaceDeclaration> getAstClassDecl() {
 			return astClassDecl;
+		}
+		public Optional<AstInterfaceDeclaration> getAstClassDecl(DefaultSymbolTable symbolTable, Reporter reporter) {
+			String nameText = simpleName.getText();
+			Optional<Symbol> optSymbol = symbolTable.lookup(nameText);
+			if(! optSymbol.isPresent()) {
+				reporter.error("Symbol " + nameText + " not found.", simpleName);
+				return Optional.empty();
+			}
+			
+			Symbol symbol = optSymbol.get();
+			Optional<AstInterfaceDeclaration> optClassDecl = symbol.getInterfaceDeclaration();
+			if(optClassDecl.isPresent()) {
+				AstInterfaceDeclaration ancestorCD = optClassDecl.get();
+				return Optional.of(ancestorCD);
+			} else {
+				reporter.error("Symbol " + nameText + " is not an interface.", simpleName);
+				return Optional.empty();
+			}
 		}
 	}
 
-	
-	
-	
-	
-	
-	
-	
 	public List<AstFunctionDeclaration> getFunctionDeclarations();
 
 	public List<AncestorInfo> getAncestors();
-	public List<AstClassDeclaration> getInterfaces();
+	public List<AstInterfaceDeclaration> getInterfaces();
 
+	public default boolean descendOrIsSameAs(AstInterfaceDeclaration ancestor) {
+		if(isExactlyA(ancestor))
+			return true;
+		
+		return getInterfaces().stream().anyMatch(intf -> {
+			return intf.descendOrIsSameAs(ancestor); 
+		});
+	}
+	
+	public default boolean descendStrictlyFrom(AstInterfaceDeclaration ancestor) {
+		return getInterfaces().stream().anyMatch(intf -> {
+			return descendOrIsSameAs(intf); 
+		});
+	}
+	
 	public default MapOfList<QName, AstFunctionDeclaration> getAllFunctions() {
 		MapOfList<QName, AstFunctionDeclaration> map = new MapOfList<>();
 
@@ -103,20 +85,26 @@ public interface AstClassOrInterface {
 			map.put(fqn, func);
 		}
 		
-		// -- add ancestor-defined functions
-//		for(AncestorInfo ai:  getAncestors()) {
-//			ai.astClassDecl.ifPresent(acd -> {
-//				MapOfList<QName, AstFunctionDeclaration> amap  = acd.getAllFunctions();
-//				map.insert(amap);
-//			});
-//		}
-		for(AstClassDeclaration acd: this.getInterfaces()) {
+		for(AstInterfaceDeclaration acd: this.getInterfaces()) {
 			MapOfList<QName, AstFunctionDeclaration> amap  = acd.getAllFunctions();
 			map.insert(amap);
 		}
 		
 		return map;
 	}
-	
-	
+	public default List<InterfaceDeclaration> createDirectInterfaces() {
+		List<AncestorInfo> ancestors = getAncestors();
+		
+		List<InterfaceDeclaration> interfaces = new ArrayList<>(ancestors.size());
+		for(AncestorInfo ai: ancestors) {
+			Optional<AstInterfaceDeclaration> opt = ai.getAstClassDecl();
+			AstInterfaceDeclaration ancestorCD = opt.get();
+			InterfaceDeclaration interf = ancestorCD.getInterfaceDeclaration();
+			interfaces.add(interf);
+		}
+		return interfaces;
+	}
+
+	public void addAncestor(AstToken ancestor); // TODO: remove
+
 }

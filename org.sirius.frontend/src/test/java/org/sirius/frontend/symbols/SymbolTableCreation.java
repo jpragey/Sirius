@@ -42,7 +42,7 @@ public class SymbolTableCreation {
 				+ "void f(){println(\"Hello World\");}");
 		
 		DefaultSymbolTable st = session.getGlobalSymbolTable();
-		st.dump();
+//		st.dump();
 		
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(1);

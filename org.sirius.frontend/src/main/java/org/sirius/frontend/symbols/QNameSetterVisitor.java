@@ -6,6 +6,7 @@ import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.SimpleType;
@@ -56,6 +57,27 @@ public class QNameSetterVisitor implements AstVisitor {
 		qnameStack.pop();
 	}
 
+	@Override
+	public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
+//		String className = classDeclaration.getName().getText();
+		QName packageQName = qnameStack.lastElement();
+		interfaceDeclaration.setPackageQName(packageQName);
+		
+//		QName classQName = packageQName.child(className);
+		QName classQName = interfaceDeclaration.getQName();
+		qnameStack.push(classQName);
+//		classDeclaration.setqName(classQName);
+		
+		for(TypeParameter formalParameter: interfaceDeclaration.getTypeParameters()) {
+			interfaceDeclaration.getSymbolTable().addFormalParameter(interfaceDeclaration.getQName(), formalParameter);
+		}
+	}
+	@Override
+	public void endInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
+		qnameStack.pop();
+	}
+	
+	
 	@Override
 	public void startFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
 		

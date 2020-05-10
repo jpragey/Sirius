@@ -93,7 +93,7 @@ public final class QNameRefType implements AstType {
 	private Optional<AstClassDeclaration> getClassDeclaration() {
 		Optional<Symbol> optSymbol = symbolTable.lookup(qName);
 		
-		symbolTable.dump();
+//		symbolTable.dump();
 		
 		if(optSymbol.isPresent()) {
 			Symbol symbol = optSymbol.get();

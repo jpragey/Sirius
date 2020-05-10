@@ -43,7 +43,7 @@ public class ImplicitTypeCast {
 		
 		HashMap<String, Bytecode> map = l.getByteCodesMap();
 		System.out.println(map.keySet());
-		session.getGlobalSymbolTable().dump();
+//		session.getGlobalSymbolTable().dump();
 
 		
 		ClassLoader classLoader = l.getClassLoader();
