@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import org.antlr.v4.runtime.Token;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.InterfaceDeclaration;
-import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
@@ -228,11 +228,12 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 			}
 
 			@Override
-			public List<MemberFunction> getFunctions() {
+			public List<AbstractFunction> getFunctions() {
 				return functionDeclarations.stream()
-						.map(AstFunctionDeclaration::getMemberFunction)
-						.filter(fd -> fd.isPresent())
-						.map(fd -> fd.get())
+//						.map(AstFunctionDeclaration::getMemberFunction)
+						.map(AstFunctionDeclaration::toAPI)
+//						.filter(fd -> fd.isPresent())
+//						.map(fd -> fd.get())
 						.collect(Collectors.toList());
 			}
 			@Override

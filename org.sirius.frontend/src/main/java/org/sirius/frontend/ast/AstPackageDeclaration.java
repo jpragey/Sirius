@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
-import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.TopLevelValue;
 import org.sirius.frontend.symbols.LocalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
@@ -152,11 +152,11 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		}
 
 		@Override
-		public List<TopLevelFunction> getFunctions() {
+		public List<AbstractFunction> getFunctions() {
 			return functionDeclarations.stream()
-					.map(fd -> fd.getTopLevelFunction())
-					.filter(fd -> fd.isPresent())
-					.map(fd -> fd.get())
+					.map(fd -> fd.toAPI())
+//					.filter(fd -> fd.isPresent())
+//					.map(fd -> fd.get())
 					.collect(Collectors.toList());
 		}
 

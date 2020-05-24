@@ -5,8 +5,8 @@ import static org.testng.Assert.assertEquals;
 import java.util.List;
 
 import org.sirius.common.core.QName;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
-import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.parser.Compiler;
@@ -54,7 +54,7 @@ public class ScriptSessionTest {
 		ClassDeclaration cd = pack.getClasses().get(0);
 		assertEquals(cd.getQName(), new QName("p", "k", "C"));
 		
-		MemberFunction func = cd.getFunctions().get(0);
+		AbstractFunction func = cd.getFunctions().get(0);
 		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
 		
 	}

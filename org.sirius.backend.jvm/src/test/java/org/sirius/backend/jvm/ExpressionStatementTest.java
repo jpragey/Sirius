@@ -7,9 +7,9 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ExpressionStatement;
-import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.core.FrontEnd;
@@ -59,11 +59,11 @@ public class ExpressionStatementTest {
 		ClassDeclaration cd = pack.getClasses().get(0);
 		assertEquals(cd.getQName(), new QName("p", "k", "C"));
 		
-		MemberFunction func = cd.getFunctions().get(0);
+		AbstractFunction func = cd.getFunctions().get(0);
 		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
 
-		assertEquals(func.getBodyStatements().size(), 1);
-		ExpressionStatement statement = (ExpressionStatement)func.getBodyStatements().get(0);
+		assertEquals(func.getBodyStatements().get().size(), 1);
+		ExpressionStatement statement = (ExpressionStatement)func.getBodyStatements().get().get(0);
 		
 		JvmBackend backend = new JvmBackend(reporter /*, Optional.empty()*//* classDir*/ /*, Optional.empty()*/ /* module*/, false /*verboseAst*/
 				);

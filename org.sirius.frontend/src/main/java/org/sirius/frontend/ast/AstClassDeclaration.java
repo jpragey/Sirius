@@ -9,10 +9,10 @@ import org.antlr.v4.runtime.Token;
 import org.sirius.common.core.MapOfList;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.InterfaceDeclaration;
-import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
@@ -287,19 +287,20 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			}
 
 			@Override
-			public List<MemberFunction> getFunctions() {
+			public List<AbstractFunction> getFunctions() {
 				
 				MapOfList<QName, AstFunctionDeclaration> allFctMap = getAllFunctions();
 				
-				ArrayList<MemberFunction> memberFunctions = new ArrayList<>();
+				ArrayList<AbstractFunction> memberFunctions = new ArrayList<>();
 				
 				for(QName qn: allFctMap.keySet()) {
 					List<AstFunctionDeclaration> functions = allFctMap.get(qn);
 					for(AstFunctionDeclaration func: functions) {
 						if(func.isConcrete()) {
-							func.getMemberFunction().ifPresent((MemberFunction mf) -> {
-								memberFunctions.add(mf);
-							} );
+//							func.getMemberFunction().ifPresent((MemberFunction mf) -> {
+//								memberFunctions.add(mf);
+//							} );
+							memberFunctions.add(func.toAPI());
 						}
 					}
 					

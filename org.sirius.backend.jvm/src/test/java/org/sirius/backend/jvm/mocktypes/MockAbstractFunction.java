@@ -2,6 +2,7 @@ package org.sirius.backend.jvm.mocktypes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
@@ -41,8 +42,8 @@ public class MockAbstractFunction implements AbstractFunction {
 	}
 
 	@Override
-	public List<Statement> getBodyStatements() {
-		return bodyStatements;
+	public Optional<List<Statement>> getBodyStatements() {
+		return Optional.of(bodyStatements);
 	}
 
 }

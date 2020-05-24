@@ -3,17 +3,8 @@ package org.sirius.backend.jvm;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_STATIC;
 import static org.objectweb.asm.Opcodes.ARETURN;
-import static org.objectweb.asm.Opcodes.GETSTATIC;
-import static org.objectweb.asm.Opcodes.IADD;
-import static org.objectweb.asm.Opcodes.IDIV;
-import static org.objectweb.asm.Opcodes.IMUL;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
-import static org.objectweb.asm.Opcodes.IRETURN;
-import static org.objectweb.asm.Opcodes.ISUB;
 import static org.objectweb.asm.Opcodes.RETURN;
-import static org.objectweb.asm.Opcodes.NEW;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -25,26 +16,13 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.BinaryOpExpression;
-import org.sirius.frontend.api.ClassDeclaration;
-import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.ClassType;
-import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;
-import org.sirius.frontend.api.FunctionCall;
 import org.sirius.frontend.api.IfElseStatement;
-import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.IntegerType;
-import org.sirius.frontend.api.LocalVariableReference;
 import org.sirius.frontend.api.LocalVariableStatement;
-import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
-import org.sirius.frontend.api.StringConstantExpression;
-import org.sirius.frontend.api.TopLevelFunction;
-import org.sirius.frontend.api.Type;
-import org.sirius.frontend.api.TypeCastExpression;
-import org.sirius.frontend.api.MemberValueAccessExpression;
 
 public class JvmMemberFunction {
 		private AbstractFunction memberFunction;
@@ -205,6 +183,11 @@ public class JvmMemberFunction {
 		public void writeBytecode(ClassWriter classWriter/*, MemberFunction declaration*/) {
 
 			String functionName = memberFunction.getQName().getLast();
+			Optional<List<Statement>> optBody = memberFunction.getBodyStatements();
+			if(optBody.isEmpty()) {
+				reporter.error("Can't generate bytecode for function " + memberFunction.getQName().dotSeparated() + ", body is missing."); // TODO add function location to message
+			}
+			
 			String functionDescriptor = descriptorFactory.methodDescriptor(memberFunction);	// eg (Ljava/lang/String;)V
 			int access = ACC_PUBLIC;
 			if(isStatic)
@@ -214,7 +197,7 @@ public class JvmMemberFunction {
 					null /* String signature */,
 					null /* String[] exceptions */);
 			
-			JvmStatementBlock bodyBlock = new JvmStatementBlock(memberFunction.getBodyStatements());
+			JvmStatementBlock bodyBlock = new JvmStatementBlock(/*memberFunction.getBodyStatements()*/optBody.get());
 			bodyBlock.writeByteCode(classWriter, mv);
 
 			writeDummyDefaultReturn(mv);

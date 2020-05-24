@@ -1,17 +1,13 @@
 package org.sirius.frontend.core;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
 import java.util.List;
 
 import org.sirius.frontend.api.ClassDeclaration;
-import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
-import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;

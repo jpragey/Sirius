@@ -4,6 +4,7 @@ import static org.testng.Assert.assertEquals;
 
 import java.util.List;
 
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ArrayType;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassType;
@@ -16,11 +17,8 @@ import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.StringConstantExpression;
-import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
-import org.sirius.frontend.ast.AstExpressionStatement;
-import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.parser.Compiler;
 import org.testng.annotations.Test;
 
@@ -37,7 +35,7 @@ public class TopLevelFunctionTest {
 		PackageDeclaration pd = md.getPackages().get(0);
 		
 		assertEquals(pd.getFunctions().size(), 1);
-		TopLevelFunction fd = pd.getFunctions().get(0);
+		AbstractFunction fd = pd.getFunctions().get(0);
 		
 		assertEquals(fd.getQName().getLast(), "f");
 		
@@ -46,7 +44,7 @@ public class TopLevelFunctionTest {
 		PackageDeclaration apiPd = md.getPackages().get(0);
 		
 		assertEquals(apiPd.getFunctions().size(), 1);
-		TopLevelFunction tlf = apiPd.getFunctions().get(0);
+		AbstractFunction tlf = apiPd.getFunctions().get(0);
 		
 		assertEquals(tlf.getQName().dotSeparated(), "a.b.f");
 	}
@@ -59,7 +57,7 @@ public class TopLevelFunctionTest {
 //		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
 //		AstFunctionDeclaration fd = pd.getFunctionDeclarations().get(0);
 
-		TopLevelFunction tlf = session.getModuleDeclarations().get(1).getPackages().get(0).getFunctions().get(0);
+		AbstractFunction tlf = session.getModuleDeclarations().get(1).getPackages().get(0).getFunctions().get(0);
 		
 		assertEquals(tlf.getArguments().size(), 2);
 		assertEquals(tlf.getArguments().get(0).getQName().dotSeparated(), "a.b.f.i");
@@ -91,10 +89,10 @@ public class TopLevelFunctionTest {
 		ModuleDeclaration md1 = session.getModuleDeclarations().get(1);
 		PackageDeclaration pd = md1.getPackages().get(0);
 		
-		List<TopLevelFunction> funcs = pd.getFunctions();
-		TopLevelFunction fd = funcs.get(0);
+		List<AbstractFunction> funcs = pd.getFunctions();
+		AbstractFunction fd = funcs.get(0);
 
-		List<Statement> statements = fd.getBodyStatements();
+		List<Statement> statements = fd.getBodyStatements().get();
 		assertEquals(statements.size(), 1);
 		Statement statement0 = statements.get(0);
 		ExpressionStatement printCallStmt = (ExpressionStatement)statement0;	// NOTE: type casting is used as an assertion
@@ -139,7 +137,7 @@ public class TopLevelFunctionTest {
 
 		ModuleDeclaration md = moduleDeclarations.get(1);
 		PackageDeclaration pd = md.getPackages().get(0);
-		TopLevelFunction fd = pd.getFunctions().get(0);
+		AbstractFunction fd = pd.getFunctions().get(0);
 		
 		assertEquals(fd.getArguments().size(), 1);
 		FunctionFormalArgument fctArg0 = fd.getArguments().get(0);
@@ -168,7 +166,7 @@ public class TopLevelFunctionTest {
 		assertEquals(moduleDeclarations.size(), 2);
 		ModuleDeclaration md = moduleDeclarations.get(1);
 		PackageDeclaration pd = md.getPackages().get(0);
-		TopLevelFunction fd = pd.getFunctions().get(0);
+		AbstractFunction fd = pd.getFunctions().get(0);
 		
 		assertEquals(fd.getArguments().size(), 1);
 		FunctionFormalArgument fctArg0 = fd.getArguments().get(0);
@@ -200,10 +198,10 @@ public class TopLevelFunctionTest {
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(1);
 		PackageDeclaration pd = md.getPackages().get(0);
-		TopLevelFunction fd = pd.getFunctions().get(0);
+		AbstractFunction fd = pd.getFunctions().get(0);
 
-		assertEquals(fd.getBodyStatements().size(), 1);
-		Statement st0 = fd.getBodyStatements().get(0);
+		assertEquals(fd.getBodyStatements().get().size(), 1);
+		Statement st0 = fd.getBodyStatements().get().get(0);
 		assert(st0 instanceof LocalVariableStatement);
 	}
 	
@@ -216,7 +214,7 @@ public class TopLevelFunctionTest {
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		PackageDeclaration pd = md.getPackages().get(0);
-		TopLevelFunction fd = pd.getFunctions().get(0);
+		AbstractFunction fd = pd.getFunctions().get(0);
 		Type type = fd.getReturnType();
 		
 		assert(type instanceof ClassDeclaration);
@@ -233,7 +231,7 @@ public class TopLevelFunctionTest {
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		PackageDeclaration pd = md.getPackages().get(0);
-		TopLevelFunction fd = pd.getFunctions().get(0);
+		AbstractFunction fd = pd.getFunctions().get(0);
 		
 		List<FunctionFormalArgument> args = fd.getArguments();
 		assertEquals(args.size(), 1);

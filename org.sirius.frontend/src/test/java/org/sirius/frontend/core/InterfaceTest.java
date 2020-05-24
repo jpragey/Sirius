@@ -3,13 +3,11 @@ package org.sirius.frontend.core;
 import static org.testng.Assert.assertEquals;
 
 import org.sirius.common.core.QName;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.InterfaceDeclaration;
-import org.sirius.frontend.api.MemberFunction;
-import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
-import org.sirius.frontend.api.Type;
 import org.sirius.frontend.parser.Compiler;
 import org.testng.annotations.Test;
 
@@ -36,14 +34,14 @@ public class InterfaceTest {
 		InterfaceDeclaration cd = pack.getInterfaces().get(0);
 		assertEquals(cd.getQName(), new QName("p", "k", "I"));
 		
-		MemberFunction func = cd.getFunctions().get(0);
+		AbstractFunction func = cd.getFunctions().get(0);
 		assertEquals(func.getQName(), new QName("p", "k", "I", "f"));
 		
 		// -- check implementation
 		ClassDeclaration implClass = pack.getClasses().get(0);
 		assertEquals(implClass.getQName(), new QName("p", "k", "C"));
 		
-		MemberFunction inheritedFunc = implClass.getFunctions().get(0);
+		AbstractFunction inheritedFunc = implClass.getFunctions().get(0);
 		assertEquals(inheritedFunc.getQName(), new QName("p", "k", "I", "f"));
 	}
 	

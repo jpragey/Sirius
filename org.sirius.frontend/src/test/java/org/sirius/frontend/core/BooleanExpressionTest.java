@@ -4,20 +4,17 @@ import static org.testng.Assert.assertEquals;
 
 import java.util.List;
 
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
-import org.sirius.frontend.api.Statement;
-import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
-import org.sirius.frontend.ast.AstStatement;
-import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.parser.Compiler;
 import org.testng.annotations.Test;
 
@@ -57,12 +54,12 @@ public class BooleanExpressionTest {
 		PackageDeclaration pd = md.getPackages().get(0);
 		
 		assertEquals(pd.getFunctions().size(), 1);
-		TopLevelFunction fd = pd.getFunctions().get(0);
+		AbstractFunction fd = pd.getFunctions().get(0);
 		
 		assertEquals(fd.getQName().getLast(), "f");
-		assertEquals(fd.getBodyStatements().size(), 1);
+		assertEquals(fd.getBodyStatements().get().size(), 1);
 //		Statement st = fd.getBodyStatements().get(0);
-		LocalVariableStatement localVarST = (LocalVariableStatement)fd.getBodyStatements().get(0); 
+		LocalVariableStatement localVarST = (LocalVariableStatement)fd.getBodyStatements().get().get(0); 
 //		assertEquals(localVarST.getName().getText(), "b");
 ////		assert(lvst.getType().toString(), "");
 		Type t = localVarST.getType();
@@ -77,7 +74,7 @@ public class BooleanExpressionTest {
 		PackageDeclaration apiPd = md.getPackages().get(0);
 		
 		assertEquals(apiPd.getFunctions().size(), 1);
-		TopLevelFunction tlf = apiPd.getFunctions().get(0);
+		AbstractFunction tlf = apiPd.getFunctions().get(0);
 		
 		assertEquals(tlf.getQName().dotSeparated(), "f");
 	}

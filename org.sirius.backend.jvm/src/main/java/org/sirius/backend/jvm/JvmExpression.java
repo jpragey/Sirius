@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.BooleanConstantExpression;
 import org.sirius.frontend.api.ClassDeclaration;
@@ -21,7 +22,6 @@ import org.sirius.frontend.api.LocalVariableReference;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.MemberValueAccessExpression;
 import org.sirius.frontend.api.StringConstantExpression;
-import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
 
@@ -201,7 +201,7 @@ public class JvmExpression {
 			
 			call.getArguments().forEach(expr -> writeExpressionBytecode(mv, expr, scope));
 
-			Optional<TopLevelFunction> tlFunc = call.getDeclaration();
+			Optional<AbstractFunction> tlFunc = call.getDeclaration();
 			if(tlFunc.isPresent()) {
 				String descriptor = descriptorFactory.methodDescriptor(tlFunc.get());
 				mv.visitMethodInsn(

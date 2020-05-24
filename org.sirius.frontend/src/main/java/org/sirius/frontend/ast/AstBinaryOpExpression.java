@@ -43,6 +43,10 @@ public class AstBinaryOpExpression implements AstExpression {
 			this.operator = BinaryOpExpression.Operator.Divide;
 			break;
 
+		case "^":
+			this.operator = BinaryOpExpression.Operator.Exponential;
+			break;
+
 		default:
 			throw new RuntimeException("BinaryOpExpression: unknown operator " + opText);	// TODO: better error handling
 		}

@@ -5,9 +5,9 @@ import static org.testng.Assert.assertEquals;
 import java.util.List;
 
 import org.sirius.common.core.QName;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.LocalVariableStatement;
-import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
@@ -56,10 +56,10 @@ public class LocalVariablesTest {
 		assertEquals(cd.getQName(), new QName("p", "k", "C"));
 
 		assertEquals(cd.getFunctions().size(), 1);
-		MemberFunction func = cd.getFunctions().get(0);
+		AbstractFunction func = cd.getFunctions().get(0);
 		
-		assertEquals(func.getBodyStatements().size(), 1);
-		LocalVariableStatement lvs = (LocalVariableStatement)func.getBodyStatements().get(0);
+		assertEquals(func.getBodyStatements().get().size(), 1);
+		LocalVariableStatement lvs = (LocalVariableStatement)func.getBodyStatements().get().get(0);
 		
 		assertEquals(lvs.getName().getText(), "s");
 

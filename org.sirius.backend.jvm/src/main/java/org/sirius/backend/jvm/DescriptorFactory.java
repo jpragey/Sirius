@@ -1,8 +1,6 @@
 package org.sirius.backend.jvm;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
@@ -12,7 +10,6 @@ import org.sirius.frontend.api.ArrayType;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.IntegerType;
-import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.VoidType;
 

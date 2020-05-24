@@ -12,7 +12,7 @@ import org.sirius.common.core.Token;
  */
 public interface FunctionCall extends Expression {
 	
-	Optional<TopLevelFunction> getDeclaration();
+	Optional<AbstractFunction> getDeclaration();
 	
 	Token getFunctionName(); 
 	List<Expression> getArguments();

@@ -14,13 +14,12 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.InterfaceDeclaration;
-import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.PackageDeclaration;
-import org.sirius.frontend.api.TopLevelFunction;
 
 public class JvmNodeClass {
 	
@@ -71,11 +70,11 @@ public class JvmNodeClass {
 	}
 	
 	private void addMemberFunctions(ClassOrInterface cd) {
-		for(MemberFunction mf: cd.getFunctions())
+		for(AbstractFunction mf: cd.getFunctions())
 			memberFunctions.add(new JvmMemberFunction(reporter, descriptorFactory, mf, false /*isStatic*/));
 	}
 	
-	public void addTopLevelFunction(TopLevelFunction  func) {
+	public void addTopLevelFunction(AbstractFunction func) {
 		memberFunctions.add(new JvmMemberFunction(reporter, descriptorFactory, func, true /*isStatic*/));
 		
 	}

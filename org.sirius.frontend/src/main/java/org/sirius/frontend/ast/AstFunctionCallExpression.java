@@ -8,10 +8,9 @@ import java.util.Optional;
 
 import org.antlr.v4.runtime.Token;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionCall;
-import org.sirius.frontend.api.IntegerConstantExpression;
-import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.symbols.Symbol;
@@ -154,14 +153,15 @@ public class AstFunctionCallExpression implements AstExpression {
 		}
 
 		@Override
-		public Optional<TopLevelFunction> getDeclaration() {
+		public Optional<AbstractFunction> getDeclaration() {
 			Optional<Symbol> optSymbol = symbolTable.lookup(name.getText());
 			if(optSymbol.isPresent()) {
 				Optional<AstFunctionDeclaration> optFunc =  optSymbol.get().getFunctionDeclaration();
 				if(optFunc.isPresent()) {
 					AstFunctionDeclaration funcDecl = optFunc.get();
-					Optional<TopLevelFunction> tlFunc = funcDecl.getTopLevelFunction();
-					return tlFunc;
+//					Optional<TopLevelFunction> tlFunc = funcDecl.getTopLevelFunction();
+					AbstractFunction tlFunc = funcDecl.toAPI();
+					return Optional.of(tlFunc);
 				}
 			}
 			
@@ -210,7 +210,7 @@ public class AstFunctionCallExpression implements AstExpression {
 			}
 
 			@Override
-			public Optional<TopLevelFunction> getDeclaration() {
+			public Optional<AbstractFunction> getDeclaration() {
 				return Optional.empty();
 			}
 

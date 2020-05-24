@@ -6,13 +6,10 @@ import static org.testng.Assert.assertTrue;
 import java.util.List;
 import java.util.Optional;
 
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
-import org.sirius.frontend.api.TopLevelFunction;
-import org.sirius.frontend.ast.AstFunctionDeclaration;
-import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.ShebangDeclaration;
-import org.sirius.frontend.core.ModuleContent;
 import org.sirius.frontend.core.ScriptSession;
 import org.testng.annotations.Test;
 
@@ -46,7 +43,7 @@ public class CompilationUnitTest {
 //		List<AstFunctionDeclaration> fds = packageDeclarations
 //				.get(0)
 //				.getFunctionDeclarations();
-		List<TopLevelFunction> fds = packageDeclarations
+		List<AbstractFunction> fds = packageDeclarations
 				.get(0)
 				.getFunctions();
 		

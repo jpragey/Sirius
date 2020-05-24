@@ -1,36 +1,24 @@
 package org.sirius.frontend.core;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.sirius.common.core.QName;
-import org.sirius.common.error.AccumulatingReporter;
-import org.sirius.common.error.Reporter;
-import org.sirius.common.error.ShellReporter;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.Expression;
-import org.sirius.frontend.api.ExpressionStatement;
 import org.sirius.frontend.api.LocalVariableStatement;
-import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.MemberValueAccessExpression;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
-import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.ast.AstMemberAccessExpression;
-import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.parser.Compiler;
-import org.sirius.sdk.org.sirius.TopLevel;
 import org.testng.annotations.Test;
-
-import jdk.jfr.ValueDescriptor;
 
 public class MethodTests {
 
@@ -48,7 +36,7 @@ public class MethodTests {
 		ClassDeclaration cd = pack.getClasses().get(0);
 		assertEquals(cd.getQName(), new QName("p", "k", "C"));
 		
-		MemberFunction func = cd.getFunctions().get(0);
+		AbstractFunction func = cd.getFunctions().get(0);
 		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
 
 //		assertEquals(func.getBodyStatements().size(), 1);
@@ -87,11 +75,11 @@ public class MethodTests {
 		
 //		ClassDeclaration packCd = pack.getClasses().get(1);
 //		assertEquals(cd.getQName(), new QName("A"));
-		List<TopLevelFunction> tlFuncs = pack.getFunctions();
-		TopLevelFunction mainFunc = tlFuncs.get(0);
+		List<AbstractFunction> tlFuncs = pack.getFunctions();
+		AbstractFunction mainFunc = tlFuncs.get(0);
 		assertEquals(mainFunc.getQName().dotSeparated(), "main");
 		
-		List<Statement> body = mainFunc.getBodyStatements();
+		List<Statement> body = mainFunc.getBodyStatements().get();
 		assertEquals(body.size(), 2);
 		
 		LocalVariableStatement locVarStmt = (LocalVariableStatement)body.get(0);
@@ -147,11 +135,11 @@ public class MethodTests {
 		assertEquals(cd.getQName(), new QName("p", "k", "C"));
 		
 		// -- function local value
-		MemberFunction func = cd.getFunctions().get(0);
+		AbstractFunction func = cd.getFunctions().get(0);
 		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
 
-		assertEquals(func.getBodyStatements().size(), 1);
-		LocalVariableStatement funcLvs = (LocalVariableStatement)func.getBodyStatements().get(0);
+		assertEquals(func.getBodyStatements().get().size(), 1);
+		LocalVariableStatement funcLvs = (LocalVariableStatement)func.getBodyStatements().get().get(0);
 		assertEquals(funcLvs.getName().getText(), "s11");
 
 		assertTrue(funcLvs.getInitialValue().isPresent());

@@ -3,6 +3,7 @@ package org.sirius.frontend.integration;
 import static org.testng.Assert.assertEquals;
 
 import org.sirius.common.core.QName;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.ExpressionStatement;
 import org.sirius.frontend.api.FunctionCall;
@@ -10,7 +11,6 @@ import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.Statement;
-import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.core.ScriptSession;
 import org.sirius.frontend.parser.Compiler;
@@ -28,9 +28,9 @@ public class SdkCallTest {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration pack = md.getPackages().get(0);
-		TopLevelFunction runFunction = pack.getFunctions().get(0);
+		AbstractFunction runFunction = pack.getFunctions().get(0);
 		
-		Statement callExprStatement = runFunction.getBodyStatements().get(0);
+		Statement callExprStatement = runFunction.getBodyStatements().get().get(0);
 		assert(callExprStatement instanceof ExpressionStatement);
 
 		Expression callExpression = ((ExpressionStatement)callExprStatement).getExpression();

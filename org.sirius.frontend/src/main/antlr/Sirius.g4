@@ -249,8 +249,22 @@ ifElseStatement returns [AstIfElseStatement stmt]
 expression returns [AstExpression express]
 	: constantExpression { $express = $constantExpression.express ;}
 	
-	| left=expression op=('+'|'-') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
+	| <assoc=right> left=expression op='^' right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }// TODO
+	
+	
 	| left=expression op=('*'|'/') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
+	| left=expression op=('+'|'-') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
+	
+	/* TODO: && || ! == != < > >= <=
+	*/
+	| left=expression op=('<'|'>'|'<='|'>=') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
+
+	| left=expression op=('=='|'!=') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
+	| left=expression op='&&' right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
+	| left=expression op='||' right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
+	| left=expression op=('='|'+='|'-='|'*='|'/=') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
+	// TODO - end
+	
 	// -- Function call
 	| LOWER_ID '('				{ AstFunctionCallExpression call = factory.functionCall($LOWER_ID); $express = call; }
 		(arg=expression 			{ call.addActualArgument($arg.express); }

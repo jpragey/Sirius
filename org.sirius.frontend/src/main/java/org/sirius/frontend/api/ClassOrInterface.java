@@ -7,7 +7,7 @@ import org.sirius.common.core.QName;
 public interface ClassOrInterface extends ClassType {
 
 	List<MemberValue> getMemberValues();
-	List<MemberFunction> getFunctions();
+	List<AbstractFunction> getFunctions();
 	
 	// get implemented interfaces of first level  (no grandparent)
 	List<InterfaceDeclaration> getDirectInterfaces();
@@ -22,7 +22,7 @@ public interface ClassOrInterface extends ClassType {
 			mv.visitMe(visitor);
 		}
 		
-		for(MemberFunction fct: getFunctions()) {
+		for(AbstractFunction fct: getFunctions()) {
 			fct.visitMe(visitor);
 		}
 	}

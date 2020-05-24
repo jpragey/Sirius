@@ -7,10 +7,9 @@ import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.FunctionFormalArgument;
-import org.sirius.frontend.api.MemberFunction;
 import org.sirius.frontend.api.Statement;
-import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 
@@ -235,64 +234,109 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 		return resolved;
 	}
 	
-	public Optional<TopLevelFunction> getTopLevelFunction() 
-	{// TODO: filter top-level
-		return Optional.of(new TopLevelFunction() {
-			QName functionQName = containerQName.get().child(name.getText());
-
-			@Override
-			public QName getQName() {
-				return functionQName;
-			}
-
-			@Override
-			public List<FunctionFormalArgument> getArguments() {
-				return formalArguments.stream()
-						.map(arg -> arg.toAPI(functionQName))
-						.collect(Collectors.toList());
-			}
-
-			@Override
-			public List<Statement> getBodyStatements() {
-				return statements.stream()
+	private class FunctionImpl implements AbstractFunction {
+		QName functionQName = containerQName.get().child(name.getText());
+		List<FunctionFormalArgument> implArguments = 
+				formalArguments.stream()
+				.map(arg -> arg.toAPI(functionQName))
+				.collect(Collectors.toList());
+		Type returnType = resolveReturnType();
+		
+		Optional<List<Statement>> bodyStatements =
+				concrete ?
+						Optional.of(statements.stream()
 					.map(st -> st.toAPI())
-					.collect(Collectors.toList());
-			}
+					.collect(Collectors.toList()))
+						: Optional.empty();
+		
+		
+		@Override
+		public QName getQName() {
+			return functionQName;
+		}
 
-			@Override
-			public Type getReturnType() {
-				return resolveReturnType();
-			}
-		});
+		@Override
+		public List<FunctionFormalArgument> getArguments() {
+			return implArguments;
+		}
+
+		@Override
+		public Type getReturnType() {
+			return returnType;
+		}
+
+		@Override
+		public Optional<List<Statement>> getBodyStatements() {
+			return bodyStatements;
+		}
+	}
+	private FunctionImpl functionImpl = null;
+	
+	public AbstractFunction toAPI() {
+		if(functionImpl == null) {
+			functionImpl = new FunctionImpl();
+		}
+		return functionImpl;
 	}
 	
-	public Optional<MemberFunction> getMemberFunction() {// TODO: filter top-level
-		return Optional.of(new MemberFunction() {
-			QName functionQName = containerQName.get().child(name.getText());
-			
-			@Override
-			public QName getQName() {
-				return functionQName;
-			}
-
-			@Override
-			public List<FunctionFormalArgument> getArguments() {
-				return formalArguments.stream()
-						.map(arg -> arg.toAPI(functionQName))
-						.collect(Collectors.toList());
-			}
-			@Override
-			public List<Statement> getBodyStatements() {
-				return statements.stream()
-					.map(st -> st.toAPI())
-					.collect(Collectors.toList());
-			}
-			@Override
-			public Type getReturnType() {
-				return resolveReturnType();
-			}
-		});
-	}
+//	public Optional<TopLevelFunction> getTopLevelFunction0() 
+//	{// TODO: filter top-level
+//		return Optional.of(new TopLevelFunction() {
+//			QName functionQName = containerQName.get().child(name.getText());
+//
+//			@Override
+//			public QName getQName() {
+//				return functionQName;
+//			}
+//
+//			@Override
+//			public List<FunctionFormalArgument> getArguments() {
+//				return formalArguments.stream()
+//						.map(arg -> arg.toAPI(functionQName))
+//						.collect(Collectors.toList());
+//			}
+//
+//			@Override
+//			public List<Statement> getBodyStatements() {
+//				return statements.stream()
+//					.map(st -> st.toAPI())
+//					.collect(Collectors.toList());
+//			}
+//
+//			@Override
+//			public Type getReturnType() {
+//				return resolveReturnType();
+//			}
+//		});
+//	}
+//	
+//	public Optional<MemberFunction> getMemberFunction0() {// TODO: filter top-level
+//		return Optional.of(new MemberFunction() {
+//			QName functionQName = containerQName.get().child(name.getText());
+//			
+//			@Override
+//			public QName getQName() {
+//				return functionQName;
+//			}
+//
+//			@Override
+//			public List<FunctionFormalArgument> getArguments() {
+//				return formalArguments.stream()
+//						.map(arg -> arg.toAPI(functionQName))
+//						.collect(Collectors.toList());
+//			}
+//			@Override
+//			public List<Statement> getBodyStatements() {
+//				return statements.stream()
+//					.map(st -> st.toAPI())
+//					.collect(Collectors.toList());
+//			}
+//			@Override
+//			public Type getReturnType() {
+//				return resolveReturnType();
+//			}
+//		});
+//	}
 	
 	
 }

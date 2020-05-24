@@ -11,8 +11,16 @@ public interface Visitor {
 	public default void start(ConstructorDeclaration declaration) {}
 	public default void end(ConstructorDeclaration declaration) {}
 	
-	public default void start(MemberFunction declaration) {}
-	public default void end(MemberFunction declaration) {}
+//	public default void start(MemberFunction declaration) {}
+//	public default void end(MemberFunction declaration) {}
+//	public default void start(TopLevelFunction declaration) {}
+//	public default void end(TopLevelFunction declaration) {}
+	
+	public default void startAbstractFunction(AbstractFunction declaration) {}
+	public default void endAbstractFunction(AbstractFunction declaration) {}
+	
+	
+	
 	
 	public default void start(Statement statement) {}
 	public default void end(Statement statement) {}
@@ -59,8 +67,6 @@ public interface Visitor {
 	public default void start(PackageDeclaration declaration) {}
 	public default void end(PackageDeclaration declaration) {}
 	
-	public default void start(TopLevelFunction declaration) {}
-	public default void end(TopLevelFunction declaration) {}
 	
 	public default void start(FunctionFormalArgument declaration) {}
 	public default void end(FunctionFormalArgument declaration) {}

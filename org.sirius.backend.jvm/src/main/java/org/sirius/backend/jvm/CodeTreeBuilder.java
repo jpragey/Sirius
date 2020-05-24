@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
-import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Visitor;
 
 public class CodeTreeBuilder implements Visitor {
@@ -42,7 +42,7 @@ public class CodeTreeBuilder implements Visitor {
 			for(InterfaceDeclaration id: packageDeclaration.getInterfaces()) {
 				jvmClasses.add(new JvmNodeClass(reporter, id));
 			}
-			for(TopLevelFunction func: packageDeclaration.getFunctions()) {
+			for(AbstractFunction func: packageDeclaration.getFunctions()) {
 				packageClass.addTopLevelFunction(func);
 			}
 		}

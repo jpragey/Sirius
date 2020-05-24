@@ -11,7 +11,8 @@ public interface PackageDeclaration {
 	List<ClassDeclaration> getClasses();
 	List<InterfaceDeclaration> getInterfaces();
 	List<TopLevelValue> getValues();
-	List<TopLevelFunction> getFunctions();
+//	List<TopLevelFunction> getFunctions();
+	List<AbstractFunction> getFunctions();
 
 	default void visitMe(Visitor visitor) {
 		visitor.start(this);
