@@ -102,6 +102,12 @@ public interface AstVisitor {
 	public default void start (AstLocalVariableStatement statement) {}
 	public default void end   (AstLocalVariableStatement statement) {}
 	
+	public default void startBlock (AstBlock statement) {}
+	public default void endBlock   (AstBlock statement) {}
+	
+	public default void startIfElseStatement(AstIfElseStatement statement) {}
+	public default void endIfElseStatement	(AstIfElseStatement statement) {}
+	
 	// -- Types
 	public default void start(AstArrayType type) {}
 	public default void end(AstArrayType type) {}

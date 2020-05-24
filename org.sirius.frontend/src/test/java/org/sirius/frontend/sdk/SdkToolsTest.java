@@ -50,6 +50,7 @@ public class SdkToolsTest {
 		checkSymbolTableContainsClass    (symbolTable, new QName("sirius", "lang", "String"));
 		checkSymbolTableContainsInterface(symbolTable, new QName("sirius", "lang", "Addable"));
 		checkSymbolTableContainsClass	 (symbolTable, new QName("sirius", "lang", "Integer"));
+		checkSymbolTableContainsClass	 (symbolTable, new QName("sirius", "lang", "Boolean"));
 		
 	}
 	

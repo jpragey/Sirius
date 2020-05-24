@@ -123,7 +123,11 @@ public class AstFactory {
 	public AstLocalVariableStatement localVariableStatement(AnnotationList annotationList, AstType type, Token varName) {
 		return new AstLocalVariableStatement(annotationList, type, new AstToken(varName));
 	}
-	
+
+	public AstIfElseStatement ifElseStatement(AstExpression ifExpression, AstStatement ifBlock) {
+		return new AstIfElseStatement(reporter, ifExpression, ifBlock);
+	}
+
 	// -- Values
 	public AstMemberValueDeclaration valueDeclaration(AnnotationList annotationList, AstType type, Token name) {
 		return new AstMemberValueDeclaration(annotationList, type, new AstToken(name));

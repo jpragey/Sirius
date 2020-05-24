@@ -9,10 +9,12 @@ import org.sirius.frontend.api.Type;
 public class AstBooleanConstantExpression implements AstExpression {
 	
 	private AstToken content;
+	private boolean value;
 
 	public AstBooleanConstantExpression(AstToken content) {
 		super();
 		this.content = content;
+		this.value = content.getText().equals("true");
 	}
 	
 	
@@ -20,6 +22,12 @@ public class AstBooleanConstantExpression implements AstExpression {
 		return content;
 	}
 	
+	
+	public boolean isValue() {
+		return value;
+	}
+
+
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startBooleanConstant(this);
@@ -39,6 +47,11 @@ public class AstBooleanConstantExpression implements AstExpression {
 			@Override
 			public Type getType() {
 				return Type.booleanType;
+			}
+
+			@Override
+			public boolean getValue() {
+				return value;
 			}
 		};
 	}

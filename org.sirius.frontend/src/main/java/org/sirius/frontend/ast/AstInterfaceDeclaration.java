@@ -16,7 +16,7 @@ import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 import com.google.common.collect.ImmutableList;
 
-public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstParametric<AstClassDeclaration>, AstClassOrInterface {
+public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstParametric<AstClassDeclaration>, AstClassOrInterface, Named {
 
 	private Reporter reporter;
 
@@ -60,9 +60,11 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	}
 
 	
+	@Override
 	public AstToken getName() {
 		return name;
 	}
+	@Override
 	public QName getQName() {
 		return this.qName;
 	}
@@ -77,6 +79,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 			this.symbolTable.addFormalParameter(this.qName, d);
 	}
 
+	@Override
 	public ImmutableList<TypeParameter> getTypeParameters() {
 		return typeParameters;
 	}

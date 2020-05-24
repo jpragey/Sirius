@@ -41,21 +41,24 @@ public class JvmNodeClass {
 		this.qName = qName;
 	}
 	
-	public JvmNodeClass(ClassDeclaration cd) {
+	public JvmNodeClass(Reporter reporter, ClassDeclaration cd) {
 		super();
+		this.reporter = reporter;
 		this.qName = cd.getQName();
 		addMemberFunctions(cd);
 		addMemberValues(cd);
 	}
-	public JvmNodeClass(InterfaceDeclaration cd) {
+	public JvmNodeClass(Reporter reporter, InterfaceDeclaration cd) {
 		super();
+		this.reporter = reporter;
 		this.qName = cd.getQName();
 		addMemberFunctions(cd);
 		addMemberValues(cd);
 	}
 	// For Package class
-	public JvmNodeClass(PackageDeclaration pd) {
+	public JvmNodeClass(Reporter reporter, PackageDeclaration pd) {
 		super();
+		this.reporter = reporter;
 		this.qName = pd.getQName().child("$package$");	// TODO
 	}
 

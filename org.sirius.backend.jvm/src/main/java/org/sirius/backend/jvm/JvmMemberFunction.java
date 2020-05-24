@@ -14,6 +14,7 @@ import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.NEW;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
@@ -31,6 +32,7 @@ import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionCall;
+import org.sirius.frontend.api.IfElseStatement;
 import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.IntegerType;
 import org.sirius.frontend.api.LocalVariableReference;
@@ -82,6 +84,58 @@ public class JvmMemberFunction {
 			}
 		}
 
+		public void writeIfElseStatementBytecode(ClassWriter classWriter, MethodVisitor mv, IfElseStatement statement, JvmScope scope) {
+			/*
+			 * if-then :
+			 *   evaluate expr
+			 *   IFEQ goto endifLabel
+			 *   ifBlock
+			 * endifLabel:
+			 * 
+			 * if-then-else :
+			 *   evaluate expr
+			 *   IFEQ goto endifLabel
+			 *   <ifBlock>
+			 * endifLabel:
+			 * 	 GOTO endElseBlock
+			 *   <elseBlock>
+			 * endElseBlock
+			 */
+			
+			
+			Expression expr = statement.getExpression();
+			Statement ifStmt = statement.getIfStatement();
+			Optional<Statement> elseStmt = statement.getElseStatement();
+			
+			new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, expr, scope);
+			// -- IFEQ
+			
+			Label endifLabel = new Label();
+			mv.visitJumpInsn(Opcodes.IFEQ, endifLabel);
+			
+			JvmStatementBlock ifBlock = new JvmStatementBlock(Arrays.asList(ifStmt));
+			ifBlock.writeByteCode(classWriter, mv);
+			
+			
+			if(elseStmt.isEmpty()) {
+				mv.visitLabel(endifLabel);
+			} else {
+				Label endElseLabel = new Label();
+				mv.visitJumpInsn(Opcodes.GOTO, endElseLabel);
+
+				mv.visitLabel(endifLabel);
+
+				JvmStatementBlock elseBlock = new JvmStatementBlock(Arrays.asList(elseStmt.get()));
+				elseBlock.writeByteCode(classWriter, mv);
+				
+				mv.visitLabel(endElseLabel);
+			}
+			
+//			write
+			
+//			reporter.info(">>> IfElseStatement (" + expr + ")" + ifStmt );
+		}
+		
 		/** simulate "return ;"
 		 *  
 		 * @param classWriter
@@ -136,6 +190,9 @@ public class JvmMemberFunction {
 				for(Statement st: statements ) {
 					if(st instanceof ReturnStatement) {
 						writeReturnStatementBytecode(classWriter, mv, (ReturnStatement)st, scope);
+					}
+					else if(st instanceof IfElseStatement) {
+						writeIfElseStatementBytecode(classWriter, mv, (IfElseStatement)st, scope);
 					}
 				}
 

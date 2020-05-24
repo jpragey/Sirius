@@ -54,15 +54,15 @@ public class JvmScope {
 		this.endLabel = new Label();
 	}
 
-	public Label getStartLabel() {
-		return startLabel;
-	}
-
-	public Label getEndLabel() {
-		assert(endLabel != null);
-		
-		return endLabel;
-	}
+//	public Label getStartLabel() {
+//		return startLabel;
+//	}
+//
+//	public Label getEndLabel() {
+//		assert(endLabel != null);
+//		
+//		return endLabel;
+//	}
 	public void addLocalVariable(LocalVariableStatement st) {
 		LocalVarHolder h = new LocalVarHolder(st);
 		locVarsStmts.add(h);

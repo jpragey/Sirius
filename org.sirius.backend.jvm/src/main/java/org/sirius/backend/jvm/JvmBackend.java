@@ -61,7 +61,7 @@ public class JvmBackend implements Backend {
 
 		listeners.forEach(l ->  l.start(declaration) );
 
-		CodeTreeBuilder codeTreeBuilder = new CodeTreeBuilder();
+		CodeTreeBuilder codeTreeBuilder = new CodeTreeBuilder(reporter);
 		declaration.visitMe(codeTreeBuilder);
 		codeTreeBuilder.createByteCode(listeners);
 		

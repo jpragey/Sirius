@@ -13,12 +13,10 @@ import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.TopLevelFunction;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
-import org.sirius.frontend.symbols.LocalSymbolTable;
-import org.sirius.frontend.symbols.SymbolTable;
 
 import com.google.common.collect.ImmutableList;
 
-public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<AstFunctionDeclaration> {
+public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<AstFunctionDeclaration>, Named {
 
 	private AstToken name;
 	
@@ -100,6 +98,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 	
 	
 	
+	@Override
 	public AstToken getName() {
 		return name;
 	}
@@ -213,6 +212,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 		return containerQName;
 	}
 
+	@Override
 	public QName getQName() {
 		return qName;
 	}

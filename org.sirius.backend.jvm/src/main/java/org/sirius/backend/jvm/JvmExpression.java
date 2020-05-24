@@ -10,6 +10,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.BinaryOpExpression;
+import org.sirius.frontend.api.BooleanConstantExpression;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.ConstructorCall;
@@ -48,6 +49,9 @@ public class JvmExpression {
 		else if(expression instanceof IntegerConstantExpression) {
 			processIntegerConstant(mv, (IntegerConstantExpression) expression);
 		} 
+		else if(expression instanceof BooleanConstantExpression) {
+			processBooleanConstant(mv, (BooleanConstantExpression) expression);
+		} 
 		else if(expression instanceof TypeCastExpression) {
 //			TypeCastExpression tc = (TypeCastExpression)expression;
 //			processExpression(mv, tc.expression());
@@ -84,11 +88,14 @@ public class JvmExpression {
 			mv.visitIntInsn(Opcodes.BIPUSH, expessionVal);
 			String initDescriptor = "(I)V";		// "()V" for void constructor
 			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, internalName, "<init>", initDescriptor, false);
-
-			
-			
-			
 		}
+	}
+	private void processBooleanConstant(MethodVisitor mv, BooleanConstantExpression expression) {
+		boolean expessionVal = expression.getValue();
+		int opcode = expessionVal ?
+				Opcodes.ICONST_1:
+				Opcodes.ICONST_0;
+		mv.visitInsn(opcode);
 	}
 	public void processBinaryOpExpression(MethodVisitor mv, BinaryOpExpression expression, JvmScope scope) {
 //		MethodVisitor mv = methodStack.peek().mv;

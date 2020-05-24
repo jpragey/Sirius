@@ -214,6 +214,7 @@ statement returns [AstStatement stmt]
 	: returnStatement	{ $stmt = $returnStatement.stmt; }
 	| expression ';'	{ $stmt = new AstExpressionStatement($expression.express); }
 	| localVariableStatement	{ $stmt = $localVariableStatement.lvStatement; }
+	| ifElseStatement	{ $stmt = $ifElseStatement.stmt; }
 	;
 
 returnStatement returns [AstReturnStatement stmt]
@@ -229,6 +230,18 @@ localVariableStatement returns [AstLocalVariableStatement lvStatement]
 			
 		)?
 		';'
+	;
+
+ifElseStatement returns [AstIfElseStatement stmt] 
+@init {
+	AstExpression ifExpression;
+	//, AstBlock ifBlock, Optional<AstBlock> elseBlock
+}
+	: 'if' '(' ifExpression = expression ')'
+		ifBlock = statement {$stmt = factory.ifElseStatement($ifExpression.express, $ifBlock.stmt);}
+		(
+			'else' elseBlock = statement {$stmt = $stmt.withElse($elseBlock.stmt); }
+		)?
 	;
 
 // -------------------- EXPRESSION
@@ -418,6 +431,7 @@ locals [
 
 
 
+BOOLEAN : 'true' | 'false' ;
 
 TYPE_ID : [A-Z][a-zA-Z0-9_]* ;	// start by uppercase
 
@@ -437,5 +451,4 @@ STRING : '"' ~('"')* '"' ;
 
 FLOAT	: [0-9]+ '.' [0-9]+ ;
 INTEGER : [0-9]+ ;
-BOOLEAN : 'true' | 'false' ;
 
