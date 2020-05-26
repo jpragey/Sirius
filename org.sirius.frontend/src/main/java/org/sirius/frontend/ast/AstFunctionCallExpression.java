@@ -25,6 +25,10 @@ public class AstFunctionCallExpression implements AstExpression {
 	private SymbolTable symbolTable = null;
 	
 	private Reporter reporter;
+	
+	// 
+	private Optional<AstExpression> thisExpression = Optional.empty();
+	
 
 	public AstFunctionCallExpression(Reporter reporter, AstToken name) {
 		super();
@@ -54,6 +58,14 @@ public class AstFunctionCallExpression implements AstExpression {
 	
 	public void addActualArgument(AstExpression argument) {
 		this.actualArguments.add(argument);
+	}
+
+	public Optional<AstExpression> getThisExpression() {
+		return thisExpression;
+	}
+
+	public void setThisExpression(AstExpression thisExpression) {
+		this.thisExpression = Optional.of(thisExpression);
 	}
 
 	@Override
@@ -131,7 +143,10 @@ public class AstFunctionCallExpression implements AstExpression {
 		public org.sirius.common.core.Token getFunctionName() {
 			return name.asToken();
 		}
-
+		@Override
+		public Optional<Expression> getThis() {
+			return thisExpression.map(expr -> expr.getExpression());
+		}
 		@Override
 		public List<Expression> getArguments() {
 			List<AstFunctionFormalArgument> formalArgs = functionDeclaration.getFormalArguments();
@@ -171,6 +186,10 @@ public class AstFunctionCallExpression implements AstExpression {
 		public Type getType() {
 			return functionDeclaration.getReturnType().getApiType();
 		}
+		@Override
+		public String toString() {
+			return "FunctionCallImpl (" + name.getText() + ")";
+		}
 		
 	}
 	
@@ -198,7 +217,10 @@ public class AstFunctionCallExpression implements AstExpression {
 		
 		// -- If function call expression couldn't be created, return a descent fake
 		return new FunctionCall() {
-			
+			@Override
+			public String toString() {
+				return "Fake FunctionCall (couldn't be generated))";
+			}
 			@Override
 			public org.sirius.common.core.Token getFunctionName() {
 				return name;
@@ -217,6 +239,11 @@ public class AstFunctionCallExpression implements AstExpression {
 			@Override
 			public Type getType() {
 				return Type.voidType;
+			}
+
+			@Override
+			public Optional<Expression> getThis() {
+				return Optional.empty();
 			}
 		};
 	}

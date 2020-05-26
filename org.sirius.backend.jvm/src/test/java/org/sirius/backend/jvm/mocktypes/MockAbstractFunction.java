@@ -46,4 +46,9 @@ public class MockAbstractFunction implements AbstractFunction {
 		return Optional.of(bodyStatements);
 	}
 
+	@Override
+	public Optional<QName> getClassOrInterfaceContainerQName() {
+		return Optional.empty();
+	}
+
 }

@@ -208,6 +208,10 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 
 	
 	public AstInterfaceDeclaration withFunctionDeclaration(AstFunctionDeclaration fd) {
+		
+		if(!fd.getAnnotationList().contains("static"))
+			fd.setMember(true);
+
 		return new AstInterfaceDeclaration(reporter, name, packageQName,
 				ImmutableList.<AstFunctionDeclaration>builder()
 					.addAll(functionDeclarations)

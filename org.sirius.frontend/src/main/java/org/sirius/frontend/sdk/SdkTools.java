@@ -1,6 +1,7 @@
 package org.sirius.frontend.sdk;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
@@ -182,6 +183,7 @@ public class SdkTools {
 				AstToken.internal(methodName), 
 				returnType,
 				true /*TODO: concrete ???*/
+				, (method.getModifiers() & Modifier.STATIC) != 0	// TODO: ???
 				);
 		fd.setContainerQName(classPkgQName);
 		this.topLevelClass = this.topLevelClass .withFunctionDeclaration(fd);

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.units.qual.m;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
@@ -34,9 +35,15 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 
 	private DefaultSymbolTable symbolTable; 
 
+	// True it it has a body
 	private boolean concrete;
 	// 
 	private Optional<QName> containerQName = Optional.empty();
+	
+	// -- nonnull for instance method
+//	private Optional<AstClassOrInterface> memberContainer = Optional.empty();
+	private boolean member = false;
+	
 	private QName qName;
 	
 	public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType,
@@ -44,7 +51,8 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 			ImmutableList<AstFunctionFormalArgument> formalArguments,
 			Optional<QName> containerQName,
 			QName qName,
-			boolean concrete
+			boolean concrete,
+			boolean member
 			) {
 		super();
 		this.reporter = reporter;
@@ -57,10 +65,11 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 		this.containerQName = containerQName;
 		this.qName = qName;
 		this.concrete = concrete;
+		this.member = member;
 	}
 
-	public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType, boolean concrete) {
-		this(reporter, annotationList, name, returnType, ImmutableList.of(), ImmutableList.of(), Optional.empty(), null /*qName*/, concrete);	// TODO: oops qName
+	public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType, boolean concrete, boolean member) {
+		this(reporter, annotationList, name, returnType, ImmutableList.of(), ImmutableList.of(), Optional.empty(), null /*qName*/, concrete, member);	// TODO: oops qName
 	}
 	
 	
@@ -75,7 +84,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 				returnType, 
 				newTypeParams,
 				formalArguments,
-				containerQName, qName, concrete);
+				containerQName, qName, concrete, member);
 		return fd;
 	}
 	
@@ -90,7 +99,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 				returnType, 
 				typeParameters,
 				newFormalArguments,
-				containerQName, qName, concrete);
+				containerQName, qName, concrete, member);
 		return fd;
 	}
 	
@@ -102,6 +111,15 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 		return name;
 	}
 	
+	
+	public boolean isMember() {
+		return member;
+	}
+
+	public void setMember(boolean member) {
+		this.member = member;
+	}
+
 	public void addStatement(AstStatement statement) {
 		this.statements.add(statement);
 	}
@@ -195,7 +213,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 		AstFunctionDeclaration cd = new AstFunctionDeclaration(reporter, annotationList, name, returnType, 
 				typeParameters.subList(1, typeParameters.size()), 
 				formalArguments,
-				containerQName, qName, concrete);
+				containerQName, qName, concrete, member);
 		
 //		cd.typeParameters.addAll(typeParameters.subList(1, typeParameters.size()));
 	
@@ -268,6 +286,15 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 		@Override
 		public Optional<List<Statement>> getBodyStatements() {
 			return bodyStatements;
+		}
+
+		@Override
+		public Optional<QName> getClassOrInterfaceContainerQName() {
+			if(member && containerQName.isPresent()) {
+				return containerQName;
+			}
+			
+			return Optional.empty();
 		}
 	}
 	private FunctionImpl functionImpl = null;

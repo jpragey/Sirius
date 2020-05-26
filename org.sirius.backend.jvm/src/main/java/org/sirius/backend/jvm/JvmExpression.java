@@ -2,6 +2,7 @@ package org.sirius.backend.jvm;
 
 import static org.objectweb.asm.Opcodes.GETSTATIC;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.NEW;
 
 import java.util.Optional;
@@ -24,6 +25,7 @@ import org.sirius.frontend.api.MemberValueAccessExpression;
 import org.sirius.frontend.api.StringConstantExpression;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
+
 
 public class JvmExpression {
 
@@ -53,8 +55,8 @@ public class JvmExpression {
 			processBooleanConstant(mv, (BooleanConstantExpression) expression);
 		} 
 		else if(expression instanceof TypeCastExpression) {
-//			TypeCastExpression tc = (TypeCastExpression)expression;
-//			processExpression(mv, tc.expression());
+			TypeCastExpression tc = (TypeCastExpression)expression;
+			processTypeCast(mv, tc, scope);
 		} else if(expression instanceof BinaryOpExpression) {
 			processBinaryOpExpression(mv, (BinaryOpExpression)expression, scope);
 		} else if(expression instanceof ConstructorCall) {
@@ -70,6 +72,19 @@ public class JvmExpression {
 
 	private void processStringConstant(MethodVisitor mv, StringConstantExpression expression) {
 	    mv.visitLdcInsn(expression.getText());
+	}
+	
+	private void processTypeCast(MethodVisitor mv, TypeCastExpression expression, JvmScope scope) {
+		Type sourceType = expression.getType();
+		Type targetType = expression.targetType();
+		Expression sourceExpr = expression.expression();
+		
+		// TODO Implement it
+//		if(sourceType.equals(targetType)) {
+			new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, sourceExpr, scope);
+//		} else {
+			reporter.warning("??? TypeCast (TODO)" + sourceType + " into " + targetType );
+//		}
 	}
 	
 	private void processIntegerConstant(MethodVisitor mv, IntegerConstantExpression expression) {
@@ -199,13 +214,26 @@ public class JvmExpression {
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false /*isInterface*/);
 		} else {
 			
-			call.getArguments().forEach(expr -> writeExpressionBytecode(mv, expr, scope));
+			AbstractFunction func = call.getDeclaration().get();	// TODO: check for absence
+			if(func.getClassOrInterfaceContainerQName().isPresent()) {
+			}
+			int invokeOpcode;
+			if(call.getThis().isPresent()) {
+				invokeOpcode = INVOKEVIRTUAL;
+			} else {
+				invokeOpcode = INVOKESTATIC;
+			}
+			
+			for(Expression expr: call.getArguments()) {
+				writeExpressionBytecode(mv, expr, scope);
+			}
+//			call.getArguments().forEach(expr -> writeExpressionBytecode(mv, expr, scope));
 
 			Optional<AbstractFunction> tlFunc = call.getDeclaration();
 			if(tlFunc.isPresent()) {
 				String descriptor = descriptorFactory.methodDescriptor(tlFunc.get());
 				mv.visitMethodInsn(
-						INVOKEVIRTUAL,	// opcode 
+						invokeOpcode,	// opcode 
 						"$package$", // owner "java/io/PrintStream", 
 						call.getFunctionName().getText(), //"println", 
 						descriptor,	// "(Ljava/lang/String;)V",	// method descriptor 

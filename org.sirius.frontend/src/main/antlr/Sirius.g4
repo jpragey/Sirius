@@ -176,7 +176,7 @@ functionDeclaration returns [AstFunctionDeclaration declaration]
 	  (	  rt=type	{retType = $rt.declaration; } 
 	  	| 'void' 	{retType = new AstVoidType();}
 	  )
-	  LOWER_ID		{ $declaration = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, false /*concrete*/); }
+	  LOWER_ID		{ $declaration = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, false /*concrete*/, false /*member*/); }
 	  (
 	    '<'
 	  		  	(
@@ -266,11 +266,11 @@ expression returns [AstExpression express]
 	// TODO - end
 	
 	// -- Function call
-	| LOWER_ID '('				{ AstFunctionCallExpression call = factory.functionCall($LOWER_ID); $express = call; }
-		(arg=expression 			{ call.addActualArgument($arg.express); }
-			( ',' arg=expression	{ call.addActualArgument($arg.express); } )*
-		)?
-	  ')'
+	| 
+		functionCallExpression 		{$express = $functionCallExpression.call; }
+	| expression '.' functionCallExpression 		{  $functionCallExpression.call.setThisExpression($expression.express); $express = $functionCallExpression.call; }
+	
+	
 	|	// -- Constructor call
 	  TYPE_ID '('					{ ConstructorCallExpression call = factory.createConstructorCall($TYPE_ID); $express = call; }
 		
@@ -286,6 +286,20 @@ expression returns [AstExpression express]
 	| // -- Local/member/global variable, function parameter
 	  ref = LOWER_ID						{ $express = factory.simpleReference($ref); }
 	;
+
+functionCallExpression returns [AstFunctionCallExpression call]
+	: 
+		LOWER_ID '('				{ $call = factory.functionCall($LOWER_ID); }
+		(arg=expression 			{ $call.addActualArgument($arg.express); }
+			( ',' arg=expression	{ $call.addActualArgument($arg.express); } )*
+		)?
+	  ')'
+	;
+
+
+
+
+
 
 constantExpression returns [AstExpression express]
 	: STRING	{ $express = factory.stringConstant($STRING); }

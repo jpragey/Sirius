@@ -35,11 +35,23 @@ public interface Visitor {
 	public default void start(IntegerConstantExpression expression) {}
 	public default void end(IntegerConstantExpression expression) {}
 	
+	public default void start(FloatConstantExpression expression) {}
+	public default void end(FloatConstantExpression expression) {}
+	
+	public default void start(BooleanConstantExpression expression) {}
+	public default void end(BooleanConstantExpression expression) {}
+	
 	public default void start(StringConstantExpression expression) {}
 	public default void end(StringConstantExpression expression) {}
 	
 	public default void start(BinaryOpExpression expression) {}
 	public default void end(BinaryOpExpression expression) {}
+	
+	public default void start(FunctionCall expression) {}
+	public default void end(FunctionCall expression) {}
+	
+	public default void start(TypeCastExpression expression) {}
+	public default void end(TypeCastExpression expression) {}
 	
 	public default void start(MemberValueAccessExpression expression) {}
 	public default void end(MemberValueAccessExpression expression) {}

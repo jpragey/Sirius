@@ -29,4 +29,9 @@ public class AnnotationList {
 	}
 	
 	
+	public boolean contains(String annoName) {
+		// TODO: annotations should be stored as map
+		return annotations.stream().anyMatch(anno -> anno.getName().getText().equals(annoName));
+	}
+	
 }

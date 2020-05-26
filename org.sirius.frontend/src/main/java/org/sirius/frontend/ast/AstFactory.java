@@ -53,8 +53,8 @@ public class AstFactory {
 	}
 	
 	
-	public AstFunctionDeclaration createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType, boolean concrete) {
-		return new AstFunctionDeclaration(reporter, annotationList, new AstToken(name), returnType, concrete);
+	public AstFunctionDeclaration createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType, boolean concrete, boolean member) {
+		return new AstFunctionDeclaration(reporter, annotationList, new AstToken(name), returnType, concrete, member);
 	}
 
 	public StandardCompilationUnit createStandardCompilationUnit() {

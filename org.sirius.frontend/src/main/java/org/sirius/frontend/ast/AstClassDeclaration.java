@@ -96,6 +96,10 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 	public AstClassDeclaration withFunctionDeclaration(AstFunctionDeclaration fd) {
 		
+		// 
+		if(!fd.getAnnotationList().contains("static"))
+			fd.setMember(true);
+		
 		ImmutableList.Builder<AstFunctionDeclaration> builder = ImmutableList.builderWithExpectedSize(functionDeclarations.size() + 1);
 		ImmutableList<AstFunctionDeclaration> newFunctions = builder.addAll(functionDeclarations).add(fd).build();
 

@@ -9,6 +9,12 @@ public interface AbstractFunction {
 
 	QName getQName();
 
+	/** for member function only
+	 * 
+	 * @return
+	 */
+	Optional<QName> getClassOrInterfaceContainerQName();
+	
 	/** Arguments declarations. For instance methods, the first arg must be 'this'.
 	 * 
 	 * @return

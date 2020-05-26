@@ -18,11 +18,13 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.IfElseStatement;
 import org.sirius.frontend.api.IntegerType;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
+import org.sirius.frontend.api.Type;
 
 public class JvmMemberFunction {
 		private AbstractFunction memberFunction;
@@ -180,6 +182,12 @@ public class JvmMemberFunction {
 			}
 		}
 		
+		private void writeFunctionArgs(ClassWriter classWriter, MethodVisitor mv) {
+			for(FunctionFormalArgument arg: memberFunction.getArguments()) {
+				Type type = arg.getType();
+			}
+		}
+		
 		public void writeBytecode(ClassWriter classWriter/*, MemberFunction declaration*/) {
 
 			String functionName = memberFunction.getQName().getLast();
@@ -196,7 +204,9 @@ public class JvmMemberFunction {
 			MethodVisitor mv = classWriter.visitMethod(access, functionName, functionDescriptor,
 					null /* String signature */,
 					null /* String[] exceptions */);
-			
+
+			writeFunctionArgs(classWriter, mv);
+
 			JvmStatementBlock bodyBlock = new JvmStatementBlock(/*memberFunction.getBodyStatements()*/optBody.get());
 			bodyBlock.writeByteCode(classWriter, mv);
 
