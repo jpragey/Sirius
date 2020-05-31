@@ -57,12 +57,6 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		visitor.startScriptCompilationUnit(this);
 		
 		this.moduleDeclarations.stream().forEach(fd -> fd.visit(visitor));
-//		if(shebangDeclaration.isPresent()) {
-//			shebangDeclaration.get().visit(visitor);
-//		}
-//		
-//		functionDeclarations.stream().forEach(fd -> fd.visit(visitor));
-//		classDeclarations.stream().forEach(cd -> cd.visit(visitor));
 		visitor.endScriptCompilationUnit(this);
 	}
 	
@@ -72,7 +66,6 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	}
 
 	public void addModuleDeclaration(AstModuleDeclaration moduleDeclaration) {
-//		moduleDeclaration.updatePackagesContainer();
 		this.moduleDeclarations.add(moduleDeclaration);
 	}
 
@@ -80,12 +73,4 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	public DefaultSymbolTable getSymbolTable() {
 		return symbolTable;
 	}
-
-//	// TODO: could (?) be a visitor
-//	@Override
-//	public void updateParentsDeeply() {
-//		
-//		this.moduleDeclarations.stream()
-//			.forEach(AstModuleDeclaration::updatePackagesContainer);
-//	}
 }

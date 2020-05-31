@@ -32,19 +32,9 @@ public class ModuleDescriptor implements AbstractCompilationUnit, Visitable {
 		return moduleDeclaration;
 	}
 
-//	@Override
-//	public void updateParentsDeeply() {
-//		// Nothing to do
-//	}
-
 	@Override
 	public List<AstModuleDeclaration> getModuleDeclarations() {
 		return Arrays.asList(moduleDeclaration);
 	}
-
-//	@Override
-//	public AstModuleDeclaration getCurrentModule() {
-//		return moduleDeclaration;
-//	}
 
 }

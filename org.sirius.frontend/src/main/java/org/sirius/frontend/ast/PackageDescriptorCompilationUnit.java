@@ -33,19 +33,9 @@ public class PackageDescriptorCompilationUnit implements AbstractCompilationUnit
 		return packageDeclaration;
 	}
 
-//	@Override
-//	public void updateParentsDeeply() {
-//		// Nothing to do
-//	}
-
 	@Override
 	public List<AstModuleDeclaration> getModuleDeclarations() {
 		throw new UnsupportedOperationException("PackageDescriptorCompilationUnit.getModuleDeclarations() should be removed."); // TODO
 	}
-
-//	@Override
-//	public AstModuleDeclaration getCurrentModule() {
-//		throw new UnsupportedOperationException("PackageDescriptorCompilationUnit.getCurrentModule() should be removed."); // TODO
-//	}
 
 }

@@ -63,8 +63,6 @@ public class ScriptSession implements Session {
 
 		stdTransform(reporter, input, compilationUnit, globalSymbolTable);
 
-//		compilationUnit.updateParentsDeeply();
-		
 		this.shebang = compilationUnit.getShebangDeclaration();
 
 		this.astModules = compilationUnit.getModuleDeclarations();

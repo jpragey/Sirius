@@ -119,20 +119,12 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		this(reporter, interfaceType, new AstToken(name), packageQName);
 	}
 
-//	public static AstClassDeclaration newClass(Reporter reporter, AstToken name, Optional<QName> packageQName) {
-//		return new AstClassDeclaration (reporter, false /*interfaceType */ , name, packageQName);
-//	}
 	public static AstClassDeclaration newClass(Reporter reporter, AstToken name, QName packageQName) {
 		return new AstClassDeclaration (reporter, false /*interfaceType */ , name, packageQName);
-//		return newClass(reporter, name, packageQName);
 	}
 	
-//	public static AstClassDeclaration newInterface(Reporter reporter, AstToken name, Optional<QName> packageQName) {
-//		return new AstClassDeclaration (reporter, true /*interfaceType */ , name, packageQName);
-//	}
 	public static AstClassDeclaration newInterface(Reporter reporter, AstToken name, QName packageQName) {
 		return new AstClassDeclaration (reporter, true /*interfaceType */ , name, packageQName);
-//		return newInterface(reporter, name, packageQName);
 	}
 
 	

@@ -7,8 +7,6 @@ import org.sirius.frontend.ast.Visitable;
 
 public interface AbstractCompilationUnit extends Visitable {
 	
-//	void updateParentsDeeply();
-	
 	List<AstModuleDeclaration> getModuleDeclarations();
 
 }
