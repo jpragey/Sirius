@@ -33,10 +33,10 @@ public class PackageDescriptorCompilationUnit implements AbstractCompilationUnit
 		return packageDeclaration;
 	}
 
-	@Override
-	public void updateParentsDeeply() {
-		// Nothing to do
-	}
+//	@Override
+//	public void updateParentsDeeply() {
+//		// Nothing to do
+//	}
 
 	@Override
 	public List<AstModuleDeclaration> getModuleDeclarations() {

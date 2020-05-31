@@ -32,10 +32,10 @@ public class ModuleDescriptor implements AbstractCompilationUnit, Visitable {
 		return moduleDeclaration;
 	}
 
-	@Override
-	public void updateParentsDeeply() {
-		// Nothing to do
-	}
+//	@Override
+//	public void updateParentsDeeply() {
+//		// Nothing to do
+//	}
 
 	@Override
 	public List<AstModuleDeclaration> getModuleDeclarations() {

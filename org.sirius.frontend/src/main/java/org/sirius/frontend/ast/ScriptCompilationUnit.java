@@ -72,7 +72,7 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	}
 
 	public void addModuleDeclaration(AstModuleDeclaration moduleDeclaration) {
-		moduleDeclaration.updatePackagesContainer();
+//		moduleDeclaration.updatePackagesContainer();
 		this.moduleDeclarations.add(moduleDeclaration);
 	}
 
@@ -81,11 +81,11 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		return symbolTable;
 	}
 
-	// TODO: could (?) be a visitor
-	@Override
-	public void updateParentsDeeply() {
-		
-		this.moduleDeclarations.stream()
-			.forEach(AstModuleDeclaration::updatePackagesContainer);
-	}
+//	// TODO: could (?) be a visitor
+//	@Override
+//	public void updateParentsDeeply() {
+//		
+//		this.moduleDeclarations.stream()
+//			.forEach(AstModuleDeclaration::updatePackagesContainer);
+//	}
 }

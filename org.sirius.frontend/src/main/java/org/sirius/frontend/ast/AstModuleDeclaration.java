@@ -211,10 +211,6 @@ public class AstModuleDeclaration implements Visitable {
 		return "[Mod:" + qName.toString() + "-" + version.getText() + "]";
 	}
 	
-	public void updatePackagesContainer() {
-		packageDeclarations.stream()
-			.forEach(AstPackageDeclaration::updateContentContainerRefs);
-	}
 	
 	private ModuleDeclaration moduleDeclaration = null;
  

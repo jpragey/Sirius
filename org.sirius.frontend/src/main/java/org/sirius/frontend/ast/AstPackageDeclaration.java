@@ -120,15 +120,6 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		return "\"" + getQnameString() + "\"";
 	}
 	
-	/** Set package refs for children (classes, values, functions */
-	public void updateContentContainerRefs() {
-		for(AstFunctionDeclaration fd: functionDeclarations) {
-////			fd.setContainerQName(this.qname);
-		}
-//		private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
-//		private List<AstValueDeclaration> valueDeclarations = new ArrayList<>();
-	}
-	
 	private PackageDeclaration packageDeclaration = null;
 	
 	private class PackageDeclarationImpl implements PackageDeclaration {

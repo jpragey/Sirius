@@ -89,9 +89,9 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 		return symbolTable;
 	}
 
-	@Override
-	public void updateParentsDeeply() {
-		// Nothing to do
-	}
+//	@Override
+//	public void updateParentsDeeply() {
+//		// Nothing to do
+//	}
 
 }
