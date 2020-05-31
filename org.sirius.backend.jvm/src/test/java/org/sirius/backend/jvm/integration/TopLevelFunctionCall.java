@@ -83,7 +83,7 @@ public class TopLevelFunctionCall {
 		
 		String script = "#!\n "
 //				+ "String getVal() {return \"Hello\";}"
-				+ "Integer add(Integer x, Integer y) {return 43;}"
+				+ "Integer add(Integer x, Integer y) {return x;}"
 				//				+ "void main() {println(getVal());}"
 //				+ "Integer main() {Integer r = add(); return r;}"
 //				+ "Integer main() {Integer r = 42; return 43;}"

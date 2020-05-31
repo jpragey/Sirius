@@ -107,7 +107,9 @@ public class Symbol {
 		return localVariableDeclaration;
 	}
 
-	
+	public Optional<AstFunctionFormalArgument> getFunctionArgument() {
+		return functionArgument;
+	}
 	
 	@Override
 	public String toString() {

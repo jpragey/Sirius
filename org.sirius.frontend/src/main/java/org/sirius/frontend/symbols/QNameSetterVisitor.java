@@ -81,7 +81,7 @@ public class QNameSetterVisitor implements AstVisitor {
 	@Override
 	public void startFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
 		
-		functionDeclaration.setContainerQName(qnameStack.lastElement());
+//		functionDeclaration.setContainerQName(qnameStack.lastElement());
 		String funcName = functionDeclaration.getName().getText();
 		QName funcQName = qnameStack.lastElement().child(funcName);
 		qnameStack.push(funcQName);

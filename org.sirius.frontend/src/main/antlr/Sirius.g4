@@ -12,6 +12,7 @@ grammar Sirius;
 	package org.sirius.frontend.parser;
 	import org.sirius.frontend.ast.*;
 	import org.sirius.common.core.QName;
+	import org.sirius.frontend.symbols.DefaultSymbolTable;
 	
 	import java.util.Optional;
 }
@@ -37,9 +38,9 @@ locals[
     (
     	  moduleDeclaration 	{ $stdUnit.addModuleDeclaration($moduleDeclaration.declaration);    } 
     	| packageDeclaration	{ currentModule.addPackageDeclaration($packageDeclaration.declaration);}
-    	| functionDeclaration	{ $stdUnit.addFunctionDeclaration($functionDeclaration.declaration); }
-    	| classDeclaration 		{ $stdUnit.addClassDeclaration($classDeclaration.declaration);	}
-    	| interfaceDeclaration	{ $stdUnit.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
+    	| functionDeclaration 	[$stdUnit.getSymbolTable(), QName.empty]	{ $stdUnit.addFunctionDeclaration($functionDeclaration.declaration ); }
+    	| classDeclaration 		[currentModule.getCurrentPackage().getQname()] { $stdUnit.addClassDeclaration($classDeclaration.declaration);	}
+    	| interfaceDeclaration	[currentModule.getCurrentPackage().getQname()] { $stdUnit.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
     	
     	
     	
@@ -65,9 +66,10 @@ scriptCompilationUnit returns [ScriptCompilationUnit unit]
 										//scriptCurrentState.getCurrentModule().addPackageDeclaration($packageDeclaration.declaration);
 
 									} 
-		| functionDeclaration 		{currentModule.addFunctionDeclaration($functionDeclaration.declaration);	}
-		| classDeclaration 			{currentModule.addClassDeclaration($classDeclaration.declaration);	}
-    	| interfaceDeclaration		{currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
+		| functionDeclaration 		[$unit.getSymbolTable(), currentModule.getCurrentPackage().getQname()] 
+										{currentModule.addFunctionDeclaration($functionDeclaration.declaration);	}
+		| classDeclaration 			[currentModule.getCurrentPackage().getQname()] {currentModule.addClassDeclaration($classDeclaration.declaration);	}
+    	| interfaceDeclaration		[currentModule.getCurrentPackage().getQname()] {currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
 	)*
 	EOF
 	;
@@ -168,22 +170,26 @@ memberValueDeclaration returns [AstMemberValueDeclaration declaration]
 // -------------------- (TOP-LEVEL ?) FUNCION
 // Also maps to annotation declaration.
 
-functionDeclaration returns [AstFunctionDeclaration declaration]
+functionDeclaration [DefaultSymbolTable symbolTable, QName containerQName] returns [AstFunctionDeclaration declaration]
 @init {
 	AstType retType;
+	AstFunctionDeclaration.Builder builder;
 }
 	: annotationList
 	  (	  rt=type	{retType = $rt.declaration; } 
 	  	| 'void' 	{retType = new AstVoidType();}
 	  )
-	  LOWER_ID		{ $declaration = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, false /*concrete*/, false /*member*/); }
+	  LOWER_ID		{ 
+	  	builder = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, containerQName);
+	  	// /*$ declaration = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, false /*concrete*/, false /*member*/);*/
+	  }
 	  (
 	    '<'
 	  		  	(
-	  		d=typeFormalParameterDeclaration 		{ $declaration = $declaration.withFormalParameter($d.declaration); }
+	  		d=typeFormalParameterDeclaration 		{ builder = builder.withFormalParameter($d.declaration); }
 	  		(
 	  			','
-		  		d=typeFormalParameterDeclaration 	{ $declaration = $declaration.withFormalParameter($d.declaration); }
+		  		d=typeFormalParameterDeclaration 	{ builder = builder.withFormalParameter($d.declaration); }
 	  		)*
 	  	)?
 	  	'>'
@@ -191,15 +197,17 @@ functionDeclaration returns [AstFunctionDeclaration declaration]
 	  
 	    
 	  '('
-	  	(  functionFormalArgument		{ $declaration = $declaration.withFunctionArgument($functionFormalArgument.argument); }
-	  	  (  ',' functionFormalArgument	{ $declaration = $declaration.withFunctionArgument($functionFormalArgument.argument); } )*
+	  	(  functionFormalArgument		{ builder = builder.withFunctionArgument($functionFormalArgument.argument); }
+	  	  (  ',' functionFormalArgument	{ builder = builder.withFunctionArgument($functionFormalArgument.argument); } )*
 	    )?
 	  ')' 
-	  '{' 					{ $declaration.setConcrete(true); }
+	  '{' 					{ builder.setConcrete(true); }
 	  		(
-	  			statement	{ $declaration.addStatement($statement.stmt); }
+	  			statement	{ builder.addStatement($statement.stmt); }
 	  		)*
 	   '}'
+	   {$declaration = builder.build($symbolTable);}
+	   
 	;
 
 functionFormalArgument returns [AstFunctionFormalArgument argument]
@@ -345,7 +353,7 @@ packageDeclaration returns [AstPackageDeclaration declaration]
 
 // -------------------- CLASS 
 //
-classDeclaration returns [AstClassDeclaration declaration]
+classDeclaration [QName containerQName] returns [AstClassDeclaration declaration]
 @init {
 //	List<Annotation> annos = new ArrayList<Annotation> ();
 	boolean isInterface;
@@ -354,7 +362,7 @@ classDeclaration returns [AstClassDeclaration declaration]
 	  (   'class' 		{isInterface = false;}
 	  	/*| 'interface'	{isInterface = true;}*/
 	  )
-	  TYPE_ID		{ $declaration = factory.createClassOrInterface($TYPE_ID /* , currentPackage*/, isInterface); }
+	  TYPE_ID		{ $declaration = factory.createClassOrInterface($TYPE_ID /* , currentPackage*/, isInterface, containerQName); }
 	  '('
 	  	(  functionFormalArgument		{ $declaration.addAnonConstructorArgument($functionFormalArgument.argument); }
 	  	  (  ',' functionFormalArgument	{ $declaration.addAnonConstructorArgument($functionFormalArgument.argument); } )*
@@ -377,12 +385,12 @@ classDeclaration returns [AstClassDeclaration declaration]
 			  
 	  '{'
 	  (
-	  	  functionDeclaration		{ $declaration = $declaration.withFunctionDeclaration($functionDeclaration.declaration);}
+	  	  functionDeclaration		[$declaration.getSymbolTable(), $declaration.getQName()] { $declaration = $declaration.withFunctionDeclaration($functionDeclaration.declaration);}
 	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
 	  )*
 	  '}'
 	;
-interfaceDeclaration returns [AstInterfaceDeclaration declaration]
+interfaceDeclaration [QName containerQName] returns [AstInterfaceDeclaration declaration]
 @init {
 //	List<Annotation> annos = new ArrayList<Annotation> ();
 	boolean isInterface;
@@ -390,7 +398,7 @@ interfaceDeclaration returns [AstInterfaceDeclaration declaration]
 	: 
 	  ('interface'	{isInterface = true;} // TODO: no need of isInterface
 	  )
-	  TYPE_ID		{ $declaration = factory.createInterface($TYPE_ID); }
+	  TYPE_ID		{ $declaration = factory.createInterface($TYPE_ID, containerQName); }
 	  (
 	  	'<'
 	  	(
@@ -408,7 +416,7 @@ interfaceDeclaration returns [AstInterfaceDeclaration declaration]
 			  
 	  '{'
 	  (
-	  	  functionDeclaration		{ $declaration = $declaration.withFunctionDeclaration($functionDeclaration.declaration);}
+	  	  functionDeclaration		[$declaration.getSymbolTable(), $declaration.getQName()] { $declaration = $declaration.withFunctionDeclaration($functionDeclaration.declaration);}
 	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
 	  )*
 	  '}'

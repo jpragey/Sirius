@@ -12,6 +12,7 @@ import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.TopLevelValue;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.LocalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
@@ -63,22 +64,27 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		return qname;
 	}
 
-	public void addFunctionDeclaration(AstFunctionDeclaration declaration) {
+	public void addFunctionDeclaration(AstFunctionDeclaration/*.Builder*/ declaration /*Builder*/) {
+		assert(declaration != null);
+//		AstFunctionDeclaration declaration = declarationBuilder.build(new DefaultSymbolTable() /*TODO: wtf ???*/);
 		this.functionDeclarations.add(declaration);
 		this.visitables.add(declaration);
 	}
 
 	public void addClassDeclaration(AstClassDeclaration declaration) {
+		assert(declaration != null);
 		this.classDeclarations.add(declaration);
 		this.visitables.add(declaration);
 	}
 	public void addInterfaceDeclaration(AstInterfaceDeclaration declaration) {
+		assert(declaration != null);
 		this.interfaceDeclarations.add(declaration);
 		this.visitables.add(declaration);	// TODO: ???
 	}
 	
 	
 	public void addValueDeclaration(AstMemberValueDeclaration declaration) {
+		assert(declaration != null);
 		this.valueDeclarations.add(declaration);
 		this.visitables.add(declaration);
 	}
@@ -117,7 +123,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 	/** Set package refs for children (classes, values, functions */
 	public void updateContentContainerRefs() {
 		for(AstFunctionDeclaration fd: functionDeclarations) {
-			fd.setContainerQName(this.qname);
+////			fd.setContainerQName(this.qname);
 		}
 //		private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
 //		private List<AstValueDeclaration> valueDeclarations = new ArrayList<>();

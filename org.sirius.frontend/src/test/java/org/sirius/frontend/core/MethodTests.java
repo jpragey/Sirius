@@ -4,6 +4,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
@@ -17,6 +18,10 @@ import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionFormalArgument;
+import org.sirius.frontend.ast.AstModuleDeclaration;
+import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.parser.Compiler;
 import org.testng.annotations.Test;
 
@@ -162,6 +167,68 @@ public class MethodTests {
 		Type type = lvs.getType();
 		assert(type instanceof ClassDeclaration);
 		assertEquals( ((ClassDeclaration)type).getQName(), new QName("sirius", "lang", "Integer"));
+
+	}
+	@Test (description = "Simple call of a global function")
+	public void callWithParamsTest() {
+//		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){String s;}}");
+		ScriptSession session = Compiler.compileScript("#!\n"
+				+ "Integer add(Integer x) {return x;}"
+				+ "");
+		
+		
+		AstModuleDeclaration module = session.getAstModules().get(0);
+		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
+		assertEquals(pack.getQname().dotSeparated(), "");
+		AstFunctionDeclaration func = pack.getFunctionDeclarations().get(0);
+		assertEquals(func.getQName().dotSeparated(), "add");
+		
+		func.getSymbolTable().dump();
+		
+		assertEquals(func.getFormalArguments().size(), 1);
+		
+		Optional<AstFunctionFormalArgument> optArg = func.getSymbolTable().lookupFunctionArgument("x");
+		assert(optArg.isPresent());
+		
+		
+//		ModuleDeclaration md = session.getModuleDeclarations().get(0);
+		
+//		PackageDeclaration pack = md.getPackages().get(0);
+//		assertEquals(pack.getQName().dotSeparated(), "");
+//		
+//		pack.getFunctions().get(0);
+		
+//		ClassDeclaration cd = pack.getClasses().get(0);
+//		assertEquals(cd.getQName(), new QName("p", "k", "C"));
+//		
+//		// -- function local value
+//		AbstractFunction func = cd.getFunctions().get(0);
+//		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
+//
+//		assertEquals(func.getBodyStatements().get().size(), 1);
+//		LocalVariableStatement funcLvs = (LocalVariableStatement)func.getBodyStatements().get().get(0);
+//		assertEquals(funcLvs.getName().getText(), "s11");
+//
+//		assertTrue(funcLvs.getInitialValue().isPresent());
+//
+//		Type funcLvstype = funcLvs.getType();
+//		assert(funcLvstype instanceof ClassDeclaration);
+//		
+//		
+//		assertEquals( ((ClassDeclaration)funcLvstype).getQName(), new QName("sirius", "lang", "Integer"));
+//
+//		
+//		// -- class member
+//		assertEquals(cd.getMemberValues().size(), 1);
+//		MemberValue lvs = cd.getMemberValues().get(0);
+//
+//		assertEquals(lvs.getName().getText(), "s10");
+//		
+//		assertTrue(lvs.getInitialValue().isPresent());
+//
+//		Type type = lvs.getType();
+//		assert(type instanceof ClassDeclaration);
+//		assertEquals( ((ClassDeclaration)type).getQName(), new QName("sirius", "lang", "Integer"));
 
 	}
 }

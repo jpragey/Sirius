@@ -25,7 +25,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 	private ImmutableList<AstFunctionFormalArgument> formalArguments;
 	
 
-	private List<AstStatement> statements = new ArrayList<>(); 
+	private ImmutableList<AstStatement> statements/* = new ArrayList<>()*/; 
 	
 	private AstType returnType = new AstVoidType();
 
@@ -38,7 +38,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 	// True it it has a body
 	private boolean concrete;
 	// 
-	private Optional<QName> containerQName = Optional.empty();
+	private QName containerQName;
 	
 	// -- nonnull for instance method
 //	private Optional<AstClassOrInterface> memberContainer = Optional.empty();
@@ -49,10 +49,12 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 	public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType,
 			ImmutableList<TypeParameter> typeParameters,
 			ImmutableList<AstFunctionFormalArgument> formalArguments,
-			Optional<QName> containerQName,
+			QName containerQName,
 			QName qName,
 			boolean concrete,
-			boolean member
+			boolean member,
+			DefaultSymbolTable symbolTable,
+			ImmutableList<AstStatement> statements
 			) {
 		super();
 		this.reporter = reporter;
@@ -66,32 +68,136 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 		this.qName = qName;
 		this.concrete = concrete;
 		this.member = member;
+		this.symbolTable = symbolTable;
+		this.statements = statements;
 	}
 
-	public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType, boolean concrete, boolean member) {
-		this(reporter, annotationList, name, returnType, ImmutableList.of(), ImmutableList.of(), Optional.empty(), null /*qName*/, concrete, member);	// TODO: oops qName
+	public static class Builder {
+		Reporter reporter;
+		
+		AnnotationList annotationList;
+		AstToken name;
+		AstType returnType; 
+		
+		List<TypeParameter> typeParameters = new ArrayList<>();
+		List<AstFunctionFormalArgument> formalArguments = new ArrayList<>();
+		QName containerQName;
+//		QName qName;
+		boolean concrete;
+		boolean member;
+		private List<AstStatement> statements = new ArrayList<>(); 
+		
+		
+		public Builder(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType, QName containerQName) {
+			super();
+			this.reporter = reporter;
+			this.annotationList = annotationList;
+			this.name = name;
+			this.returnType = returnType;
+			this.containerQName = containerQName;
+		}
+		public Builder withFormalParameter(TypeParameter param) {
+			typeParameters.add(param);
+			return this;
+		}
+		public Builder withFunctionArgument(AstFunctionFormalArgument arg) {
+			formalArguments.add(arg);
+			return this;
+		}
+		
+		public Builder(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType) {
+			super();
+			this.reporter = reporter;
+			this.annotationList = annotationList;
+			this.name = name;
+			this.returnType = returnType;
+		}
+		public void addStatement(AstStatement statement) {
+			this.statements.add(statement);
+		}
+
+		public void setConcrete(boolean concrete) {
+			this.concrete = concrete;
+		}
+
+		public void setMember(boolean member) {
+			this.member = member;
+		}
+		
+		public void setContainerQName(QName containerQName) {
+//			this.containerQName = Optional.of(containerQName);
+			this.containerQName = containerQName;
+		}
+		public AstFunctionDeclaration build(DefaultSymbolTable parentSymbolTable) {
+//			if(!fd.getAnnotationList().contains("static"))
+			member = annotationList.contains("static");
+
+			QName qName = containerQName.child(name.getText());
+
+			DefaultSymbolTable symbolTable = new DefaultSymbolTable(parentSymbolTable);
+			
+			
+			AstFunctionDeclaration fd = new AstFunctionDeclaration(
+					reporter, 
+					annotationList, 
+					name, 
+					returnType,
+					ImmutableList.copyOf(typeParameters),
+					ImmutableList.copyOf(formalArguments),
+					containerQName,
+					qName,
+					concrete,
+					member,
+					symbolTable,
+					ImmutableList.copyOf(statements)
+					);
+			
+			// Function itself is in symbol table (???)
+			symbolTable.addFunction(fd);
+			
+			// Add function args in symbol table
+			for(AstFunctionFormalArgument arg: formalArguments) {
+				symbolTable.addFunctionArgument(arg);
+			}
+			return fd;
+		}
 	}
 	
 	
-	public AstFunctionDeclaration withFormalParameter(TypeParameter param) {
-		
-		ImmutableList.Builder<TypeParameter> builder = ImmutableList.builderWithExpectedSize(typeParameters.size() + 1);
-		ImmutableList<TypeParameter> newTypeParams = builder.addAll(typeParameters).add(param).build();
-		
-		AstFunctionDeclaration fd = new AstFunctionDeclaration(reporter,
-				annotationList, 
-				name, 
-				returnType, 
-				newTypeParams,
-				formalArguments,
-				containerQName, qName, concrete, member);
-		return fd;
-	}
+
+//	public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType, 
+//			boolean concrete, boolean member, DefaultSymbolTable symbolTable) 
+//	{
+//		this(reporter, annotationList, name, returnType, ImmutableList.of(), ImmutableList.of(), 
+//				Optional.empty(), null /*qName*/, concrete, member, symbolTable);	// TODO: oops qName
+//	}
+	
+	
+//	public AstFunctionDeclaration withFormalParameter(TypeParameter param) {
+//		
+//		ImmutableList.Builder<TypeParameter> builder = ImmutableList.builderWithExpectedSize(typeParameters.size() + 1);
+//		ImmutableList<TypeParameter> newTypeParams = builder.addAll(typeParameters).add(param).build();
+//		
+//		AstFunctionDeclaration fd = new AstFunctionDeclaration(reporter,
+//				annotationList, 
+//				name, 
+//				returnType, 
+//				newTypeParams,
+//				formalArguments,
+//				containerQName, qName, concrete, member, 
+//				symbolTable);	// ???
+//		return fd;
+//	}
 	
 	public AstFunctionDeclaration withFunctionArgument(AstFunctionFormalArgument arg) {
 		
 		ImmutableList.Builder<AstFunctionFormalArgument> builder = ImmutableList.builderWithExpectedSize(formalArguments.size() + 1);
 		ImmutableList<AstFunctionFormalArgument> newFormalArguments = builder.addAll(formalArguments).add(arg).build();
+		
+		// Symbol table including new param
+		DefaultSymbolTable newSymbolTable = new DefaultSymbolTable(symbolTable);
+		newSymbolTable.addFunctionArgument(arg);
+		
 		
 		AstFunctionDeclaration fd = new AstFunctionDeclaration(reporter,
 				annotationList, 
@@ -99,7 +205,9 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 				returnType, 
 				typeParameters,
 				newFormalArguments,
-				containerQName, qName, concrete, member);
+				containerQName, qName, concrete, member,
+				newSymbolTable,
+				statements);
 		return fd;
 	}
 	
@@ -120,16 +228,16 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 		this.member = member;
 	}
 
-	public void addStatement(AstStatement statement) {
-		this.statements.add(statement);
-	}
+//	public void addStatement(AstStatement statement) {
+//		this.statements.add(statement);
+//	}
 
 	public List<AstStatement> getStatements() {
 		return statements;
 	}
 
 	public void assignSymbolTable(DefaultSymbolTable symbolTable) {
-		this.symbolTable = symbolTable;
+//		this.symbolTable = symbolTable;
 		this.symbolTable.addFunction(this);
 		
 ////		formalArguments.stream().forEach(argument -> symbolTable.addFunctionArgument(argument.getName(), argument));
@@ -204,28 +312,31 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 
 	@Override
 	public Optional<AstFunctionDeclaration> apply(AstType parameter) {
-		TypeParameter formalParam = typeParameters.get(0);
-		if(formalParam == null) {
-			reporter.error("Can't apply type " + parameter.messageStr() + " to function " + messageStr() + ", it has no formal parameter." );
-			return Optional.empty();
-		}
-		
-		AstFunctionDeclaration cd = new AstFunctionDeclaration(reporter, annotationList, name, returnType, 
-				typeParameters.subList(1, typeParameters.size()), 
-				formalArguments,
-				containerQName, qName, concrete, member);
-		
-//		cd.typeParameters.addAll(typeParameters.subList(1, typeParameters.size()));
-	
-//		for(FunctionDeclaration fd: functionDeclarations) {
-//			cd.addFunctionDeclaration(fd.apply(parameter));
+		throw new UnsupportedOperationException();
+//		TypeParameter formalParam = typeParameters.get(0);
+//		if(formalParam == null) {
+//			reporter.error("Can't apply type " + parameter.messageStr() + " to function " + messageStr() + ", it has no formal parameter." );
+//			return Optional.empty();
 //		}
-		
-		return Optional.of(cd);
+//		
+//		AstFunctionDeclaration cd = new AstFunctionDeclaration(reporter, annotationList, name, returnType, 
+//				typeParameters.subList(1, typeParameters.size()), 
+//				formalArguments,
+//				containerQName, qName, concrete, member,
+//				symbolTable	// ???
+//				);
+//		
+////		cd.typeParameters.addAll(typeParameters.subList(1, typeParameters.size()));
+//	
+////		for(FunctionDeclaration fd: functionDeclarations) {
+////			cd.addFunctionDeclaration(fd.apply(parameter));
+////		}
+//		
+//		return Optional.of(cd);
 	}
 
 	
-	public Optional<QName> getContainerQName() {
+	public QName getContainerQName() {
 		return containerQName;
 	}
 
@@ -234,10 +345,10 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 		return qName;
 	}
 
-	public void setContainerQName(QName containerQName) {
-		this.containerQName = Optional.of(containerQName);
-		this.qName = containerQName.child(this.name.getText()); // TODO: ugly
-	}
+//	public void setContainerQName(QName containerQName) {
+//		this.containerQName = containerQName;
+//		this.qName = containerQName.child(this.name.getText()); // TODO: ugly
+//	}
 
 	@Override
 	public String toString() {
@@ -253,7 +364,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 	}
 	
 	private class FunctionImpl implements AbstractFunction {
-		QName functionQName = containerQName.get().child(name.getText());
+		QName functionQName = containerQName.child(name.getText());
 		List<FunctionFormalArgument> implArguments = 
 				formalArguments.stream()
 				.map(arg -> arg.toAPI(functionQName))
@@ -290,8 +401,8 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 
 		@Override
 		public Optional<QName> getClassOrInterfaceContainerQName() {
-			if(member && containerQName.isPresent()) {
-				return containerQName;
+			if(member /*&& containerQName.isPresent()*/) {
+				return Optional.of(containerQName);
 			}
 			
 			return Optional.empty();

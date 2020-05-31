@@ -12,6 +12,7 @@ import org.sirius.common.core.QName;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionFormalArgument;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstToken;
@@ -100,6 +101,15 @@ public class DefaultSymbolTable implements SymbolTable {
 //		addSymbol(packageQName, simpleName, new Symbol(simpleName, valueDeclaration));
 	}
 
+//	private Optional<AstFunctionFormalArgument> functionArgument = Optional.empty();
+	/** Local variable */
+	public void addFunctionArgument(AstFunctionFormalArgument functionArgument) {
+		AstToken simpleName = functionArgument.getName();
+
+		// TODO: add symbol in qname-based 'symbols' map 
+		symbolsBySimpleName.put(simpleName.getText(), new Symbol(simpleName, functionArgument));
+		
+	}
 	
 	
 //	public Optional<Symbol> lookup(QName packageQName, String simpleName) {
@@ -134,6 +144,19 @@ public class DefaultSymbolTable implements SymbolTable {
 		}
 		
 		return symbol.getClassDeclaration();
+	}
+
+	public Optional<AstFunctionFormalArgument> lookupFunctionArgument(String simpleName) {
+		Symbol symbol = symbolsBySimpleName.get(simpleName);
+
+		if(symbol == null && parent.isPresent()) {
+			return parent.get().lookupFunctionArgument(simpleName);
+		}
+		if(symbol == null) {
+			return Optional.empty();
+		}
+		
+		return symbol.getFunctionArgument();
 	}
 
 	public Optional<AstInterfaceDeclaration> lookupInterfaceDeclaration(String simpleName) {

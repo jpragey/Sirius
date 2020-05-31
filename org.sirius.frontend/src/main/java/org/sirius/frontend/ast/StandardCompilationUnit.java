@@ -42,7 +42,8 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 		}
 	}
 
-	public void addFunctionDeclaration(AstFunctionDeclaration declaration) {
+	public void addFunctionDeclaration(AstFunctionDeclaration /*.Builder*/ declaration) {
+//		this.functionDeclarations.add(declaration.build(symbolTable /*TODO: ???*/  ));
 		this.functionDeclarations.add(declaration);
 	}
 
