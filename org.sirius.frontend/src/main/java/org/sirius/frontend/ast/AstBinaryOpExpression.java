@@ -1,15 +1,16 @@
 package org.sirius.frontend.ast;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.antlr.v4.runtime.Token;
 import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.Visitor;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 public class AstBinaryOpExpression implements AstExpression {
-//	public enum Operator {Add, Substract, Mult, Divide}
 	
 	private BinaryOpExpression.Operator operator;
 	
@@ -17,41 +18,33 @@ public class AstBinaryOpExpression implements AstExpression {
 	private AstExpression right;
 	
 	private AstToken opToken;
-
-	public AstBinaryOpExpression(AstExpression left, AstExpression right, AstToken opToken) {
-		super();
-//		this.operator = operator;
+	
+	private static Map<String, BinaryOpExpression.Operator> opMap = new HashMap<>() {{
+		put("+", BinaryOpExpression.Operator.Add);
+		put("-", BinaryOpExpression.Operator.Substract);
+		put("*", BinaryOpExpression.Operator.Mult);
+		put("/", BinaryOpExpression.Operator.Divide);
+		put("^", BinaryOpExpression.Operator.Exponential);
+	}};
+	
+	private static BinaryOpExpression.Operator parseOperator(AstToken opToken) {
+		String text = opToken.getText();
+		BinaryOpExpression.Operator op = opMap.get(text);
+		if(op == null)
+			throw new RuntimeException("BinaryOpExpression: unknown operator " + text);	// TODO: better error handling
+		return op;
+	}
+	
+	public AstBinaryOpExpression(AstExpression left, AstExpression right, AstToken opToken, BinaryOpExpression.Operator operator) {
+		this.operator = operator;
 		this.left = left;
 		this.right = right;
 		this.opToken = opToken;
-		
-		String opText = opToken.getText();
-		switch(opText) {
-		case "+":
-			this.operator = BinaryOpExpression.Operator.Add;
-			break;
-			
-		case "-":
-			this.operator = BinaryOpExpression.Operator.Substract;
-			break;
-			
-		case "*":
-			this.operator = BinaryOpExpression.Operator.Mult;
-			break;
-			
-		case "/":
-			this.operator = BinaryOpExpression.Operator.Divide;
-			break;
-
-		case "^":
-			this.operator = BinaryOpExpression.Operator.Exponential;
-			break;
-
-		default:
-			throw new RuntimeException("BinaryOpExpression: unknown operator " + opText);	// TODO: better error handling
-		}
 	}
-
+	public AstBinaryOpExpression(AstExpression left, AstExpression right, AstToken opToken) {
+		this(left, right, opToken, parseOperator(opToken));
+	}
+	
 	public AstBinaryOpExpression(AstExpression left, AstExpression right, Token opToken) {
 		this(left, right, new AstToken(opToken));
 	}
@@ -130,6 +123,13 @@ public class AstBinaryOpExpression implements AstExpression {
 	@Override
 	public String toString() {
 		return left.toString() + " " + operator.toString() + " " + right.toString();
+	}
+
+	@Override
+	public AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+		AstExpression newLeft = left.linkToParentST(parentSymbolTable);
+		AstExpression newRight = right.linkToParentST(parentSymbolTable);
+		return new AstBinaryOpExpression(newLeft, newRight, opToken, operator);
 	}
 
 }

@@ -3,6 +3,7 @@ package org.sirius.frontend.ast;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FloatConstantExpression;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 public class AstFloatConstantExpression implements AstExpression {
 	
@@ -52,4 +53,11 @@ public class AstFloatConstantExpression implements AstExpression {
 	public String toString() {
 		return content.getText();
 	}
+	
+	@Override
+	public AstFloatConstantExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+		return this;
+	}
+
+	
 }

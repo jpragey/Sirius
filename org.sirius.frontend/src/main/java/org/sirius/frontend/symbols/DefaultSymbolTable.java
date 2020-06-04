@@ -199,9 +199,22 @@ public class DefaultSymbolTable implements SymbolTable {
 	
 	@Override
 	public String toString() {
-		String s = symbols.entrySet().stream()
-			.map(entry -> entry.getKey().toString() + "->" + entry.getValue())
-			.collect(Collectors.joining(","));
+		StringBuilder sb = new StringBuilder();
+		sb.append("(");
+		sb.append(symbolsBySimpleName.entrySet().size());
+		sb.append(" symbols): ");
+		
+		for(Map.Entry<String, Symbol> s: symbolsBySimpleName.entrySet()) {
+			sb.append(s.getKey());
+			sb.append("->");
+			sb.append(s.getValue());
+			sb.append(", ");
+		}
+		String s = sb.toString();
+//		String s = symbolsBySimpleName.entrySet().stream()
+//			.map(entry -> entry.getKey().toString() + "->" + entry.getValue())
+//			.collect(Collectors.joining(","));
+		
 		if(parent.isPresent()) {
 			s = s + "\n=>" +parent.get().toString();
 		}

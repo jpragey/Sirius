@@ -13,10 +13,11 @@ import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTable;
 
-public class ConstructorCallExpression implements AstExpression {
+public class ConstructorCallExpression implements AstExpression, Scoped {
 
 	private Reporter reporter;
 	/** Function name */
@@ -24,7 +25,18 @@ public class ConstructorCallExpression implements AstExpression {
 	
 	private List<AstExpression> actualArguments = new ArrayList<>();
 
-	private SymbolTable symbolTable = null;
+	private DefaultSymbolTable symbolTable = null;
+
+	
+	
+	private ConstructorCallExpression(Reporter reporter, AstToken name, List<AstExpression> actualArguments,
+			DefaultSymbolTable symbolTable) {
+		super();
+		this.reporter = reporter;
+		this.name = name;
+		this.actualArguments = actualArguments;
+		this.symbolTable = symbolTable;
+	}
 
 	public ConstructorCallExpression(Reporter reporter, AstToken name) {
 		super();
@@ -32,8 +44,12 @@ public class ConstructorCallExpression implements AstExpression {
 		this.name = name;
 	}
 
-	public void setSymbolTable(SymbolTable symbolTable) {
+	public void setSymbolTable(DefaultSymbolTable symbolTable) {
 		this.symbolTable = symbolTable;
+	}
+	@Override
+	public DefaultSymbolTable getSymbolTable() {
+		return symbolTable;
 	}
 
 	public void addArgument(AstExpression argExpression) {
@@ -117,6 +133,15 @@ public class ConstructorCallExpression implements AstExpression {
 	@Override
 	public String asString() {
 		return toString();
+	}
+
+	@Override
+	public AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+		AstExpression expr = new ConstructorCallExpression(reporter, 
+				name, 
+				actualArguments.stream().map(exp -> exp.linkToParentST(parentSymbolTable)).collect(Collectors.toList()),
+				new DefaultSymbolTable(parentSymbolTable));
+		return expr;
 	}
 
 }

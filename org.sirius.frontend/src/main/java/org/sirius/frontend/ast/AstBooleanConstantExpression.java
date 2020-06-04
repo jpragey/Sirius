@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.sirius.frontend.api.BooleanConstantExpression;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 public class AstBooleanConstantExpression implements AstExpression {
 	
@@ -64,5 +65,11 @@ public class AstBooleanConstantExpression implements AstExpression {
 	@Override
 	public String toString() {
 		return content.getText();
+	}
+
+
+	@Override
+	public AstBooleanConstantExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+		return this;
 	}
 }

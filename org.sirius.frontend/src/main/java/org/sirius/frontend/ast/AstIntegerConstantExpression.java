@@ -88,4 +88,9 @@ public class AstIntegerConstantExpression implements AstExpression {
 	public String asString() {
 		return toString();
 	}
+
+	@Override
+	public AstIntegerConstantExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+		return this;
+	}
 }

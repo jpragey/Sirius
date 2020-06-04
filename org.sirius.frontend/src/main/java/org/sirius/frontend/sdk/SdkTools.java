@@ -178,24 +178,25 @@ public class SdkTools {
 			methodName = method.getName();
 
 		AstType returnType = new AstVoidType();	// TODO
-//		AstFunctionDeclaration fd = new AstFunctionDeclaration(reporter, 
-//				new AnnotationList() ,	// TODO 
-//				AstToken.internal(methodName), 
-//				returnType,
-//				true /*TODO: concrete ???*/
-//				, (method.getModifiers() & Modifier.STATIC) != 0	// TODO: ???
-//				, new DefaultSymbolTable()
-//				);
-		AstFunctionDeclaration.Builder fdb = new AstFunctionDeclaration.Builder(
-				reporter,
+		AstFunctionDeclaration fd = new AstFunctionDeclaration(reporter, 
 				new AnnotationList() ,	// TODO 
 				AstToken.internal(methodName), 
 				returnType,
-				classPkgQName
+				classPkgQName,
+				true /*TODO: concrete ???*/
+				, (method.getModifiers() & Modifier.STATIC) != 0	// TODO: ???
+//				, new DefaultSymbolTable()
 				);
-
-		fdb.setConcrete(true);		/*TODO: concrete ???*/
-		fdb.setMember((method.getModifiers() & Modifier.STATIC) != 0);	// TODO: ???
+//		AstFunctionDeclaration.Builder fdb = new AstFunctionDeclaration.Builder(
+//				reporter,
+//				new AnnotationList() ,	// TODO 
+//				AstToken.internal(methodName), 
+//				returnType,
+//				classPkgQName
+//				);
+//
+//		fdb.setConcrete(true);		/*TODO: concrete ???*/
+//		fdb.setMember((method.getModifiers() & Modifier.STATIC) != 0);	// TODO: ???
 //		AstFunctionDeclaration fd = fdb.build(new DefaultSymbolTable());
 		
 //		fdb.setContainerQName(classPkgQName);
@@ -216,11 +217,11 @@ public class SdkTools {
 			
 			AstFunctionFormalArgument arg = new AstFunctionFormalArgument(type, AstToken.internal(name));
 			arg.setSymbolTable(symbolTable);
-			fdb = fdb.withFunctionArgument(arg);
-//			fd = fd.withFunctionArgument(arg);
+//			fdb = fdb.withFunctionArgument(arg);
+			fd = fd.withFunctionArgument(arg);
 		}
 		
-		AstFunctionDeclaration fd = fdb.build(new DefaultSymbolTable(symbolTable));
+//		AstFunctionDeclaration fd = fdb.build(new DefaultSymbolTable(symbolTable));
 		
 		symbolTable.addFunction(fd);
 		fd.assignSymbolTable(symbolTable);

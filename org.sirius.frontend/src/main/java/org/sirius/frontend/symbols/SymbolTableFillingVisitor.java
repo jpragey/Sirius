@@ -12,6 +12,7 @@ import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberAccessExpression;
 import org.sirius.frontend.ast.AstPackageDeclaration;
+import org.sirius.frontend.ast.AstReturnStatement;
 import org.sirius.frontend.ast.AstStringConstantExpression;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ConstructorCallExpression;
@@ -189,5 +190,11 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 		statement.setSymbolTable(symbolTable);
 		symbolTable.addLocalVariable(statement);
 	}
-	
+
+//	@Override
+//	public void startReturnStatement(AstReturnStatement statement) {
+//		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
+//		statement.getExpression()
+//		AstVisitor.super.startReturnStatement(statement);
+//	}
 }

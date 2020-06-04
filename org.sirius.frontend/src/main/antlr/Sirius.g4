@@ -173,23 +173,23 @@ memberValueDeclaration returns [AstMemberValueDeclaration declaration]
 functionDeclaration [DefaultSymbolTable symbolTable, QName containerQName] returns [AstFunctionDeclaration declaration]
 @init {
 	AstType retType;
-	AstFunctionDeclaration.Builder builder;
+	//AstFunctionDeclaration.Builder builder;
 }
 	: annotationList
 	  (	  rt=type	{retType = $rt.declaration; } 
 	  	| 'void' 	{retType = new AstVoidType();}
 	  )
 	  LOWER_ID		{ 
-	  	builder = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, containerQName);
-	  	// /*$ declaration = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, false /*concrete*/, false /*member*/);*/
+	  	/* builder = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, containerQName);*/
+	  	$declaration = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, containerQName);
 	  }
 	  (
 	    '<'
 	  		  	(
-	  		d=typeFormalParameterDeclaration 		{ builder = builder.withFormalParameter($d.declaration); }
+	  		d=typeFormalParameterDeclaration 		{ $declaration = $declaration.withFormalParameter($d.declaration); }
 	  		(
 	  			','
-		  		d=typeFormalParameterDeclaration 	{ builder = builder.withFormalParameter($d.declaration); }
+		  		d=typeFormalParameterDeclaration 	{ $declaration = $declaration.withFormalParameter($d.declaration); }
 	  		)*
 	  	)?
 	  	'>'
@@ -197,16 +197,16 @@ functionDeclaration [DefaultSymbolTable symbolTable, QName containerQName] retur
 	  
 	    
 	  '('
-	  	(  functionFormalArgument		{ builder = builder.withFunctionArgument($functionFormalArgument.argument); }
-	  	  (  ',' functionFormalArgument	{ builder = builder.withFunctionArgument($functionFormalArgument.argument); } )*
+	  	(  functionFormalArgument		{ $declaration = $declaration. withFunctionArgument($functionFormalArgument.argument); }
+	  	  (  ',' functionFormalArgument	{ $declaration = $declaration. withFunctionArgument($functionFormalArgument.argument); } )*
 	    )?
 	  ')' 
-	  '{' 					{ builder.setConcrete(true); }
+	  '{' 					{ $declaration.setConcrete(true); }
 	  		(
-	  			statement	{ builder.addStatement($statement.stmt); }
+	  			statement	{ $declaration.addStatement($statement.stmt); }
 	  		)*
 	   '}'
-	   {$declaration = builder.build($symbolTable);}
+	   { /* $declaration = builder.build($symbolTable); */}
 	   
 	;
 

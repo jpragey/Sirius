@@ -1,11 +1,15 @@
 package org.sirius.frontend.ast;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.Token;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
+
+import com.google.common.collect.ImmutableList;
 
 public class AstFactory {
 
@@ -55,9 +59,39 @@ public class AstFactory {
 	
 	
 //	public AstFunctionDeclaration.Builder createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType, boolean concrete, boolean member) {
-	public AstFunctionDeclaration.Builder createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType, QName containerQName) {
+	
+	public AstFunctionDeclaration createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType, QName containerQName) {
 //		return new AstFunctionDeclaration(reporter, annotationList, new AstToken(name), returnType, concrete, member, new DefaultSymbolTable());
-		return new AstFunctionDeclaration.Builder(reporter, annotationList, new AstToken(name), returnType, containerQName);
+		return new AstFunctionDeclaration(
+				reporter, 
+				annotationList, 
+				new AstToken(name), 
+				returnType,
+				ImmutableList.of(), //<TypeParameter> typeParameters,
+				ImmutableList.of(), //<AstFunctionFormalArgument> formalArguments,
+				containerQName,
+				true, // concrete,
+				true, //boolean member,
+				null,	// DefaultSymbolTable symbolTable,
+				new ArrayList<AstStatement>() // statements
+				
+//				reporter, annotationList, new AstToken(name), returnType, containerQName
+				);
+		
+		
+//		public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType,
+//				ImmutableList<TypeParameter> typeParameters,
+//				ImmutableList<AstFunctionFormalArgument> formalArguments,
+//				QName containerQName,
+//				QName qName,
+//				boolean concrete,
+//				boolean member,
+//				DefaultSymbolTable symbolTable,
+//				List<AstStatement> statements
+//				) {
+
+		
+		
 	}
 
 	public StandardCompilationUnit createStandardCompilationUnit() {

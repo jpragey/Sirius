@@ -10,6 +10,7 @@ import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.MemberValueAccessExpression;
@@ -18,11 +19,16 @@ import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.ast.AstExpression;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
+import org.sirius.frontend.ast.AstReturnStatement;
+import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.parser.Compiler;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.Symbol;
 import org.testng.annotations.Test;
 
 public class MethodTests {
@@ -169,13 +175,23 @@ public class MethodTests {
 		assertEquals( ((ClassDeclaration)type).getQName(), new QName("sirius", "lang", "Integer"));
 
 	}
-	@Test (description = "Simple call of a global function")
+	
+	void assertIsFctArgInteger(int argIndex, String expectedName,  AbstractFunction apiFunc) {
+		FunctionFormalArgument arg1 = apiFunc.getArguments().get(argIndex);
+		assertEquals(arg1.getQName().getLast(), expectedName);
+		assert(arg1.getType() instanceof ClassDeclaration);
+		
+		ClassDeclaration arg1Type = (ClassDeclaration)arg1.getType();
+		assertEquals(arg1Type.getQName(), new QName("sirius", "lang", "Integer"));
+		
+	}
+
+	@Test (description = "Simple call of a global function", enabled = false)
 	public void callWithParamsTest() {
 //		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){String s;}}");
 		ScriptSession session = Compiler.compileScript("#!\n"
-				+ "Integer add(Integer x) {return x;}"
+				+ "Integer add(Integer x, Integer y) {return x;}"
 				+ "");
-		
 		
 		AstModuleDeclaration module = session.getAstModules().get(0);
 		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
@@ -183,20 +199,40 @@ public class MethodTests {
 		AstFunctionDeclaration func = pack.getFunctionDeclarations().get(0);
 		assertEquals(func.getQName().dotSeparated(), "add");
 		
-		func.getSymbolTable().dump();
+		//func.getSymbolTable().dump();
 		
-		assertEquals(func.getFormalArguments().size(), 1);
+		assertEquals(func.getFormalArguments().size(), 2);
 		
 		Optional<AstFunctionFormalArgument> optArg = func.getSymbolTable().lookupFunctionArgument("x");
 		assert(optArg.isPresent());
+		Optional<AstFunctionFormalArgument> opt1Arg = func.getSymbolTable().lookupFunctionArgument("y");
+		assert(opt1Arg.isPresent());
+		
+		AstReturnStatement returnStatement = (AstReturnStatement)func.getStatements().get(0);
+		
+		assert(returnStatement.getExpression() instanceof SimpleReferenceExpression);
+		SimpleReferenceExpression returnExpr = (SimpleReferenceExpression)returnStatement.getExpression();
+		DefaultSymbolTable st = returnExpr.getSymbolTable();
+		st.dump();
+		Optional<Symbol> xOptSymbol = st.lookup("x");
+		
+//		DefaultSymbolTable symbolTable = returnExpr.getSymbolTable();
 		
 		
-//		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
-//		PackageDeclaration pack = md.getPackages().get(0);
-//		assertEquals(pack.getQName().dotSeparated(), "");
-//		
-//		pack.getFunctions().get(0);
+		
+		// -- API
+		ModuleDeclaration md = session.getModuleDeclarations().get(0);
+		
+		PackageDeclaration apiPack = md.getPackages().get(0);
+		assertEquals(apiPack.getQName().dotSeparated(), "");
+		
+		AbstractFunction apiFunc = apiPack.getFunctions().get(0);
+		assertEquals(apiFunc.getArguments().size(), 2);
+
+		
+		assertIsFctArgInteger(0, "x",  apiFunc);
+		assertIsFctArgInteger(1, "y",  apiFunc);
 		
 //		ClassDeclaration cd = pack.getClasses().get(0);
 //		assertEquals(cd.getQName(), new QName("p", "k", "C"));

@@ -10,6 +10,7 @@ import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.MemberValueAccessExpression;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTable;
 
@@ -18,18 +19,23 @@ import org.sirius.frontend.symbols.SymbolTable;
  * @author jpragey
  *
  */
-public class SimpleReferenceExpression implements AstExpression {
+public class SimpleReferenceExpression implements AstExpression, Scoped {
 	private Reporter reporter;
 	private AstToken referenceName;
-	private SymbolTable symbolTable = null;
+	private DefaultSymbolTable symbolTable = null;
 	
-	public SimpleReferenceExpression(Reporter reporter, AstToken referenceName) {
+	private SimpleReferenceExpression(Reporter reporter, AstToken referenceName, DefaultSymbolTable symbolTable) {
 		super();
 		this.reporter = reporter;
 		this.referenceName = referenceName;
+		this.symbolTable = symbolTable;
 	}
 
-	public void setSymbolTable(SymbolTable symbolTable) {
+	public SimpleReferenceExpression(Reporter reporter, AstToken referenceName) {
+		this(reporter, referenceName, null);
+	}
+
+	public void setSymbolTable(DefaultSymbolTable symbolTable) {
 		this.symbolTable = symbolTable;
 	}
 
@@ -162,6 +168,18 @@ public class SimpleReferenceExpression implements AstExpression {
 		}
 		return impl;
 		
+	}
+
+	@Override
+	public AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+//	symbolTable.
+		SimpleReferenceExpression expr = new SimpleReferenceExpression(reporter, referenceName, new DefaultSymbolTable(parentSymbolTable));
+		return expr;
+	}
+
+	@Override
+	public DefaultSymbolTable getSymbolTable() {
+		return symbolTable;
 	}
 
 

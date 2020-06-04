@@ -3,8 +3,12 @@ package org.sirius.frontend.ast;
 import java.util.Optional;
 
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 public interface AstExpression {
+	
+	
+	AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable);
 	
 	/** Expression type. Note that it may be absent at parsing type (returns null), at least for function call expression,
 	 *  
@@ -19,6 +23,9 @@ public interface AstExpression {
 	 */
 	Expression getExpression();
 
+//	DefaultSymbolTable getSymbolTable();
+	
+	
 	String asString();
 	@Override
 	String toString();

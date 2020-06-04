@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.Token;
 import org.sirius.common.error.Reporter;
@@ -13,22 +14,34 @@ import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionCall;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTable;
 
-public class AstFunctionCallExpression implements AstExpression {
+public class AstFunctionCallExpression implements AstExpression, Scoped {
 	/** Function name */
 	private AstToken name;
 	
 	private List<AstExpression> actualArguments = new ArrayList<>();
 
-	private SymbolTable symbolTable = null;
+	private DefaultSymbolTable symbolTable = null;
 	
 	private Reporter reporter;
 	
 	// 
 	private Optional<AstExpression> thisExpression = Optional.empty();
 	
+
+	
+	private AstFunctionCallExpression(AstToken name, List<AstExpression> actualArguments, Reporter reporter,
+			Optional<AstExpression> thisExpression, DefaultSymbolTable symbolTable) {
+		super();
+		this.name = name;
+		this.actualArguments = actualArguments;
+		this.reporter = reporter;
+		this.thisExpression = thisExpression;
+		this.symbolTable = symbolTable;
+	}
 
 	public AstFunctionCallExpression(Reporter reporter, AstToken name) {
 		super();
@@ -40,11 +53,12 @@ public class AstFunctionCallExpression implements AstExpression {
 		this(reporter, new AstToken(name));
 	}
 
-	public SymbolTable getSymbolTable() {
+	@Override
+	public DefaultSymbolTable getSymbolTable() {
 		return symbolTable;
 	}
 
-	public void setSymbolTable(SymbolTable symbolTable) {
+	public void setSymbolTable(DefaultSymbolTable symbolTable) {
 		this.symbolTable = symbolTable;
 	}
 
@@ -60,6 +74,7 @@ public class AstFunctionCallExpression implements AstExpression {
 		this.actualArguments.add(argument);
 	}
 
+	
 	public Optional<AstExpression> getThisExpression() {
 		return thisExpression;
 	}
@@ -255,6 +270,22 @@ public class AstFunctionCallExpression implements AstExpression {
 	@Override
 	public String asString() {
 		return toString();
+	}
+
+	@Override
+	public AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+
+		List<AstExpression> newArgs = actualArguments.stream().map(arg -> arg.linkToParentST(parentSymbolTable)).collect(Collectors.toList());  
+//		Optional<AstExpression> thisExpression, 
+
+		AstFunctionCallExpression newExpr = new AstFunctionCallExpression(
+				name, 
+				newArgs, 
+				reporter,
+				thisExpression,	// TODO: linkToParentST ???  
+				new DefaultSymbolTable(parentSymbolTable));
+		
+		return newExpr;
 	}
 
 }
