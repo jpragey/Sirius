@@ -8,7 +8,7 @@ import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.ImportDeclaration;
-import org.sirius.frontend.ast.AstFunctionFormalArgument;
+import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.TypeParameter;
@@ -21,7 +21,7 @@ public class Symbol {
 	private Optional<AstInterfaceDeclaration> interfaceDeclaration = Optional.empty();
 	private Optional<TypeParameter> formalParameterDeclaration = Optional.empty();
 	private Optional<AstFunctionDeclaration> functionDeclaration = Optional.empty();
-	private Optional<AstFunctionFormalArgument> functionArgument = Optional.empty();
+	private Optional<AstFunctionParameter> functionArgument = Optional.empty();
 
 	private Optional<AstMemberValueDeclaration> valueDeclaration = Optional.empty();
 	private Optional<ImportedSymbol> importDeclaration = Optional.empty();
@@ -58,7 +58,7 @@ public class Symbol {
 		this.valueDeclaration = Optional.of(argument);
 	}
 
-	public Symbol(AstToken name, AstFunctionFormalArgument argument) {
+	public Symbol(AstToken name, AstFunctionParameter argument) {
 		super();
 		this.name = name;
 		this.functionArgument = Optional.of(argument);
@@ -107,7 +107,7 @@ public class Symbol {
 		return localVariableDeclaration;
 	}
 
-	public Optional<AstFunctionFormalArgument> getFunctionArgument() {
+	public Optional<AstFunctionParameter> getFunctionArgument() {
 		return functionArgument;
 	}
 	

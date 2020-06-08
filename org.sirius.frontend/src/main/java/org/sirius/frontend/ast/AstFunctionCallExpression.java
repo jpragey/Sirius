@@ -112,7 +112,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		visitor.endFunctionCallExpression(this);
 	}
 
-	private Optional<Expression> mapArg(AstExpression argExpression, AstFunctionFormalArgument formalArgument) {
+	private Optional<Expression> mapArg(AstExpression argExpression, AstFunctionParameter formalArgument) {
 		AstType argType = argExpression.getType();
 		AstType expectedType = formalArgument.getType();
 		if(argType.isExactlyA(expectedType)) {
@@ -165,12 +165,12 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		@Override
 		public List<Expression> getArguments() {
 //			List<AstFunctionFormalArgument> formalArgs = functionDeclaration.getFormalArguments();
-			List<AstFunctionFormalArgument> formalArgs = functionDeclaration.getPartials().get(0).getArgs();
-			Iterator<AstFunctionFormalArgument> it = formalArgs.iterator();
+			List<AstFunctionParameter> formalArgs = functionDeclaration.getPartials().get(0).getArgs();
+			Iterator<AstFunctionParameter> it = formalArgs.iterator();
 			
 			ArrayList<Expression> l = new ArrayList<>();
 			for(AstExpression arg: actualArguments) {
-				AstFunctionFormalArgument formalArgument = it.next();
+				AstFunctionParameter formalArgument = it.next();
 				Optional<Expression> expr = mapArg(arg, formalArgument);
 				if(expr.isPresent()) {
 					l.add(expr.get());

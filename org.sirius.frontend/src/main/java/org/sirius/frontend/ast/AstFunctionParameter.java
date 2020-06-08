@@ -12,13 +12,13 @@ import org.sirius.frontend.symbols.DefaultSymbolTable;
  * @author jpragey
  *
  */
-public class AstFunctionFormalArgument {
+public class AstFunctionParameter {
 	
 	private AstType type;
 	private AstToken name;
 	private DefaultSymbolTable symbolTable;
 	
-	public AstFunctionFormalArgument(AstType type, AstToken name) {
+	public AstFunctionParameter(AstType type, AstToken name) {
 		super();
 		this.type = type;
 		this.name = name;

@@ -7,7 +7,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
-import org.sirius.frontend.ast.AstFunctionFormalArgument;
+import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstReturnStatement;
 import org.sirius.frontend.ast.AstStringConstantExpression;
@@ -93,7 +93,7 @@ public class SymbolResolutionVisitor implements AstVisitor {
 	}
 	
 	@Override
-	public void startFunctionFormalArgument(AstFunctionFormalArgument formalArgument) {
+	public void startFunctionFormalArgument(AstFunctionParameter formalArgument) {
 		formalArgument.resolve();
 	}
 	

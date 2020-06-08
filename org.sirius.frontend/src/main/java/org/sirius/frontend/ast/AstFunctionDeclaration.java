@@ -22,7 +22,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 	
 	private ImmutableList<TypeParameter> typeParameters;
 	
-	private ImmutableList<AstFunctionFormalArgument> formalArguments;
+	private ImmutableList<AstFunctionParameter> formalArguments;
 	
 
 	private List<AstStatement> statements/* = new ArrayList<>()*/; 
@@ -67,13 +67,13 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 	}
 	public class Partial {
 		private ImmutableList<Capture> captures;
-		private ImmutableList<AstFunctionFormalArgument> args;
+		private ImmutableList<AstFunctionParameter> args;
 		private AstFunctionDeclaration function;
 		private DefaultSymbolTable symbolTable;
 		
 		public Partial(
 				List<Capture> captures, 
-				List<AstFunctionFormalArgument> args, 
+				List<AstFunctionParameter> args, 
 				AstFunctionDeclaration function, 
 				DefaultSymbolTable parentSymbolTable) {
 			super();
@@ -82,7 +82,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 			this.function = function;
 			this.symbolTable = new DefaultSymbolTable(parentSymbolTable);
 			
-			for(AstFunctionFormalArgument arg: args) {
+			for(AstFunctionParameter arg: args) {
 				this.symbolTable.addFunctionArgument(arg);
 			}
 		}
@@ -91,7 +91,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 			return captures;
 		}
 
-		public ImmutableList<AstFunctionFormalArgument> getArgs() {
+		public ImmutableList<AstFunctionParameter> getArgs() {
 			return args;
 		}
 
@@ -122,7 +122,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 			AstToken name, 
 			AstType returnType,
 			ImmutableList<TypeParameter> typeParameters,
-			ImmutableList<AstFunctionFormalArgument> formalArguments,
+			ImmutableList<AstFunctionParameter> formalArguments,
 			QName containerQName,
 			boolean concrete,
 			boolean member,
@@ -222,7 +222,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 	
 	
 	
-	public AstFunctionDeclaration withFunctionArguments(List<AstFunctionFormalArgument> args) {
+	public AstFunctionDeclaration withFunctionArguments(List<AstFunctionParameter> args) {
 		List<Partial> partials = new ArrayList<>(args.size() + 1);
 		for(int from = 0; from <= args.size(); from++) {
 			Partial partial = new Partial(
@@ -233,7 +233,7 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 			partials.add(partial);
 		}
 		
-		ImmutableList<AstFunctionFormalArgument> newFormalArguments = ImmutableList.copyOf(args);
+		ImmutableList<AstFunctionParameter> newFormalArguments = ImmutableList.copyOf(args);
 
 		DefaultSymbolTable newSymbolTable = new DefaultSymbolTable(symbolTable);
 

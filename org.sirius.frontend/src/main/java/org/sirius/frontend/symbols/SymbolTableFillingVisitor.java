@@ -6,7 +6,7 @@ import java.util.Stack;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
-import org.sirius.frontend.ast.AstFunctionFormalArgument;
+import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstIntegerConstantExpression;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
@@ -131,7 +131,7 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 	}
 	
 	@Override
-	public void startFunctionFormalArgument(AstFunctionFormalArgument formalArgument) {
+	public void startFunctionFormalArgument(AstFunctionParameter formalArgument) {
 		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
 		formalArgument.setSymbolTable(symbolTable);
 	}

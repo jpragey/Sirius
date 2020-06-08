@@ -22,7 +22,7 @@ import org.sirius.frontend.api.Type;
 import org.sirius.frontend.ast.AstExpression;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration.Partial;
-import org.sirius.frontend.ast.AstFunctionFormalArgument;
+import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstReturnStatement;
@@ -235,9 +235,9 @@ public class MethodTests {
 		Partial allArgsPartial = func.getPartials().get(0);
 		assertEquals(allArgsPartial.getArgs().size(), 2);
 		
-		Optional<AstFunctionFormalArgument> optArg = allArgsPartial.getSymbolTable().lookupFunctionArgument("x");
+		Optional<AstFunctionParameter> optArg = allArgsPartial.getSymbolTable().lookupFunctionArgument("x");
 		assert(optArg.isPresent());
-		Optional<AstFunctionFormalArgument> opt1Arg = allArgsPartial.getSymbolTable().lookupFunctionArgument("y");
+		Optional<AstFunctionParameter> opt1Arg = allArgsPartial.getSymbolTable().lookupFunctionArgument("y");
 		assert(opt1Arg.isPresent());
 		
 		AstReturnStatement returnStatement = (AstReturnStatement)func.getStatements().get(0);

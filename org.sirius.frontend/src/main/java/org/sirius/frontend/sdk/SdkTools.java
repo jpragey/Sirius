@@ -17,7 +17,7 @@ import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstClassOrInterface;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
-import org.sirius.frontend.ast.AstFunctionFormalArgument;
+import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
@@ -208,7 +208,7 @@ public class SdkTools {
 //		fd.setContainerQName(classPkgQName);
 
 		// -- function arguments
-		List<AstFunctionFormalArgument> args = new ArrayList<>(method.getParameters().length);
+		List<AstFunctionParameter> args = new ArrayList<>(method.getParameters().length);
 		for(Parameter parameter: method.getParameters()) {
 			org.sirius.sdk.tooling.Parameter anno = parameter.getAnnotation(org.sirius.sdk.tooling.Parameter.class);
 			if(anno == null)
@@ -220,7 +220,7 @@ public class SdkTools {
 			
 			type.setSymbolTable(symbolTable);
 			
-			AstFunctionFormalArgument arg = new AstFunctionFormalArgument(type, AstToken.internal(name));
+			AstFunctionParameter arg = new AstFunctionParameter(type, AstToken.internal(name));
 			arg.setSymbolTable(symbolTable);
 //			fdb = fdb.withFunctionArgument(arg);
 			args.add(arg);

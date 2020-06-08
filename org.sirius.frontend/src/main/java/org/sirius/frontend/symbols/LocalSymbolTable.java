@@ -8,7 +8,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
 import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.ast.AstFunctionFormalArgument;
+import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.TypeParameter;
 
 public class LocalSymbolTable implements SymbolTable {
@@ -66,7 +66,7 @@ public class LocalSymbolTable implements SymbolTable {
 	}
 
 	/** Add function argument */
-	public void addFunctionArgument(AstToken simpleName, AstFunctionFormalArgument formalArgument) {
+	public void addFunctionArgument(AstToken simpleName, AstFunctionParameter formalArgument) {
 		addSymbol(simpleName, new Symbol(simpleName, formalArgument));
 	}
 

@@ -31,7 +31,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	private ImmutableList<AstFunctionDeclaration> functionDeclarations;
 	
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
-	private List<AstFunctionFormalArgument> anonConstructorArguments = new ArrayList<>(); 
+	private List<AstFunctionParameter> anonConstructorArguments = new ArrayList<>(); 
 
 	/** Root package at first */
 	private QName packageQName;
@@ -54,7 +54,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			ImmutableList<TypeParameter> typeParameters,
 			ImmutableList<AstFunctionDeclaration> functionDeclarations,
 			List<AstMemberValueDeclaration> valueDeclarations,
-			List<AstFunctionFormalArgument> anonConstructorArguments 
+			List<AstFunctionParameter> anonConstructorArguments 
 			) {
 		super();
 		this.reporter = reporter;
@@ -77,7 +77,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			ImmutableList.of(),//<TypeFormalParameterDeclaration> typeParameters,
 			ImmutableList.of(), //new ArrayList<AstFunctionDeclaration>(), // functionDeclarations,
 			new ArrayList<AstMemberValueDeclaration>(), //List valueDeclarations,
-			new ArrayList<AstFunctionFormalArgument>() //List anonConstructorArguments
+			new ArrayList<AstFunctionParameter>() //List anonConstructorArguments
 		);
 	}
 	public AstClassDeclaration withFormalParameter(TypeParameter param) {
@@ -194,11 +194,11 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	public List<AstMemberValueDeclaration> getValueDeclarations() {
 		return valueDeclarations;
 	}
-	public void addAnonConstructorArgument(AstFunctionFormalArgument argument) {
+	public void addAnonConstructorArgument(AstFunctionParameter argument) {
 		this.anonConstructorArguments.add(argument);
 	}
 
-	public List<AstFunctionFormalArgument> getAnonConstructorArguments() {
+	public List<AstFunctionParameter> getAnonConstructorArguments() {
 		return anonConstructorArguments;
 	}
 	public List<AncestorInfo> getAncestors() {

@@ -44,8 +44,8 @@ public interface AstVisitor {
 	public default void startFunctionDeclaration (AstFunctionDeclaration functionDeclaration) {}
 	public default void endFunctionDeclaration (AstFunctionDeclaration functionDeclaration) {}
 	
-	public default void startFunctionFormalArgument (AstFunctionFormalArgument formalArgument) {}
-	public default void endFunctionFormalArgument   (AstFunctionFormalArgument formalArgument) {}
+	public default void startFunctionFormalArgument (AstFunctionParameter formalArgument) {}
+	public default void endFunctionFormalArgument   (AstFunctionParameter formalArgument) {}
 	
 	
 	
