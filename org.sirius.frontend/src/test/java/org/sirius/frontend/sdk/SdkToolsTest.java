@@ -91,9 +91,11 @@ public class SdkToolsTest {
 		AstFunctionDeclaration func = symbol.getFunctionDeclaration().get();
 		
 		assertEquals(func.getQName(), new QName("sirius", "lang", "println"));
-		assertEquals(func.getFormalArguments().size(), 1);
+//		assertEquals(func.getFormalArguments().size(), 1);
+		assertEquals(func.getPartials().get(0).getArgs().size(), 1);
 		
-		AstFunctionFormalArgument arg0 = func.getFormalArguments().get(0); 
+//		AstFunctionFormalArgument arg0 = func.getFormalArguments().get(0); 
+		AstFunctionFormalArgument arg0 = func.getPartials().get(0).getArgs().get(0); 
 		assertEquals(arg0.getName().getText(), "text"); // TODO
 		assert(arg0.getType() instanceof QNameRefType);
 		QNameRefType arg0Type = (QNameRefType)arg0.getType();

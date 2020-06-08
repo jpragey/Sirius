@@ -1,11 +1,11 @@
 package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.checkerframework.checker.units.qual.m;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
@@ -41,11 +41,80 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 	private QName containerQName;
 	
 	// -- nonnull for instance method
-//	private Optional<AstClassOrInterface> memberContainer = Optional.empty();
 	private boolean member = false;
 	
 	
 	private QName qName; // deduced from containerQName + name
+	
+	public static class Capture {
+		private AstType type;
+		private AstToken name;
+		public Capture(AstType type, AstToken name) {
+			super();
+			this.type = type;
+			this.name = name;
+		}
+		@Override
+		public String toString() {
+			return type.toString() + " " + name.getText();
+		}
+		public AstType getType() {
+			return type;
+		}
+		public AstToken getName() {
+			return name;
+		}
+	}
+	public class Partial {
+		private ImmutableList<Capture> captures;
+		private ImmutableList<AstFunctionFormalArgument> args;
+		private AstFunctionDeclaration function;
+		private DefaultSymbolTable symbolTable;
+		
+		public Partial(
+				List<Capture> captures, 
+				List<AstFunctionFormalArgument> args, 
+				AstFunctionDeclaration function, 
+				DefaultSymbolTable parentSymbolTable) {
+			super();
+			this.captures = ImmutableList.copyOf(captures);
+			this.args = ImmutableList.copyOf(args);
+			this.function = function;
+			this.symbolTable = new DefaultSymbolTable(parentSymbolTable);
+			
+			for(AstFunctionFormalArgument arg: args) {
+				this.symbolTable.addFunctionArgument(arg);
+			}
+		}
+
+		public ImmutableList<Capture> getCaptures() {
+			return captures;
+		}
+
+		public ImmutableList<AstFunctionFormalArgument> getArgs() {
+			return args;
+		}
+
+		public AstFunctionDeclaration getFunction() {
+			return function;
+		}
+
+		public DefaultSymbolTable getSymbolTable() {
+			return symbolTable;
+		}
+		@Override
+		public String toString() {
+			String text =
+					function.getName().getText() + 
+					captures.stream().map(capt -> capt.toString()).collect(Collectors.joining(", ", "[", "]")) +
+					args.stream().map(capt -> capt.toString()).collect(Collectors.joining(", ", "(", ")"))
+					;
+			// TODO Auto-generated method stub
+			return text;
+		}
+	}
+	
+	private List<Partial> partials = Collections.emptyList();
 	
 	public AstFunctionDeclaration(
 			Reporter reporter, 
@@ -58,7 +127,9 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 			boolean concrete,
 			boolean member,
 			DefaultSymbolTable symbolTable,
-			List<AstStatement> statements
+			List<AstStatement> statements,
+//			Optional<AstFunctionDeclaration> delegate,
+			List<Partial> partials
 			) {
 		super();
 		this.reporter = reporter;
@@ -74,6 +145,8 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 		this.member = member;
 		this.symbolTable = symbolTable;
 		this.statements = statements;
+//		this.delegate = delegate;
+		this.partials = partials;
 	}
 
 	/** Create a no-formal no-arg no-symboltable function
@@ -95,9 +168,10 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 			AstToken name, 
 			AstType returnType,
 			QName containerQName,
-//			QName qName,
 			boolean concrete,
-			boolean member
+			boolean member,
+//			Optional<AstFunctionDeclaration> delegate,
+			List<Partial> partials
 //			,
 //			ImmutableList<AstStatement> statements
 			) {
@@ -108,131 +182,24 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 				concrete,
 				member,
 				null, //DefaultSymbolTable symbolTable,
-				new ArrayList<AstStatement> ()
+				new ArrayList<AstStatement> (),
+//				delegate,
+				partials
 				); 
 	}
 
-//	public static class Builder {
-//		Reporter reporter;
-//		
-//		AnnotationList annotationList;
-//		AstToken name;
-//		AstType returnType; 
-//		
-//		List<TypeParameter> typeParameters = new ArrayList<>();
-//		List<AstFunctionFormalArgument> formalArguments = new ArrayList<>();
-//		QName containerQName;
-////		QName qName;
-//		boolean concrete;
-//		boolean member;
-//		private List<AstStatement> statements = new ArrayList<>(); 
-//		
-//		
-//		public Builder(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType, QName containerQName) {
-//			super();
-//			this.reporter = reporter;
-//			this.annotationList = annotationList;
-//			this.name = name;
-//			this.returnType = returnType;
-//			this.containerQName = containerQName;
-//		}
-//		public Builder withFormalParameter(TypeParameter param) {
-//			typeParameters.add(param);
-//			return this;
-//		}
-//		public Builder withFunctionArgument(AstFunctionFormalArgument arg) {
-//			formalArguments.add(arg);
-//			return this;
-//		}
-//		
-//		public Builder(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType) {
-//			super();
-//			this.reporter = reporter;
-//			this.annotationList = annotationList;
-//			this.name = name;
-//			this.returnType = returnType;
-//		}
-//		public void addStatement(AstStatement statement) {
-//			this.statements.add(statement);
-//		}
-//
-//		public void setConcrete(boolean concrete) {
-//			this.concrete = concrete;
-//		}
-//
-//		public void setMember(boolean member) {
-//			this.member = member;
-//		}
-//		
-//		public void setContainerQName(QName containerQName) {
-////			this.containerQName = Optional.of(containerQName);
-//			this.containerQName = containerQName;
-//		}
-//		public AstFunctionDeclaration build(DefaultSymbolTable parentSymbolTable) {
-////			if(!fd.getAnnotationList().contains("static"))
-//			member = annotationList.contains("static");
-//
-//			QName qName = containerQName.child(name.getText());
-//
-//			DefaultSymbolTable symbolTable = new DefaultSymbolTable(parentSymbolTable);
-//			
-//			
-//			AstFunctionDeclaration fd = new AstFunctionDeclaration(
-//					reporter, 
-//					annotationList, 
-//					name, 
-//					returnType,
-//					ImmutableList.copyOf(typeParameters),
-////					ImmutableList.copyOf(formalArguments),
-//					ImmutableList.of(),
-//					containerQName,
-//					qName,
-//					concrete,
-//					member,
-//					symbolTable,
-//					ImmutableList.copyOf(statements)
-//					);
-//			
-//			for(AstFunctionFormalArgument arg: formalArguments) {
-//				fd = fd.withFunctionArgument(arg);
-//			}
-//			
-//			// Function itself is in symbol table (???)
-////			symbolTable.addFunction(fd);
-//			fd.getSymbolTable().addFunction(fd);	// TODO: ugly
-//			
-//			// Add function args in symbol table
-////			for(AstFunctionFormalArgument arg: formalArguments) {
-////				symbolTable.addFunctionArgument(arg);
-////			}
-//			return fd;
-//		}
-//	}
-	
-	
+	/** Get the list of partially-applied functions, sorted by their number of captures.
+	 * The first one has all arguments and no capture. 
+	 * The last one has no argument and all captures.   
+	 * */
+	public List<Partial> getPartials() {
+		return partials;
+	}
 
-//	public AstFunctionDeclaration(Reporter reporter, AnnotationList annotationList, AstToken name, AstType returnType, 
-//			boolean concrete, boolean member, DefaultSymbolTable symbolTable) 
-//	{
-//		this(reporter, annotationList, name, returnType, ImmutableList.of(), ImmutableList.of(), 
-//				Optional.empty(), null /*qName*/, concrete, member, symbolTable);	// TODO: oops qName
-//	}
-	
-	
 	public AstFunctionDeclaration withFormalParameter(TypeParameter param) {
 		
 		ImmutableList.Builder<TypeParameter> builder = ImmutableList.builderWithExpectedSize(typeParameters.size() + 1);
 		ImmutableList<TypeParameter> newTypeParams = builder.addAll(typeParameters).add(param).build();
-		
-//		AstFunctionDeclaration fd = new AstFunctionDeclaration(reporter,
-//				annotationList, 
-//				name, 
-//				returnType, 
-//				newTypeParams,
-//				formalArguments,
-//				containerQName, qName, concrete, member, 
-//				symbolTable);	// ???
-		
 		
 		AstFunctionDeclaration fd = new AstFunctionDeclaration(
 				reporter, 
@@ -245,22 +212,31 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 				concrete,
 				member,
 				symbolTable,
-				statements);
-
+				statements,
+//				delegate,	// TODO: ???
+				partials);
 		
 		return fd;
 	}
 	
-	public AstFunctionDeclaration withFunctionArgument(AstFunctionFormalArgument arg) {
+	
+	
+	
+	public AstFunctionDeclaration withFunctionArguments(List<AstFunctionFormalArgument> args) {
+		List<Partial> partials = new ArrayList<>(args.size() + 1);
+		for(int from = 0; from <= args.size(); from++) {
+			Partial partial = new Partial(
+					args.subList(0, from) .stream().map(arg -> new Capture(arg.getType(), arg.getName())).collect(Collectors.toList()), 
+					args.subList(from, args.size()), 
+					this, 
+					symbolTable);
+			partials.add(partial);
+		}
 		
-		ImmutableList.Builder<AstFunctionFormalArgument> builder = ImmutableList.builderWithExpectedSize(formalArguments.size() + 1);
-		ImmutableList<AstFunctionFormalArgument> newFormalArguments = builder.addAll(formalArguments).add(arg).build();
-		
-		// Symbol table including new param
+		ImmutableList<AstFunctionFormalArgument> newFormalArguments = ImmutableList.copyOf(args);
+
 		DefaultSymbolTable newSymbolTable = new DefaultSymbolTable(symbolTable);
-		newSymbolTable.addFunctionArgument(arg);
-		
-		
+
 		AstFunctionDeclaration fd = new AstFunctionDeclaration(reporter,
 				annotationList, 
 				name, 
@@ -268,13 +244,12 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 				typeParameters,
 				newFormalArguments,
 				containerQName, 
-//				qName, 
 				concrete, member,
 				newSymbolTable,
-				statements);
+				statements,
+				partials);
 		return fd;
 	}
-	
 	
 	
 	
@@ -282,7 +257,6 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 	public AstToken getName() {
 		return name;
 	}
-	
 	
 	public boolean isMember() {
 		return member;
@@ -303,10 +277,6 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 	public void assignSymbolTable(DefaultSymbolTable symbolTable) {
 		this.symbolTable = symbolTable;
 		this.symbolTable.addFunction(this);
-		
-////		formalArguments.stream().forEach(argument -> symbolTable.addFunctionArgument(argument.getName(), argument));
-		
-
 	}
 
 	public boolean isConcrete() {
@@ -333,10 +303,6 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 		this.returnType = returnType;
 	}
 
-//	public void setSymbolTableParent(SymbolTable newParent) {
-//		this.symbolTable.setParentSymbolTable(newParent);
-//	}
-
 	@Override
 	public DefaultSymbolTable getSymbolTable() {
 		return symbolTable;
@@ -345,20 +311,6 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 	public List<TypeParameter> getTypeParameters() {
 		return typeParameters;
 	}
-
-//	public void addTypeParameterDeclaration(TypeFormalParameterDeclaration typeParameter) {
-//		this.typeParameters.add(typeParameter);
-//	}
-
-//	public void addFormalArgument(AstFunctionFormalArgument argument) {
-//		this.formalArguments.add(argument);
-////		this.symbolTable.addFunctionArgument(argument.getName(), argument);
-//	}
-
-	public List<AstFunctionFormalArgument> getFormalArguments() {
-		return formalArguments;
-	}
-	
 
 	public AnnotationList getAnnotationList() {
 		return annotationList;
@@ -388,11 +340,6 @@ public class AstFunctionDeclaration implements Scoped, Visitable, AstParametric<
 	public QName getQName() {
 		return qName;
 	}
-
-//	public void setContainerQName(QName containerQName) {
-//		this.containerQName = containerQName;
-//		this.qName = containerQName.child(this.name.getText()); // TODO: ugly
-//	}
 
 	@Override
 	public String toString() {

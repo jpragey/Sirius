@@ -164,7 +164,8 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		}
 		@Override
 		public List<Expression> getArguments() {
-			List<AstFunctionFormalArgument> formalArgs = functionDeclaration.getFormalArguments();
+//			List<AstFunctionFormalArgument> formalArgs = functionDeclaration.getFormalArguments();
+			List<AstFunctionFormalArgument> formalArgs = functionDeclaration.getPartials().get(0).getArgs();
 			Iterator<AstFunctionFormalArgument> it = formalArgs.iterator();
 			
 			ArrayList<Expression> l = new ArrayList<>();
@@ -216,7 +217,8 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 			if(fd.isPresent()) {
 				AstFunctionDeclaration functionDeclaration = fd.get();
 				
-				int expectedArgCount = functionDeclaration.getFormalArguments().size();
+//				int expectedArgCount = functionDeclaration.getFormalArguments().size();
+				int expectedArgCount = functionDeclaration.getPartials().get(0).getArgs().size();
 				if(expectedArgCount != actualArguments.size()) {
 					reporter.error(name.getText() + " has a wrong number of arguments: " + expectedArgCount + " actual, " + actualArguments.size() + " expected.", name);
 				} else {

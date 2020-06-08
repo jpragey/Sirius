@@ -21,6 +21,7 @@ import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.ast.AstExpression;
 import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclaration.Partial;
 import org.sirius.frontend.ast.AstFunctionFormalArgument;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
@@ -186,7 +187,36 @@ public class MethodTests {
 		
 	}
 
-	@Test (description = "Simple call of a global function", enabled = false)
+	@Test (description = "Simple call of a global function", enabled = true)
+	public void functionsWith3ParametersHaveASuitableDelegateStructureTest() {
+		ScriptSession session = Compiler.compileScript("#!\n"
+				+ "void add(Integer x, Integer y, Integer z) {}");
+		
+		AstModuleDeclaration module = session.getAstModules().get(0);
+		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
+		assertEquals(pack.getQname().dotSeparated(), "");
+		AstFunctionDeclaration func = pack.getFunctionDeclarations().get(0);
+		assertEquals(func.getQName().dotSeparated(), "add");
+		
+		assertEquals(func.getPartials().size(), 4);
+		AstFunctionDeclaration.Partial partial0 = func.getPartials().get(0);
+		assertEquals(partial0.getCaptures().size(), 0);
+		assertEquals(partial0.getArgs().size(), 3);
+
+		AstFunctionDeclaration.Partial partial1 = func.getPartials().get(1);
+		AstFunctionDeclaration.Partial partial2 = func.getPartials().get(2);
+
+		AstFunctionDeclaration.Partial partial3 = func.getPartials().get(3);
+		assertEquals(partial3.getCaptures().size(), 3);
+		assertEquals(partial3.getCaptures().get(2).getName().getText(), "z");
+		assertEquals(partial3.getArgs().size(), 0);
+		
+//		assert(func.getDelegate().isPresent());
+		
+	}
+	
+	
+	@Test (description = "Simple call of a global function", enabled = true)
 	public void callWithParamsTest() {
 //		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){String s;}}");
 		ScriptSession session = Compiler.compileScript("#!\n"
@@ -201,11 +231,13 @@ public class MethodTests {
 		
 		//func.getSymbolTable().dump();
 		
-		assertEquals(func.getFormalArguments().size(), 2);
+//		assertEquals(func.getFormalArguments().size(), 2);
+		Partial allArgsPartial = func.getPartials().get(0);
+		assertEquals(allArgsPartial.getArgs().size(), 2);
 		
-		Optional<AstFunctionFormalArgument> optArg = func.getSymbolTable().lookupFunctionArgument("x");
+		Optional<AstFunctionFormalArgument> optArg = allArgsPartial.getSymbolTable().lookupFunctionArgument("x");
 		assert(optArg.isPresent());
-		Optional<AstFunctionFormalArgument> opt1Arg = func.getSymbolTable().lookupFunctionArgument("y");
+		Optional<AstFunctionFormalArgument> opt1Arg = allArgsPartial.getSymbolTable().lookupFunctionArgument("y");
 		assert(opt1Arg.isPresent());
 		
 		AstReturnStatement returnStatement = (AstReturnStatement)func.getStatements().get(0);

@@ -173,6 +173,7 @@ memberValueDeclaration returns [AstMemberValueDeclaration declaration]
 functionDeclaration [DefaultSymbolTable symbolTable, QName containerQName] returns [AstFunctionDeclaration declaration]
 @init {
 	AstType retType;
+	ArrayList<AstFunctionFormalArgument> arguments = new ArrayList<>();
 	//AstFunctionDeclaration.Builder builder;
 }
 	: annotationList
@@ -197,9 +198,9 @@ functionDeclaration [DefaultSymbolTable symbolTable, QName containerQName] retur
 	  
 	    
 	  '('
-	  	(  functionFormalArgument		{ $declaration = $declaration. withFunctionArgument($functionFormalArgument.argument); }
-	  	  (  ',' functionFormalArgument	{ $declaration = $declaration. withFunctionArgument($functionFormalArgument.argument); } )*
-	    )?
+	  	(  functionFormalArgument		{ arguments.add($functionFormalArgument.argument);}
+	  	  (  ',' functionFormalArgument	{ arguments.add($functionFormalArgument.argument);} )*
+	    )?								{ $declaration = $declaration.withFunctionArguments(arguments); }
 	  ')' 
 	  '{' 					{ $declaration.setConcrete(true); }
 	  		(

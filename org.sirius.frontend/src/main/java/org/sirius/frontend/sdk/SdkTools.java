@@ -3,6 +3,8 @@ package org.sirius.frontend.sdk;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -185,7 +187,9 @@ public class SdkTools {
 				classPkgQName,
 				true /*TODO: concrete ???*/
 				, (method.getModifiers() & Modifier.STATIC) != 0	// TODO: ???
+//				, Optional.empty() // TODO: delegate ???
 //				, new DefaultSymbolTable()
+				, Collections.emptyList()
 				);
 //		AstFunctionDeclaration.Builder fdb = new AstFunctionDeclaration.Builder(
 //				reporter,
@@ -204,6 +208,7 @@ public class SdkTools {
 //		fd.setContainerQName(classPkgQName);
 
 		// -- function arguments
+		List<AstFunctionFormalArgument> args = new ArrayList<>(method.getParameters().length);
 		for(Parameter parameter: method.getParameters()) {
 			org.sirius.sdk.tooling.Parameter anno = parameter.getAnnotation(org.sirius.sdk.tooling.Parameter.class);
 			if(anno == null)
@@ -218,9 +223,11 @@ public class SdkTools {
 			AstFunctionFormalArgument arg = new AstFunctionFormalArgument(type, AstToken.internal(name));
 			arg.setSymbolTable(symbolTable);
 //			fdb = fdb.withFunctionArgument(arg);
-			fd = fd.withFunctionArgument(arg);
+			args.add(arg);
+//			fd = fd.withFunctionArgument(arg);
 		}
 		
+		fd = fd.withFunctionArguments(args);
 //		AstFunctionDeclaration fd = fdb.build(new DefaultSymbolTable(symbolTable));
 		
 		symbolTable.addFunction(fd);

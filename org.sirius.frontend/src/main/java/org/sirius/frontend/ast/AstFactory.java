@@ -1,6 +1,7 @@
 package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,8 +75,9 @@ public class AstFactory {
 				true, //boolean member,
 				null,	// DefaultSymbolTable symbolTable,
 				new ArrayList<AstStatement>() // statements
-				
+//				, Optional.empty() // TODO: delegate ???
 //				reporter, annotationList, new AstToken(name), returnType, containerQName
+				,Collections.emptyList()
 				);
 		
 		
