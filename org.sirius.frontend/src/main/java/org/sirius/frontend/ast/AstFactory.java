@@ -61,9 +61,9 @@ public class AstFactory {
 	
 //	public AstFunctionDeclaration.Builder createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType, boolean concrete, boolean member) {
 	
-	public AstFunctionDeclaration createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType, QName containerQName) {
+	public AstFunctionDeclarationBuilder createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType, QName containerQName) {
 //		return new AstFunctionDeclaration(reporter, annotationList, new AstToken(name), returnType, concrete, member, new DefaultSymbolTable());
-		return new AstFunctionDeclaration(
+		return new AstFunctionDeclarationBuilder(
 				reporter, 
 				annotationList, 
 				new AstToken(name), 

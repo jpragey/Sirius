@@ -6,11 +6,12 @@ import java.util.List;
 
 import org.sirius.frontend.ast.AstBooleanConstantExpression;
 import org.sirius.frontend.ast.AstExpression;
-import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstIfElseStatement;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstReturnStatement;
+import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.parser.Compiler;
 import org.testng.annotations.Test;
 
@@ -31,8 +32,8 @@ public class IfElseTest {
 		AstModuleDeclaration md = moduleDeclarations.get(0);
 		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
 		assertEquals(pd.getFunctionDeclarations().size(), 1);
-		AstFunctionDeclaration fd = pd.getFunctionDeclarations().get(0);
-		assertEquals(fd.getQName().dotSeparated(), "main");
+		PartialList fd = pd.getFunctionDeclarations().get(0);
+		assertEquals(fd.getqName().dotSeparated(), "main");
 
 		AstIfElseStatement ifElse = (AstIfElseStatement) fd.getStatements().get(0);
 		AstExpression ifExpr = ifElse.getIfExpression();

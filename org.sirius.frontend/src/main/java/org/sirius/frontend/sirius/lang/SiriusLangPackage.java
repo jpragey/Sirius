@@ -6,7 +6,7 @@ import java.util.List;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
@@ -38,7 +38,7 @@ public class SiriusLangPackage { // TODO: remove, unused ???
 	private AstClassDeclaration publicClassDeclaration;
 	
 	// -- 'public' annotation constructor
-	private AstFunctionDeclaration publicAnnotationConstructor;
+	private AstFunctionDeclarationBuilder publicAnnotationConstructor;
 	
 	// -- 'Integer' class 
 	private AstClassDeclaration integerClassDeclaration;

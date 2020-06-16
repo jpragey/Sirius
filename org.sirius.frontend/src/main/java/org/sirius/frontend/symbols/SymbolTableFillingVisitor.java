@@ -5,7 +5,7 @@ import java.util.Stack;
 
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
-import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstIntegerConstantExpression;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
@@ -18,6 +18,7 @@ import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ConstructorCallExpression;
 import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ImportDeclarationElement;
+import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.ast.SimpleType;
@@ -72,7 +73,7 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 	public void startClassDeclaration(AstClassDeclaration classDeclaration) {
 		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
 		
-		DefaultSymbolTable symbolTable = new DefaultSymbolTable(parentSymbolTable);
+		DefaultSymbolTable symbolTable = new DefaultSymbolTable(parentSymbolTable, classDeclaration.getName().getText());
 		symbolTableStack.push(symbolTable);
 		classDeclaration.setSymbolTable(symbolTable);
 
@@ -89,7 +90,7 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 	public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
 		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
 		
-		DefaultSymbolTable symbolTable = new DefaultSymbolTable(parentSymbolTable);
+		DefaultSymbolTable symbolTable = new DefaultSymbolTable(parentSymbolTable, interfaceDeclaration.getName().getText());
 		symbolTableStack.push(symbolTable);
 		interfaceDeclaration.setSymbolTable(symbolTable);
 
@@ -115,20 +116,43 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 	}	
 
 	@Override
-	public void startFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
+	public void startFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
+		/*
 		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
 		
-		DefaultSymbolTable functionSymbolTable = new DefaultSymbolTable(parentSymbolTable);
+		DefaultSymbolTable functionSymbolTable = new DefaultSymbolTable(parentSymbolTable, functionDeclaration.getName().getText());
 		functionDeclaration.assignSymbolTable(functionSymbolTable);
 		symbolTableStack.push(functionSymbolTable);
 		
 		parentSymbolTable.addFunction(functionDeclaration);
+		*/
 	}
 
 	@Override
-	public void endFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
+	public void endFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
 		symbolTableStack.pop();
 	}
+	@Override
+	public void startPartial (Partial partial) {
+		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
+		
+		String stName = "Partial " + partial.getName() + 
+//				"[" + partial.getCaptures().size() + "]" +
+				"(" + partial.getArgs().size() + ")";
+				
+		DefaultSymbolTable functionSymbolTable = new DefaultSymbolTable(parentSymbolTable, stName);
+		
+		partial.assignSymbolTable(functionSymbolTable);
+		symbolTableStack.push(functionSymbolTable);
+		
+//		parentSymbolTable.addFunction(functionDeclaration);
+		
+	}
+	@Override
+	public void endPartial   (Partial partialFunctionDeclaration) {
+		symbolTableStack.pop();
+	}
+
 	
 	@Override
 	public void startFunctionFormalArgument(AstFunctionParameter formalArgument) {

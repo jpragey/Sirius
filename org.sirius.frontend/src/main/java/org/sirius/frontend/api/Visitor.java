@@ -19,6 +19,9 @@ public interface Visitor {
 	public default void startAbstractFunction(AbstractFunction declaration) {}
 	public default void endAbstractFunction(AbstractFunction declaration) {}
 	
+	public default void startFunctionActualArgument(FunctionActualArgument declaration) {}
+	public default void endFunctionActualArgument(FunctionActualArgument declaration) {}
+	
 	
 	
 	

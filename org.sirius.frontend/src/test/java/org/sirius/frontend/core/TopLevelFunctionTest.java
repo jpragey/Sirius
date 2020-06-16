@@ -57,7 +57,7 @@ public class TopLevelFunctionTest {
 //		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
 //		AstFunctionDeclaration fd = pd.getFunctionDeclarations().get(0);
 
-		AbstractFunction tlf = session.getModuleDeclarations().get(1).getPackages().get(0).getFunctions().get(0);
+		AbstractFunction tlf = session.getModuleDeclarations().get(1).getPackages().get(0).getFunctions().get(2);
 		
 		assertEquals(tlf.getArguments().size(), 2);
 		assertEquals(tlf.getArguments().get(0).getQName().dotSeparated(), "a.b.f.i");
@@ -120,6 +120,7 @@ public class TopLevelFunctionTest {
 		TypeCastExpression strTypeCastExpr = (TypeCastExpression)arg0TypeCastExpr;
 		
 		Expression arg0Expr = strTypeCastExpr.expression();
+//		Expression arg0Expr = functionCall.getArguments().get(0);
 		assert(arg0Expr instanceof StringConstantExpression);
 		StringConstantExpression strExpr = (StringConstantExpression)arg0Expr;
 		
@@ -137,7 +138,7 @@ public class TopLevelFunctionTest {
 
 		ModuleDeclaration md = moduleDeclarations.get(1);
 		PackageDeclaration pd = md.getPackages().get(0);
-		AbstractFunction fd = pd.getFunctions().get(0);
+		AbstractFunction fd = pd.getFunctions().get(1);
 		
 		assertEquals(fd.getArguments().size(), 1);
 		FunctionFormalArgument fctArg0 = fd.getArguments().get(0);
@@ -145,7 +146,7 @@ public class TopLevelFunctionTest {
 //		System.out.println("Arg: type=" + fctArg0.getType().getClass() + " : " + fctArg0.getType() + ", name=" + fctArg0.getQName().getLast());
 		
 		// -- API
-		List<FunctionFormalArgument> apiArgs = moduleDeclarations.get(1).getPackages().get(0).getFunctions().get(0).getArguments();
+		List<FunctionFormalArgument> apiArgs = moduleDeclarations.get(1).getPackages().get(0).getFunctions().get(1).getArguments();
 		assertEquals(apiArgs.size(), 1);
 		FunctionFormalArgument apiArg0 = apiArgs.get(0);
 		
@@ -166,15 +167,21 @@ public class TopLevelFunctionTest {
 		assertEquals(moduleDeclarations.size(), 2);
 		ModuleDeclaration md = moduleDeclarations.get(1);
 		PackageDeclaration pd = md.getPackages().get(0);
-		AbstractFunction fd = pd.getFunctions().get(0);
+		AbstractFunction fd = pd.getFunctions().get(1);
 		
 		assertEquals(fd.getArguments().size(), 1);
 		FunctionFormalArgument fctArg0 = fd.getArguments().get(0);
 		
+		
 //		System.out.println("Arg: type=" + fctArg0.getType().getClass() + " : " + fctArg0.getType() + ", name=" + fctArg0.getQName().getLast());
 		
 		// -- API
-		List<FunctionFormalArgument> apiArgs = moduleDeclarations.get(1).getPackages().get(0).getFunctions().get(0).getArguments();
+		List<AbstractFunction> apiFunc = moduleDeclarations.get(1).getPackages().get(0).getFunctions();
+
+		assertEquals(apiFunc.get(0).getArguments().size(), 0);
+		assertEquals(apiFunc.get(1).getArguments().size(), 1);
+		
+		List<FunctionFormalArgument> apiArgs = apiFunc.get(1).getArguments();
 		assertEquals(apiArgs.size(), 1);
 		FunctionFormalArgument apiArg0 = apiArgs.get(0);
 		
@@ -231,7 +238,8 @@ public class TopLevelFunctionTest {
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		PackageDeclaration pd = md.getPackages().get(0);
-		AbstractFunction fd = pd.getFunctions().get(0);
+		assertEquals(pd.getFunctions().size(), 2);
+		AbstractFunction fd = pd.getFunctions().get(1);
 		
 		List<FunctionFormalArgument> args = fd.getArguments();
 		assertEquals(args.size(), 1);

@@ -28,7 +28,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	// Formal parameters
 	private ImmutableList<TypeParameter> typeParameters;
 	
-	private ImmutableList<AstFunctionDeclaration> functionDeclarations;
+	private ImmutableList<PartialList> functionDeclarations;
 	
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	private List<AstFunctionParameter> anonConstructorArguments = new ArrayList<>(); 
@@ -52,7 +52,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	
 	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/, QName packageQName,
 			ImmutableList<TypeParameter> typeParameters,
-			ImmutableList<AstFunctionDeclaration> functionDeclarations,
+			ImmutableList<PartialList> functionDeclarations,
 			List<AstMemberValueDeclaration> valueDeclarations,
 			List<AstFunctionParameter> anonConstructorArguments 
 			) {
@@ -95,14 +95,14 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		return fd;
 	}
 
-	public AstClassDeclaration withFunctionDeclaration(AstFunctionDeclaration/*.Builder*/ fd) {
+	public AstClassDeclaration withFunctionDeclaration(PartialList fd) {
 		
 		// 
-		if(!fd.getAnnotationList().contains("static"))
-			fd.setMember(true);
+//		if(!fd.getAnnotationList().contains("static"))
+//			fd.setMember(true);
 		
-		ImmutableList.Builder<AstFunctionDeclaration> builder = ImmutableList.builderWithExpectedSize(functionDeclarations.size() + 1);
-		ImmutableList<AstFunctionDeclaration> newFunctions = builder.addAll(functionDeclarations).add(fd).build();
+		ImmutableList.Builder<PartialList> builder = ImmutableList.builderWithExpectedSize(functionDeclarations.size() + 1);
+		ImmutableList<PartialList> newFunctions = builder.addAll(functionDeclarations).add(fd).build();
 
 		AstClassDeclaration cd = new AstClassDeclaration(reporter,
 				interfaceType,
@@ -147,7 +147,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		return name;
 	}
 	@Override
-	public List<AstFunctionDeclaration> getFunctionDeclarations() {
+	public List<PartialList> getFunctionDeclarations() {
 		return functionDeclarations;
 	}
 	
@@ -272,7 +272,6 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 	private ClassDeclaration classDeclarationImpl = null;
 
-	
 	public ClassDeclaration getClassDeclaration() {
 //		QName containerQName = packageQName.get();
 		if(classDeclarationImpl == null)
@@ -288,18 +287,21 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			@Override
 			public List<AbstractFunction> getFunctions() {
 				
-				MapOfList<QName, AstFunctionDeclaration> allFctMap = getAllFunctions();
+				MapOfList<QName, PartialList> allFctMap = getAllFunctions();
 				
 				ArrayList<AbstractFunction> memberFunctions = new ArrayList<>();
 				
 				for(QName qn: allFctMap.keySet()) {
-					List<AstFunctionDeclaration> functions = allFctMap.get(qn);
-					for(AstFunctionDeclaration func: functions) {
+					List<PartialList> functions = allFctMap.get(qn);
+					for(PartialList func: functions) {
 						if(func.isConcrete()) {
 //							func.getMemberFunction().ifPresent((MemberFunction mf) -> {
 //								memberFunctions.add(mf);
 //							} );
-							memberFunctions.add(func.toAPI());
+							for(Partial partial: func.getPartials()) {
+								memberFunctions.add(partial.toAPI());
+							}
+//							memberFunctions.add(func.toAPI());
 						}
 					}
 					
@@ -324,7 +326,10 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 				}
 				return interfaces;
 			}
-
+			@Override
+			public String toString() {
+				return "API class " + qName;
+			}
 		};
 		return classDeclarationImpl;
 	}

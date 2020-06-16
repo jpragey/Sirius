@@ -1,6 +1,8 @@
 package org.sirius.frontend.core;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.util.List;
@@ -10,6 +12,7 @@ import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.FunctionActualArgument;
 import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.MemberValue;
@@ -19,13 +22,12 @@ import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.ast.AstExpression;
-import org.sirius.frontend.ast.AstFunctionDeclaration;
-import org.sirius.frontend.ast.AstFunctionDeclaration.Partial;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstReturnStatement;
+import org.sirius.frontend.ast.Partial;
+import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.parser.Compiler;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
@@ -195,21 +197,21 @@ public class MethodTests {
 		AstModuleDeclaration module = session.getAstModules().get(0);
 		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
 		assertEquals(pack.getQname().dotSeparated(), "");
-		AstFunctionDeclaration func = pack.getFunctionDeclarations().get(0);
-		assertEquals(func.getQName().dotSeparated(), "add");
+		PartialList func = pack.getFunctionDeclarations().get(0);
+		assertEquals(func.getqName().dotSeparated(), "add");
 		
 		assertEquals(func.getPartials().size(), 4);
-		AstFunctionDeclaration.Partial partial0 = func.getPartials().get(0);
-		assertEquals(partial0.getCaptures().size(), 0);
-		assertEquals(partial0.getArgs().size(), 3);
+		Partial partial0 = func.getPartials().get(0);
+////		assertEquals(partial0.getCaptures().size(), 0);
+		assertEquals(partial0.getArgs().size(), 0);
 
-		AstFunctionDeclaration.Partial partial1 = func.getPartials().get(1);
-		AstFunctionDeclaration.Partial partial2 = func.getPartials().get(2);
+		Partial partial1 = func.getPartials().get(1);
+		Partial partial2 = func.getPartials().get(2);
 
-		AstFunctionDeclaration.Partial partial3 = func.getPartials().get(3);
-		assertEquals(partial3.getCaptures().size(), 3);
-		assertEquals(partial3.getCaptures().get(2).getName().getText(), "z");
-		assertEquals(partial3.getArgs().size(), 0);
+		Partial partial3 = func.getPartials().get(3);
+////		assertEquals(partial3.getCaptures().size(), 3);
+////		assertEquals(partial3.getCaptures().get(2).getName().getText(), "z");
+		assertEquals(partial3.getArgs().size(), 3);
 		
 //		assert(func.getDelegate().isPresent());
 		
@@ -226,18 +228,20 @@ public class MethodTests {
 		AstModuleDeclaration module = session.getAstModules().get(0);
 		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
 		assertEquals(pack.getQname().dotSeparated(), "");
-		AstFunctionDeclaration func = pack.getFunctionDeclarations().get(0);
-		assertEquals(func.getQName().dotSeparated(), "add");
+		PartialList func = pack.getFunctionDeclarations().get(0);
+		assertEquals(func.getqName().dotSeparated(), "add");
 		
 		//func.getSymbolTable().dump();
 		
 //		assertEquals(func.getFormalArguments().size(), 2);
-		Partial allArgsPartial = func.getPartials().get(0);
+		Partial allArgsPartial = func.getPartials().get(2);
+		assertSame(allArgsPartial, func.getAllArgsPartial());
 		assertEquals(allArgsPartial.getArgs().size(), 2);
 		
-		Optional<AstFunctionParameter> optArg = allArgsPartial.getSymbolTable().lookupFunctionArgument("x");
+		DefaultSymbolTable partialSymbolTable = allArgsPartial.getSymbolTable();
+		Optional<AstFunctionParameter> optArg = partialSymbolTable.lookupFunctionArgument("x");
 		assert(optArg.isPresent());
-		Optional<AstFunctionParameter> opt1Arg = allArgsPartial.getSymbolTable().lookupFunctionArgument("y");
+		Optional<AstFunctionParameter> opt1Arg = partialSymbolTable.lookupFunctionArgument("y");
 		assert(opt1Arg.isPresent());
 		
 		AstReturnStatement returnStatement = (AstReturnStatement)func.getStatements().get(0);
@@ -245,7 +249,7 @@ public class MethodTests {
 		assert(returnStatement.getExpression() instanceof SimpleReferenceExpression);
 		SimpleReferenceExpression returnExpr = (SimpleReferenceExpression)returnStatement.getExpression();
 		DefaultSymbolTable st = returnExpr.getSymbolTable();
-		st.dump();
+//		st.dump();
 		Optional<Symbol> xOptSymbol = st.lookup("x");
 		
 //		DefaultSymbolTable symbolTable = returnExpr.getSymbolTable();
@@ -259,12 +263,29 @@ public class MethodTests {
 		PackageDeclaration apiPack = md.getPackages().get(0);
 		assertEquals(apiPack.getQName().dotSeparated(), "");
 		
-		AbstractFunction apiFunc = apiPack.getFunctions().get(0);
-		assertEquals(apiFunc.getArguments().size(), 2);
+		AbstractFunction apiAddFunc = apiPack.getFunctions().get(2);
+		assertEquals(apiAddFunc.getQName().dotSeparated(), "add");
+		assertEquals(apiAddFunc.getArguments().size(), 2);
 
 		
-		assertIsFctArgInteger(0, "x",  apiFunc);
-		assertIsFctArgInteger(1, "y",  apiFunc);
+		assertIsFctArgInteger(0, "x",  apiAddFunc);
+		assertIsFctArgInteger(1, "y",  apiAddFunc);
+
+		assertNotNull(apiAddFunc.getBodyStatements());
+		assertEquals(apiAddFunc.getBodyStatements().get().size(), 1);
+		ReturnStatement retStmt = (ReturnStatement)apiAddFunc.getBodyStatements().get().get(0);
+		Expression retExpr = retStmt.getExpression();
+		assert(retExpr instanceof FunctionActualArgument);
+		FunctionActualArgument refToXExpress = (FunctionActualArgument)retExpr;
+		
+		assertEquals(refToXExpress.getName().getText(), "x");
+		Type xArgType = refToXExpress.getType();
+		assert(xArgType instanceof ClassDeclaration);
+		ClassDeclaration xClassDecl = (ClassDeclaration)xArgType;
+		assertEquals(xClassDecl.getQName().dotSeparated(), "sirius.lang.Integer");
+		
+		
+		
 		
 //		ClassDeclaration cd = pack.getClasses().get(0);
 //		assertEquals(cd.getQName(), new QName("p", "k", "C"));

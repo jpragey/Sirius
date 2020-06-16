@@ -38,7 +38,7 @@ locals[
     (
     	  moduleDeclaration 	{ $stdUnit.addModuleDeclaration($moduleDeclaration.declaration);    } 
     	| packageDeclaration	{ currentModule.addPackageDeclaration($packageDeclaration.declaration);}
-    	| functionDeclaration 	[$stdUnit.getSymbolTable(), QName.empty]	{ $stdUnit.addFunctionDeclaration($functionDeclaration.declaration ); }
+    	| functionDeclaration 	[$stdUnit.getSymbolTable(), QName.empty]	{ $stdUnit.addFunctionDeclaration($functionDeclaration.partialList ); }
     	| classDeclaration 		[currentModule.getCurrentPackage().getQname()] { $stdUnit.addClassDeclaration($classDeclaration.declaration);	}
     	| interfaceDeclaration	[currentModule.getCurrentPackage().getQname()] { $stdUnit.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
     	
@@ -67,7 +67,7 @@ scriptCompilationUnit returns [ScriptCompilationUnit unit]
 
 									} 
 		| functionDeclaration 		[$unit.getSymbolTable(), currentModule.getCurrentPackage().getQname()] 
-										{currentModule.addFunctionDeclaration($functionDeclaration.declaration);	}
+										{currentModule.addFunctionDeclaration($functionDeclaration.partialList);	}
 		| classDeclaration 			[currentModule.getCurrentPackage().getQname()] {currentModule.addClassDeclaration($classDeclaration.declaration);	}
     	| interfaceDeclaration		[currentModule.getCurrentPackage().getQname()] {currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
 	)*
@@ -170,10 +170,11 @@ memberValueDeclaration returns [AstMemberValueDeclaration declaration]
 // -------------------- (TOP-LEVEL ?) FUNCION
 // Also maps to annotation declaration.
 
-functionDeclaration [DefaultSymbolTable symbolTable, QName containerQName] returns [AstFunctionDeclaration declaration]
+functionDeclaration [DefaultSymbolTable symbolTable, QName containerQName] returns [PartialList partialList]
 @init {
 	AstType retType;
-	ArrayList<AstFunctionFormalArgument> arguments = new ArrayList<>();
+	ArrayList<AstFunctionParameter> arguments = new ArrayList<>();
+	AstFunctionDeclarationBuilder fdBuilder;
 	//AstFunctionDeclaration.Builder builder;
 }
 	: annotationList
@@ -182,15 +183,15 @@ functionDeclaration [DefaultSymbolTable symbolTable, QName containerQName] retur
 	  )
 	  LOWER_ID		{ 
 	  	/* builder = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, containerQName);*/
-	  	$declaration = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, containerQName);
+	  	fdBuilder = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, containerQName);
 	  }
 	  (
 	    '<'
 	  		  	(
-	  		d=typeFormalParameterDeclaration 		{ $declaration = $declaration.withFormalParameter($d.declaration); }
+	  		d=typeFormalParameterDeclaration 		{ fdBuilder = fdBuilder.withFormalParameter($d.declaration); }
 	  		(
 	  			','
-		  		d=typeFormalParameterDeclaration 	{ $declaration = $declaration.withFormalParameter($d.declaration); }
+		  		d=typeFormalParameterDeclaration 	{ fdBuilder = fdBuilder.withFormalParameter($d.declaration); }
 	  		)*
 	  	)?
 	  	'>'
@@ -200,20 +201,20 @@ functionDeclaration [DefaultSymbolTable symbolTable, QName containerQName] retur
 	  '('
 	  	(  functionFormalArgument		{ arguments.add($functionFormalArgument.argument);}
 	  	  (  ',' functionFormalArgument	{ arguments.add($functionFormalArgument.argument);} )*
-	    )?								{ $declaration = $declaration.withFunctionArguments(arguments); }
+	    )?								{  }
 	  ')' 
-	  '{' 					{ $declaration.setConcrete(true); }
+	  '{' 					{ fdBuilder.setConcrete(true); }
 	  		(
-	  			statement	{ $declaration.addStatement($statement.stmt); }
+	  			statement	{ fdBuilder.addStatement($statement.stmt); }
 	  		)*
 	   '}'
-	   { /* $declaration = builder.build($symbolTable); */}
+	   { $partialList = fdBuilder.withFunctionArguments(arguments); }
 	   
 	;
 
-functionFormalArgument returns [AstFunctionFormalArgument argument]
+functionFormalArgument returns [AstFunctionParameter argument]
 :
-	type LOWER_ID	{$argument = new AstFunctionFormalArgument($type.declaration, new AstToken($LOWER_ID));}
+	type LOWER_ID	{$argument = new AstFunctionParameter($type.declaration, new AstToken($LOWER_ID));}
 ;
 
 
@@ -386,7 +387,7 @@ classDeclaration [QName containerQName] returns [AstClassDeclaration declaration
 			  
 	  '{'
 	  (
-	  	  functionDeclaration		[$declaration.getSymbolTable(), $declaration.getQName()] { $declaration = $declaration.withFunctionDeclaration($functionDeclaration.declaration);}
+	  	  functionDeclaration		[$declaration.getSymbolTable(), $declaration.getQName()] { $declaration = $declaration.withFunctionDeclaration($functionDeclaration.partialList);}
 	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
 	  )*
 	  '}'
@@ -417,7 +418,7 @@ interfaceDeclaration [QName containerQName] returns [AstInterfaceDeclaration dec
 			  
 	  '{'
 	  (
-	  	  functionDeclaration		[$declaration.getSymbolTable(), $declaration.getQName()] { $declaration = $declaration.withFunctionDeclaration($functionDeclaration.declaration);}
+	  	  functionDeclaration		[$declaration.getSymbolTable(), $declaration.getQName()] { $declaration = $declaration.withFunctionDeclaration($functionDeclaration.partialList);}
 	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
 	  )*
 	  '}'

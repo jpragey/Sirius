@@ -5,7 +5,7 @@ import java.util.Stack;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
-import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
@@ -79,7 +79,7 @@ public class QNameSetterVisitor implements AstVisitor {
 	
 	
 	@Override
-	public void startFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
+	public void startFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
 		
 //		functionDeclaration.setContainerQName(qnameStack.lastElement());
 		String funcName = functionDeclaration.getName().getText();
@@ -88,7 +88,7 @@ public class QNameSetterVisitor implements AstVisitor {
 	}
 
 	@Override
-	public void endFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
+	public void endFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
 		qnameStack.pop();
 	}
 	

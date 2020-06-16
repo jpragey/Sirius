@@ -152,7 +152,7 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 				reporter, 
 				containerExpression.linkToParentST(parentSymbolTable),
 				valueName,
-				new DefaultSymbolTable(parentSymbolTable));
+				new DefaultSymbolTable(parentSymbolTable, this.getClass().getSimpleName()));
 		return expr;
 	}
 	

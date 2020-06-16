@@ -16,7 +16,7 @@ import org.sirius.frontend.api.Session;
 import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstClassOrInterface;
-import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
@@ -24,6 +24,7 @@ import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
+import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.QNameRefType;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.QNameSetterVisitor;
@@ -180,7 +181,7 @@ public class SdkTools {
 			methodName = method.getName();
 
 		AstType returnType = new AstVoidType();	// TODO
-		AstFunctionDeclaration fd = new AstFunctionDeclaration(reporter, 
+		AstFunctionDeclarationBuilder fd = new AstFunctionDeclarationBuilder(reporter, 
 				new AnnotationList() ,	// TODO 
 				AstToken.internal(methodName), 
 				returnType,
@@ -227,15 +228,15 @@ public class SdkTools {
 //			fd = fd.withFunctionArgument(arg);
 		}
 		
-		fd = fd.withFunctionArguments(args);
+		PartialList partialList = fd.withFunctionArguments(args);
 //		AstFunctionDeclaration fd = fdb.build(new DefaultSymbolTable(symbolTable));
 		
-		symbolTable.addFunction(fd);
+		symbolTable.addFunction(partialList);
 		fd.assignSymbolTable(symbolTable);
 		
-		this.topLevelClass = this.topLevelClass.withFunctionDeclaration(fd);
+		this.topLevelClass = this.topLevelClass.withFunctionDeclaration(partialList);
 		
-		this.langPackage.addFunctionDeclaration(fd);
+		this.langPackage.addFunctionDeclaration(partialList);
 	}
 	
 }

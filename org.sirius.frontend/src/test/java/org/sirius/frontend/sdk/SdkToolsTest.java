@@ -9,9 +9,10 @@ import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
+import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.QNameRefType;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
@@ -27,7 +28,7 @@ public class SdkToolsTest {
 	public void setup() throws Exception {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
 		this.sdkTools = new SdkTools(reporter);
-		symbolTable = new DefaultSymbolTable();
+		symbolTable = new DefaultSymbolTable("SdkToolsTest");
 		sdkTools.parseSdk(symbolTable);
 		
 		if(this.reporter.hasErrors()) 
@@ -88,14 +89,14 @@ public class SdkToolsTest {
 	public void checkBasicTopLevelFunctionsFoundInPackageClass() {
 		
 		Symbol symbol = symbolTable.lookup(new QName("sirius", "lang", "println")).get();
-		AstFunctionDeclaration func = symbol.getFunctionDeclaration().get();
+		PartialList func = symbol.getFunctionDeclaration().get();
 		
-		assertEquals(func.getQName(), new QName("sirius", "lang", "println"));
+		assertEquals(func.getqName(), new QName("sirius", "lang", "println"));
 //		assertEquals(func.getFormalArguments().size(), 1);
-		assertEquals(func.getPartials().get(0).getArgs().size(), 1);
+		assertEquals(func.getPartials().get(1).getArgs().size(), 1);
 		
 //		AstFunctionFormalArgument arg0 = func.getFormalArguments().get(0); 
-		AstFunctionParameter arg0 = func.getPartials().get(0).getArgs().get(0); 
+		AstFunctionParameter arg0 = func.getPartials().get(1).getArgs().get(0); 
 		assertEquals(arg0.getName().getText(), "text"); // TODO
 		assert(arg0.getType() instanceof QNameRefType);
 		QNameRefType arg0Type = (QNameRefType)arg0.getType();

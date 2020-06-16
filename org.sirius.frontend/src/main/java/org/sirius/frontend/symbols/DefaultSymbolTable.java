@@ -11,13 +11,14 @@ import java.util.stream.Collectors;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.ImportDeclarationElement;
+import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.ast.TypeParameter;
 
@@ -41,16 +42,27 @@ public class DefaultSymbolTable implements SymbolTable {
 	
 	private Optional<DefaultSymbolTable> parent;
 	
+	/** Name of the container (debug only) */
+	private String dbgName;
 	
-	public DefaultSymbolTable(DefaultSymbolTable parent) {
+	public DefaultSymbolTable(DefaultSymbolTable parent, String dbgName) {
 		super();
 		this.parent = Optional.ofNullable(parent);
+		this.dbgName = dbgName;
 	}
-	public DefaultSymbolTable() {
+	public DefaultSymbolTable(String dbgName) {
 		super();
 		this.parent = Optional.empty();
+		this.dbgName = "<unnamed>";
 	}
 
+	
+	public String getDbgName() {
+		return dbgName;
+	}
+//	public void setDbgName(String dbgName) {
+//		this.dbgName = dbgName;
+//	}
 	public void addSymbol(QName symbolQName, Symbol symbol) {
 		symbols.put(symbolQName, symbol);
 		symbolsBySimpleName.put(symbolQName.getLast(), symbol);
@@ -68,9 +80,9 @@ public class DefaultSymbolTable implements SymbolTable {
 		addSymbol(classQName, new Symbol(simpleName, classDeclaration));
 	}
 	
-	public void addFunction(AstFunctionDeclaration functionDeclaration) {
+	public void addFunction(PartialList functionDeclaration) {
 		AstToken simpleName = functionDeclaration.getName();
-		QName funcQName = functionDeclaration.getQName();
+		QName funcQName = functionDeclaration.getqName();
 		addSymbol(funcQName, new Symbol(simpleName, functionDeclaration));
 	}
 
@@ -200,7 +212,9 @@ public class DefaultSymbolTable implements SymbolTable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("(");
+		sb.append("ST:");
+		sb.append(dbgName);
+		sb.append(": (");
 		sb.append(symbolsBySimpleName.entrySet().size());
 		sb.append(" symbols): ");
 		
@@ -230,7 +244,7 @@ public class DefaultSymbolTable implements SymbolTable {
 	}
 	public void dump(String prefix, Consumer<String> print) {
 		
-		print.accept(prefix + this.getClass());
+		print.accept(prefix + dbgName + ": " + this.getClass());
 		for(Map.Entry<String, Symbol> e : symbolsBySimpleName.entrySet()) {
 			print.accept("  " + e.getKey() + " => " + e.getValue());
 		}

@@ -33,7 +33,7 @@ public class ScriptSession implements Session {
 	
 	private Optional<ShebangDeclaration> shebang = Optional.empty(); 
 
-	private DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable();
+	private DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable("ScriptSession");
 
 	private ScriptCompilationUnit compilationUnit;
 

@@ -1,5 +1,6 @@
 package org.sirius.frontend.ast;
 
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.SymbolTable;
 
 public class TypeParameter implements AstType {
@@ -52,4 +53,10 @@ public class TypeParameter implements AstType {
 		visitor.end(this);		
 	}
 	
+	// TODO: implement yet
+	@Override
+	public Type getApiType() {
+		throw new UnsupportedOperationException("Class " + getClass() + " has no getApiType() method (yet).");
+	}
+
 }

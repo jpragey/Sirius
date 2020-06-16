@@ -26,7 +26,7 @@ public class StandardSession implements Session {
 
 	private Reporter reporter;
 
-	private DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable();
+	private DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable("StandardSession");
 	
 	private List<ModuleContent> moduleContents = new ArrayList<>();
 

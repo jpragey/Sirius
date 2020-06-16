@@ -25,16 +25,24 @@ public class AstReturnStatement implements AstStatement {
 	}
 
 	@Override
-	public Statement toAPI() {
+	public ReturnStatement toAPI() {
 		return new ReturnStatement() {
-			
+			private Expression apiExpr = expression.getExpression();
 			@Override
 			public Expression getExpression() {
-				return expression.getExpression();
+				return apiExpr;
+			}
+			@Override
+			public String toString() {
+				return apiExpr.toString();
 			}
 		};
 	}
-	
+
+	@Override
+	public String toString() {
+		return expression.toString();
+	}
 }
 
 

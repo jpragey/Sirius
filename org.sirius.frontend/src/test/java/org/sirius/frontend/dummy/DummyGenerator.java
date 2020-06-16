@@ -16,7 +16,7 @@ import java.util.List;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.AstReturnStatement;
 
@@ -121,12 +121,12 @@ public class DummyGenerator {
 		}
 
 		@Override
-		public void startFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
+		public void startFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
 			System.out.println(" -- Starting FunctionDeclaration " + functionDeclaration.getName().getText());
 		}
 
 		@Override
-		public void endFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
+		public void endFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
 			System.out.println(" -- Exit FunctionDeclaration " + functionDeclaration.getName().getText());
 			MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC + ACC_STATIC,
 		            "main",

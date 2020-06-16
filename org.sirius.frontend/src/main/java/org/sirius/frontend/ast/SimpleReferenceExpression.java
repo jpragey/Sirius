@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.sirius.common.core.Token;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.FunctionActualArgument;
 import org.sirius.frontend.api.LocalVariableReference;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.MemberValue;
@@ -31,6 +32,8 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 		this.symbolTable = symbolTable;
 	}
 
+	
+	
 	public SimpleReferenceExpression(Reporter reporter, AstToken referenceName) {
 		this(reporter, referenceName, null);
 	}
@@ -71,7 +74,8 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 
 	@Override
 	public String toString() {
-		return getType().toString() + " " + referenceName.getText() + "->" ;
+//		return getType().toString() + " " + referenceName.getText() + "->" ;
+		return "ref to " + referenceName.getText() + "->" ;
 	}
 	@Override
 	public String asString() {
@@ -138,7 +142,28 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 		
 	}
 	
-	
+	class FunctionActualArgumentImpl implements FunctionActualArgument {
+		private Type type;
+		private Token name;
+		public FunctionActualArgumentImpl(AstFunctionParameter param) {
+			this.type = param.getType().getApiType();
+			this.name = param.getName().asToken();
+		}
+		
+		@Override
+		public Type getType() {
+			return type;
+		}
+
+		@Override
+		public Token getName() {
+			return name;
+		}
+		@Override
+		public String toString() {
+			return "arg: " + type.toString() + " " + name.getText();
+		}
+	}
 	
 	@Override
 	public Expression getExpression() {
@@ -151,6 +176,13 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 				if(localVarDecl.isPresent()) {
 					AstLocalVariableStatement st = localVarDecl.get();
 					impl = new LocalVariableReferenceImpl(st);
+					return impl;
+				}
+				
+				Optional<AstFunctionParameter> functionParamDecl = symbol.getFunctionArgument();
+				if(functionParamDecl.isPresent()) {
+					AstFunctionParameter st = functionParamDecl.get();
+					impl = new FunctionActualArgumentImpl(st);
 					return impl;
 				}
 				
@@ -173,7 +205,8 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 	@Override
 	public AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
 //	symbolTable.
-		SimpleReferenceExpression expr = new SimpleReferenceExpression(reporter, referenceName, new DefaultSymbolTable(parentSymbolTable));
+		SimpleReferenceExpression expr = new SimpleReferenceExpression(reporter, referenceName, 
+				new DefaultSymbolTable(parentSymbolTable, this.getClass().getSimpleName()));
 		return expr;
 	}
 

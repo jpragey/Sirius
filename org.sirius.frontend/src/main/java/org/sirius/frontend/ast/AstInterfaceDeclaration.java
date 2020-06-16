@@ -27,7 +27,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	private ImmutableList<TypeParameter> typeParameters;
 	private AstToken name;
 	
-	private ImmutableList<AstFunctionDeclaration> functionDeclarations;
+	private ImmutableList<PartialList> functionDeclarations;
 	
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 
@@ -35,7 +35,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	private QName qName; 
 
 	public AstInterfaceDeclaration(Reporter reporter, AstToken name, Optional<QName> packageQName,
-			ImmutableList<AstFunctionDeclaration> functionDeclarations,
+			ImmutableList<PartialList> functionDeclarations,
 			ImmutableList<TypeParameter> typeParameters
 			
 			) {
@@ -156,7 +156,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	}
 
 	@Override
-	public List<AstFunctionDeclaration> getFunctionDeclarations() {
+	public List<PartialList> getFunctionDeclarations() {
 		return this.functionDeclarations;
 	}
 
@@ -207,13 +207,13 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	}
 
 	
-	public AstInterfaceDeclaration withFunctionDeclaration(AstFunctionDeclaration fd) {
+	public AstInterfaceDeclaration withFunctionDeclaration(PartialList fd) {
 		
-		if(!fd.getAnnotationList().contains("static"))
-			fd.setMember(true);
+//		if(!fd.getAnnotationList().contains("static"))
+//			fd.setMember(true);
 
 		return new AstInterfaceDeclaration(reporter, name, packageQName,
-				ImmutableList.<AstFunctionDeclaration>builder()
+				ImmutableList.<PartialList>builder()
 					.addAll(functionDeclarations)
 					.add(fd)
 					.build(),
@@ -233,12 +233,20 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 
 			@Override
 			public List<AbstractFunction> getFunctions() {
-				return functionDeclarations.stream()
-//						.map(AstFunctionDeclaration::getMemberFunction)
-						.map(AstFunctionDeclaration::toAPI)
-//						.filter(fd -> fd.isPresent())
-//						.map(fd -> fd.get())
-						.collect(Collectors.toList());
+				List<AbstractFunction> functions = new ArrayList<>();
+				for(PartialList b: functionDeclarations) {
+					for(Partial partial : b.getPartials()) {
+						functions.add(partial.toAPI());
+					}
+				}
+				return functions;
+//				
+//				return functionDeclarations.stream()
+////						.map(AstFunctionDeclaration::getMemberFunction)
+//						.map(AstFunctionDeclarationBuilder::toAPI)
+////						.filter(fd -> fd.isPresent())
+////						.map(fd -> fd.get())
+//						.collect(Collectors.toList());
 			}
 			@Override
 			public QName getQName() {
@@ -262,6 +270,12 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	@Override
 	public String toString() {
 		return "interface " + qName;
+	}
+
+	// TODO: implement yet
+	@Override
+	public Type getApiType() {
+		throw new UnsupportedOperationException("Class " + getClass() + " has no getApiType() method (yet).");
 	}
 
 }

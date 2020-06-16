@@ -41,8 +41,17 @@ public interface AstVisitor {
 	
 	
 	
-	public default void startFunctionDeclaration (AstFunctionDeclaration functionDeclaration) {}
-	public default void endFunctionDeclaration (AstFunctionDeclaration functionDeclaration) {}
+	public default void startFunctionDeclaration (AstFunctionDeclarationBuilder functionDeclaration) {}
+	public default void endFunctionDeclaration (AstFunctionDeclarationBuilder functionDeclaration) {}
+	
+	
+	
+	
+	public default void startPartialList (PartialList partialList) {}
+	public default void endPartialList   (PartialList partialList) {}
+
+	public default void startPartial (Partial partialFunctionDeclaration) {}
+	public default void endPartial   (Partial partialFunctionDeclaration) {}
 	
 	public default void startFunctionFormalArgument (AstFunctionParameter formalArgument) {}
 	public default void endFunctionFormalArgument   (AstFunctionParameter formalArgument) {}

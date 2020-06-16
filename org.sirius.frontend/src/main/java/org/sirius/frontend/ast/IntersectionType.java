@@ -2,6 +2,7 @@ package org.sirius.frontend.ast;
 
 import java.util.Optional;
 
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.SymbolTable;
 
 public class IntersectionType implements AstType{
@@ -52,5 +53,9 @@ public class IntersectionType implements AstType{
 		visitor.end(this);		
 	}
 
-	
+	@Override
+	public Type getApiType() {
+		throw new UnsupportedOperationException("Class " + getClass() + " has no getApiType() method.");
+	}
+
 }

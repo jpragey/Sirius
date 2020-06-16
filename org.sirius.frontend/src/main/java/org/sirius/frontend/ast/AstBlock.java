@@ -18,7 +18,7 @@ public class AstBlock implements AstStatement {
 	}
 	
 	public AstBlock() {
-		this(new DefaultSymbolTable(), new ArrayList<>());
+		this(new DefaultSymbolTable("AstBlock"), new ArrayList<>());
 	}
 
 	public DefaultSymbolTable getSymbolTable() {

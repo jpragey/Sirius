@@ -31,7 +31,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 
 	private List<Visitable> visitables = new ArrayList<>();
 
-	private List<AstFunctionDeclaration> functionDeclarations = new ArrayList<>();
+	private List<PartialList> functionDeclarations = new ArrayList<>();
 	private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
 	private List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
@@ -64,7 +64,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		return qname;
 	}
 
-	public void addFunctionDeclaration(AstFunctionDeclaration/*.Builder*/ declaration /*Builder*/) {
+	public void addFunctionDeclaration(PartialList declaration) {
 		assert(declaration != null);
 //		AstFunctionDeclaration declaration = declarationBuilder.build(new DefaultSymbolTable() /*TODO: wtf ???*/);
 		this.functionDeclarations.add(declaration);
@@ -89,7 +89,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		this.visitables.add(declaration);
 	}
 
-	public List<AstFunctionDeclaration> getFunctionDeclarations() {
+	public List<PartialList> getFunctionDeclarations() {
 		return functionDeclarations;
 	}
 
@@ -150,11 +150,21 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 
 		@Override
 		public List<AbstractFunction> getFunctions() {
-			return functionDeclarations.stream()
-					.map(fd -> fd.toAPI())
-//					.filter(fd -> fd.isPresent())
-//					.map(fd -> fd.get())
-					.collect(Collectors.toList());
+			List<AbstractFunction> funcs = new ArrayList<>();
+			
+			for(PartialList fdBuilder: functionDeclarations) {
+				for(Partial partial: fdBuilder.getPartials()) {
+					AbstractFunction apiFunc = partial.toAPI();
+					funcs.add(apiFunc);
+				}
+			}
+			return funcs;
+//			
+//			return functionDeclarations.stream()
+//					.map(fd -> fd.toAPI())
+////					.filter(fd -> fd.isPresent())
+////					.map(fd -> fd.get())
+//					.collect(Collectors.toList());
 		}
 
 		@Override

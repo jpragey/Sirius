@@ -1,12 +1,17 @@
 package org.sirius.frontend.ast;
 
-import org.sirius.frontend.symbols.SymbolTable;
+import org.sirius.frontend.api.Type;
 
 public class AstNoType implements AstType {
 
 	@Override
 	public String messageStr() {
 		return "<no type>";
+	}
+
+	@Override
+	public Type getApiType() {
+		throw new UnsupportedOperationException("Class " + getClass() + " has no getApiType() method.");
 	}
 
 	@Override

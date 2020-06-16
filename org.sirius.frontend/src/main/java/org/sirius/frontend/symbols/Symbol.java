@@ -4,10 +4,11 @@ import java.util.Optional;
 
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.ImportDeclaration;
+import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
@@ -20,7 +21,7 @@ public class Symbol {
 	private Optional<AstClassDeclaration> classDeclaration = Optional.empty();
 	private Optional<AstInterfaceDeclaration> interfaceDeclaration = Optional.empty();
 	private Optional<TypeParameter> formalParameterDeclaration = Optional.empty();
-	private Optional<AstFunctionDeclaration> functionDeclaration = Optional.empty();
+	private Optional<PartialList> functionDeclaration = Optional.empty();
 	private Optional<AstFunctionParameter> functionArgument = Optional.empty();
 
 	private Optional<AstMemberValueDeclaration> valueDeclaration = Optional.empty();
@@ -30,47 +31,55 @@ public class Symbol {
 	
 	public Symbol(AstToken name, AstClassDeclaration classDeclaration) {
 		super();
+		assert(name != null);
 		this.name = name;
 		this.classDeclaration = Optional.of(classDeclaration);
 	}
 	
 	public Symbol(AstToken name, AstInterfaceDeclaration interfaceDeclaration) {
 		super();
+		assert(name != null);
 		this.name = name;
 		this.interfaceDeclaration = Optional.of(interfaceDeclaration);
 	}
 	
 	public Symbol(AstToken name, TypeParameter declaration) {
 		super();
+		assert(name != null);
 		this.name = name;
 		this.formalParameterDeclaration = Optional.of(declaration);
 	}
 	
-	public Symbol(AstToken name, AstFunctionDeclaration declaration) {
+	public Symbol(AstToken name, PartialList declaration) {
 		super();
+		assert(name != null);
 		this.name = name;
 		this.functionDeclaration = Optional.of(declaration);
 	}
 
 	public Symbol(AstToken name, AstMemberValueDeclaration argument) {
 		super();
+		assert(name != null);
 		this.name = name;
 		this.valueDeclaration = Optional.of(argument);
 	}
 
 	public Symbol(AstToken name, AstFunctionParameter argument) {
 		super();
+		assert(name != null);
 		this.name = name;
 		this.functionArgument = Optional.of(argument);
 	}
 
 	public Symbol(AstToken name, ImportedSymbol argument) {
 		super();
+		assert(name != null);
 		this.name = name;
 		this.importDeclaration = Optional.of(argument);
 	}
 	public Symbol(AstToken name, AstLocalVariableStatement argument) {
 		super();
+		assert(name != null);
 		this.name = name;
 		this.localVariableDeclaration = Optional.of(argument);
 	}
@@ -91,7 +100,7 @@ public class Symbol {
 		return formalParameterDeclaration;
 	}
 	
-	public Optional<AstFunctionDeclaration> getFunctionDeclaration() {
+	public Optional<PartialList> getFunctionDeclaration() {
 		return functionDeclaration;
 	}
 	
@@ -118,7 +127,7 @@ public class Symbol {
 				(classDeclaration.isPresent() 			? classDeclaration.get().toString() : "") +
 				(interfaceDeclaration.isPresent() 		? interfaceDeclaration.get().toString() : "") +
 				(formalParameterDeclaration.isPresent() ? formalParameterDeclaration.get().toString() : "") +
-				(functionDeclaration.isPresent() 		? functionDeclaration.toString() : "") +
+				(functionDeclaration.isPresent() 		? functionDeclaration.get().getName().getText() : "") +
 				(functionArgument.isPresent() 			? functionArgument.toString() : "") +
 				(valueDeclaration.isPresent() 			? valueDeclaration.toString() : "")+
 				(importDeclaration.isPresent() 			? importDeclaration.toString() : "")

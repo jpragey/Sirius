@@ -9,9 +9,10 @@ public interface AstType {
 	
 	public String messageStr();
 	
-	default public Type getApiType() {
-		throw new UnsupportedOperationException("Class " + getClass() + " has no getApiType() method.");
-	}
+	public Type getApiType();
+//	default public Type getApiType() {
+//		throw new UnsupportedOperationException("Class " + getClass() + " has no getApiType() method.");
+//	}
 	public void visit(AstVisitor visitor);
 
 	public AstType resolve();

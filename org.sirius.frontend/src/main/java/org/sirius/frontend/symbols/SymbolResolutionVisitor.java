@@ -6,7 +6,7 @@ import java.util.Stack;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
-import org.sirius.frontend.ast.AstFunctionDeclaration;
+import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstReturnStatement;
@@ -83,12 +83,12 @@ public class SymbolResolutionVisitor implements AstVisitor {
 	}
 	
 	@Override
-	public void startFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
+	public void startFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
 //		startScope(functionDeclaration);
 	}
 	
 	@Override
-	public void endFunctionDeclaration(AstFunctionDeclaration functionDeclaration) {
+	public void endFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
 //		endScope(functionDeclaration);
 	}
 	

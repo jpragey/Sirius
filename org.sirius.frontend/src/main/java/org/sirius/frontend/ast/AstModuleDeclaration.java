@@ -155,7 +155,7 @@ public class AstModuleDeclaration implements Visitable {
 	
 	
 	
-	public void addFunctionDeclaration(AstFunctionDeclaration/*.Builder*/ d) {
+	public void addFunctionDeclaration(PartialList d) {
 		this.getCurrentPackage().addFunctionDeclaration(d);
 	}
 	public void addClassDeclaration(AstClassDeclaration d) {

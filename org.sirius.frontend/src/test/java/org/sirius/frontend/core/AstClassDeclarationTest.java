@@ -33,7 +33,7 @@ public class AstClassDeclarationTest {
 	@Test
 	public void inheritsTest() {
 		
-		DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+		DefaultSymbolTable symbolTable = new DefaultSymbolTable("AstClassDeclarationTest");
 		
 		QName pkgQName = new QName("a", "b", "c");
 		

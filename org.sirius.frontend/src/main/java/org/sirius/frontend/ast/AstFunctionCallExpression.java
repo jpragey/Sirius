@@ -89,9 +89,9 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		
 		Optional<Symbol> symbol = symbolTable.lookup(fctName);
 		if(symbol.isPresent()) {
-			Optional<AstFunctionDeclaration> fct = symbol.get().getFunctionDeclaration();
+			Optional<PartialList> fct = symbol.get().getFunctionDeclaration();
 			if(fct.isPresent()) {
-				AstFunctionDeclaration decl = fct.get();
+				Partial decl = fct.get().getAllArgsPartial();
 				AstType returnType = decl.getReturnType();
 				return returnType;
 				
@@ -137,6 +137,10 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 				@Override
 				public Type getType() {
 					return expr.getType();
+				}
+				@Override
+				public String toString() {
+					return "TypeCastExpression " + expr.getType().toString() + " -> " + targetType().toString();
 				}};
 			return Optional.of(castExpression);
 		}
@@ -147,9 +151,9 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	}
 	
 	private class FunctionCallImpl implements FunctionCall {
-		private AstFunctionDeclaration functionDeclaration;
+		private Partial functionDeclaration;
 		
-		public FunctionCallImpl(AstFunctionDeclaration functionDeclaration) {
+		public FunctionCallImpl(Partial functionDeclaration) {
 			super();
 			this.functionDeclaration = functionDeclaration;
 		}
@@ -165,7 +169,8 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		@Override
 		public List<Expression> getArguments() {
 //			List<AstFunctionFormalArgument> formalArgs = functionDeclaration.getFormalArguments();
-			List<AstFunctionParameter> formalArgs = functionDeclaration.getPartials().get(0).getArgs();
+//			List<AstFunctionParameter> formalArgs = functionDeclaration.getPartials().get(0).getArgs();
+			List<AstFunctionParameter> formalArgs = functionDeclaration.getArgs();
 			Iterator<AstFunctionParameter> it = formalArgs.iterator();
 			
 			ArrayList<Expression> l = new ArrayList<>();
@@ -187,12 +192,23 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		public Optional<AbstractFunction> getDeclaration() {
 			Optional<Symbol> optSymbol = symbolTable.lookup(name.getText());
 			if(optSymbol.isPresent()) {
-				Optional<AstFunctionDeclaration> optFunc =  optSymbol.get().getFunctionDeclaration();
+				Optional<PartialList> optFunc =  optSymbol.get().getFunctionDeclaration();
 				if(optFunc.isPresent()) {
-					AstFunctionDeclaration funcDecl = optFunc.get();
+					PartialList funcDecl = optFunc.get();
 //					Optional<TopLevelFunction> tlFunc = funcDecl.getTopLevelFunction();
-					AbstractFunction tlFunc = funcDecl.toAPI();
-					return Optional.of(tlFunc);
+					
+					int actualArgCount = actualArguments.size();
+					List<Partial> partials = funcDecl.getPartials();
+					if(actualArgCount > partials.size()) {
+						reporter.error("Too many (" + actualArgCount + "argument(s) provided to function call." , name);
+						return Optional.empty();
+					}
+					
+					AbstractFunction result = partials.get(actualArgCount).toAPI();
+					return Optional.of(result);
+//					
+//					AbstractFunction tlFunc = funcDecl.toAPI();
+//					return Optional.of(tlFunc);
 				}
 			}
 			
@@ -213,16 +229,17 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	public FunctionCall getExpression() {
 		Optional<Symbol> symbol = symbolTable.lookup(name.getText());
 		if(symbol.isPresent()) {
-			Optional<AstFunctionDeclaration> fd = symbol.get().getFunctionDeclaration();
+			Optional<PartialList> fd = symbol.get().getFunctionDeclaration();
 			if(fd.isPresent()) {
-				AstFunctionDeclaration functionDeclaration = fd.get();
+				PartialList functionDeclaration = fd.get();
 				
 //				int expectedArgCount = functionDeclaration.getFormalArguments().size();
-				int expectedArgCount = functionDeclaration.getPartials().get(0).getArgs().size();
+				int expectedArgCount = functionDeclaration.getAllArgsPartial().getArgs().size();
 				if(expectedArgCount != actualArguments.size()) {
 					reporter.error(name.getText() + " has a wrong number of arguments: " + expectedArgCount + " actual, " + actualArguments.size() + " expected.", name);
 				} else {
-					return new FunctionCallImpl(functionDeclaration);
+					Partial partial = functionDeclaration.getAllArgsPartial();
+					return new FunctionCallImpl(partial);
 				}
 				
 			} else {
@@ -234,6 +251,10 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		
 		// -- If function call expression couldn't be created, return a descent fake
 		return new FunctionCall() {
+			List<Expression> apiArguments = actualArguments.stream()
+					.map(astExpr -> astExpr.getExpression())
+					.collect(Collectors.toList());
+
 			@Override
 			public String toString() {
 				return "Fake FunctionCall (couldn't be generated))";
@@ -245,7 +266,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 			
 			@Override
 			public List<Expression> getArguments() {
-				return Collections.emptyList();
+				return apiArguments;
 			}
 
 			@Override
@@ -285,7 +306,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 				newArgs, 
 				reporter,
 				thisExpression,	// TODO: linkToParentST ???  
-				new DefaultSymbolTable(parentSymbolTable));
+				new DefaultSymbolTable(parentSymbolTable, AstFunctionCallExpression.class.getSimpleName()));
 		
 		return newExpr;
 	}

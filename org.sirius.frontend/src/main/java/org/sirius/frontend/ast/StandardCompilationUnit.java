@@ -12,7 +12,7 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 
 	private List<ImportDeclaration> importDeclarations = new ArrayList<>();
 	
-	private List<AstFunctionDeclaration> functionDeclarations = new ArrayList<>();
+	private List<PartialList> functionDeclarations = new ArrayList<>();
 	private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
 	private List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
 	
@@ -26,7 +26,7 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 	public StandardCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
 		super();
 		this.reporter = reporter;
-		this.symbolTable = new DefaultSymbolTable(globalSymbolTable);
+		this.symbolTable = new DefaultSymbolTable(globalSymbolTable, this.getClass().getSimpleName());
 	}
 
 
@@ -42,7 +42,7 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 		}
 	}
 
-	public void addFunctionDeclaration(AstFunctionDeclaration /*.Builder*/ declaration) {
+	public void addFunctionDeclaration(PartialList declaration) {
 //		this.functionDeclarations.add(declaration.build(symbolTable /*TODO: ???*/  ));
 		this.functionDeclarations.add(declaration);
 	}
@@ -51,7 +51,7 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 		functionDeclarations.clear();
 	}
 	
-	public List<AstFunctionDeclaration> getFunctionDeclarations() {
+	public List<PartialList> getFunctionDeclarations() {
 		return functionDeclarations;
 	}
 	
