@@ -218,9 +218,8 @@ public class MethodTests {
 	}
 	
 	
-	@Test (description = "Simple call of a global function", enabled = true)
-	public void callWithParamsTest() {
-//		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){String s;}}");
+	@Test (description = "Definition of a simple global function with parameters", enabled = true)
+	public void defineFunctionWithParamsTest() {
 		ScriptSession session = Compiler.compileScript("#!\n"
 				+ "Integer add(Integer x, Integer y) {return x;}"
 				+ "");
@@ -283,41 +282,27 @@ public class MethodTests {
 		assert(xArgType instanceof ClassDeclaration);
 		ClassDeclaration xClassDecl = (ClassDeclaration)xArgType;
 		assertEquals(xClassDecl.getQName().dotSeparated(), "sirius.lang.Integer");
-		
-		
-		
-		
-//		ClassDeclaration cd = pack.getClasses().get(0);
-//		assertEquals(cd.getQName(), new QName("p", "k", "C"));
-//		
-//		// -- function local value
-//		AbstractFunction func = cd.getFunctions().get(0);
-//		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
-//
-//		assertEquals(func.getBodyStatements().get().size(), 1);
-//		LocalVariableStatement funcLvs = (LocalVariableStatement)func.getBodyStatements().get().get(0);
-//		assertEquals(funcLvs.getName().getText(), "s11");
-//
-//		assertTrue(funcLvs.getInitialValue().isPresent());
-//
-//		Type funcLvstype = funcLvs.getType();
-//		assert(funcLvstype instanceof ClassDeclaration);
-//		
-//		
-//		assertEquals( ((ClassDeclaration)funcLvstype).getQName(), new QName("sirius", "lang", "Integer"));
-//
-//		
-//		// -- class member
-//		assertEquals(cd.getMemberValues().size(), 1);
-//		MemberValue lvs = cd.getMemberValues().get(0);
-//
-//		assertEquals(lvs.getName().getText(), "s10");
-//		
-//		assertTrue(lvs.getInitialValue().isPresent());
-//
-//		Type type = lvs.getType();
-//		assert(type instanceof ClassDeclaration);
-//		assertEquals( ((ClassDeclaration)type).getQName(), new QName("sirius", "lang", "Integer"));
 
 	}
+	
+	@Test (description = "Simple call of a global function", enabled = true)
+	public void callFunctionWithParamsTest() {
+//		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){String s;}}");
+		ScriptSession session = Compiler.compileScript("#!\n"
+				+ "Integer add(Integer x, Integer y) {return x;}"
+				+ "void main() {Integer i = add(42,43);}");
+		
+		AstModuleDeclaration module = session.getAstModules().get(0);
+		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
+		assertEquals(pack.getQname().dotSeparated(), "");
+		PartialList func = pack.getFunctionDeclarations().get(0);
+		assertEquals(func.getqName().dotSeparated(), "add");
+
+		PartialList funcMain = pack.getFunctionDeclarations().get(1);
+		assertEquals(funcMain.getqName().dotSeparated(), "main");
+		
+		Partial mainPartial = funcMain.byArgCount(0).get();
+		mainPartial.getSymbolTable().dump();
+	}
+	
 }

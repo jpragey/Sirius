@@ -52,7 +52,7 @@ public class AstIntegerConstantExpression implements AstExpression {
 	}
 	@Override
 	public AstType getType() {
-		return intType;
+		return this.intType;
 	}
 
 	private class IntegerConstantExpressionImpl implements IntegerConstantExpression {
@@ -63,7 +63,8 @@ public class AstIntegerConstantExpression implements AstExpression {
 
 		@Override
 		public Type getType() {
-			return Type.integerType;
+//			return Type.integerType;
+			return AstIntegerConstantExpression.this.getType().getApiType();
 		}
 
 		@Override

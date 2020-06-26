@@ -43,21 +43,36 @@ public class AstFunctionParameter {
 	
 	public void resolve() {
 	}
+	
+	private class FunctionFormalArgumentImpl implements FunctionFormalArgument {
+		private QName argQName;
+		
+		public FunctionFormalArgumentImpl(QName argQName) {
+			super();
+			this.argQName = argQName;
+		}
 
+		@Override
+		public QName getQName() {
+			return argQName;
+		}
+
+		@Override
+		public Type getType() {
+			return type.getApiType();
+		}
+		@Override
+		public String toString() {
+			return "param. " + argQName.dotSeparated();
+		}
+	}
+	
+	private FunctionFormalArgumentImpl impl = null;
+	
 	public FunctionFormalArgument toAPI(QName functionQName) {
-		return new FunctionFormalArgument() {
-			QName argQName = functionQName.child(name.getText());
-			
-			@Override
-			public QName getQName() {
-				return argQName;
-			}
-
-			@Override
-			public Type getType() {
-				return type.getApiType();
-			}
-		};
+		if(impl == null)
+			impl =new FunctionFormalArgumentImpl(functionQName.child(name.getText()));
+		return impl;
 	}
 	
 	 @Override

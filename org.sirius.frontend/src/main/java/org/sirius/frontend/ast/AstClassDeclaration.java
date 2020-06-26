@@ -270,66 +270,126 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		this.annotationType = annotationType;
 	}
 
-	private ClassDeclaration classDeclarationImpl = null;
+	private class ClassDeclarationImpl implements ClassDeclaration {
+		QName qName = packageQName.child(name.getText());
+		@Override
+		public List<MemberValue> getMemberValues() {
+			return valueDeclarations.stream()
+				.map(v->v.getMemberValue())
+				.collect(Collectors.toList());
+		}
 
+		@Override
+		public List<AbstractFunction> getFunctions() {
+			
+			MapOfList<QName, PartialList> allFctMap = getAllFunctions();
+			
+			ArrayList<AbstractFunction> memberFunctions = new ArrayList<>();
+			
+			for(QName qn: allFctMap.keySet()) {
+				List<PartialList> functions = allFctMap.get(qn);
+				for(PartialList func: functions) {
+					if(func.isConcrete()) {
+//						func.getMemberFunction().ifPresent((MemberFunction mf) -> {
+//							memberFunctions.add(mf);
+//						} );
+						for(Partial partial: func.getPartials()) {
+							memberFunctions.add(partial.toAPI());
+						}
+//						memberFunctions.add(func.toAPI());
+					}
+				}
+				
+			}
+			return memberFunctions;
+		}
+
+		@Override
+		public QName getQName() {
+			return qName;
+		}
+		@Override
+		public boolean isAncestorOrSame(Type type) {
+			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
+		}
+
+		List<InterfaceDeclaration> interfaces = null;
+		@Override
+		public List<InterfaceDeclaration> getDirectInterfaces() {
+			if(interfaces == null) {
+				interfaces = createDirectInterfaces();
+			}
+			return interfaces;
+		}
+		@Override
+		public String toString() {
+			return "API class " + qName;
+		}
+		
+	}
+	
+	private ClassDeclarationImpl classDeclarationImpl = null;
+
+	
+	
 	public ClassDeclaration getClassDeclaration() {
 //		QName containerQName = packageQName.get();
 		if(classDeclarationImpl == null)
-			classDeclarationImpl =  new ClassDeclaration() {
-			QName qName = packageQName.child(name.getText());
-			@Override
-			public List<MemberValue> getMemberValues() {
-				return valueDeclarations.stream()
-					.map(v->v.getMemberValue())
-					.collect(Collectors.toList());
-			}
-
-			@Override
-			public List<AbstractFunction> getFunctions() {
-				
-				MapOfList<QName, PartialList> allFctMap = getAllFunctions();
-				
-				ArrayList<AbstractFunction> memberFunctions = new ArrayList<>();
-				
-				for(QName qn: allFctMap.keySet()) {
-					List<PartialList> functions = allFctMap.get(qn);
-					for(PartialList func: functions) {
-						if(func.isConcrete()) {
-//							func.getMemberFunction().ifPresent((MemberFunction mf) -> {
-//								memberFunctions.add(mf);
-//							} );
-							for(Partial partial: func.getPartials()) {
-								memberFunctions.add(partial.toAPI());
-							}
-//							memberFunctions.add(func.toAPI());
-						}
-					}
-					
-				}
-				return memberFunctions;
-			}
-
-			@Override
-			public QName getQName() {
-				return qName;
-			}
-			@Override
-			public boolean isAncestorOrSame(Type type) {
-				throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-			}
-
-			List<InterfaceDeclaration> interfaces = null;
-			@Override
-			public List<InterfaceDeclaration> getDirectInterfaces() {
-				if(interfaces == null) {
-					interfaces = createDirectInterfaces();
-				}
-				return interfaces;
-			}
-			@Override
-			public String toString() {
-				return "API class " + qName;
-			}
+			classDeclarationImpl =  new ClassDeclarationImpl() {
+//			QName qName = packageQName.child(name.getText());
+//			@Override
+//			public List<MemberValue> getMemberValues() {
+//				return valueDeclarations.stream()
+//					.map(v->v.getMemberValue())
+//					.collect(Collectors.toList());
+//			}
+//
+//			@Override
+//			public List<AbstractFunction> getFunctions() {
+//				
+//				MapOfList<QName, PartialList> allFctMap = getAllFunctions();
+//				
+//				ArrayList<AbstractFunction> memberFunctions = new ArrayList<>();
+//				
+//				for(QName qn: allFctMap.keySet()) {
+//					List<PartialList> functions = allFctMap.get(qn);
+//					for(PartialList func: functions) {
+//						if(func.isConcrete()) {
+////							func.getMemberFunction().ifPresent((MemberFunction mf) -> {
+////								memberFunctions.add(mf);
+////							} );
+//							for(Partial partial: func.getPartials()) {
+//								memberFunctions.add(partial.toAPI());
+//							}
+////							memberFunctions.add(func.toAPI());
+//						}
+//					}
+//					
+//				}
+//				return memberFunctions;
+//			}
+//
+//			@Override
+//			public QName getQName() {
+//				return qName;
+//			}
+//			@Override
+//			public boolean isAncestorOrSame(Type type) {
+//				throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
+//			}
+//
+//			List<InterfaceDeclaration> interfaces = null;
+//			@Override
+//			public List<InterfaceDeclaration> getDirectInterfaces() {
+//				if(interfaces == null) {
+//					interfaces = createDirectInterfaces();
+//				}
+//				return interfaces;
+//			}
+//			@Override
+//			public String toString() {
+//				return "API class " + qName;
+//			}
 		};
 		return classDeclarationImpl;
 	}

@@ -77,6 +77,9 @@ public class AstBinaryOpExpression implements AstExpression {
 			return right.getExpression();
 		}
 
+		private boolean isInteger(Type t) {
+			return true;
+		}
 		@Override
 		public Type getType() {
 			Type leftType = left.getExpression().getType();

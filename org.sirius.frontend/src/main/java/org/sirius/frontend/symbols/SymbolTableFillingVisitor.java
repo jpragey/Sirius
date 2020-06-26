@@ -19,6 +19,7 @@ import org.sirius.frontend.ast.ConstructorCallExpression;
 import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ImportDeclarationElement;
 import org.sirius.frontend.ast.Partial;
+import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.ast.SimpleType;
@@ -153,6 +154,11 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 		symbolTableStack.pop();
 	}
 
+	@Override
+	public void startPartialList (PartialList partialList) {
+		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
+		parentSymbolTable.addFunction(partialList);
+	}
 	
 	@Override
 	public void startFunctionFormalArgument(AstFunctionParameter formalArgument) {

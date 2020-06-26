@@ -17,6 +17,7 @@ import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.FunctionActualArgument;
 import org.sirius.frontend.api.FunctionCall;
 import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.LocalVariableReference;
@@ -65,9 +66,25 @@ public class JvmExpression {
 			processValueAccessExpression(mv, (MemberValueAccessExpression) expression, scope);
 		} else if(expression instanceof LocalVariableReference) {
 			processLocalVariableReference(mv, (LocalVariableReference) expression, scope);
+		} else if(expression instanceof FunctionActualArgument) {
+			processFunctionArgument(mv, (FunctionActualArgument) expression, scope);
 		} else {
 			throw new UnsupportedOperationException("Try to create bytecode for unknown expression : " + expression);
 		}
+	}
+
+	private void processFunctionArgument(MethodVisitor mv, FunctionActualArgument expression, JvmScope scope/* TODO: ???*/) {
+		
+		mv.visitVarInsn(Opcodes.ALOAD, 0 /*0 = this  locvarIndex*/);
+
+		// -- put value
+//		expression.
+//		scope.
+//		new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, expression, scope);
+
+		
+		
+//		throw new UnsupportedOperationException("Try to create bytecode for FunctionActualArgument : " + expression);
 	}
 
 	private void processStringConstant(MethodVisitor mv, StringConstantExpression expression) {
