@@ -22,6 +22,7 @@ import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.ast.AstFunctionDeclarationBuilder.FunctionImpl;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
@@ -302,7 +303,35 @@ public class MethodTests {
 		assertEquals(funcMain.getqName().dotSeparated(), "main");
 		
 		Partial mainPartial = funcMain.byArgCount(0).get();
-		mainPartial.getSymbolTable().dump();
+//		mainPartial.getSymbolTable().dump();
+	}
+	
+	@Test (description = "Partials of the same function have different API function (args count differ)", enabled = true)
+	public void partialsOfSameFuncHaveDifferentAPIFuncs() {
+//		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){String s;}}");
+		ScriptSession session = Compiler.compileScript("#!\n"
+				+ "Integer add(Integer x, Integer y) {return x;}"
+				);
+		
+		AstModuleDeclaration module = session.getAstModules().get(0);
+		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
+		assertEquals(pack.getQname().dotSeparated(), "");
+		PartialList func = pack.getFunctionDeclarations().get(0);
+		assertEquals(func.getqName().dotSeparated(), "add");
+
+		Partial partial0 = func.getPartials().get(0);
+		FunctionImpl partial0Api = partial0.toAPI();
+		assertEquals(partial0Api.getArguments().size(), 0);
+		
+		Partial partial1 = func.getPartials().get(1);
+		FunctionImpl partial1Api = partial1.toAPI();
+		assertEquals(partial1Api.getArguments().size(), 1);
+		
+		Partial partial2 = func.getPartials().get(2);
+		FunctionImpl partial2Api = partial2.toAPI();
+		assertEquals(partial2Api.getArguments().size(), 2);
+		
+		
 	}
 	
 }

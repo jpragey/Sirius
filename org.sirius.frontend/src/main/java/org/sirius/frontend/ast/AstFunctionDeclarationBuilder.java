@@ -309,14 +309,14 @@ private List<Partial> partials = Collections.emptyList();
 		return resolved;
 	}
 	
-	static class FunctionImpl implements AbstractFunction {
+	static public class FunctionImpl implements AbstractFunction {
 //		QName functionQName = containerQName.child(name.getText());
 		QName functionQName;
 //		List<FunctionFormalArgument> implArguments = 
 //				formalArguments.stream()
 //				.map(arg -> arg.toAPI(functionQName))
 //				.collect(Collectors.toList());
-		List<FunctionFormalArgument> implArguments;
+		private ImmutableList<FunctionFormalArgument> implArguments;
 //		Type returnType = resolveReturnType();
 		Type returnType;
 		
@@ -332,19 +332,25 @@ private List<Partial> partials = Collections.emptyList();
 		public FunctionImpl(QName functionQName, ImmutableList<AstFunctionParameter> formalArguments, Type returnType, 
 				Optional<List<Statement>> bodyStatements, boolean member) {
 			this.functionQName = functionQName;
-			this.implArguments = 
-					formalArguments.stream()
-					.map(arg -> arg.toAPI(functionQName))
-					.collect(Collectors.toList());
+//					formalArguments.stream()
+//					.map(arg -> arg.toAPI(functionQName))
+//					.collect(Collectors.toList());
 			this.returnType = returnType;
 			this.bodyStatements = bodyStatements;
 			this.member = member;
+			
+			ArrayList<FunctionFormalArgument> implArgs = new ArrayList(formalArguments.size()); 
+			for(AstFunctionParameter arg: formalArguments) {
+				FunctionFormalArgument formalArg = arg.toAPI(functionQName);
+				implArgs.add(formalArg);
+			}
+			this.implArguments = ImmutableList.copyOf(implArgs); 
 		}
 		
 		@Override
 		public String toString() {
 			
-			return "API function" + functionQName.dotSeparated() + "(" + implArguments.size() + " args)";
+			return "API function " + functionQName.dotSeparated() + "(" + implArguments.size() + " args)";
 		}
 		@Override
 		public QName getQName() {
@@ -378,7 +384,7 @@ private List<Partial> partials = Collections.emptyList();
 	}
 	private FunctionImpl functionImpl = null;
 	
-	public AbstractFunction toAPI_todelete() {	// TODO delete (-> partials)
+	private AbstractFunction toAPI_todelete() {	// TODO delete (-> partials)
 		if(functionImpl == null) 
 		{
 			Partial partial = partials.get(0);

@@ -204,7 +204,8 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 						return Optional.empty();
 					}
 					
-					AbstractFunction result = partials.get(actualArgCount).toAPI();
+					Partial partial = partials.get(actualArgCount);
+					AbstractFunction result = partial.toAPI();
 					return Optional.of(result);
 //					
 //					AbstractFunction tlFunc = funcDecl.toAPI();

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -26,8 +28,9 @@ public class JvmScope {
 	private Label endLabel;
 	private DescriptorFactory descriptorFactory;
 	
-	private int varIndex = 1;
-	private List<JvmScope> subScopes; 
+	private int varIndex = 0;
+	private List<JvmScope> subScopes;
+	private Optional<JvmScope> parentScope;
 
 	public class LocalVarHolder {
 		private Type localVarType;
@@ -66,14 +69,23 @@ public class JvmScope {
 	
 	private List<LocalVarHolder> locVarsStmts = new ArrayList<>();
 	private HashMap<String, LocalVarHolder> varByName = new HashMap<>();
-
-	public JvmScope(DescriptorFactory descriptorFactory) {
+	private String dbgName;
+	
+	public JvmScope(DescriptorFactory descriptorFactory, Optional<JvmScope> parentScope, String dbgName) {
 		super();
 		startLabel = new Label();
 		this.descriptorFactory = descriptorFactory;
-		this.subScopes = new ArrayList<JvmScope>(); 
+		this.parentScope = parentScope;
+		this.subScopes = new ArrayList<JvmScope>();
+		this.dbgName = dbgName;
 	}
 	
+	
+	public Optional<JvmScope> getParentScope() {
+		return parentScope;
+	}
+
+
 	public List<JvmScope> getSubScopes() {
 		return subScopes;
 	}
@@ -107,12 +119,20 @@ public class JvmScope {
 		return Optional.of(h);
 	}
 
+	@Override
+	public String toString() {
+		return "Scope: " + dbgName + 
+				subScopes.stream().map(sc->sc.toString()).collect(Collectors.joining(", ", "[", "]")) ;
+	}
 	public void writeLocalVariableStatements(ClassWriter classWriter, MethodVisitor mv, int startIndex) {
+		System.out.println(" << scope: entering " + this.dbgName + " by index " + this.varIndex);
 
 		for(LocalVarHolder h: this.locVarsStmts) {
 //			LocalVariableStatement statement = h.statement;
 //			String name = statement.getName().getText();
 			String name = h.localVarName;
+
+			System.out.println(" -- Write scope var " + name);
 
 			//		statement.getType();
 //			String descriptor = descriptorFactory.fieldDescriptor(statement.getType());		// TODO: field ???      var descriptor
@@ -121,6 +141,13 @@ public class JvmScope {
 			//		Label start;
 			//		Label end;
 			int index=startIndex++;
+			assert(startLabel != null);
+			if(endLabel == null) {
+				System.out.println();
+			}
+			
+			assert(endLabel != null);
+			
 			mv.visitLocalVariable(name, descriptor, signature, startLabel, endLabel, index);
 		}
 		
@@ -128,6 +155,7 @@ public class JvmScope {
 			subScope.writeLocalVariableStatements(classWriter, mv, startIndex);
 		}
 		
+		System.out.println(" >> leaving scope " + this.dbgName + " index " + this.varIndex);
 	}
 //	/** Write init code (for start of functions)
 //	 * 

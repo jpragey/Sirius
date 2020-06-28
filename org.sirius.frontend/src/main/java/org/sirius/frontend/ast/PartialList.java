@@ -62,8 +62,6 @@ public class PartialList implements Visitable {
 //		AstFunctionDeclarationBuilder function,
 //		AstType returnType,
 //		List<AstStatement> statements
-
-			
 			
 			List<AstFunctionParameter> partialArgs = args.subList(0, from); 
 			Partial partial = new Partial(
@@ -75,7 +73,6 @@ public class PartialList implements Visitable {
 					function.isConcrete(), //boolean concrete,
 					function.isMember(),//boolean member,
 					function.getQName(), //QName qName,
-					
 					
 					returnType,
 					statements

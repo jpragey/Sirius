@@ -38,57 +38,42 @@ public class JvmMemberFunction {
 
 	
 	private static class ScopeManager {
-		private Stack<JvmScope> scopes = new Stack<>();
+		private JvmScope currentScope ;
 		private DescriptorFactory descriptorFactory;
 		private JvmScope rootScope;
 		
 		public ScopeManager(DescriptorFactory descriptorFactory) {
 			this.descriptorFactory = descriptorFactory;
-			this.rootScope = new JvmScope(descriptorFactory);
-			this.scopes.push(this.rootScope);
-			
+			this.rootScope = new JvmScope(descriptorFactory, Optional.empty(), "<root>");
+			this.currentScope = this.rootScope;
 		}
 		
 		public JvmScope getCurrent() {
-			return scopes.lastElement();
+			return this.currentScope;
 		}
-		
-		public JvmScope enterNewScope() {
-			JvmScope current = this.scopes.peek();
-			JvmScope scope = new JvmScope(descriptorFactory);
+
+		@Override
+		public String toString() {
+			return currentScope.toString();
+		}
+		public JvmScope enterNewScope(String dbgName) {
+			JvmScope current = this.currentScope;
+			assert(current != null);
+			JvmScope scope = new JvmScope(descriptorFactory, Optional.of(current),  dbgName);
 			current.addSubScopes(scope);
-			this.scopes.push(scope);
+			this.currentScope = scope;
 			return scope;
 		}
 		public void leaveScope() {
-			this.scopes.pop();
-			
+			this.currentScope = this.currentScope.getParentScope().get();
 		}
 
 		public void writeLocalVariables(ClassWriter classWriter, MethodVisitor mv) {
 			rootScope.writeLocalVariableStatements(classWriter, mv, 0/*startIndex*/);
 		}
-		
-//		public void writeLocalVariableStatements(ClassWriter classWriter, MethodVisitor mv) {
-//			writeLocalVariableStatements(classWriter, mv, 0 /*index*/, rootScope);
-//		}
-//		private void writeLocalVariableStatements(ClassWriter classWriter, MethodVisitor mv, int index, JvmScope scope) {
-//			for(LocalVarHolder h: scope.getLocVarsStmts()) {
-//				String name = h.getLocalVarName();
-//				String descriptor = descriptorFactory.fieldDescriptor(h.getLocalVarType());		// TODO: field ???      var descriptor
-//				String signature = null; // the type signature of this local variable. May be {@literal null} if the local variable type does not use generic types.
-//				//		Label start;
-//				//		Label end;
-//				int index=locvarIndex;
-//				mv.visitLocalVariable(name, descriptor, signature, scope.getsh.gstartLabel, endLabel, index);
-//			}
-//
-//		}
 	}
 	
 	private ScopeManager scopeManager;
-
-	//		private final static int locvarIndex = 0;	// TODO: remove
 
 	public JvmMemberFunction(Reporter reporter, DescriptorFactory descriptorFactory, AbstractFunction memberFunction, boolean isStatic) {
 		super();
@@ -165,10 +150,6 @@ public class JvmMemberFunction {
 
 			mv.visitLabel(endElseLabel);
 		}
-
-		//			write
-
-		//			reporter.info(">>> IfElseStatement (" + expr + ")" + ifStmt );
 	}
 
 	/** simulate "return ;"
@@ -194,7 +175,6 @@ public class JvmMemberFunction {
 		private void writeLocalVarsInitCode(JvmScope.LocalVarHolder h, MethodVisitor mv, JvmScope scope) {
 //			LocalVariableStatement st = h.getStatement();
 			int locvarIndex = h.getIndex();
-//			Optional<Expression> optInitExp = st.getInitialValue();
 			Optional<Expression> optInitExp = h.getInitExp();
 			if(optInitExp.isPresent()) {
 				Expression expr = optInitExp.get();
@@ -207,8 +187,7 @@ public class JvmMemberFunction {
 
 		public void writeByteCode(ClassWriter classWriter, MethodVisitor mv) {
 
-//			JvmScope scope = new JvmScope(descriptorFactory);
-			JvmScope scope = scopeManager.enterNewScope();
+			JvmScope scope = scopeManager.enterNewScope("{block}");
 
 
 			// Collect local variables to generate initialization code
@@ -223,7 +202,6 @@ public class JvmMemberFunction {
 				writeLocalVarsInitCode(h, mv, scope);
 			}
 
-
 			for(Statement st: statements ) {
 				if(st instanceof ReturnStatement) {
 					writeReturnStatementBytecode(classWriter, mv, (ReturnStatement)st, scope);
@@ -234,7 +212,6 @@ public class JvmMemberFunction {
 			}
 
 			scope.markEnd();
-
 			scopeManager.leaveScope();
 			
 //			scope.writeLocalVariableStatements(classWriter, mv);
@@ -242,9 +219,10 @@ public class JvmMemberFunction {
 	}
 
 	private void writeFunctionContent(ClassWriter classWriter, MethodVisitor mv, List<FunctionFormalArgument> remainingParams) {
-//		JvmScope scope = new JvmScope(descriptorFactory);
-//		this.scopes.push(scope);
-		JvmScope scope = scopeManager.enterNewScope();
+		JvmScope scope = scopeManager.enterNewScope(
+				this.memberFunction.getQName().getLast() +
+				"-" + remainingParams.size() + "-args"
+				);
 		
 		if(remainingParams.isEmpty()) {
 			// -- all params are manages, handle statements
@@ -276,15 +254,16 @@ public class JvmMemberFunction {
 			writeFunctionContent(classWriter, mv, remainingParams);
 			
 			
-			scope.markEnd();
+////			scope.markEnd();
 //			scope.writeLocalVariableStatements(classWriter, mv); 
 
-			scopeManager.writeLocalVariables(classWriter, mv);
+//			scopeManager.writeLocalVariables(classWriter, mv);
 			
 		}
 		
-//		scope.markEnd();
+		scope.markEnd();
 //		this.scopes.pop();
+		scopeManager.leaveScope();
 	}
 
 //	private void writeFunctionArgs(ClassWriter classWriter, MethodVisitor mv) {
@@ -336,17 +315,15 @@ public class JvmMemberFunction {
 				null /* String signature */,
 				null /* String[] exceptions */);
 
+		JvmScope scope = scopeManager.enterNewScope(this.memberFunction.getQName().getLast());
 		
-		writeFunctionContent(classWriter, mv, memberFunction.getArguments());
+		
+		List<FunctionFormalArgument> currentArgs = new ArrayList<>(memberFunction.getArguments()); // TODO: shouldn't be mutable
+		writeFunctionContent(classWriter, mv, currentArgs);
 
-//		writeFunctionArgs(classWriter, mv);
-//
-//		JvmStatementBlock bodyBlock = new JvmStatementBlock(/*memberFunction.getBodyStatements()*/optBody.get());
-//		bodyBlock.writeByteCode(classWriter, mv);
-//
-//		writeDummyDefaultReturn(mv);
+		scopeManager.leaveScope();
+		scopeManager.writeLocalVariables(classWriter, mv);
 
-		//			mv.visitInsn(RETURN);
 		mv.visitMaxs(-1, -1);
 		mv.visitEnd();
 	}

@@ -67,21 +67,50 @@ public class FunctionTest {
 		System.out.println("Result: " + result);
 		
 		return result;
+		
+//		return 43;
 	}
 
-	@Test(enabled = false)
+	@Test(enabled = true)
 	public void simpleFunctionCall() throws Exception {
 		String script = "#!\n "
-				+ "Integer inc(Integer x, Integer y) {return x;} "
-//				+ "Integer main() {Integer i= id(42); return i;}"
-				+ "Integer main() {return 42;}"
+//				+ "Integer inc() {return 0;} "
+//+ "Integer inc(Integer x) {return x;} "
+//+ "Integer inc(Integer x, Integer y) {return 42;} "
++ "Integer id(Integer x) {return x;} "
++ "Integer main() {Integer i= id(43); return i;}"
+//+ "Integer main() {Integer i= 43; return i;}"
+//				+ "Integer main() {return 43;}"
 				;
 		
 		Object sirResult = compileRunAndReturn(script);
+
 		assert(sirResult instanceof sirius.lang.Integer);
 		int result = ((sirius.lang.Integer)sirResult).getValue();
 
 		assertEquals(result, 43);
+		
+	}
+
+	@Test(enabled = false)
+	public void twoArgumentsFunctionCall() throws Exception {
+		String script = "#!\n "
+//				+ "Integer inc() {return 0;} "
+//+ "Integer inc(Integer x) {return x;} "
+//+ "Integer inc(Integer x, Integer y) {return 42;} "
++ "Integer id(Integer x, Integer y) {return y;} "
++ "Integer main() {Integer i= id(10,43); return i;}"
+//+ "Integer main() {Integer i= 43; return i;}"
+//				+ "Integer main() {return 43;}"
+				;
+		
+		Object sirResult = compileRunAndReturn(script);
+
+		assert(sirResult instanceof sirius.lang.Integer);
+		int result = ((sirius.lang.Integer)sirResult).getValue();
+
+		assertEquals(result, 43);
+		
 	}
 
 }

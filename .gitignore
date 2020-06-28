@@ -1,0 +1,8 @@
+/.metadata/
+**/.classpath
+**/.project
+**/.gitignore
+**/.settings
+**/test-output
+org.sirius.backend.jvm/jvmTest
+

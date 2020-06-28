@@ -1,7 +1,9 @@
 package org.sirius.backend.jvm;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
@@ -42,10 +44,26 @@ public class CodeTreeBuilder implements Visitor {
 			for(InterfaceDeclaration id: packageDeclaration.getInterfaces()) {
 				jvmClasses.add(new JvmNodeClass(reporter, id));
 			}
-			for(AbstractFunction func: packageDeclaration.getFunctions()) {
+			
+			Collection<AbstractFunction> packageFuncs = packageDeclaration.getFunctions();
+			packageFuncs = retainOnlyAllArgsFunctions(packageFuncs);	// TODO: remove
+			
+			for(AbstractFunction func: packageFuncs) {
 				packageClass.addTopLevelFunction(func);
 			}
 		}
+		
+		// TODO: remove
+		private Collection<AbstractFunction> retainOnlyAllArgsFunctions(Collection<AbstractFunction> allFunctions) {
+			TreeMap<String, AbstractFunction> map = new TreeMap<>();
+			for(AbstractFunction func: allFunctions) {
+				String name = func.getQName().getLast();
+				map.put(name, func);
+			}
+			return map.values();
+		}
+
+		
 		public void createByteCode(List<ClassWriterListener> listeners) {
 //			packageClass.toBytecode(listeners);
 			for(JvmNodeClass c: jvmClasses) {

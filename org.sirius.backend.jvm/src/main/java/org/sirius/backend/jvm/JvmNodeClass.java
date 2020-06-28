@@ -8,6 +8,7 @@ import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.objectweb.asm.ClassWriter;
@@ -164,7 +165,7 @@ public class JvmNodeClass {
 	private void writeInitMethod(ClassWriter classWriter) {
 		MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
 
-		JvmScope scope = new JvmScope(descriptorFactory);
+		JvmScope scope = new JvmScope(descriptorFactory, Optional.empty(), "<init(...) root>");
 		
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitMethodInsn(INVOKESPECIAL,

@@ -150,9 +150,12 @@ import com.google.common.collect.ImmutableList;
 				functionImpl = new FunctionImpl(qName, args, 
 						resolveReturnType(),
 						concrete ? Optional.of(apiStatements) : Optional.empty(),
-								member
-						);
+						member);
+				assert(functionImpl.getArguments().size() == args.size());
 			}
+			
+			assert(functionImpl.getArguments().size() == args.size());
+			
 			return functionImpl;
 		}
 		public AstType getReturnType() {
