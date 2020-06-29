@@ -69,7 +69,8 @@ public class JvmMemberFunction {
 		}
 
 		public void writeLocalVariables(ClassWriter classWriter, MethodVisitor mv) {
-			rootScope.writeLocalVariableStatements(classWriter, mv, 0/*startIndex*/);
+//			rootScope.writeLocalVariableStatements(classWriter, mv, 0/*startIndex*/);
+			rootScope.indexedScope(descriptorFactory).writeLocalVariableStatements(classWriter, mv);
 		}
 	}
 	

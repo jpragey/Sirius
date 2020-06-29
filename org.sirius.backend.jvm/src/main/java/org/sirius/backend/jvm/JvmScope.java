@@ -32,6 +32,80 @@ public class JvmScope {
 	private List<JvmScope> subScopes;
 	private Optional<JvmScope> parentScope;
 
+	public static class IndexedVariable {
+		private Type localVarType;
+		private String localVarName;
+		private Optional<Expression> initExp;
+		private int index;
+		public IndexedVariable(LocalVarHolder v, int index) {
+			this.localVarType = v.localVarType;
+			this.localVarName = v.localVarName;
+			this.initExp = v.initExp;
+			this.index = index;
+		}
+		
+	}
+	public static class IndexedScope {
+		private DescriptorFactory descriptorFactory;
+		private int startIndex;
+		private JvmScope jvmScope;
+		private List<IndexedScope> subScopes;
+		private List<IndexedVariable> indexedVariables;
+		public IndexedScope(DescriptorFactory descriptorFactory, JvmScope jvmScope, int startIndex) {
+			this.descriptorFactory = descriptorFactory;
+			this.jvmScope = jvmScope;
+			this.startIndex = startIndex;
+
+			int currentIndex = startIndex;
+			// -- indexed variables
+			this.indexedVariables = new ArrayList<IndexedVariable>(jvmScope.locVarsStmts.size());
+			for(LocalVarHolder v : jvmScope.locVarsStmts) {
+				IndexedVariable iv = new IndexedVariable(v, currentIndex++);
+				this.indexedVariables.add(iv);
+			}
+			// -- subscopes
+			this.subScopes = new ArrayList<>(jvmScope.subScopes.size());
+			for(JvmScope subJvmScope: jvmScope.subScopes) {
+				IndexedScope is = new IndexedScope(descriptorFactory, subJvmScope, currentIndex /* NB : all subscopes have the same index */ );
+				this.subScopes.add(is);
+			}
+
+		}
+		
+		public void writeLocalVariableStatements(ClassWriter classWriter, MethodVisitor mv) {
+			System.out.println(" << scope: entering " + this.jvmScope.dbgName + " by index " + this.startIndex);
+
+			for(IndexedVariable h: this.indexedVariables) {
+				String name = h.localVarName;
+
+				System.out.println(" -- Write scope var " + name);
+
+				String descriptor = descriptorFactory.fieldDescriptor(h.localVarType);		// TODO: field ???      var descriptor
+				String signature = null; // the type signature of this local variable. May be {@literal null} if the local variable type does not use generic types.
+				
+				int index=h.index;
+				assert(this.jvmScope.startLabel != null);
+				if(this.jvmScope.endLabel == null) {
+					System.out.println();
+				}
+				
+				assert(this.jvmScope.endLabel != null);
+				
+				mv.visitLocalVariable(name, descriptor, signature, this.jvmScope.startLabel, this.jvmScope.endLabel, index);
+			}
+			
+			for(IndexedScope subScope: subScopes) {
+				subScope.writeLocalVariableStatements(classWriter, mv);
+			}
+			
+			System.out.println(" >> leaving scope " + this.jvmScope.dbgName + " index " + this.startIndex);
+		}
+
+		
+		
+	}
+	
+	
 	public class LocalVarHolder {
 		private Type localVarType;
 		private String localVarName;
@@ -124,60 +198,44 @@ public class JvmScope {
 		return "Scope: " + dbgName + 
 				subScopes.stream().map(sc->sc.toString()).collect(Collectors.joining(", ", "[", "]")) ;
 	}
-	public void writeLocalVariableStatements(ClassWriter classWriter, MethodVisitor mv, int startIndex) {
-		System.out.println(" << scope: entering " + this.dbgName + " by index " + this.varIndex);
-
-		for(LocalVarHolder h: this.locVarsStmts) {
-//			LocalVariableStatement statement = h.statement;
-//			String name = statement.getName().getText();
-			String name = h.localVarName;
-
-			System.out.println(" -- Write scope var " + name);
-
-			//		statement.getType();
-//			String descriptor = descriptorFactory.fieldDescriptor(statement.getType());		// TODO: field ???      var descriptor
-			String descriptor = descriptorFactory.fieldDescriptor(h.localVarType);		// TODO: field ???      var descriptor
-			String signature = null; // the type signature of this local variable. May be {@literal null} if the local variable type does not use generic types.
-			//		Label start;
-			//		Label end;
-			int index=startIndex++;
-			assert(startLabel != null);
-			if(endLabel == null) {
-				System.out.println();
-			}
-			
-			assert(endLabel != null);
-			
-			mv.visitLocalVariable(name, descriptor, signature, startLabel, endLabel, index);
-		}
-		
-		for(JvmScope subScope: subScopes) {
-			subScope.writeLocalVariableStatements(classWriter, mv, startIndex);
-		}
-		
-		System.out.println(" >> leaving scope " + this.dbgName + " index " + this.varIndex);
-	}
-//	/** Write init code (for start of functions)
-//	 * 
-//	 * @param classWriter
-//	 * @param mv
-//	 */
-//	public void writeLocalVariableInit(ClassWriter classWriter, MethodVisitor mv //LocalVariableStatement statement, 
-//			/*JvmScope scope /*Label start, Label end*/) {
+//	public void writeLocalVariableStatements(ClassWriter classWriter, MethodVisitor mv, int startIndex) {
+//		System.out.println(" << scope: entering " + this.dbgName + " by index " + this.varIndex);
 //
 //		for(LocalVarHolder h: this.locVarsStmts) {
-//			LocalVariableStatement statement = h.statement;
-//			Optional<Expression> optInitExp = statement.getInitialValue();
-//			if(optInitExp.isPresent()) {
-//				Expression expr = optInitExp.get();
-//				writeExpressionBytecode(mv, expr);
-//				
-//				mv.visitVarInsn(Opcodes.ASTORE, locvarIndex);
+////			LocalVariableStatement statement = h.statement;
+////			String name = statement.getName().getText();
+//			String name = h.localVarName;
 //
+//			System.out.println(" -- Write scope var " + name);
+//
+//			//		statement.getType();
+////			String descriptor = descriptorFactory.fieldDescriptor(statement.getType());		// TODO: field ???      var descriptor
+//			String descriptor = descriptorFactory.fieldDescriptor(h.localVarType);		// TODO: field ???      var descriptor
+//			String signature = null; // the type signature of this local variable. May be {@literal null} if the local variable type does not use generic types.
+//			//		Label start;
+//			//		Label end;
+//			int index=startIndex++;
+//			assert(startLabel != null);
+//			if(endLabel == null) {
+//				System.out.println();
 //			}
+//			
+//			assert(endLabel != null);
+//			
+//			mv.visitLocalVariable(name, descriptor, signature, startLabel, endLabel, index);
 //		}
+//		
+//		for(JvmScope subScope: subScopes) {
+//			subScope.writeLocalVariableStatements(classWriter, mv, startIndex);
+//		}
+//		
+//		System.out.println(" >> leaving scope " + this.dbgName + " index " + this.varIndex);
 //	}
 
+	//public IndexedScope(DescriptorFactory descriptorFactory, JvmScope jvmScope, int startIndex) {
+	public IndexedScope indexedScope(DescriptorFactory descriptorFactory) {
+		return new IndexedScope(descriptorFactory, this, 0);
+	}
 	public List<LocalVarHolder> getLocVarsStmts() {
 		return locVarsStmts;
 	}
