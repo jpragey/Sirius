@@ -111,7 +111,7 @@
 		    
     
     
-		<dependency>
+<!-- 		<dependency>
 			<groupId>com.github.testng-team</groupId>
 			<artifactId>testng-junit5</artifactId>
 			<version>0.0.1</version>
@@ -123,36 +123,44 @@
 				</exclusion>
 			</exclusions>
 	    </dependency>
-	    
+ -->	    
 	    
 	</dependencies>
   </dependencyManagement>
   
   <dependencies>
-    <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-    </dependency>
+  	<dependency>
+  		<groupId>org.junit.jupiter</groupId>
+  		<artifactId>junit-jupiter-engine</artifactId>
+  	</dependency>
   </dependencies>
   
   <build>
-    <plugins>
-    
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
-        <configuration>
-          <source>11</source>
-          <target>11</target>
-          <compilerVersion>11</compilerVersion>
-          <compilerArgs>
-            <arg>-parameters</arg>
-          </compilerArgs>
-          <!--<release>11</release>-->
-          
-        </configuration>
-      </plugin>
-      
-    </plugins>
+  	<plugins>
+  	<plugin>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.8.1</version>
+			<configuration>
+				<source>11</source>
+				<target>11</target>
+				<compilerVersion>11</compilerVersion>
+				<compilerArgs>
+					<arg>-parameters</arg>
+				</compilerArgs>
+				<!--<release>11</release> -->
+
+			</configuration>
+		</plugin>
+		
+		<plugin>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>3.0.0-M5</version>
+			<!-- <version>2.12.4</version> -->
+			
+			<configuration>
+				<argLine>-Xmx1024m</argLine>
+			</configuration>
+		</plugin>
+  	</plugins>
   </build>
 </project>

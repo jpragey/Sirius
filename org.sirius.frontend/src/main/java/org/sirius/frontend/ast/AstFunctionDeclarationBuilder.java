@@ -159,50 +159,10 @@ private List<Partial> partials = Collections.emptyList();
 		if(!annotationList.contains("static"))
 			setMember(true);
 
-//		List<Partial> partials = new ArrayList<>(args.size() + 1);
-//		for(int from = 0; from <= args.size(); from++) 
-//		{
-//			List<AstFunctionParameter> partialArgs = args.subList(from, args.size());
-//			
-//			
-//			
-//			Partial partial = new Partial(
-//					name,
-//////					args.subList(0, from) .stream().map(arg -> new Capture(arg.getType(), arg.getName())).collect(Collectors.toList()), 
-//					partialArgs, 
-//					this, 
-//					returnType,
-//					statements
-//					/*,
-//					symbolTable*/);
-//			partials.add(partial);
-//		}
-//		PartialList partialList = new PartialList(partials, qName, concrete, name, statements);
-		
 		PartialList partialList = new PartialList(args, returnType, this, qName, concrete, name, statements); 
 		
 		return partialList;
-/*		
-		ImmutableList<AstFunctionParameter> newFormalArguments = ImmutableList.copyOf(args);
-
-		DefaultSymbolTable newSymbolTable = new DefaultSymbolTable(symbolTable, AstFunctionDeclarationBuilder.class.getSimpleName());
-
-		AstFunctionDeclarationBuilder fd = new AstFunctionDeclarationBuilder(reporter,
-				annotationList, 
-				name, 
-				returnType, 
-				typeParameters,
-				newFormalArguments,
-				containerQName, 
-				concrete, member,
-				newSymbolTable,
-				statements,
-				partials);
-		return fd;
-		*/
 	}
-	
-	
 	
 	@Override
 	public AstToken getName() {
@@ -245,7 +205,6 @@ private List<Partial> partials = Collections.emptyList();
 		returnType.visit(visitor);
 		
 		partials.stream().forEach(partial -> partial.visit(visitor));
-		
 		
 		visitor.endFunctionDeclaration(this);
 	}
@@ -308,100 +267,5 @@ private List<Partial> partials = Collections.emptyList();
 		Type resolved = returnType.getApiType();
 		return resolved;
 	}
-	
-	static public class FunctionImpl implements AbstractFunction {
-//		QName functionQName = containerQName.child(name.getText());
-		QName functionQName;
-//		List<FunctionFormalArgument> implArguments = 
-//				formalArguments.stream()
-//				.map(arg -> arg.toAPI(functionQName))
-//				.collect(Collectors.toList());
-		private ImmutableList<FunctionFormalArgument> implArguments;
-//		Type returnType = resolveReturnType();
-		Type returnType;
-		
-		Optional<List<Statement>> bodyStatements 
-		/*=
-				concrete ?
-						Optional.of(statements.stream()
-					.map(st -> st.toAPI())
-					.collect(Collectors.toList()))
-						: Optional.empty()*/;
-		boolean member;
-		
-		public FunctionImpl(QName functionQName, ImmutableList<AstFunctionParameter> formalArguments, Type returnType, 
-				Optional<List<Statement>> bodyStatements, boolean member) {
-			this.functionQName = functionQName;
-//					formalArguments.stream()
-//					.map(arg -> arg.toAPI(functionQName))
-//					.collect(Collectors.toList());
-			this.returnType = returnType;
-			this.bodyStatements = bodyStatements;
-			this.member = member;
-			
-			ArrayList<FunctionFormalArgument> implArgs = new ArrayList(formalArguments.size()); 
-			for(AstFunctionParameter arg: formalArguments) {
-				FunctionFormalArgument formalArg = arg.toAPI(functionQName);
-				implArgs.add(formalArg);
-			}
-			this.implArguments = ImmutableList.copyOf(implArgs); 
-		}
-		
-		@Override
-		public String toString() {
-			
-			return "API function " + functionQName.dotSeparated() + "(" + implArguments.size() + " args)";
-		}
-		@Override
-		public QName getQName() {
-			return functionQName;
-		}
-
-		@Override
-		public List<FunctionFormalArgument> getArguments() {
-			return implArguments;
-		}
-
-		@Override
-		public Type getReturnType() {
-			return returnType;
-		}
-
-		@Override
-		public Optional<List<Statement>> getBodyStatements() {
-			return bodyStatements;
-		}
-
-		@Override
-		public Optional<QName> getClassOrInterfaceContainerQName() {
-			if(member /*&& containerQName.isPresent()*/) {
-				return functionQName.parent();
-//				return Optional.of(  containerQName);
-			}
-			
-			return Optional.empty();
-		}
-	}
-	private FunctionImpl functionImpl = null;
-	
-	private AbstractFunction toAPI_todelete() {	// TODO delete (-> partials)
-		if(functionImpl == null) 
-		{
-			Partial partial = partials.get(0);
-			assert(partial != null);
-			functionImpl = partial.toAPI();
-			
-			
-//			functionImpl = new FunctionImpl(containerQName.child(name.getText()), this.formalArguments, this.resolveReturnType(),
-//					concrete ? Optional.of(statements.stream()
-//						.map(st -> st.toAPI())
-//						.collect(Collectors.toList()))
-//							: Optional.empty(),
-//					member
-//					);
-		}
-		return functionImpl;
-	}
-	
 	
 }

@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 public class CompilationUnitTest {
 
 	@Test(enabled = true)
-	void testCUcontainsShebang() {
+	public void testCUcontainsShebang() {
 		
 		ScriptSession session = Compiler.compileScript("#!/bin.bash");
 //		List<ModuleContent> cu = Compiler.compileScript("#!/bin.bash");
@@ -25,7 +25,7 @@ public class CompilationUnitTest {
 	}
 	
 	@Test(enabled = true)
-	void testCUcontainsTopLevelFunctions() {
+	public void testCUcontainsTopLevelFunctions() {
 		String source = "#!\n void ff(){} void gg () {} void hh () {}";
 		ScriptSession session = Compiler.compileScript(source);
 		
@@ -57,7 +57,7 @@ public class CompilationUnitTest {
 	}
 	
 	@Test(enabled = false)
-	void testDummyTopLevelFunctionsReturnsString() {
+	public void testDummyTopLevelFunctionsReturnsString() {
 //		
 //		ModuleContent md = Compiler.compile("ff(){ return \"hello\";}");
 //		CompilationUnit cu = md.getCompilationUnits().get(0);

@@ -17,7 +17,7 @@ public class InMemoryClassWriterListener implements ClassWriterListener {
 	        super(parent);
 	    }
 
-	    @Override
+		@Override
 	    public Class loadClass(String name) throws ClassNotFoundException {
 //	    	String className = "pkg." + "Hello"; 
 //	    	if(! (className) .equals(name))

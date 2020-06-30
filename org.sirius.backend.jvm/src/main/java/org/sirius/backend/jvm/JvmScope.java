@@ -183,7 +183,6 @@ public class JvmScope {
 		varByName.put(h.localVarName, h);
 		return h;
 	}
-//	private final static int locvarIndex = 1;
 
 	
 	public Optional<LocalVarHolder> getVarByName(String varName) {
@@ -198,47 +197,11 @@ public class JvmScope {
 		return "Scope: " + dbgName + 
 				subScopes.stream().map(sc->sc.toString()).collect(Collectors.joining(", ", "[", "]")) ;
 	}
-//	public void writeLocalVariableStatements(ClassWriter classWriter, MethodVisitor mv, int startIndex) {
-//		System.out.println(" << scope: entering " + this.dbgName + " by index " + this.varIndex);
-//
-//		for(LocalVarHolder h: this.locVarsStmts) {
-////			LocalVariableStatement statement = h.statement;
-////			String name = statement.getName().getText();
-//			String name = h.localVarName;
-//
-//			System.out.println(" -- Write scope var " + name);
-//
-//			//		statement.getType();
-////			String descriptor = descriptorFactory.fieldDescriptor(statement.getType());		// TODO: field ???      var descriptor
-//			String descriptor = descriptorFactory.fieldDescriptor(h.localVarType);		// TODO: field ???      var descriptor
-//			String signature = null; // the type signature of this local variable. May be {@literal null} if the local variable type does not use generic types.
-//			//		Label start;
-//			//		Label end;
-//			int index=startIndex++;
-//			assert(startLabel != null);
-//			if(endLabel == null) {
-//				System.out.println();
-//			}
-//			
-//			assert(endLabel != null);
-//			
-//			mv.visitLocalVariable(name, descriptor, signature, startLabel, endLabel, index);
-//		}
-//		
-//		for(JvmScope subScope: subScopes) {
-//			subScope.writeLocalVariableStatements(classWriter, mv, startIndex);
-//		}
-//		
-//		System.out.println(" >> leaving scope " + this.dbgName + " index " + this.varIndex);
-//	}
 
-	//public IndexedScope(DescriptorFactory descriptorFactory, JvmScope jvmScope, int startIndex) {
 	public IndexedScope indexedScope(DescriptorFactory descriptorFactory) {
 		return new IndexedScope(descriptorFactory, this, 0);
 	}
 	public List<LocalVarHolder> getLocVarsStmts() {
 		return locVarsStmts;
 	}
-	
-	
 }
