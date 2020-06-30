@@ -92,7 +92,7 @@ public class FunctionTest {
 		
 	}
 
-	@Test(enabled = true)
+	@Test(enabled = false)
 	public void twoArgumentsFunctionCall() throws Exception {
 		String script = "#!\n "
 //				+ "Integer inc() {return 0;} "

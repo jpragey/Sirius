@@ -97,6 +97,15 @@
             </artifactItem>
           
             <artifactItem>
+		      <groupId>com.google.guava</groupId>
+		      <artifactId>guava</artifactId>
+		      <version>29.0-jre</version>
+              <type>jar</type>
+              <overWrite>false</overWrite>
+              <outputDirectory>${dist.lib}</outputDirectory>
+            </artifactItem>
+          
+            <artifactItem>
               <groupId>org.sirius</groupId>
               <artifactId>org.sirius.common</artifactId>
               <version>${sirius.version}</version>

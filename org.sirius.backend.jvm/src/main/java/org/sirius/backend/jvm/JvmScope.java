@@ -73,12 +73,12 @@ public class JvmScope {
 		}
 		
 		public void writeLocalVariableStatements(ClassWriter classWriter, MethodVisitor mv) {
-			System.out.println(" << scope: entering " + this.jvmScope.dbgName + " by index " + this.startIndex);
+//			System.out.println(" << scope: entering " + this.jvmScope.dbgName + " by index " + this.startIndex);
 
 			for(IndexedVariable h: this.indexedVariables) {
 				String name = h.localVarName;
 
-				System.out.println(" -- Write scope var " + name);
+//				System.out.println(" -- Write scope var " + name);
 
 				String descriptor = descriptorFactory.fieldDescriptor(h.localVarType);		// TODO: field ???      var descriptor
 				String signature = null; // the type signature of this local variable. May be {@literal null} if the local variable type does not use generic types.
@@ -86,7 +86,7 @@ public class JvmScope {
 				int index=h.index;
 				assert(this.jvmScope.startLabel != null);
 				if(this.jvmScope.endLabel == null) {
-					System.out.println();
+//					System.out.println();
 				}
 				
 				assert(this.jvmScope.endLabel != null);
@@ -98,7 +98,7 @@ public class JvmScope {
 				subScope.writeLocalVariableStatements(classWriter, mv);
 			}
 			
-			System.out.println(" >> leaving scope " + this.jvmScope.dbgName + " index " + this.startIndex);
+//			System.out.println(" >> leaving scope " + this.jvmScope.dbgName + " index " + this.startIndex);
 		}
 
 		
