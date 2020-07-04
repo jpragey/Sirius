@@ -22,10 +22,12 @@ import org.sirius.frontend.ast.AstExpression;
 import org.sirius.frontend.ast.AstExpressionStatement;
 import org.sirius.frontend.ast.AstFloatConstantExpression;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
+import org.sirius.frontend.ast.AstIfElseStatement;
 import org.sirius.frontend.ast.AstIntegerConstantExpression;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberAccessExpression;
 import org.sirius.frontend.ast.AstReturnStatement;
+import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstStringConstantExpression;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
@@ -75,8 +77,8 @@ public class StatementParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.returnStatement();
 		
-		StatementParser.ReturnStatementVisitor visitor = new StatementParser.ReturnStatementVisitor(reporter);
-		AstReturnStatement stmt = visitor.visit(tree);
+		StatementParser.StatementVisitor visitor = new StatementParser.StatementVisitor(reporter);
+		AstStatement stmt = visitor.visit(tree);
 
 		assertThat(stmt, instanceOf(AstReturnStatement.class) );
 		AstReturnStatement e = ((AstReturnStatement)stmt);
@@ -102,8 +104,8 @@ public class StatementParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.statement();
 		
-		StatementParser.ExpressionStatementVisitor visitor = new StatementParser.ExpressionStatementVisitor(reporter);
-		AstExpressionStatement stmt = visitor.visit(tree);
+		StatementParser.StatementVisitor visitor = new StatementParser.StatementVisitor(reporter);
+		AstStatement stmt = visitor.visit(tree);
 
 		assertThat(stmt, instanceOf(AstExpressionStatement.class) );
 		AstExpressionStatement e = ((AstExpressionStatement)stmt);
@@ -134,11 +136,40 @@ public class StatementParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.statement();
 		
-		StatementParser.LocalVariableStatementVisitor visitor = new StatementParser.LocalVariableStatementVisitor(reporter);
-		AstLocalVariableStatement stmt = visitor.visit(tree);
+		StatementParser.StatementVisitor visitor = new StatementParser.StatementVisitor(reporter);
+		AstStatement stmt = visitor.visit(tree);
 
 		assertThat(stmt, instanceOf(AstLocalVariableStatement.class) );
 		AstLocalVariableStatement e = ((AstLocalVariableStatement)stmt);
+		verify.accept(e);
+		return e;
+	}
+
+	@Test
+	@DisplayName("Local variable statement")
+	public void ifElseStatement() {
+		parseIfElseStatement("if(true) f(1);",      (locVarStmt -> {
+			assertThat(locVarStmt.getIfExpression(), instanceOf(AstBooleanConstantExpression.class));
+			assertThat(locVarStmt.getIfBlock(), instanceOf(AstExpressionStatement.class));
+			assertThat(locVarStmt.getElseBlock().isPresent(), equalTo(false));
+		}) );
+		parseIfElseStatement("if(true) f(1); else g(2);",      (locVarStmt -> {
+			assertThat(locVarStmt.getIfExpression(), instanceOf(AstBooleanConstantExpression.class));
+			assertThat(locVarStmt.getIfBlock(), instanceOf(AstExpressionStatement.class));
+			assertThat(locVarStmt.getElseBlock().isPresent(), equalTo(true));
+			assertThat(locVarStmt.getElseBlock().get(), instanceOf(AstExpressionStatement.class));
+		}) );
+	}
+
+	private AstIfElseStatement parseIfElseStatement(String inputText, Consumer<AstIfElseStatement> verify) {
+		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		ParseTree tree = parser.statement();
+		
+		StatementParser.StatementVisitor visitor = new StatementParser.StatementVisitor(reporter);
+		AstStatement stmt = visitor.visit(tree);
+
+		assertThat(stmt, instanceOf(AstIfElseStatement.class) );
+		AstIfElseStatement e = ((AstIfElseStatement)stmt);
 		verify.accept(e);
 		return e;
 	}
