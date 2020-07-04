@@ -35,6 +35,11 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 		this.valueName = valueName;
 	}
 
+	
+	public AstToken getValueName() {
+		return valueName;
+	}
+
 	@Override
 	public DefaultSymbolTable getSymbolTable() {
 		return symbolTable;

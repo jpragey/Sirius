@@ -5,6 +5,7 @@ import static org.testng.Assert.assertEquals;
 import java.util.function.Consumer;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.hamcrest.core.Is;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,7 @@ import org.sirius.frontend.ast.AstExpression;
 import org.sirius.frontend.ast.AstFloatConstantExpression;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.AstIntegerConstantExpression;
+import org.sirius.frontend.ast.AstMemberAccessExpression;
 import org.sirius.frontend.ast.AstStringConstantExpression;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
@@ -33,6 +35,7 @@ import org.sirius.frontend.parser.SiriusParser.IsMethodCallExpressionContext;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 public class ExpressionParserTest {
 
@@ -227,12 +230,12 @@ public class ExpressionParserTest {
 	@Test
 	@DisplayName("Constructor call expressions")
 	public void constructorCallExpression() {
-		checkConstructorCallExpression("F()",      "F", (e -> {assertEquals(e.getActualArguments().size(), 0);}) );
-		checkConstructorCallExpression("F(1)",     "F", (e -> {assertEquals(e.getActualArguments().size(), 1);}) );
-		checkConstructorCallExpression("F(1,2,3)", "F", (e -> {assertEquals(e.getActualArguments().size(), 3);}) );
+		parseConstructorCallExpression("F()",      (e -> {assertEquals(e.getActualArguments().size(), 0);}) );
+		parseConstructorCallExpression("F(1)",     (e -> {assertEquals(e.getActualArguments().size(), 1);}) );
+		parseConstructorCallExpression("F(1,2,3)", (e -> {assertEquals(e.getActualArguments().size(), 3);}) );
 	}
 
-	private ConstructorCallExpression parseConstructorCallExpression(String inputText) {
+	private ConstructorCallExpression parseConstructorCallExpression(String inputText, Consumer<ConstructorCallExpression> verify) {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.expression();
 		
@@ -241,14 +244,46 @@ public class ExpressionParserTest {
 
 		assertThat(expression, instanceOf(ConstructorCallExpression.class) );	// ???
 		ConstructorCallExpression e = ((ConstructorCallExpression)expression);
+		verify.accept(e);
 		return e;
 	}
 
-	private ConstructorCallExpression checkConstructorCallExpression(String inputText, String expectedName, 
-			Consumer<ConstructorCallExpression> verify) 
-	{
-		ConstructorCallExpression expression = parseConstructorCallExpression(inputText);
-		verify.accept(expression);
-		return expression;
+	@Test
+	@DisplayName("Member access (<expr>.field) expressions")
+	public void memberAccessExpression() {
+		parseMemberAccessExpression("1.aa",      ((AstMemberAccessExpression e) -> {assertThat(e.getValueName().getText(), equalTo("aa") );}) );
 	}
+
+	private AstMemberAccessExpression parseMemberAccessExpression(String inputText, Consumer<AstMemberAccessExpression> verify) {
+		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		ParseTree tree = parser.expression();
+		
+		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser.ExpressionVisitor(reporter);
+		AstExpression expression = typeVisitor.visit(tree);
+
+		assertThat(expression, instanceOf(AstMemberAccessExpression.class) );
+		AstMemberAccessExpression e = ((AstMemberAccessExpression)expression);
+		verify.accept(e);
+		return e;
+	}
+
+//	@Test
+//	@DisplayName("Simple field (Local/member/global variable, function parameter)")
+//	public void variableRefExpression() {
+//		parseMemberAccessExpression("aa",      ((AstMemberAccessExpression e) -> {assertThat(e.getValueName().getText(), equalTo("aa") );}) );
+//	}
+//
+//	private AstMemberAccessExpression parseVariableRef(String inputText, Consumer<AstMemberAccessExpression> verify) {
+//		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+//		ParseTree tree = parser.expression();
+//		
+//		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser.ExpressionVisitor(reporter);
+//		AstExpression expression = typeVisitor.visit(tree);
+//
+//		assertThat(expression, instanceOf(AstMemberAccessExpression.class) );
+//		AstMemberAccessExpression e = ((AstMemberAccessExpression)expression);
+//		verify.accept(e);
+//		return e;
+//	}
+
 }

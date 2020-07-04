@@ -12,6 +12,7 @@ import org.sirius.frontend.ast.AstExpression;
 import org.sirius.frontend.ast.AstFloatConstantExpression;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.AstIntegerConstantExpression;
+import org.sirius.frontend.ast.AstMemberAccessExpression;
 import org.sirius.frontend.ast.AstStringConstantExpression;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.ConstructorCallExpression;
@@ -21,6 +22,7 @@ import org.sirius.frontend.parser.SiriusParser.ExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionCallExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.IsBinaryExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.IsConstructorCallExpressionContext;
+import org.sirius.frontend.parser.SiriusParser.IsFieldAccessExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.IsMethodCallExpressionContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
@@ -129,6 +131,17 @@ public class ExpressionParser {
 					.collect(Collectors.toList());
 
 			return new ConstructorCallExpression(reporter, name, actualArguments);
+		}
+
+
+
+		@Override
+		public AstExpression visitIsFieldAccessExpression(IsFieldAccessExpressionContext ctx) {
+			
+			AstExpression thisExpression = ctx.lhs.accept(this /*Osé*/ );
+			AstToken valueName = new AstToken(ctx.LOWER_ID);
+			
+			return new AstMemberAccessExpression(reporter, thisExpression, valueName);
 		}
 		
 		
