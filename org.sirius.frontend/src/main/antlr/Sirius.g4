@@ -203,11 +203,11 @@ functionDeclaration [DefaultSymbolTable symbolTable, QName containerQName] retur
 	  	  (  ',' functionFormalArgument	{ arguments.add($functionFormalArgument.argument);} )*
 	    )?								{  }
 	  ')' 
-	  '{' 					{ fdBuilder.setConcrete(true); }
+	  ('{' 					{ fdBuilder.setConcrete(true); }
 	  		(
 	  			statement	{ fdBuilder.addStatement($statement.stmt); }
 	  		)*
-	   '}'
+	   '}')?
 	   { $partialList = fdBuilder.withFunctionArguments(arguments); }
 	   
 	;

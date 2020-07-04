@@ -24,6 +24,7 @@ import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionFormalArgumentContext;
 import org.sirius.frontend.parser.SiriusParser.InterfaceDeclarationContext;
+import org.sirius.frontend.parser.SiriusParser.StatementContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
 import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationContext;
 
@@ -95,14 +96,24 @@ public class FunctionDeclarationParser {
 				AstVoidType.instance :
 				typeVisitor.visit(returnContext);
 			
+			// -- Body
+			StatementParser.StatementVisitor statementVisitor = new StatementParser.StatementVisitor(reporter);
 			
 			// TODO
-			List<AstStatement> statements = Collections.emptyList();
-			boolean concrete = false; 
+			Optional<List<AstStatement>> body = Optional.empty();
+//			List<StatementContext> statementContexts = ctx.statement();
+			if(ctx.statement != null) {
+				List<AstStatement> statements = ctx.statement().stream()
+						.map(stmtContext -> stmtContext.accept(statementVisitor))
+						.collect(Collectors.toList())
+						;
+				body = Optional.of(statements);
+			}
+//			boolean concrete = false; 
 			boolean member = false; 
 			
 			
-			return new PartialList(functionParams, returnType, member, qName, concrete, name, statements) ;
+			return new PartialList(functionParams, returnType, member, qName, /*concrete, */name, body) ;
 		}
 
 

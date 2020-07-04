@@ -56,16 +56,6 @@ public class StatementParser {
 			return new AstReturnStatement(returnStatement);
 		}
 		
-//	}
-//
-//	public static class ExpressionStatementVisitor extends SiriusBaseVisitor<AstExpressionStatement> {
-//		private Reporter reporter;
-//		
-//		public ExpressionStatementVisitor(Reporter reporter) {
-//			super();
-//			this.reporter = reporter;
-//		}
-		
 		@Override
 		public AstExpressionStatement visitIsExpressionStatement(IsExpressionStatementContext ctx) {
 			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser.ExpressionVisitor(reporter);
@@ -73,16 +63,7 @@ public class StatementParser {
 			
 			return new AstExpressionStatement(expression);
 		}
-//	}
-//
-//	public static class LocalVariableStatementVisitor extends SiriusBaseVisitor<AstLocalVariableStatement> {
-//		private Reporter reporter;
-//		
-//		public LocalVariableStatementVisitor(Reporter reporter) {
-//			super();
-//			this.reporter = reporter;
-//		}
-		
+
 		@Override
 		public AstLocalVariableStatement visitLocalVariableStatement(LocalVariableStatementContext ctx) {
 			AnnotationList annotationList = new AnnotationList();	// TODO
@@ -100,18 +81,6 @@ public class StatementParser {
 			
 			return new AstLocalVariableStatement(annotationList, type, varName, initExpression);
 		}
-//	}
-//
-//	
-//	public static class IfElseStatementVisitor extends SiriusBaseVisitor<AstIfElseStatement> {
-//		private Reporter reporter;
-//		
-//		public IfElseStatementVisitor(Reporter reporter) {
-//			super();
-//			this.reporter = reporter;
-//		}
-		
-		
 		
 		@Override
 		public AstIfElseStatement visitIfElseStatement(IfElseStatementContext ctx) {
@@ -126,34 +95,8 @@ public class StatementParser {
 					Optional.of(ctx.elseBlock.accept(stmtVisitor)) : 
 					Optional.empty();
 			
-
 			return new AstIfElseStatement(reporter, ifExpression, ifBlock, elseBlock);
 		}
-
-
-
-//		@Override
-//		public AstLocalVariableStatement visitLocalVariableStatement(LocalVariableStatementContext ctx) {
-//			
-//			
-//			
-//			
-//			
-//			AnnotationList annotationList = new AnnotationList();	// TODO
-//			
-//			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
-//			AstType type = ctx.type.accept(typeVisitor);
-//			AstToken varName = new AstToken(ctx.LOWER_ID().getSymbol());
-//
-//			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser.ExpressionVisitor(reporter);
-//			
-//			Optional<AstExpression> initExpression = Optional.empty();
-//			if(ctx.expression != null) {
-//				initExpression = Optional.of(ctx.expression.accept(visitor));
-//			}
-//			
-//			return new AstLocalVariableStatement(annotationList, type, varName, initExpression);
-//		}
 	}
 
 }

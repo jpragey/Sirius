@@ -20,9 +20,10 @@ public class PartialList implements Visitable {
 	private Partial allArgsPartial;
 	
 	private QName qName;
-	private boolean concrete;
+//	private boolean concrete;// Has a body
 	private AstToken name;
-	private List<AstStatement> statements;
+//	private List<AstStatement> statements;
+	private Optional<List<AstStatement>> body;
 
 	@Override
 	public String toString() {
@@ -34,15 +35,16 @@ public class PartialList implements Visitable {
 	public PartialList(List<AstFunctionParameter> args /*List<Partial> partials*/, AstType returnType, 
 			boolean member /* ie is an instance method*/,             
 			QName qName, 
-			boolean concrete /* ie has a body */, 
-			AstToken name, List<AstStatement> statements) 
+//			boolean concrete /* ie has a body */, 
+			AstToken name, 
+			Optional<List<AstStatement>> body) 
 	{
 		super();
 		this.partials = new ArrayList<>(args.size() + 1);
 		this.qName = qName;
 		this.name = name;
-		this.concrete = concrete;
-		this.statements = statements;
+//		this.concrete = concrete;
+		this.body = body;
 		for(int from = 0; from <= args.size(); from++) 
 		{
 			List<AstFunctionParameter> partialArgs = args.subList(0, from); 
@@ -51,7 +53,7 @@ public class PartialList implements Visitable {
 					////				args.subList(0, from) .stream().map(arg -> new Capture(arg.getType(), arg.getName())).collect(Collectors.toList()), 
 					partialArgs, 
 					
-					concrete,
+//					concrete,
 //					function.isConcrete(), //boolean concrete,
 					
 					member,
@@ -61,7 +63,7 @@ public class PartialList implements Visitable {
 //					function.getQName(), //QName qName,
 					
 					returnType,
-					statements
+					body
 					);
 			partials.add(partial);
 			this.allArgsPartial = partial; // => last in partial list
@@ -109,10 +111,10 @@ public class PartialList implements Visitable {
 	}
 
 	public boolean isConcrete() {
-		return concrete;
+		return body.isPresent();
 	}
-	public List<AstStatement> getStatements() {
-		return statements;
+	public Optional<List<AstStatement>> getBody() {
+		return body;
 	}
 	
 }

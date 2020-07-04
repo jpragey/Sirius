@@ -74,10 +74,10 @@ public class AstFactory {
 				true, // concrete,
 				true, //boolean member,
 				null,	// DefaultSymbolTable symbolTable,
-				new ArrayList<AstStatement>() // statements
+//				Optional.of(new ArrayList<AstStatement>()), // statements
 //				, Optional.empty() // TODO: delegate ???
 //				reporter, annotationList, new AstToken(name), returnType, containerQName
-				,Collections.emptyList()
+				Collections.emptyList()
 				);
 		
 		

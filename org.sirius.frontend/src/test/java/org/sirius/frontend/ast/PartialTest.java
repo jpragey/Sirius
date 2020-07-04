@@ -3,6 +3,7 @@ package org.sirius.frontend.ast;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
@@ -21,12 +22,12 @@ public class PartialTest {
 				Arrays.asList(par0, par1), 
 //				AstFunctionDeclarationBuilder function,
 				
-				false, //boolean concrete,
+//				false, //boolean concrete,
 				false, //boolean member,
 				new QName(""),
 
 				AstType.noType,// returnType,
-				Collections.emptyList() //List<AstStatement> statements/*,
+				Optional.empty() //List<AstStatement> statements/*,
 				);
 		
 		String s = partial.toString();

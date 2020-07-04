@@ -244,7 +244,7 @@ public class MethodTests {
 		Optional<AstFunctionParameter> opt1Arg = partialSymbolTable.lookupFunctionArgument("y");
 		assert(opt1Arg.isPresent());
 		
-		AstReturnStatement returnStatement = (AstReturnStatement)func.getStatements().get(0);
+		AstReturnStatement returnStatement = (AstReturnStatement)func.getBody().get().get(0);
 		
 		assert(returnStatement.getExpression() instanceof SimpleReferenceExpression);
 		SimpleReferenceExpression returnExpr = (SimpleReferenceExpression)returnStatement.getExpression();

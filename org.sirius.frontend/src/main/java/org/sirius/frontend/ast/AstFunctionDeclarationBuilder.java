@@ -25,7 +25,7 @@ public class AstFunctionDeclarationBuilder implements Scoped, Visitable, AstPara
 	private ImmutableList<AstFunctionParameter> formalArguments;
 	
 
-	private List<AstStatement> statements/* = new ArrayList<>()*/; 
+	private Optional<List<AstStatement>> statements/* = new ArrayList<>()*/; 
 	
 	private AstType returnType = new AstVoidType();
 
@@ -59,7 +59,7 @@ private List<Partial> partials = Collections.emptyList();
 			boolean concrete,
 			boolean member,
 			DefaultSymbolTable symbolTable,
-			List<AstStatement> statements,
+			Optional<List<AstStatement>> statements,
 //			Optional<AstFunctionDeclaration> delegate,
 			List<Partial> partials
 			) {
@@ -81,6 +81,39 @@ private List<Partial> partials = Collections.emptyList();
 		this.partials = partials;
 	}
 
+	public AstFunctionDeclarationBuilder(
+			Reporter reporter, 
+			AnnotationList annotationList, 
+			AstToken name, 
+			AstType returnType,
+			ImmutableList<TypeParameter> typeParameters,
+			ImmutableList<AstFunctionParameter> formalArguments,
+			QName containerQName,
+			boolean concrete,
+			boolean member,
+			DefaultSymbolTable symbolTable,
+//			Optional<List<AstStatement>> statements,
+//			Optional<AstFunctionDeclaration> delegate,
+			List<Partial> partials
+			) {
+		this(
+				reporter, 
+				annotationList, 
+				name, 
+				returnType,
+				typeParameters,
+				formalArguments,
+				containerQName,
+				concrete,
+				member,
+				symbolTable,
+				Optional.empty() /*statements*/,
+//				Optional<AstFunctionDeclaration> delegate,
+				partials
+				);
+	}
+	
+	
 	/** Create a no-formal no-arg no-symboltable function
 	 * 
 	 * @param reporter
@@ -114,7 +147,7 @@ private List<Partial> partials = Collections.emptyList();
 				concrete,
 				member,
 				null, //DefaultSymbolTable symbolTable,
-				new ArrayList<AstStatement> (),
+				Optional.of(new ArrayList<AstStatement> ()),	// TODO: ???
 //				delegate,
 				partials
 				); 
@@ -159,7 +192,7 @@ private List<Partial> partials = Collections.emptyList();
 		if(!annotationList.contains("static"))
 			setMember(true);
 
-		PartialList partialList = new PartialList(args, returnType, member /* this*/, qName, concrete, name, statements); 
+		PartialList partialList = new PartialList(args, returnType, member /* this*/, qName, /*concrete,*/ name, statements); 
 		
 		return partialList;
 	}
@@ -178,10 +211,12 @@ private List<Partial> partials = Collections.emptyList();
 	}
 
 	public void addStatement(AstStatement statement) {
-		this.statements.add(statement);
+		if(statements.isEmpty())
+			statements = Optional.of(new ArrayList<>());
+		this.statements.get().add(statement);
 	}
 
-	public List<AstStatement> getStatements() {
+	public Optional<List<AstStatement>> getStatements() {
 		return statements;
 	}
 
@@ -196,12 +231,18 @@ private List<Partial> partials = Collections.emptyList();
 
 	public void setConcrete(boolean concrete) {
 		this.concrete = concrete;
+		if(concrete) {
+			this.statements = Optional.of(new ArrayList<>());
+//			Optional<List<AstStatement>> statements; 
+
+		}
 	}
 
 	public void visit(AstVisitor visitor) {
 		visitor.startFunctionDeclaration(this);
 		formalArguments.stream().forEach(formalArg -> formalArg.visit(visitor));
-		statements.stream().forEach(st -> st.visit(visitor));
+		if(statements.isPresent())
+			statements.get().stream().forEach(st -> st.visit(visitor));
 		returnType.visit(visitor);
 		
 		partials.stream().forEach(partial -> partial.visit(visitor));
