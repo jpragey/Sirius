@@ -10,6 +10,7 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassOrInterface;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
+import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.PartialList;
@@ -69,6 +70,7 @@ public class InterfaceDeclarationParser {
 			
 //			ImmutableList<PartialList> functionDeclarations = ImmutableList.of();
 			
+			// -- Member functions
 			QName containerQName = new QName("TODO");	// TODO
 			FunctionDeclarationParser.FunctionDeclarationVisitor fctVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter, containerQName);
 			List<PartialList> methods = ctx.children.stream()
@@ -76,11 +78,19 @@ public class InterfaceDeclarationParser {
 				.filter(partialList -> partialList!=null)
 				.collect(Collectors.toList());
 			
+			MemberValueDeclarationParser.MemberValueVisitor memberValuesVisitor = new MemberValueDeclarationParser.MemberValueVisitor(reporter);
+//			FunctionDeclarationParser.FunctionDeclarationVisitor fctVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter, containerQName);
+			List<AstMemberValueDeclaration> memberValues = ctx.children.stream()
+				.map(parseTree -> parseTree.accept(memberValuesVisitor))
+				.filter(partialList -> partialList!=null)
+				.collect(Collectors.toList());
+			
 			
 			AstInterfaceDeclaration interfaceDeclaration = new AstInterfaceDeclaration(reporter, name, packageQName, 
 					ImmutableList.copyOf(methods), 
 					ImmutableList.copyOf(typeParameters),
-					ImmutableList.copyOf(intfList));
+					ImmutableList.copyOf(intfList),
+					ImmutableList.copyOf(memberValues));
 			return interfaceDeclaration;
 		}
 	}

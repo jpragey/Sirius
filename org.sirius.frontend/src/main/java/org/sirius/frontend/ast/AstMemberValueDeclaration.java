@@ -16,19 +16,24 @@ public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable  {
 	private List<Annotation> annotations;
 	private Optional<AstExpression> initialValue;
 	
-	public AstMemberValueDeclaration(AnnotationList annotations, AstType type, AstToken name) {
+	public AstMemberValueDeclaration(AnnotationList annotations, AstType type, AstToken name, Optional<AstExpression> initialValue) {
 		super();
 		this.annotations = annotations.getAnnotations();
 		this.type = type;
 		this.name = name;
-		this.initialValue = Optional.empty();
+		this.initialValue = initialValue;
 	}
-	
+	public AstMemberValueDeclaration(AnnotationList annotations, AstType type, AstToken name) {
+		this(annotations, type, name, Optional.empty());
+	}	
 	public AstType getType() {
 		return type;
 	}
 	public AstToken getName() {
 		return name;
+	}
+	public String getNameString() {
+		return name.getText();
 	}
 	public void setInitialValue(AstExpression expression) {
 		this.initialValue = Optional.of(expression);
@@ -102,6 +107,9 @@ public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable  {
 	
 	public Optional<Expression> getApiInitialValue() {
 		return initialValue.map(AstExpression::getExpression);
+	}
+	public Optional<AstExpression> getInitialValue() {
+		return initialValue;
 	}
 	
 }

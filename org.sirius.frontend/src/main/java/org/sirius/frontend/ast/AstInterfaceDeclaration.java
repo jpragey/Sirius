@@ -37,7 +37,9 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	public AstInterfaceDeclaration(Reporter reporter, AstToken name, Optional<QName> packageQName,
 			ImmutableList<PartialList> functionDeclarations,
 			ImmutableList<TypeParameter> typeParameters,
-			ImmutableList<AncestorInfo> ancestorInfos) 
+			ImmutableList<AncestorInfo> ancestorInfos,
+			List<AstMemberValueDeclaration> valueDeclarations
+			) 
 	{
 		this.reporter = reporter;
 		this.name = name;
@@ -50,6 +52,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		packageQName.ifPresent((pkgQName) -> {this.qName = pkgQName.child(name.getText());});
 		
 		this.ancestors = new ArrayList<>(ancestorInfos);
+		this.valueDeclarations = new ArrayList<>(valueDeclarations);
 //		implementedInterfaces.forEach(token -> addAncestor(token));
 	}
 
@@ -58,7 +61,8 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 				packageQName,
 				ImmutableList.of() /*functionDeclarations*/,
 				ImmutableList.of() /*typeDeclarations*/,
-				ImmutableList.of() /*typeDeclarations*/
+				ImmutableList.of() /*typeDeclarations*/,
+				ImmutableList.of() /*valueDeclarations*/
 				);
 	}
 
@@ -196,7 +200,8 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		return new AstInterfaceDeclaration(reporter, name, packageQName,
 				functionDeclarations,
 				newTypeParams,
-				ImmutableList.of()	// TODO
+				ImmutableList.of(),	// TODO
+				valueDeclarations
 				);
 	}
 	
@@ -226,7 +231,8 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 					.add(fd)
 					.build(),
 				typeParameters,
-				ImmutableList.copyOf(ancestors)
+				ImmutableList.copyOf(ancestors),
+				valueDeclarations
 				);
 	}
 
@@ -288,4 +294,9 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		throw new UnsupportedOperationException("Class " + getClass() + " has no getApiType() method (yet).");
 	}
 
+	public List<AstMemberValueDeclaration> getValueDeclarations() {
+		return valueDeclarations;
+	}
+
+	
 }

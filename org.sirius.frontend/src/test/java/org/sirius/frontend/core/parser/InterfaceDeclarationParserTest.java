@@ -95,11 +95,13 @@ public class InterfaceDeclarationParserTest {
 		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I {void f(){} void g(){} }", new QName ());
 
 		assertEquals(myInterface.getFunctionDeclarations().size(), 2);
-		
-//		assertEquals(myInterface.getAncestors().stream()
-//				.map(interf -> interf.getSimpleName().getText())
-//				.toArray(), 
-//				new String[]{"I0"});
+	}
+	@Test
+	@DisplayName("Interface with values")
+	public void interfaceHavingValues() {
+		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I {Integer v0; Integer v1;}", new QName ());
+
+		assertEquals(myInterface.getValueDeclarations().size(), 2);
 	}
 
 }

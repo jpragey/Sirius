@@ -171,6 +171,9 @@ public class AstFactory {
 	public AstMemberValueDeclaration valueDeclaration(AnnotationList annotationList, AstType type, Token name) {
 		return new AstMemberValueDeclaration(annotationList, type, new AstToken(name));
 	}
+	public AstMemberValueDeclaration valueDeclaration(AstType type, Token name) {
+		return valueDeclaration(new AnnotationList(), type, name) ;
+	}
 	
 	// -- Annotations
 	public Annotation annotation(Token name) {

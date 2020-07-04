@@ -160,7 +160,8 @@ memberValueDeclaration returns [AstMemberValueDeclaration declaration]
 	: /*Annotations*/
 		annotationList
 		type
-		LOWER_ID		{$declaration = factory.valueDeclaration($annotationList.annotations, $type.declaration, $LOWER_ID);}
+		LOWER_ID		{$declaration = factory.valueDeclaration( $annotationList.annotations, $type.declaration, $LOWER_ID);}
+//		LOWER_ID		{$declaration = factory.valueDeclaration( $type.declaration, $LOWER_ID);}
 		('=' expression	{$declaration.setInitialValue($expression.express); }
 			
 		)?
