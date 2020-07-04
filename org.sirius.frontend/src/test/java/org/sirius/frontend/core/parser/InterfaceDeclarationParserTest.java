@@ -89,4 +89,17 @@ public class InterfaceDeclarationParserTest {
 				new String[]{"I0"});
 	}
 
+	@Test
+	@DisplayName("Interface with methods")
+	public void interfaceDeclarationsHavingMethods() {
+		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I {void f(){} void g(){} }", new QName ());
+
+		assertEquals(myInterface.getFunctionDeclarations().size(), 2);
+		
+//		assertEquals(myInterface.getAncestors().stream()
+//				.map(interf -> interf.getSimpleName().getText())
+//				.toArray(), 
+//				new String[]{"I0"});
+	}
+
 }
