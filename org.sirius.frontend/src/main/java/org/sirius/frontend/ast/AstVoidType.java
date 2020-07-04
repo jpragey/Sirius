@@ -13,6 +13,8 @@ public class AstVoidType implements AstType {
 		}
 	};
 
+	public static final AstVoidType instance = new AstVoidType();
+	
 	@Override
 	public String messageStr() {
 		return "void";

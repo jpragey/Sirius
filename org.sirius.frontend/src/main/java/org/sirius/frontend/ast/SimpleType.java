@@ -23,20 +23,27 @@ public final class SimpleType implements AstType {
 	
 	private AstToken name;
 
-	private List<AstType> appliedParameters = new ArrayList<>();
+	private List<AstType> typeParameters;
 	
 	private DefaultSymbolTable symbolTable;
 	
 	private Optional<AstType> resolvedElementType = Optional.empty();
 
-	public SimpleType(Reporter reporter, AstToken name) {
+	public SimpleType(Reporter reporter, AstToken name, List<AstType> typeParameters) {
 		super();
 		this.reporter = reporter;
 		this.name = name;
+		this.typeParameters = typeParameters;
+	}
+	public SimpleType(Reporter reporter, AstToken name) {
+		this(reporter, name, new ArrayList<>() /* TODO: immutable ??? */);
 	}
 
 	public AstToken getName() {
 		return name;
+	}
+	public String getNameString() {
+		return name.getText();
 	}
 	
 	public DefaultSymbolTable getSymbolTable() {
@@ -48,13 +55,17 @@ public final class SimpleType implements AstType {
 	}
 
 	public void appliedParameter(AstType type) {
-		appliedParameters.add(type);
+		typeParameters.add(type);
+	}
+	
+	public List<AstType> getTypeParameters() {
+		return typeParameters;
 	}
 	
 	@Override
 	public String messageStr() {
 		
-		List<String> typeParams = appliedParameters.stream().map(p -> p.messageStr()).collect(Collectors.toList());
+		List<String> typeParams = typeParameters.stream().map(p -> p.messageStr()).collect(Collectors.toList());
 		
 		return "class " + 
 				name.getText() + 
@@ -153,10 +164,6 @@ public final class SimpleType implements AstType {
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.start(this);
-//		if(resolvedElementType.isPresent()) {
-//			AstType t = resolvedElementType.get();
-//			t.visit(visitor);
-//		}
 		visitor.end(this);		
 	}
 }

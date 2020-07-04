@@ -54,6 +54,10 @@ public interface AstClassOrInterface extends AstType {
 				return Optional.empty();
 			}
 		}
+		@Override
+		public String toString() {
+			return simpleName.toString();
+		}
 	}
 
 	public List<PartialList> getFunctionDeclarations();

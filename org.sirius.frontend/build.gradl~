@@ -31,7 +31,8 @@ dependencies {
 	compile group: 'org.testng', name: 'testng', version: '6.14.3'
 //    testImplementation 'org.testng:testng:6.14.3'
     
-    antlr "org.antlr:antlr4:4.7.2" // use ANTLR version 4
+//    antlr "org.antlr:antlr4:4.7.2" // use ANTLR version 4
+    antlr "org.antlr:antlr4:4.8.1" // use ANTLR version 4
     
     
 //    compile project (':parent:org.sirius.common')

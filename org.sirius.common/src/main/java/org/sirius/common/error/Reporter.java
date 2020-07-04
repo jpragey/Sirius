@@ -16,7 +16,7 @@ public interface Reporter {
 //	}
 	
 	public enum Severity {
-		INFO("info"), WARNING("warning"), ERROR("error");
+		INFO("info"), WARNING("warning"), ERROR("error"), FATAL("fatal");
 		public String name;
 
 		private Severity(String name) {
@@ -39,6 +39,20 @@ public interface Reporter {
 	}
 	default void warning(String message, Token token) {
 		message(Severity.WARNING, message, Optional.of(token), Optional.empty());
+	}
+
+	
+	default void fatal(String message) {
+		message(Severity.FATAL, message, Optional.empty(), Optional.empty());
+	}
+	default void fatal(String message, Token token) {
+		message(Severity.FATAL, message, Optional.of(token), Optional.empty());
+	}
+	default void fatal(String message, Exception exception) {
+		message(Severity.FATAL, message, Optional.empty(), Optional.ofNullable(exception));
+	}
+	default void fatal(String message, Token token, Exception exception) {
+		message(Severity.FATAL, message, Optional.of(token), Optional.ofNullable(exception));
 	}
 
 	

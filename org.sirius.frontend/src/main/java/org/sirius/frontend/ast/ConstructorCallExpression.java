@@ -38,6 +38,10 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 		this.symbolTable = symbolTable;
 	}
 
+	public ConstructorCallExpression(Reporter reporter, AstToken name, List<AstExpression> actualArguments) {
+		this(reporter,name, actualArguments, new DefaultSymbolTable(name.getText()));
+	}
+
 	public ConstructorCallExpression(Reporter reporter, AstToken name) {
 		super();
 		this.reporter = reporter;
@@ -56,6 +60,11 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 		this.actualArguments.add(argExpression);
 	}
 	
+	
+	public List<AstExpression> getActualArguments() {
+		return actualArguments;
+	}
+
 	@Override
 	public AstType getType() {
 		String fctName = name.getText();

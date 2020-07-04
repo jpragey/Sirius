@@ -13,6 +13,7 @@ public class AccumulatingReporter implements Reporter {
 	private List<String> messages = new ArrayList<>();
 	private List<String> warnings = new ArrayList<>();
 	private List<String> errors = new ArrayList<>();
+	private List<String> fatals = new ArrayList<>();
 	
 	public AccumulatingReporter(Reporter delegate) {
 		super();
@@ -31,6 +32,9 @@ public class AccumulatingReporter implements Reporter {
 		case ERROR: 
 			errors.add(message);
 			break;
+		case FATAL: 
+			fatals.add(message);
+			break;
 		}
 		delegate.message(severity, message, token, exception);
 	}
@@ -39,7 +43,7 @@ public class AccumulatingReporter implements Reporter {
 
 	@Override
 	public int getErrorCount() {
-		return errors.size();
+		return errors.size() + fatals.size();
 	}
 
 
@@ -56,10 +60,14 @@ public class AccumulatingReporter implements Reporter {
 	public List<String> getErrors() {
 		return errors;
 	}
+	public List<String> getFatals() {
+		return fatals;
+	}
 	
 	@Override
 	public String toString() {
 		return "AccumulatingReporter: " + 
+				fatals.size() + " fatals, " + 
 				errors.size() + " errors, " + 
 				warnings.size() + " warnings, " + 
 				messages.size() + " messages.";

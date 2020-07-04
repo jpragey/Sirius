@@ -20,11 +20,21 @@ public class AstBinaryOpExpression implements AstExpression {
 	private AstToken opToken;
 	
 	private static Map<String, BinaryOpExpression.Operator> opMap = new HashMap<>() {{
-		put("+", BinaryOpExpression.Operator.Add);
-		put("-", BinaryOpExpression.Operator.Substract);
-		put("*", BinaryOpExpression.Operator.Mult);
-		put("/", BinaryOpExpression.Operator.Divide);
-		put("^", BinaryOpExpression.Operator.Exponential);
+		for(BinaryOpExpression.Operator op: BinaryOpExpression.Operator.values())
+			put(op.getSymbol(), op);
+			
+//		put("+", BinaryOpExpression.Operator.Add);
+//		put("-", BinaryOpExpression.Operator.Substract);
+//		put("*", BinaryOpExpression.Operator.Mult);
+//		put("/", BinaryOpExpression.Operator.Divide);
+//		put("^", BinaryOpExpression.Operator.Exponential);
+//
+//		put(">", BinaryOpExpression.Operator.Greater);
+//		put("<", BinaryOpExpression.Operator.Lower);
+//		put(">=", BinaryOpExpression.Operator.GreaterOrEqual);
+//		put("<=", BinaryOpExpression.Operator.LowerOrEqual);
+//
+//		put("==", BinaryOpExpression.Operator.EqualEqual);
 	}};
 	
 	private static BinaryOpExpression.Operator parseOperator(AstToken opToken) {
@@ -49,6 +59,23 @@ public class AstBinaryOpExpression implements AstExpression {
 		this(left, right, new AstToken(opToken));
 	}
 		
+	
+	public BinaryOpExpression.Operator getOperator() {
+		return operator;
+	}
+
+	public AstExpression getLeft() {
+		return left;
+	}
+
+	public AstExpression getRight() {
+		return right;
+	}
+
+	public AstToken getOpToken() {
+		return opToken;
+	}
+
 	@Override
 	public AstType getType() {
 		throw new UnsupportedOperationException("TODO");

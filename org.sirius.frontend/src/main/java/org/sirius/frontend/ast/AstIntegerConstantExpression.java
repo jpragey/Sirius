@@ -22,8 +22,6 @@ public class AstIntegerConstantExpression implements AstExpression {
 	public AstIntegerConstantExpression(AstToken content, Reporter reporter) {
 		super();
 		this.content = content;
-//		this.intType = AstClassDeclaration.newClass(reporter, AstToken.internal("Integer"));
-//		this.intType.setqName(new QName("sirius", "lang", "Integer"));
 		
 		String text = content.getText();
 		try {
@@ -53,6 +51,10 @@ public class AstIntegerConstantExpression implements AstExpression {
 	@Override
 	public AstType getType() {
 		return this.intType;
+	}
+	
+	public int getValue() {
+		return value;
 	}
 
 	private class IntegerConstantExpressionImpl implements IntegerConstantExpression {

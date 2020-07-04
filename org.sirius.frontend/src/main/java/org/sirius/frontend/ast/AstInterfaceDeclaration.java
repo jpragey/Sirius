@@ -36,9 +36,9 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 
 	public AstInterfaceDeclaration(Reporter reporter, AstToken name, Optional<QName> packageQName,
 			ImmutableList<PartialList> functionDeclarations,
-			ImmutableList<TypeParameter> typeParameters
-			
-			) {
+			ImmutableList<TypeParameter> typeParameters,
+			ImmutableList<AncestorInfo> ancestorInfos) 
+	{
 		this.reporter = reporter;
 		this.name = name;
 		this.functionDeclarations = functionDeclarations;
@@ -49,12 +49,15 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		
 		packageQName.ifPresent((pkgQName) -> {this.qName = pkgQName.child(name.getText());});
 		
+		this.ancestors = new ArrayList<>(ancestorInfos);
+//		implementedInterfaces.forEach(token -> addAncestor(token));
 	}
 
 	public AstInterfaceDeclaration(Reporter reporter, AstToken name, Optional<QName> packageQName) {
 		this(reporter, name,
 				packageQName,
 				ImmutableList.of() /*functionDeclarations*/,
+				ImmutableList.of() /*typeDeclarations*/,
 				ImmutableList.of() /*typeDeclarations*/
 				);
 	}
@@ -63,6 +66,9 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	@Override
 	public AstToken getName() {
 		return name;
+	}
+	public String getNameString() {
+		return name.getText();
 	}
 	@Override
 	public QName getQName() {
@@ -189,7 +195,9 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		ImmutableList<TypeParameter> newTypeParams = builder.addAll(typeParameters).add(param).build();
 		return new AstInterfaceDeclaration(reporter, name, packageQName,
 				functionDeclarations,
-				newTypeParams);
+				newTypeParams,
+				ImmutableList.of()	// TODO
+				);
 	}
 	
 	public void addAncestor(Token ancestor) {// TODO: remove
@@ -217,7 +225,9 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 					.addAll(functionDeclarations)
 					.add(fd)
 					.build(),
-				typeParameters);
+				typeParameters,
+				ImmutableList.copyOf(ancestors)
+				);
 	}
 
 	public InterfaceDeclaration getInterfaceDeclaration() {

@@ -36,6 +36,9 @@ public class AstFunctionParameter {
 	public AstToken getName() {
 		return name;
 	}
+	public String getNameString() {
+		return name.getText();
+	}
 	
 	public void setSymbolTable(DefaultSymbolTable symbolTable) {
 		this.symbolTable = symbolTable;

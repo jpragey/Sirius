@@ -32,7 +32,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	private Optional<AstExpression> thisExpression = Optional.empty();
 	
 
-	
+	// TODO: clean
 	private AstFunctionCallExpression(AstToken name, List<AstExpression> actualArguments, Reporter reporter,
 			Optional<AstExpression> thisExpression, DefaultSymbolTable symbolTable) {
 		super();
@@ -43,6 +43,12 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		this.symbolTable = symbolTable;
 	}
 
+	public AstFunctionCallExpression(Reporter reporter, AstToken name, List<AstExpression> actualArguments, 
+			Optional<AstExpression> thisExpression) 
+	{
+		this(name, actualArguments, reporter, thisExpression, new DefaultSymbolTable(""));
+
+	}
 	public AstFunctionCallExpression(Reporter reporter, AstToken name) {
 		super();
 		this.name = name;

@@ -178,20 +178,20 @@ functionDeclaration [DefaultSymbolTable symbolTable, QName containerQName] retur
 	//AstFunctionDeclaration.Builder builder;
 }
 	: annotationList
-	  (	  rt=type	{retType = $rt.declaration; } 
+	  (	  returnType=type	{retType = $returnType.declaration; } 
 	  	| 'void' 	{retType = new AstVoidType();}
 	  )
-	  LOWER_ID		{ 
+	  name=LOWER_ID		{ 
 	  	/* builder = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, containerQName);*/
-	  	fdBuilder = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, containerQName);
+	  	fdBuilder = factory. createFunctionDeclaration($annotationList.annotations, $name, retType, containerQName);
 	  }
 	  (
 	    '<'
 	  		  	(
-	  		d=typeFormalParameterDeclaration 		{ fdBuilder = fdBuilder.withFormalParameter($d.declaration); }
+	  		d=typeParameterDeclaration 		{ fdBuilder = fdBuilder.withFormalParameter($d.declaration); }
 	  		(
 	  			','
-		  		d=typeFormalParameterDeclaration 	{ fdBuilder = fdBuilder.withFormalParameter($d.declaration); }
+		  		d=typeParameterDeclaration 	{ fdBuilder = fdBuilder.withFormalParameter($d.declaration); }
 	  		)*
 	  	)?
 	  	'>'
@@ -221,10 +221,10 @@ functionFormalArgument returns [AstFunctionParameter argument]
 // -------------------- STATEMENT
 
 statement returns [AstStatement stmt]
-	: returnStatement	{ $stmt = $returnStatement.stmt; }
-	| expression ';'	{ $stmt = new AstExpressionStatement($expression.express); }
-	| localVariableStatement	{ $stmt = $localVariableStatement.lvStatement; }
-	| ifElseStatement	{ $stmt = $ifElseStatement.stmt; }
+	: returnStatement	{ $stmt = $returnStatement.stmt; }								# isReturnStatement
+	| expression ';'	{ $stmt = new AstExpressionStatement($expression.express); }	# isExpressionStatement
+	| localVariableStatement	{ $stmt = $localVariableStatement.lvStatement; }		# isLocalVaribleStatement
+	| ifElseStatement	{ $stmt = $ifElseStatement.stmt; }								# isIfElseStatement
 	;
 
 returnStatement returns [AstReturnStatement stmt]
@@ -257,51 +257,58 @@ ifElseStatement returns [AstIfElseStatement stmt]
 // -------------------- EXPRESSION
 
 expression returns [AstExpression express]
-	: constantExpression { $express = $constantExpression.express ;}
+	: constantExpression { $express = $constantExpression.express ;}	# isConstantExpression
 	
-	| <assoc=right> left=expression op='^' right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }// TODO
+	| <assoc=right> left=expression op='^' right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression 
 	
 	
-	| left=expression op=('*'|'/') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
-	| left=expression op=('+'|'-') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
+	| left=expression op=('*'|'/') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
+	| left=expression op=('+'|'-') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
 	
-	/* TODO: && || ! == != < > >= <=
-	*/
-	| left=expression op=('<'|'>'|'<='|'>=') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
+	| left=expression op=('<'|'>'|'<='|'>=') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
 
-	| left=expression op=('=='|'!=') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
-	| left=expression op='&&' right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
-	| left=expression op='||' right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
-	| left=expression op=('='|'+='|'-='|'*='|'/=') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); }
-	// TODO - end
+	| left=expression op=('=='|'!=') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
+	| left=expression op='&&' right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
+	| left=expression op='||' right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
+	| left=expression op=('='|'+='|'-='|'*='|'/=') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
 	
 	// -- Function call
 	| 
-		functionCallExpression 		{$express = $functionCallExpression.call; }
-	| expression '.' functionCallExpression 		{  $functionCallExpression.call.setThisExpression($expression.express); $express = $functionCallExpression.call; }
+		functionCallExpression 		{$express = $functionCallExpression.call; } # isFunctionCallExpression
+	| 
+	    thisExpr=expression '.' functionCallExpression 		{  
+				$functionCallExpression.call.setThisExpression($thisExpr.express); 
+				$express = $functionCallExpression.call;
+		} # isMethodCallExpression
 	
 	
-	|	// -- Constructor call
-	  TYPE_ID '('					{ ConstructorCallExpression call = factory.createConstructorCall($TYPE_ID); $express = call; }
+	|  // -- Constructor call
+	  name=TYPE_ID '('		{ ConstructorCallExpression call = factory.createConstructorCall($name); 
+	  							$express = call;
+	  						}
 		
-		(arg=expression 			{ call.addArgument($arg.express); }
-			( ',' arg=expression	{ call.addArgument($arg.express); } )*
+		(arg0=expression 			{ call.addArgument($arg0.express); }
+			( ',' arg1=expression	{ call.addArgument($arg1.express); } )*
 		)?
-	  ')'
-	| // -- Field access
+	  ')' # isConstructorCallExpression
+	| 
+	  // -- Field access
 	  lhs = expression '.' LOWER_ID		{
 	  	AstMemberAccessExpression expr = factory.valueAccess($lhs.express, $LOWER_ID); 
 	  	$express = expr;
-	  }
-	| // -- Local/member/global variable, function parameter
-	  ref = LOWER_ID						{ $express = factory.simpleReference($ref); }
+	  }# isFieldAccessExpression
+	| 
+	  // -- Local/member/global variable, function parameter
+	  ref = LOWER_ID						{ $express = factory.simpleReference($ref); } # isVariableRefExpression
+	  
+	  
 	;
 
 functionCallExpression returns [AstFunctionCallExpression call]
 	: 
 		LOWER_ID '('				{ $call = factory.functionCall($LOWER_ID); }
-		(arg=expression 			{ $call.addActualArgument($arg.express); }
-			( ',' arg=expression	{ $call.addActualArgument($arg.express); } )*
+		(arg0=expression 			{ $call.addActualArgument($arg0.express); }
+			( ',' arg1=expression	{ $call.addActualArgument($arg1.express); } )*
 		)?
 	  ')'
 	;
@@ -373,15 +380,15 @@ classDeclaration [QName containerQName] returns [AstClassDeclaration declaration
 	  (
 	  	'<'
 	  	(
-	  		d=typeFormalParameterDeclaration 		{$declaration = $declaration.withFormalParameter($d.declaration);}
+	  		d=typeParameterDeclaration 		{$declaration = $declaration.withFormalParameter($d.declaration);}
 	  		(
 	  			','
-		  		d=typeFormalParameterDeclaration 	{$declaration = $declaration.withFormalParameter($d.declaration);}
+		  		d=typeParameterDeclaration 	{$declaration = $declaration.withFormalParameter($d.declaration);}
 	  		)*
 	  	)?
 	  	'>'
 	  )? 
-	  ( 'implements' TYPE_ID { $declaration.addAncestor($TYPE_ID);} 
+	  ( 'implements' implementedInterface=TYPE_ID { $declaration.addAncestor($implementedInterface);} 
 	  	
 	  )?
 			  
@@ -404,10 +411,10 @@ interfaceDeclaration [QName containerQName] returns [AstInterfaceDeclaration dec
 	  (
 	  	'<'
 	  	(
-	  		d=typeFormalParameterDeclaration 		{$declaration = $declaration.withFormalParameter($d.declaration);}
+	  		d=typeParameterDeclaration 		{$declaration = $declaration.withFormalParameter($d.declaration);}
 	  		(
 	  			','
-		  		d=typeFormalParameterDeclaration 	{$declaration = $declaration.withFormalParameter($d.declaration);}
+		  		d=typeParameterDeclaration 	{$declaration = $declaration.withFormalParameter($d.declaration);}
 	  		)*
 	  	)?
 	  	'>'
@@ -424,14 +431,14 @@ interfaceDeclaration [QName containerQName] returns [AstInterfaceDeclaration dec
 	  '}'
 	;
 
-typeFormalParameterDeclaration returns [TypeParameter declaration]
+typeParameterDeclaration returns [TypeParameter declaration]
 locals [
 	Variance variance = Variance.INVARIANT;
 ]
 	:
 	 ( 
-		 'in'   	{$variance = Variance.IN;} 
-		|'out'		{$variance = Variance.OUT;}
+		  IN 	{$variance = Variance.IN;} 
+		| OUT		{$variance = Variance.OUT;}
 	  )?
 	  TYPE_ID		{$declaration = factory.createTypeFormalParameter($variance, $TYPE_ID); }
 	  (
@@ -454,22 +461,36 @@ locals [
 	  		type					{ $simpleType.appliedParameter($type.declaration);}
 	  		( ',' type				{ $simpleType.appliedParameter($type.declaration);} )*
 	  	'>'
-	  )?							{ $declaration = $simpleType;}
+	  )?							{ $declaration = $simpleType;}								# simpleType0	
 	  
-	| first=type '|' second=type	{ $declaration = factory.createUnionType($first.declaration, $second.declaration); }
-	| first=type '&' second=type	{ $declaration = factory.createIntersectionType($first.declaration, $second.declaration); }
-	| '<' type '>'					{ $declaration = $type.declaration; }
-	| el=type '[' ']'					{ $declaration = factory.createArray($el.declaration); }
+	| first=type '|' second=type	{ $declaration = factory.createUnionType($first.declaration, $second.declaration); } 		# unionType
+	| first=type '&' second=type	{ $declaration = factory.createIntersectionType($first.declaration, $second.declaration); }	# intersectionType
+	| '<' type '>'					{ $declaration = $type.declaration; }						# bracketedType
+	| el=type '[' ']'				{ $declaration = factory.createArray($el.declaration); }	# arrayType
 ////	| '{' type '*' '}'				{ $declaration = factory.createIterable($type.declaration); }
 	;
 	
 	
 	
-
-
+	
+//topDeclaration : 
+//	  classDeclaration2 
+//	| interfaceDeclaration2
+//	;
+//
+//classDeclaration2 : 'class' className '{' (method)* '}';
+//interfaceDeclaration2 : 'interface' className '{' (method)* '}';
+//className : ID ;
+//method : methodName '{' (instruction)+ '}' ;
+//methodName : ID ;
+//instruction : ID ;
 
 
 BOOLEAN : 'true' | 'false' ;
+IN : 'in';
+OUT : 'out';
+
+
 
 TYPE_ID : [A-Z][a-zA-Z0-9_]* ;	// start by uppercase
 
@@ -488,5 +509,5 @@ SHEBANG : '#''!'~('\r' | '\n')*;
 STRING : '"' ~('"')* '"' ;
 
 FLOAT	: [0-9]+ '.' [0-9]+ ;
-INTEGER : [0-9]+ ;
+INTEGER : ('-'|'+')?[0-9]+ ;
 

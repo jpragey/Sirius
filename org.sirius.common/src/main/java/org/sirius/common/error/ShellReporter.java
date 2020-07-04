@@ -54,7 +54,9 @@ public class ShellReporter implements Reporter {
 
 		sb.append(message);
 		
-		PrintStream printStream = severity == Severity.ERROR ? System.err : System.out;
+		PrintStream printStream = (severity == Severity.ERROR || severity == Severity.FATAL) ? 
+				System.err : 
+				System.out;
 		printStream.println(sb.toString());
 		
 		if(exception.isPresent()) {

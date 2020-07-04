@@ -24,11 +24,11 @@ public class AstBooleanConstantExpression implements AstExpression {
 	}
 	
 	
-	public boolean isValue() {
+	public boolean getValue() {
 		return value;
 	}
 
-
+	
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startBooleanConstant(this);
@@ -53,6 +53,10 @@ public class AstBooleanConstantExpression implements AstExpression {
 			@Override
 			public boolean getValue() {
 				return value;
+			}
+			@Override
+			public String toString() {
+				return Boolean.toString(value);
 			}
 		};
 	}

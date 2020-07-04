@@ -30,23 +30,12 @@ public class PartialList implements Visitable {
 				.map(part -> part.toString())
 				.collect(Collectors.joining(", ", "{Part. " + name, "}"));
 	}
-//	public PartialList(List<Partial> partials, QName qName, boolean concrete, AstToken name, List<AstStatement> statements) {
-//		super();
-//		this.partials = partials;
-//		this.qName = qName;
-//		this.concrete = concrete;
-//		this.statements = statements;
-//		
-//		int partialIndex = 0;
-//		for(Partial p: partials) {
-//			allArgsPartial = p;
-//			assert(partialIndex++ == p.getArgs().size());
-//		}
-//		
-//	}
 	
-	public PartialList(List<AstFunctionParameter> args /*List<Partial> partials*/, AstType returnType, AstFunctionDeclarationBuilder function,            
-			QName qName, boolean concrete, AstToken name, List<AstStatement> statements) 
+	public PartialList(List<AstFunctionParameter> args /*List<Partial> partials*/, AstType returnType, 
+			boolean member /* ie is an instance method*/,             
+			QName qName, 
+			boolean concrete /* ie has a body */, 
+			AstToken name, List<AstStatement> statements) 
 	{
 		super();
 		this.partials = new ArrayList<>(args.size() + 1);
@@ -54,30 +43,26 @@ public class PartialList implements Visitable {
 		this.name = name;
 		this.concrete = concrete;
 		this.statements = statements;
-//		List<Partial> partials = new ArrayList<>(args.size() + 1);
 		for(int from = 0; from <= args.size(); from++) 
 		{
-//			AstToken name,
-//		List<AstFunctionParameter> args, 
-//		AstFunctionDeclarationBuilder function,
-//		AstType returnType,
-//		List<AstStatement> statements
-			
 			List<AstFunctionParameter> partialArgs = args.subList(0, from); 
 			Partial partial = new Partial(
 					name,
 					////				args.subList(0, from) .stream().map(arg -> new Capture(arg.getType(), arg.getName())).collect(Collectors.toList()), 
 					partialArgs, 
 					
-//					function,
-					function.isConcrete(), //boolean concrete,
-					function.isMember(),//boolean member,
-					function.getQName(), //QName qName,
+					concrete,
+//					function.isConcrete(), //boolean concrete,
+					
+					member,
+//					function.isMember(),//boolean member,
+					
+					qName,
+//					function.getQName(), //QName qName,
 					
 					returnType,
 					statements
-					/*,
-				symbolTable*/);
+					);
 			partials.add(partial);
 			this.allArgsPartial = partial; // => last in partial list
 		}
@@ -118,6 +103,9 @@ public class PartialList implements Visitable {
 
 	public AstToken getName() {
 		return name;
+	}
+	public String getNameString() {
+		return name.getText();
 	}
 
 	public boolean isConcrete() {

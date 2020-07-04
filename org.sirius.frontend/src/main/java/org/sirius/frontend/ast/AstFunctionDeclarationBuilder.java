@@ -159,7 +159,7 @@ private List<Partial> partials = Collections.emptyList();
 		if(!annotationList.contains("static"))
 			setMember(true);
 
-		PartialList partialList = new PartialList(args, returnType, this, qName, concrete, name, statements); 
+		PartialList partialList = new PartialList(args, returnType, member /* this*/, qName, concrete, name, statements); 
 		
 		return partialList;
 	}
