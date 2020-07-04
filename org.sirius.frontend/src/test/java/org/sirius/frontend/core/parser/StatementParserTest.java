@@ -19,6 +19,7 @@ import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.ast.AstBinaryOpExpression;
 import org.sirius.frontend.ast.AstBooleanConstantExpression;
 import org.sirius.frontend.ast.AstExpression;
+import org.sirius.frontend.ast.AstExpressionStatement;
 import org.sirius.frontend.ast.AstFloatConstantExpression;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.AstIntegerConstantExpression;
@@ -29,6 +30,7 @@ import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.ConstructorCallExpression;
 import org.sirius.frontend.ast.PartialList;
+import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.parser.SiriusParser.FunctionCallExpressionContext;
@@ -59,10 +61,10 @@ public class StatementParserTest {
 			assertThat(e, instanceOf(AstIntegerConstantExpression.class));
 			assertThat(((AstIntegerConstantExpression)e).getValue(), equalTo(42));
 		}) );
-		parseReturnStatement("return 42;",      (retStmt -> {
+		parseReturnStatement("return x;",      (retStmt -> {
 			AstExpression e = retStmt.getExpression();
-			assertThat(e, instanceOf(AstIntegerConstantExpression.class));
-			assertThat(((AstIntegerConstantExpression)e).getValue(), equalTo(42));
+			assertThat(e, instanceOf(SimpleReferenceExpression.class));
+			assertThat(((SimpleReferenceExpression)e).getNameString(), equalTo("x"));
 		}) );
 	}
 
@@ -75,6 +77,33 @@ public class StatementParserTest {
 
 		assertThat(stmt, instanceOf(AstReturnStatement.class) );
 		AstReturnStatement e = ((AstReturnStatement)stmt);
+		verify.accept(e);
+		return e;
+	}
+	@Test
+	@DisplayName("Simple expression statement")
+	public void expressionStatement() {
+		parseExpressionStatement("42;",      (retStmt -> {
+			AstExpression e = retStmt.getExpression();
+			assertThat(e, instanceOf(AstIntegerConstantExpression.class));
+			assertThat(((AstIntegerConstantExpression)e).getValue(), equalTo(42));
+		}) );
+		parseExpressionStatement("f(42);",      (retStmt -> {
+			AstExpression e = retStmt.getExpression();
+			assertThat(e, instanceOf(AstFunctionCallExpression.class));
+			assertThat(((AstFunctionCallExpression)e).getNameString(), equalTo("f"));
+		}) );
+	}
+
+	private AstExpressionStatement parseExpressionStatement(String inputText, Consumer<AstExpressionStatement> verify) {
+		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		ParseTree tree = parser.statement();
+		
+		StatementParser.ExpressionStatementVisitor visitor = new StatementParser.ExpressionStatementVisitor(reporter);
+		AstExpressionStatement stmt = visitor.visit(tree);
+
+		assertThat(stmt, instanceOf(AstExpressionStatement.class) );
+		AstExpressionStatement e = ((AstExpressionStatement)stmt);
 		verify.accept(e);
 		return e;
 	}

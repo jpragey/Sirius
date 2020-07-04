@@ -71,6 +71,9 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	public AstToken getName() {
 		return name;
 	}
+	public String getNameString() {
+		return name.getText();
+	}
 
 	public List<AstExpression> getActualArguments() {
 		return actualArguments;

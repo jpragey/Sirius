@@ -11,6 +11,7 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassOrInterface;
 import org.sirius.frontend.ast.AstExpression;
+import org.sirius.frontend.ast.AstExpressionStatement;
 import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
@@ -25,6 +26,7 @@ import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionFormalArgumentContext;
 import org.sirius.frontend.parser.SiriusParser.InterfaceDeclarationContext;
+import org.sirius.frontend.parser.SiriusParser.IsExpressionStatementContext;
 import org.sirius.frontend.parser.SiriusParser.ReturnStatementContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
 import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationContext;
@@ -68,6 +70,23 @@ public class StatementParser {
 			return new AstReturnStatement(returnStatement);
 		}
 		
+	}
+
+	public static class ExpressionStatementVisitor extends SiriusBaseVisitor<AstExpressionStatement> {
+		private Reporter reporter;
+		
+		public ExpressionStatementVisitor(Reporter reporter) {
+			super();
+			this.reporter = reporter;
+		}
+		
+		@Override
+		public AstExpressionStatement visitIsExpressionStatement(IsExpressionStatementContext ctx) {
+			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser.ExpressionVisitor(reporter);
+			AstExpression expression = ctx.expression.accept(visitor);
+			
+			return new AstExpressionStatement(expression);
+		}
 	}
 
 }
