@@ -16,6 +16,7 @@ import org.sirius.frontend.ast.AstMemberAccessExpression;
 import org.sirius.frontend.ast.AstStringConstantExpression;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.ConstructorCallExpression;
+import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.ConstantExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.ExpressionContext;
@@ -24,6 +25,7 @@ import org.sirius.frontend.parser.SiriusParser.IsBinaryExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.IsConstructorCallExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.IsFieldAccessExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.IsMethodCallExpressionContext;
+import org.sirius.frontend.parser.SiriusParser.IsVariableRefExpressionContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
@@ -143,6 +145,16 @@ public class ExpressionParser {
 			
 			return new AstMemberAccessExpression(reporter, thisExpression, valueName);
 		}
+
+
+
+		@Override
+		public SimpleReferenceExpression visitIsVariableRefExpression(IsVariableRefExpressionContext ctx) {
+			AstToken refName = new AstToken(ctx.ref);
+
+			return new SimpleReferenceExpression(reporter, refName);
+		}
+		
 		
 		
 	}

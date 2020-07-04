@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassOrInterface;
+import org.sirius.frontend.ast.AstExpression;
 import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
@@ -30,8 +31,16 @@ import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationContext;
 
 import com.google.common.collect.ImmutableList;
 
-/** Visitor-based parser for the 'typeParameterDeclaration' rule.
+/** Visitor-based parser for the 'statement' rule.
+ *
  * 
+ * statement returns [AstStatement stmt]
+	: returnStatement	{ $stmt = $returnStatement.stmt; }								# isReturnStatement
+	| expression ';'	{ $stmt = new AstExpressionStatement($expression.express); }	# isExpressionStatement
+	| localVariableStatement	{ $stmt = $localVariableStatement.lvStatement; }		# isLocalVaribleStatement
+	| ifElseStatement	{ $stmt = $ifElseStatement.stmt; }								# isIfElseStatement
+	;
+
  * @author jpragey
  *
  */
@@ -44,12 +53,19 @@ public class StatementParser {
 	}
 
 	public static class ReturnStatementVisitor extends SiriusBaseVisitor<AstReturnStatement> {
+		private Reporter reporter;
+		
+		public ReturnStatementVisitor(Reporter reporter) {
+			super();
+			this.reporter = reporter;
+		}
 
 		@Override
 		public AstReturnStatement visitReturnStatement(ReturnStatementContext ctx) {
-//			ctx.expression
-			// TODO Auto-generated method stub
-			return super.visitReturnStatement(ctx);
+			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser.ExpressionVisitor(reporter);
+			AstExpression returnStatement = ctx.expression.accept(visitor);
+			
+			return new AstReturnStatement(returnStatement);
 		}
 		
 	}

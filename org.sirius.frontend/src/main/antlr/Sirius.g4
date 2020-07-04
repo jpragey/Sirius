@@ -297,11 +297,9 @@ expression returns [AstExpression express]
 	  	AstMemberAccessExpression expr = factory.valueAccess($lhs.express, $LOWER_ID); 
 	  	$express = expr;
 	  }# isFieldAccessExpression
-//	| 
-//	  // -- Local/member/global variable, function parameter
-//	  ref = LOWER_ID						{ $express = factory.simpleReference($ref); } # isVariableRefExpression
-//	  
-	  
+	| 
+		// -- Local/member/global variable, function parameter
+ 		ref = LOWER_ID                                                { $express = factory.simpleReference($ref); } # isVariableRefExpression
 	;
 
 functionCallExpression returns [AstFunctionCallExpression call]

@@ -38,6 +38,15 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 		this(reporter, referenceName, null);
 	}
 
+	public AstToken getReferenceName() {
+		return referenceName;
+	}
+	public String getNameString() {
+		return referenceName.getText();
+	}
+
+
+
 	public void setSymbolTable(DefaultSymbolTable symbolTable) {
 		this.symbolTable = symbolTable;
 	}

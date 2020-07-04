@@ -28,6 +28,7 @@ import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.ConstructorCallExpression;
 import org.sirius.frontend.ast.PartialList;
+import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.parser.SiriusParser.FunctionCallExpressionContext;
@@ -267,23 +268,23 @@ public class ExpressionParserTest {
 		return e;
 	}
 
-//	@Test
-//	@DisplayName("Simple field (Local/member/global variable, function parameter)")
-//	public void variableRefExpression() {
-//		parseMemberAccessExpression("aa",      ((AstMemberAccessExpression e) -> {assertThat(e.getValueName().getText(), equalTo("aa") );}) );
-//	}
-//
-//	private AstMemberAccessExpression parseVariableRef(String inputText, Consumer<AstMemberAccessExpression> verify) {
-//		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
-//		ParseTree tree = parser.expression();
-//		
-//		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser.ExpressionVisitor(reporter);
-//		AstExpression expression = typeVisitor.visit(tree);
-//
-//		assertThat(expression, instanceOf(AstMemberAccessExpression.class) );
-//		AstMemberAccessExpression e = ((AstMemberAccessExpression)expression);
-//		verify.accept(e);
-//		return e;
-//	}
+	@Test
+	@DisplayName("Single-id reference (Local/member/global variable, function parameter)")
+	public void variableRefExpression() {
+		parseSimpleReferenceExpression("aa",      ((SimpleReferenceExpression e) -> {assertThat(e.getNameString(), equalTo("aa") );}) );
+	}
+
+	private SimpleReferenceExpression parseSimpleReferenceExpression(String inputText, Consumer<SimpleReferenceExpression> verify) {
+		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		ParseTree tree = parser.expression();
+		
+		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser.ExpressionVisitor(reporter);
+		AstExpression expression = typeVisitor.visit(tree);
+
+		assertThat(expression, instanceOf(SimpleReferenceExpression.class) );
+		SimpleReferenceExpression e = ((SimpleReferenceExpression)expression);
+		verify.accept(e);
+		return e;
+	}
 
 }
