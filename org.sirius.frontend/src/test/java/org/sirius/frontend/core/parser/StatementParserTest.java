@@ -23,6 +23,7 @@ import org.sirius.frontend.ast.AstExpressionStatement;
 import org.sirius.frontend.ast.AstFloatConstantExpression;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.AstIntegerConstantExpression;
+import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberAccessExpression;
 import org.sirius.frontend.ast.AstReturnStatement;
 import org.sirius.frontend.ast.AstStringConstantExpression;
@@ -39,6 +40,8 @@ import org.sirius.frontend.symbols.DefaultSymbolTable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.isA;
 
 public class StatementParserTest {
 
@@ -104,6 +107,38 @@ public class StatementParserTest {
 
 		assertThat(stmt, instanceOf(AstExpressionStatement.class) );
 		AstExpressionStatement e = ((AstExpressionStatement)stmt);
+		verify.accept(e);
+		return e;
+	}
+
+	@Test
+	@DisplayName("Local variable statement")
+	public void localVariableStatement() {
+		parseLocalVariableStatement("Integer x;",      (locVarStmt -> {
+			assertThat(locVarStmt.getVarName().getText(), equalTo("x"));
+			AstType type = locVarStmt.getType();
+			assertThat(type, instanceOf(SimpleType.class));
+			SimpleType simpleType = (SimpleType)type;
+			assertThat(simpleType.getNameString(), equalTo("Integer"));
+			assertThat(locVarStmt.getInitialValue().isEmpty(), is(true));
+		}) );
+		parseLocalVariableStatement("Integer x = 42;",      (locVarStmt -> {
+			assertThat(locVarStmt.getInitialValue().isPresent(), is(true));
+			AstExpression init = locVarStmt.getInitialValue().get();
+			assertThat(init, instanceOf(AstIntegerConstantExpression.class));
+			assertThat(((AstIntegerConstantExpression)init).getValue(), equalTo(42));
+		}) );
+	}
+
+	private AstLocalVariableStatement parseLocalVariableStatement(String inputText, Consumer<AstLocalVariableStatement> verify) {
+		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		ParseTree tree = parser.statement();
+		
+		StatementParser.LocalVariableStatementVisitor visitor = new StatementParser.LocalVariableStatementVisitor(reporter);
+		AstLocalVariableStatement stmt = visitor.visit(tree);
+
+		assertThat(stmt, instanceOf(AstLocalVariableStatement.class) );
+		AstLocalVariableStatement e = ((AstLocalVariableStatement)stmt);
 		verify.accept(e);
 		return e;
 	}

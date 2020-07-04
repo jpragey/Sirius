@@ -18,10 +18,15 @@ public class AstLocalVariableStatement implements AstStatement {
 	private DefaultSymbolTable symbolTable = null;
 	private AstType type;
 	
-	public AstLocalVariableStatement(AnnotationList annotationList, AstType type, AstToken varName) {
+	public AstLocalVariableStatement(AnnotationList annotationList, AstType type, AstToken varName, Optional<AstExpression> initialValue) {
 		super();
 		this.type = type;
 		this.varName = varName;
+		this.initialValue = initialValue;
+	}
+
+	public AstLocalVariableStatement(AnnotationList annotationList, AstType type, AstToken varName) {
+		this(annotationList, type, varName, Optional.empty());
 	}
 
 	public void setInitialValue(AstExpression initialValue) {
