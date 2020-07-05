@@ -15,6 +15,7 @@ import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.ast.AstClassOrInterface.AncestorInfo;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
 
@@ -54,7 +55,8 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			ImmutableList<TypeParameter> typeParameters,
 			ImmutableList<PartialList> functionDeclarations,
 			List<AstMemberValueDeclaration> valueDeclarations,
-			List<AstFunctionParameter> anonConstructorArguments 
+			List<AstFunctionParameter> anonConstructorArguments,
+			List<AncestorInfo> ancestorInfos
 			) {
 		super();
 		this.reporter = reporter;
@@ -70,14 +72,17 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		this.functionDeclarations = functionDeclarations;
 		this.valueDeclarations = valueDeclarations;
 		this.anonConstructorArguments = anonConstructorArguments; 
+		this.ancestors = ancestorInfos;
 	}
 
+	// TODO: remove ?
 	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/, QName packageQName) {
 		this(reporter,interfaceType, name, packageQName,
 			ImmutableList.of(),//<TypeFormalParameterDeclaration> typeParameters,
 			ImmutableList.of(), //new ArrayList<AstFunctionDeclaration>(), // functionDeclarations,
 			new ArrayList<AstMemberValueDeclaration>(), //List valueDeclarations,
 			new ArrayList<AstFunctionParameter>() //List anonConstructorArguments
+			, new ArrayList<AncestorInfo>()
 		);
 	}
 	public AstClassDeclaration withFormalParameter(TypeParameter param) {
@@ -91,7 +96,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 				packageQName, 
 				newTypeParams,
 				functionDeclarations,
-				valueDeclarations, anonConstructorArguments);
+				valueDeclarations, anonConstructorArguments, ancestors);
 		return fd;
 	}
 
@@ -110,7 +115,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 				packageQName, 
 				typeParameters,
 				newFunctions,
-				valueDeclarations, anonConstructorArguments);
+				valueDeclarations, anonConstructorArguments, ancestors);
 		return cd;
 	}
 
@@ -223,7 +228,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 				typeParameters.subList(1, typeParameters.size()),
 				functionDeclarations,
 				valueDeclarations,
-				anonConstructorArguments
+				anonConstructorArguments, ancestors
 				);
 		
 		return Optional.ofNullable(cd);

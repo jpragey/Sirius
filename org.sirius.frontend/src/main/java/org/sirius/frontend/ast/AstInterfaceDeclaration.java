@@ -61,7 +61,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 				packageQName,
 				ImmutableList.of() /*functionDeclarations*/,
 				ImmutableList.of() /*typeDeclarations*/,
-				ImmutableList.of() /*typeDeclarations*/,
+				ImmutableList.of() /*ancestorInfos*/,
 				ImmutableList.of() /*valueDeclarations*/
 				);
 	}
