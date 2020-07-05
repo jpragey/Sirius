@@ -18,10 +18,14 @@ public class ImportDeclaration implements Visitable {
 	
 	private List<ImportDeclarationElement> elements = new ArrayList<>();
 
-	public ImportDeclaration(Reporter reporter, QualifiedName pack) {
+	public ImportDeclaration(Reporter reporter, QualifiedName pack, List<ImportDeclarationElement> elements) {
 		super();
 		this.reporter = reporter;
 		this.pack = pack;
+		this.elements = elements;
+	}
+	public ImportDeclaration(Reporter reporter, QualifiedName pack) {
+		this(reporter, pack, new ArrayList<>());
 	}
 	
 	public void add(ImportDeclarationElement element) {

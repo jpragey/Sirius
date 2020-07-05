@@ -100,6 +100,7 @@
     <resources>
       <resource>
         <directory>build/generated-sources/antlr4</directory>
+        <!-- <directory>target/generated-sources/antlr4</directory> -->
         <excludes>
           <exclude>**/*.java</exclude>
         </excludes>
@@ -132,8 +133,12 @@
         </executions>
         
         <configuration>
-        	<outputDirectory>build/generated-source/antlr/org/sirius/frontend/parser</outputDirectory>
-        	 <!-- <outputDirectory>build/generated-source/antlr</outputDirectory> -->
+        	<!-- <outputDirectory>target/generated-sources/antlr4/</outputDirectory> -->
+        	<!-- <outputDirectory>build/generated-source/antlr4/org/sirius/frontend/parser</outputDirectory> -->
+        	<outputDirectory>target/generated-sources/antlr4/org/sirius/frontend/parser</outputDirectory>
+        	
+        	
+<!--         	<sourceDirectory>src/main/antlr/org/sirius/frontend/parser</sourceDirectory> -->
         	<sourceDirectory>src/main/antlr</sourceDirectory>
         	<visitor>true</visitor>
         </configuration>

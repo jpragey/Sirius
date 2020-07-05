@@ -136,19 +136,21 @@ importDeclaration returns [ImportDeclaration declaration]
 	: 'import'
 	   //package
 	  qname								{ $declaration = factory.createImportDeclaration($qname.content); }
-	  '{'
+	  (('{'
 	  	  ( e=importDeclarationElement		{ $declaration.add($e.declaration); }
 	  	    (',' e=importDeclarationElement	{ $declaration.add($e.declaration); })*
 	  	  )?
-	  '}'
+	  '}')
+	  | ';'
+	  )
 	;
 
 
 importDeclarationElement returns [ImportDeclarationElement declaration]
 	: 
 	//	al=ID '=' t=ID		{ $declaration = factory.createImportDeclarationElement($t, $al); }
-		t=(LOWER_ID | TYPE_ID)				{ $declaration = factory.createImportDeclarationElement($t); }
-	|	al=(LOWER_ID | TYPE_ID) '=' t=(LOWER_ID | TYPE_ID)				{ $declaration = factory.createImportDeclarationElement($t, $al); }
+		importName=(LOWER_ID | TYPE_ID)				{ $declaration = factory.createImportDeclarationElement($importName); }
+	|	alias=(LOWER_ID | TYPE_ID) '=' importName=(LOWER_ID | TYPE_ID)				{ $declaration = factory.createImportDeclarationElement($importName, $alias); }
 
 	( '{'
 		
