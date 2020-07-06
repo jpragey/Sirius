@@ -38,7 +38,7 @@ public class ImportDeclarationParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.importDeclaration();
 				
-		ImportDeclarationParser.PackageDeclarationVisitor visitor = new ImportDeclarationParser.PackageDeclarationVisitor(reporter);
+		ImportDeclarationParser.ImportDeclarationVisitor visitor = new ImportDeclarationParser.ImportDeclarationVisitor(reporter);
 		ImportDeclaration importDeclaration = visitor.visit(tree);
 		return importDeclaration;
 	}

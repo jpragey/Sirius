@@ -40,7 +40,7 @@ locals[
     (
     	  moduleDeclaration 	{ $stdUnit.addModuleDeclaration($moduleDeclaration.declaration);    } 
     	| packageDeclaration	{ currentModule.addPackageDeclaration($packageDeclaration.declaration);}
-    	| functionDeclaration 	[$stdUnit.getSymbolTable(), QName.empty]	{ $stdUnit.addFunctionDeclaration($functionDeclaration.partialList ); }
+    	| functionDeclaration 	[QName.empty]	{ $stdUnit.addFunctionDeclaration($functionDeclaration.partialList ); }
     	| classDeclaration 		[currentModule.getCurrentPackage().getQname()] { $stdUnit.addClassDeclaration($classDeclaration.declaration);	}
     	| interfaceDeclaration	[currentModule.getCurrentPackage().getQname()] { $stdUnit.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
     	
@@ -55,7 +55,7 @@ scriptCompilationUnit returns [ScriptCompilationUnit unit]
 @init {     
 	$unit = factory.createScriptCompilationUnit(currentModule);
 }
-	: shebangDeclaration			{$unit.setShebang($shebangDeclaration.declaration); }
+	: (shebangDeclaration			{$unit.setShebang($shebangDeclaration.declaration); })?
     ( importDeclaration 			{$unit.addImport($importDeclaration.declaration);  })*
 	(
 		  moduleDeclaration 		{
@@ -68,7 +68,23 @@ scriptCompilationUnit returns [ScriptCompilationUnit unit]
 										//scriptCurrentState.getCurrentModule().addPackageDeclaration($packageDeclaration.declaration);
 
 									} 
-		| functionDeclaration 		[$unit.getSymbolTable(), currentModule.getCurrentPackage().getQname()] 
+		| functionDeclaration 		[currentModule.getCurrentPackage().getQname()] 
+										{currentModule.addFunctionDeclaration($functionDeclaration.partialList);	}
+		| classDeclaration 			[currentModule.getCurrentPackage().getQname()] {currentModule.addClassDeclaration($classDeclaration.declaration);	}
+    	| interfaceDeclaration		[currentModule.getCurrentPackage().getQname()] {currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
+	)*
+	EOF
+	;
+
+scriptCompilationUnit2 returns [ScriptCompilationUnit unit]
+@init {     
+}
+	: (shebangDeclaration )?
+    ( importDeclaration )*
+	(
+		  moduleDeclaration 		 
+		| packageDeclaration 		
+		| functionDeclaration 		[currentModule.getCurrentPackage().getQname()] 
 										{currentModule.addFunctionDeclaration($functionDeclaration.partialList);	}
 		| classDeclaration 			[currentModule.getCurrentPackage().getQname()] {currentModule.addClassDeclaration($classDeclaration.declaration);	}
     	| interfaceDeclaration		[currentModule.getCurrentPackage().getQname()] {currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
@@ -209,7 +225,7 @@ memberValueDeclaration returns [AstMemberValueDeclaration declaration]
 // -------------------- (TOP-LEVEL ?) FUNCION
 // Also maps to annotation declaration.
 
-functionDeclaration [DefaultSymbolTable symbolTable, QName containerQName] returns [PartialList partialList]
+functionDeclaration [QName containerQName] returns [PartialList partialList]
 @init {
 	AstType retType;
 	ArrayList<AstFunctionParameter> arguments = new ArrayList<>();
@@ -431,7 +447,7 @@ classDeclaration [QName containerQName] returns [AstClassDeclaration declaration
 			  
 	  '{'
 	  (
-	  	  functionDeclaration		[$declaration.getSymbolTable(), $declaration.getQName()] { $declaration = $declaration.withFunctionDeclaration($functionDeclaration.partialList);}
+	  	  functionDeclaration		[$declaration.getQName()] { $declaration = $declaration.withFunctionDeclaration($functionDeclaration.partialList);}
 	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
 	  )*
 	  '}'
@@ -462,7 +478,7 @@ interfaceDeclaration [QName containerQName] returns [AstInterfaceDeclaration dec
 			  
 	  '{'
 	  (
-	  	  functionDeclaration		[$declaration.getSymbolTable(), $declaration.getQName()] { $declaration = $declaration.withFunctionDeclaration($functionDeclaration.partialList);}
+	  	  functionDeclaration		[$declaration.getQName()] { $declaration = $declaration.withFunctionDeclaration($functionDeclaration.partialList);}
 	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
 	  )*
 	  '}'

@@ -41,10 +41,10 @@ public class ImportDeclarationParser {
 		}
 	}
 
-	public static class PackageDeclarationVisitor extends SiriusBaseVisitor<ImportDeclaration> {
+	public static class ImportDeclarationVisitor extends SiriusBaseVisitor<ImportDeclaration> {
 		private Reporter reporter;
 
-		public PackageDeclarationVisitor(Reporter reporter) {
+		public ImportDeclarationVisitor(Reporter reporter) {
 			super();
 			this.reporter = reporter;
 		}

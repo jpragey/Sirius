@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.antlr.v4.runtime.Token;
 
-/** Type (or other elements, TBD) inside an 'import' statement
+/** Type (or other elements, TBD) inside a top-of-file 'import' statement
  * 
  * @author jpragey
  *

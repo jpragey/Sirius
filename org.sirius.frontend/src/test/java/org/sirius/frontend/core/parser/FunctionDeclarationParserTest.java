@@ -40,10 +40,10 @@ public class FunctionDeclarationParserTest {
 	}
 	
 	
-	private PartialList parseTypeDeclaration(String inputText, DefaultSymbolTable symbolTable, QName containerQName) {
+	private PartialList parseTypeDeclaration(String inputText, QName containerQName) {
 		
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
-		ParseTree tree = parser.functionDeclaration(symbolTable, containerQName);
+		ParseTree tree = parser.functionDeclaration(containerQName);
 				
 		FunctionDeclarationParser.FunctionDeclarationVisitor typeVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter, containerQName);
 		PartialList myType = typeVisitor.visit(tree);
@@ -53,7 +53,7 @@ public class FunctionDeclarationParserTest {
 	@Test
 	@DisplayName("Simplest function (check name)")
 	public void simplestFunction() {
-		PartialList partialList = parseTypeDeclaration("void f() {}", new DefaultSymbolTable(""), new QName("a", "b", "c"));
+		PartialList partialList = parseTypeDeclaration("void f() {}", new QName("a", "b", "c"));
 		assertEquals(partialList.getNameString(), "f");
 		assertEquals(partialList.getqName().dotSeparated(), "a.b.c.f");
 	}
@@ -61,7 +61,7 @@ public class FunctionDeclarationParserTest {
 	@Test
 	@DisplayName("Function parameters")
 	public void functionWithParameters() {
-		PartialList partialList = parseTypeDeclaration("void f(A a, B b) {}", new DefaultSymbolTable(""), new QName());
+		PartialList partialList = parseTypeDeclaration("void f(A a, B b) {}", new QName());
 		//assertEquals(partialList.getNameString(), "f");
 		assertEquals(partialList.getPartials().size(), 3 /* NB: 1 more than parameters*/);
 		
@@ -73,7 +73,7 @@ public class FunctionDeclarationParserTest {
 	@Test
 	@DisplayName("Function Simple return type")
 	public void functionReturnType() {
-		PartialList partialList = parseTypeDeclaration("Result f() {}", new DefaultSymbolTable(""), new QName());
+		PartialList partialList = parseTypeDeclaration("Result f() {}", new QName());
 		AstType returnType = partialList.getAllArgsPartial().getReturnType();
 		
 		assertThat(returnType, instanceOf(SimpleType.class));
@@ -84,7 +84,7 @@ public class FunctionDeclarationParserTest {
 	@Test
 	@DisplayName("Function with void return type")
 	public void functionVoidReturnType() {
-		PartialList partialList = parseTypeDeclaration("void f() {}", new DefaultSymbolTable(""), new QName());
+		PartialList partialList = parseTypeDeclaration("void f() {}", new QName());
 		AstType returnType = partialList.getAllArgsPartial().getReturnType();
 		
 		assertThat(returnType, instanceOf(AstVoidType.class));
@@ -93,7 +93,7 @@ public class FunctionDeclarationParserTest {
 	@Test
 	@DisplayName("Function containing statements")
 	public void functionWithBodyStatements() {
-		PartialList partialList = parseTypeDeclaration("void f() {Integer i; return 42;}", new DefaultSymbolTable(""), new QName());
+		PartialList partialList = parseTypeDeclaration("void f() {Integer i; return 42;}", new QName());
 		List<AstStatement> bodyStatements = partialList.getAllArgsPartial().getBodyStatements().get();
 		
 		assertThat(bodyStatements.size(), is(2));
@@ -104,7 +104,7 @@ public class FunctionDeclarationParserTest {
 //	@Disabled("Doesn't pass, pure declaration is not correctly handled by the grammar.")
 	@DisplayName("Function declaration (without body)")
 	public void functionWithoutBodyStatements() {
-		PartialList partialList = parseTypeDeclaration("void f()", new DefaultSymbolTable(""), new QName());
+		PartialList partialList = parseTypeDeclaration("void f()", new QName());
 		
 		assertThat(partialList.getAllArgsPartial().getBodyStatements().isPresent(), is(false));
 	}

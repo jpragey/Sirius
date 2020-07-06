@@ -18,25 +18,49 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 
 	private List<ImportDeclaration> importDeclarations = new ArrayList<>();
 
-	private LinkedList<AstModuleDeclaration> moduleDeclarations = new LinkedList<>();
+	private List<AstModuleDeclaration> moduleDeclarations = new LinkedList<>();
+	
+	private List<AstPackageDeclaration> packages;	// TODO: remove, they belong to some module
 	
 	private Reporter reporter; 
 	
 	private DefaultSymbolTable symbolTable; 
 
 	
-	public ScriptCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable, AstModuleDeclaration rootModule) {
+	public ScriptCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable,
+			Optional<ShebangDeclaration> shebangDeclaration,
+			List<ImportDeclaration> importDeclarations,
+			List<AstPackageDeclaration> packages,
+			List<AstModuleDeclaration> modules) {
 		super();
 		this.reporter = reporter;
 		this.symbolTable = globalSymbolTable;
-		this.moduleDeclarations.add(rootModule);
-	}
 
+		assert(shebangDeclaration != null);
+		this.shebangDeclaration = shebangDeclaration;
+		this.importDeclarations = importDeclarations;
+		this.moduleDeclarations = modules;
+		
+		this.packages = packages;
+	}
+//	public ScriptCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable, 
+//			AstModuleDeclaration rootModule) {
+//		super();
+//		this.reporter = reporter;
+//		this.symbolTable = globalSymbolTable;
+//		this.moduleDeclarations.add(rootModule);
+//	}
+
+	
+	public List<AstPackageDeclaration> getPackages() {
+		return packages;
+	}
 	public void setShebang(ShebangDeclaration declaration) {
 		this.shebangDeclaration = Optional.of(declaration);
 	}
 	
 	public Optional<ShebangDeclaration> getShebangDeclaration() {
+		assert(shebangDeclaration != null);
 		return shebangDeclaration;
 	}
 
