@@ -137,6 +137,11 @@ modules
 		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, qualifiedName.toQName(), version, equiv, moduleImports);
 		return mod;
 	}
+	public AstModuleDeclaration createEmptyModuleDeclaration() {
+		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, new QName(), new AstToken(0,0,0,0,"\"\"",""), new ModuleImportEquivalents(), new ArrayList<>());
+
+		return mod;
+	}
 	
 	public ImportDeclaration createImportDeclaration(QualifiedName pack) {
 		return new ImportDeclaration(reporter, pack);

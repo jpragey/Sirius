@@ -48,7 +48,7 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		
 		ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO
 		List<ModuleImport> moduleImports = new ArrayList<>(); // TODO
-		addModuleDeclaration(AstModuleDeclaration.createUnnamed(reporter, equivalents, moduleImports));
+//		addModuleDeclaration(AstModuleDeclaration.createUnnamed(reporter, equivalents, moduleImports));
 
 		
 	}

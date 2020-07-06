@@ -44,11 +44,9 @@ public class QNameSetterVisitor implements AstVisitor {
 		QName packageQName = qnameStack.lastElement();
 		classDeclaration.setPackageQName(packageQName);
 		
-//		QName classQName = packageQName.child(className);
 		QName classQName = classDeclaration.getQName();
 //System.out.println("startClass : " + classQName);		
 		qnameStack.push(classQName);
-//		classDeclaration.setqName(classQName);
 		
 		for(TypeParameter formalParameter: classDeclaration.getTypeParameters()) {
 			classDeclaration.getSymbolTable().addFormalParameter(classDeclaration.getQName(), formalParameter);

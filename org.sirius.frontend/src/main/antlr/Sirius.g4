@@ -43,9 +43,6 @@ locals[
     	| functionDeclaration 	{ $stdUnit.addFunctionDeclaration($functionDeclaration.partialList ); }
     	| classDeclaration 		{ $stdUnit.addClassDeclaration($classDeclaration.declaration);	}
     	| interfaceDeclaration	{ $stdUnit.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
-    	
-    	
-    	
     )*
 	EOF
 	;
@@ -54,20 +51,33 @@ locals[
 scriptCompilationUnit returns [ScriptCompilationUnit unit]
 @init {     
 	$unit = factory.createScriptCompilationUnit(/*currentModule*/);
+	
+	
+	AstModuleDeclaration module0 = factory.createEmptyModuleDeclaration();
+	$unit.addModuleDeclaration(module0); 	
 }
 	: (shebangDeclaration			{$unit.setShebang($shebangDeclaration.declaration); })?
     ( importDeclaration 			{$unit.addImport($importDeclaration.declaration);  })*
+    
+    ( moduleContent					{module0.addContent($moduleContent.content); })*
+    
 	(
-		  moduleDeclaration 		{
-		  								$unit.addModuleDeclaration($moduleDeclaration.declaration);
-		  							} 
-		| packageDeclaration 		{$unit.getCurrentModule().addPackageDeclaration($packageDeclaration.declaration);	} 
-		| functionDeclaration 		{$unit.getCurrentModule().addFunctionDeclaration($functionDeclaration.partialList);	}
-		| classDeclaration 			{$unit.getCurrentModule().addClassDeclaration($classDeclaration.declaration);	}
-    	| interfaceDeclaration		{$unit.getCurrentModule().addInterfaceDeclaration($interfaceDeclaration.declaration);	}
+		  moduleDeclaration 		{ $unit.addModuleDeclaration($moduleDeclaration.declaration); }
+		( moduleContent				{$moduleDeclaration.declaration.addContent($moduleContent.content); })*
 	)*
+	
 	EOF
 	;
+moduleContent returns [AstModuleContent content]
+@init {
+	 $content = new AstModuleContent();
+}
+	: packageDeclaration 		{$content.addPackageDeclaration($packageDeclaration.declaration);	} 
+	| functionDeclaration 		{$content.addPartialList($functionDeclaration.partialList);	}
+	| classDeclaration 			{$content.addClass($classDeclaration.declaration);	}
+	| interfaceDeclaration		{$content.addInterface($interfaceDeclaration.declaration);	}
+	; 
+
 
 scriptCompilationUnit2 returns [ScriptCompilationUnit unit]
 @init {     

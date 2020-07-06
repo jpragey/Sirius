@@ -58,7 +58,7 @@ public class ScriptCompilationUnitTest {
 	}
 	
 	@Test
-	@Disabled("Transitional")
+//	@Disabled("Transitional")
 	@DisplayName("Script compilation unit with imports")
 	public void scriptCUWithImports() {
 		scriptCUCheck("#!\nimport a.b.c; import a.b.d {}", cu-> {
@@ -70,7 +70,7 @@ public class ScriptCompilationUnitTest {
 	
 	@Test
 	@Disabled("Transitional")
-	@DisplayName("Script compilation unit with modules")
+//	@DisplayName("Script compilation unit with modules")
 	public void scriptCUWithModules() {
 		scriptCUCheck("#!\n module a.b.c \"42\" {} module a.b.d \"42\" {}", cu-> {
 			assertThat(cu.getModuleDeclarations().size(), equalTo(2));
@@ -80,7 +80,7 @@ public class ScriptCompilationUnitTest {
 	}
 	
 	@Test
-	@Disabled("Transitional")
+//	@Disabled("Transitional")
 	@DisplayName("Script compilation unit with packages")
 	public void scriptCUWithPackages() {
 		scriptCUCheck("#!\n package a.b.c ; package a.b.d;", cu-> {

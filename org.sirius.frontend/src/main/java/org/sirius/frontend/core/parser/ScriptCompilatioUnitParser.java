@@ -1,6 +1,7 @@
 package org.sirius.frontend.core.parser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,10 +60,11 @@ public class ScriptCompilatioUnitParser {
 					.collect(Collectors.toList());
 			
 			// -- package declarations
-			PackageDeclarationParser.PackageDeclarationVisitor packageVisitor = new PackageDeclarationParser.PackageDeclarationVisitor(reporter);
-			List<AstPackageDeclaration> packages = ctx.packageDeclaration().stream()
-					.map(mCtx -> mCtx.accept(packageVisitor))
-					.collect(Collectors.toList());
+//			PackageDeclarationParser.PackageDeclarationVisitor packageVisitor = new PackageDeclarationParser.PackageDeclarationVisitor(reporter);
+//			List<AstPackageDeclaration> packages = ctx.packageDeclaration().stream()
+//					.map(mCtx -> mCtx.accept(packageVisitor))
+//					.collect(Collectors.toList());
+			List<AstPackageDeclaration> packages = Collections.emptyList();
 			
 			DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable("root");	// TODO
 //			List<AstModuleDeclaration> modules = new ArrayList<>(); 
