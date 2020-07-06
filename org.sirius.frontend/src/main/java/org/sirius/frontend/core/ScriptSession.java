@@ -91,10 +91,10 @@ public class ScriptSession implements Session {
 		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
 		parser.factory = astFactory;
 		
-		ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO
-		List<ModuleImport> moduleImports = new ArrayList<>(); // TODO
-		//assert(false);
-		parser.currentModule = AstModuleDeclaration.createUnnamed(reporter, equivalents, moduleImports);	// TODO: WTF ???
+//		ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO
+//		List<ModuleImport> moduleImports = new ArrayList<>(); // TODO
+//		//assert(false);
+//		parser.currentModule = AstModuleDeclaration.createUnnamed(reporter, equivalents, moduleImports);	// TODO: WTF ???
 
 		parser.removeErrorListeners();
 		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));

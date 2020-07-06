@@ -21,7 +21,6 @@ grammar Sirius;
 
 @members {
 	public AstFactory factory;
-	public AstModuleDeclaration currentModule;
 }
 
 
@@ -34,12 +33,13 @@ locals[
 @init {     
 /*	currentPackage = factory.createPackageDeclaration();*/
 	$stdUnit = factory.createStandardCompilationUnit();
+//	AstModuleDeclaration currentModule;
 }
     : 						
     ( importDeclaration 		{ $stdUnit.addImport($importDeclaration.declaration);  })*
     (
     	  moduleDeclaration 	{ $stdUnit.addModuleDeclaration($moduleDeclaration.declaration);    } 
-    	| packageDeclaration	{ currentModule.addPackageDeclaration($packageDeclaration.declaration);}
+    	| packageDeclaration	{ /** currentModule.addPackageDeclaration($packageDeclaration.declaration);*/}
     	| functionDeclaration 	{ $stdUnit.addFunctionDeclaration($functionDeclaration.partialList ); }
     	| classDeclaration 		{ $stdUnit.addClassDeclaration($classDeclaration.declaration);	}
     	| interfaceDeclaration	{ $stdUnit.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
@@ -53,19 +53,18 @@ locals[
 /** CompilationUnit from script */
 scriptCompilationUnit returns [ScriptCompilationUnit unit]
 @init {     
-	$unit = factory.createScriptCompilationUnit(currentModule);
+	$unit = factory.createScriptCompilationUnit(/*currentModule*/);
 }
 	: (shebangDeclaration			{$unit.setShebang($shebangDeclaration.declaration); })?
     ( importDeclaration 			{$unit.addImport($importDeclaration.declaration);  })*
 	(
 		  moduleDeclaration 		{
 		  								$unit.addModuleDeclaration($moduleDeclaration.declaration);
-		  								currentModule = $moduleDeclaration.declaration;
 		  							} 
-		| packageDeclaration 		{currentModule.addPackageDeclaration($packageDeclaration.declaration);	} 
-		| functionDeclaration 		{currentModule.addFunctionDeclaration($functionDeclaration.partialList);	}
-		| classDeclaration 			{currentModule.addClassDeclaration($classDeclaration.declaration);	}
-    	| interfaceDeclaration		{currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
+		| packageDeclaration 		{$unit.getCurrentModule().addPackageDeclaration($packageDeclaration.declaration);	} 
+		| functionDeclaration 		{$unit.getCurrentModule().addFunctionDeclaration($functionDeclaration.partialList);	}
+		| classDeclaration 			{$unit.getCurrentModule().addClassDeclaration($classDeclaration.declaration);	}
+    	| interfaceDeclaration		{$unit.getCurrentModule().addInterfaceDeclaration($interfaceDeclaration.declaration);	}
 	)*
 	EOF
 	;
@@ -79,9 +78,9 @@ scriptCompilationUnit2 returns [ScriptCompilationUnit unit]
 		  moduleDeclaration 		 
 		| packageDeclaration 		
 		| functionDeclaration 		 
-										{currentModule.addFunctionDeclaration($functionDeclaration.partialList);	}
-		| classDeclaration 			{currentModule.addClassDeclaration($classDeclaration.declaration);	}
-    	| interfaceDeclaration		{currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
+										
+		| classDeclaration 			
+    	| interfaceDeclaration		
 	)*
 	EOF
 	;

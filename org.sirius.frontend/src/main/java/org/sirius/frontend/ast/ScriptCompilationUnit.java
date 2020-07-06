@@ -26,7 +26,10 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	
 	private DefaultSymbolTable symbolTable; 
 
+	private AstModuleDeclaration currentModule = null; // TODO: remove
 	
+
+
 	public ScriptCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable,
 			Optional<ShebangDeclaration> shebangDeclaration,
 			List<ImportDeclaration> importDeclarations,
@@ -42,6 +45,12 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		this.moduleDeclarations = modules;
 		
 		this.packages = packages;
+		
+		ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO
+		List<ModuleImport> moduleImports = new ArrayList<>(); // TODO
+		addModuleDeclaration(AstModuleDeclaration.createUnnamed(reporter, equivalents, moduleImports));
+
+		
 	}
 //	public ScriptCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable, 
 //			AstModuleDeclaration rootModule) {
@@ -91,6 +100,11 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 
 	public void addModuleDeclaration(AstModuleDeclaration moduleDeclaration) {
 		this.moduleDeclarations.add(moduleDeclaration);
+		this.currentModule = moduleDeclaration;
+	}
+
+	public AstModuleDeclaration getCurrentModule() { // TODO: remove
+		return currentModule;
 	}
 
 	@Override
