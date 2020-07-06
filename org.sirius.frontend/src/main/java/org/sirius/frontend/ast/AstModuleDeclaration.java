@@ -23,81 +23,18 @@ public class AstModuleDeclaration implements Visitable {
 	
 	private Optional<PhysicalPath> modulePPath = Optional.empty(); 
 
-	private Map<String, AstToken> equivalents = new HashMap<>();
-	
-	public static class ModuleImport {
-		private Reporter reporter; 
-		private boolean shared = false; 
-		private Optional<AstToken> origin = Optional.empty();
-		// The real value, even for if parsed as QName
-		private String groupIdString;
-		// May be null
-		private AstToken groupId; 
-//		private AstToken artefactId; 
-		private AstToken version;
-		private Map<String, AstToken> equivalents;
-		
-		public ModuleImport(Reporter reporter, boolean shared, Map<String, AstToken> equivalents) {
-			super();
-			this.reporter = reporter;
-			this.shared = shared;
-			this.equivalents = equivalents;
-		}
-		public boolean isShared() {
-			return shared;
-		}
-		public void setShared(boolean shared) {
-			this.shared = shared;
-		}
-		public Optional<AstToken> getOrigin() {
-			return origin;
-		}
-		public void setOrigin(Token origin) {
-			this.origin = Optional.of(new AstToken(origin));
-		}
-		public void setGroupId(Token groupId) {
-			this.groupId = new AstToken(groupId);
-			this.setGroupIdString(groupId.getText());
-		}
-		public void setGroupId(QualifiedName groupId) {
-			this.groupId = groupId.getTokenElements().get(0);
-			assert(this.groupId != null);
-			this.setGroupIdString(groupId.toQName().dotSeparated());
-		}
-		public AstToken getVersion() {
-			return version;
-		}
-		public void setVersion(Token version) {
-			this.version = new AstToken(version);
-		}
-		/** when version is a reference to an equivalent */
-		public void setVersionRef(Token version) {
-			String refName = version.getText();
-			AstToken realVersion = equivalents.get(refName);
-			if(realVersion == null) {
-				reporter.error("Undefined reference to import version.", new AstToken(version));
-				this.version = new AstToken(0,0,0,0,"","");
-			} else {
-				this.version = realVersion;
-			}
-		}
-		public String getGroupIdString() {
-			return groupIdString;
-		}
-		public void setGroupIdString(String groupIdString) {
-			this.groupIdString = groupIdString;
-		}
-		
-		
-	}
+//	private Map<String, AstToken> equivalents = new HashMap<>();
+	private ModuleImportEquivalents equiv = new ModuleImportEquivalents();
 	
 	private List<ModuleImport> moduleImports = new ArrayList<>(); 
 	
 	private List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
 	
 	private AstPackageDeclaration currentPackage;
+	// version, without start-=/end double quotes/blanks
+	private String versionString;
 	
-	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, AstToken version) {
+	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, AstToken version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports) {
 		super();
 		this.reporter = reporter;
 		this.currentPackage = new AstPackageDeclaration(reporter, qualifiedName);
@@ -107,15 +44,21 @@ public class AstModuleDeclaration implements Visitable {
 		PhysicalPath pp = new PhysicalPath(qName/*.toQName()*/.getStringElements());
 		this.modulePPath = Optional.of(pp);
 
-		this.version = version; 
+		this.version = version;
+		
+		this.equiv = equiv;
+		this.moduleImports = moduleImports;
+		String vs = version.getText();
+		assert(vs.length() >=2);	// contains start/end double quotes
+		this.versionString = vs.substring(1, vs.length()-1).trim();
 	}
 
-	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, Token version) {
-		this(reporter, qualifiedName, new AstToken(version));
+	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, Token version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports) {
+		this(reporter, qualifiedName, new AstToken(version), equiv, moduleImports);
 	}
 	
-	public static AstModuleDeclaration createUnnamed(Reporter reporter) {
-		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, new QName(), new AstToken(0,0,0,0,"",""));
+	public static AstModuleDeclaration createUnnamed(Reporter reporter, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports) {
+		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, new QName(), new AstToken(0,0,0,0,"\"\"",""), equiv, moduleImports);
 		return mod;
 	}
 
@@ -137,6 +80,15 @@ public class AstModuleDeclaration implements Visitable {
 		return currentPackage;
 	}
 	
+	/** Get verion, without start/end double quotes and trimmed.
+	 * 
+	 * @return
+	 */
+	public String getVersionString() {
+		return versionString;
+//		return version.getText();
+	}
+
 	/** Add a new package, update current package reference
 	 * 
 	 * @param packageDeclaration
@@ -165,15 +117,25 @@ public class AstModuleDeclaration implements Visitable {
 		this.getCurrentPackage().addInterfaceDeclaration(interfaceDeclaration);
 	}
 
-	public void addValueEquivalent(Token name, Token value) {
-		
-		equivalents.put(name.getText(), new AstToken(value));
-	}
-	
-	public ModuleImport addImport(boolean shared) {
-		ModuleImport moduleImport = new ModuleImport(reporter, shared, equivalents);
+//	public void addValueEquivalent(Token name, Token value) {
+//		
+//		equivalents.put(name.getText(), new AstToken(value));
+//	}
+//	
+//	public ModuleImport addImport(boolean shared) {
+//		ModuleImport moduleImport = new ModuleImport(shared /*, equivalents*/,
+//				Optional.empty() /*<AstToken> origin*/ // TODO 
+//				,Optional.empty() /*<QName> qname*/ // TODO 
+//				,Optional.empty() /*<String> qnameString*/ // TODO 
+//				);
+//		this.moduleImports.add(moduleImport);
+//		return moduleImport;
+//		
+//	}
+	public void appendImport(ModuleImport moduleImport) {
+//		ModuleImport moduleImport = new ModuleImport(reporter, shared, equivalents);
 		this.moduleImports.add(moduleImport);
-		return moduleImport;
+//		return moduleImport;
 		
 	}
 
@@ -181,13 +143,13 @@ public class AstModuleDeclaration implements Visitable {
 		return version;
 	}
 
-	public Map<String, AstToken> getEquivalents() {
-		return equivalents;
-	}
-
-	public void setEquivalents(Map<String, AstToken> equivalents) {
-		this.equivalents = equivalents;
-	}
+//	public Map<String, AstToken> getEquivalents() {
+//		return equivalents;
+//	}
+//
+//	public void setEquivalents(Map<String, AstToken> equivalents) {
+//		this.equivalents = equivalents;
+//	}
 
 	public QName getqName() {
 		return qName;

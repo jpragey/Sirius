@@ -115,8 +115,8 @@ public class AstFactory {
 		return new AstPackageDeclaration(reporter, qname.toQName());
 	}
 
-	public AstModuleDeclaration createModuleDeclaration(QualifiedName qualifiedName, Token version) {
-		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, qualifiedName.toQName(), version);
+	public AstModuleDeclaration createModuleDeclaration(QualifiedName qualifiedName, Token version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports) {
+		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, qualifiedName.toQName(), version, equiv, moduleImports);
 		return mod;
 	}
 	
@@ -179,5 +179,11 @@ public class AstFactory {
 	public Annotation annotation(Token name) {
 		return new Annotation(new AstToken(name));
 	}
+
+	/**TODO : remove */
+	public Reporter getReporter() {
+		return reporter;
+	}
+
 	
 }

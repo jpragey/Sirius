@@ -24,6 +24,8 @@ import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
+import org.sirius.frontend.ast.ModuleImport;
+import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.QNameRefType;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
@@ -61,7 +63,10 @@ public class SdkTools {
 		super();
 		this.reporter = reporter;
 
-		this.sdkModule = new AstModuleDeclaration(reporter, siriusLangQName, versionToken);
+		ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO: check
+		List<ModuleImport> moduleImports = Collections.emptyList();
+		// assert(false);
+		this.sdkModule = new AstModuleDeclaration(reporter, siriusLangQName, versionToken, equivalents, moduleImports);
 
 //		this.langPackage = this.sdkModule.createPackageDeclaration(siriusLangQName);
 		this.langPackage = this.sdkModule.getCurrentPackage();

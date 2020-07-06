@@ -1,6 +1,7 @@
 package org.sirius.frontend.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,8 @@ import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Session;
 import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstModuleDeclaration;
+import org.sirius.frontend.ast.ModuleImport;
+import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.parser.SiriusLexer;
@@ -88,7 +91,10 @@ public class ScriptSession implements Session {
 		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
 		parser.factory = astFactory;
 		
-		parser.currentModule = AstModuleDeclaration.createUnnamed(reporter);	// TODO: WTF ???
+		ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO
+		List<ModuleImport> moduleImports = new ArrayList<>(); // TODO
+		//assert(false);
+		parser.currentModule = AstModuleDeclaration.createUnnamed(reporter, equivalents, moduleImports);	// TODO: WTF ???
 
 		parser.removeErrorListeners();
 		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));

@@ -17,7 +17,7 @@ import org.sirius.frontend.parser.SiriusParser.QnameContext;
  */
 public class PackageDeclarationParser {
 
-	public static class QNameVisitor extends SiriusBaseVisitor<QName> {
+	public static class QNameVisitor extends SiriusBaseVisitor<QName> {	// TODO: should have its own namespace
 		public QName visitQname(QnameContext ctx) 
 		{
 			List<String> elements = ctx.LOWER_ID().stream()

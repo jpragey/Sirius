@@ -15,6 +15,8 @@ grammar Sirius;
 	import org.sirius.frontend.symbols.DefaultSymbolTable;
 	
 	import java.util.Optional;
+	import java.util.HashMap;
+	
 }
 
 @members {
@@ -91,29 +93,62 @@ packageDescriptorCompilationUnit returns [PackageDescriptorCompilationUnit unit]
 // -------------------- MODULE DECLARATION
 
 moduleDeclaration returns [AstModuleDeclaration declaration]
-	: 'module' qname STRING				{ $declaration = factory.createModuleDeclaration($qname.content, $STRING); }
+@init {
+	ModuleImportEquivalents importEquiv = new ModuleImportEquivalents();
+	List<ModuleImport> moduleImports= new ArrayList<>();
+}
+	: 'module' qname version=STRING				{ /*$declaration = factory.createModuleDeclaration($qname.content, $version); */}
 	  '{'
-	  		(	
-	  			  'value' name=LOWER_ID '=' value=STRING ';' 	{ $declaration.addValueEquivalent($name, $value); }
-	  			|
-	  									{ boolean shared = false; } 
-	  				( 'shared' 			{ shared = true;})? 
-	  				'import'    		{ AstModuleDeclaration.ModuleImport mi = $declaration.addImport(shared);} 
-	  				
-	  							// source: package artefact version
-	  				(STRING ':'			{	mi.setOrigin($STRING); })?
-	  				
-	  				( 	  qname 	{ mi.setGroupId($qname.content);} 
-	  					| STRING 	{ mi.setGroupId($STRING); }
-	  				)
-	  				( 	  LOWER_ID 	{ mi.setVersionRef($LOWER_ID);} 
-	  					| STRING 	{ mi.setVersion($STRING); }
-	  				)
-	  				';'
-	  				 
-	  		)*
+	  		( moduleImport 			{ moduleImports.add($moduleImport.modImport);} )*
 	  '}'
+	  { $declaration = factory.createModuleDeclaration($qname.content, $version, importEquiv, moduleImports); }
 	;
+
+moduleImport returns [ModuleImport modImport]
+@init {
+	boolean shared = false;
+	QualifiedName qnameAsQName = null;
+	Optional<QualifiedName> qnameAsQN = Optional.empty();
+	Optional<String> qnameString = Optional.empty();
+}
+	: 
+							{  } 
+		( shared='shared' 			{ shared = true;})? 
+		'import'    		 
+		
+					// format:  (origin:)? qname version
+		(origin=STRING ':'			{	 })?
+		
+		( 	  nameQName=qname 	{ 
+							qnameAsQN = Optional.of($qname.content);
+							qnameAsQName = $qname.content;
+						
+						} 
+			| 
+			  nameString=STRING 	{ 
+										qnameString = Optional.of($nameString.getText());
+									}
+		)
+		( 	  version=LOWER_ID 	{ /*mi.setVersionRef($LOWER_ID);*/ /* TODO */} 
+			| versionString=STRING 
+		)
+		';'	
+		{ 
+			$modImport = new ModuleImport(shared, Optional.empty(), 
+				qnameAsQN.map(qn->qn.toQName()), qnameString, 
+				$version, $versionString
+			);
+			if($origin!=null)
+				$modImport.setOrigin($origin);
+				
+//			if($versionString != null)
+//				$modImport.setVersionString($versionString);
+
+		}
+;
+
+
+
 
 qname returns [QualifiedName content]
 @init {

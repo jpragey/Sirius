@@ -1,6 +1,7 @@
 package org.sirius.frontend.sirius.lang;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.sirius.common.core.QName;
@@ -10,6 +11,8 @@ import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
+import org.sirius.frontend.ast.ModuleImport;
+import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 public class SiriusLangPackage { // TODO: remove, unused ???
@@ -52,7 +55,10 @@ public class SiriusLangPackage { // TODO: remove, unused ???
 		this.reporter = reporter;
 		
 
-		this.siriusLangModule = new AstModuleDeclaration(reporter, siriusLangPackage.getQname(), versionToken);	// TODO: WTF ???
+		ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO
+		List<ModuleImport> moduleImports = Collections.emptyList();
+		assert(false);
+		this.siriusLangModule = new AstModuleDeclaration(reporter, siriusLangPackage.getQname(), versionToken, equivalents, moduleImports);	// TODO: WTF ???
 
 		this.siriusLangPackage = new AstPackageDeclaration(reporter, siriusLangQName);
 

@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstFactory;
+import org.sirius.frontend.core.AntlrErrorListenerProxy;
 import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
@@ -17,6 +18,10 @@ public class ParserUtil {
 		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 		
 		SiriusParser parser = new SiriusParser(tokenStream);
+		
+		parser.removeErrorListeners();
+		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
+
 		DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable("");
 		parser.factory = new AstFactory(reporter, globalSymbolTable);
 		

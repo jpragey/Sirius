@@ -26,18 +26,6 @@ import org.sirius.frontend.parser.SiriusParser.QnameContext;
 public class ImportDeclarationParser {
 
 	
-	public static class QNameVisitor extends SiriusBaseVisitor<QualifiedName> {
-		public QualifiedName visitQname(QnameContext ctx) 
-		{
-			List<AstToken> elements = ctx.LOWER_ID().stream()
-					.map(termNode -> new AstToken(termNode.getSymbol()))
-					.collect(Collectors.toList());
-			
-			QualifiedName qName = new QualifiedName(elements);
-			return qName;
-		};
-	}
-	
 	public static class ImportDeclarationElementVisitor extends SiriusBaseVisitor<ImportDeclarationElement> {
 		@Override
 		public ImportDeclarationElement visitImportDeclarationElement(ImportDeclarationElementContext ctx) {
@@ -63,7 +51,7 @@ public class ImportDeclarationParser {
 
 		@Override
 		public ImportDeclaration visitImportDeclaration(ImportDeclarationContext ctx) {
-			QNameVisitor nameVisitor = new QNameVisitor();
+			QNameParser.QNameVisitor nameVisitor = new QNameParser.QNameVisitor();
 			QualifiedName pack = ctx.qname.accept(nameVisitor);
 
 			ImportDeclarationElementVisitor elementVisitor = new ImportDeclarationElementVisitor();
