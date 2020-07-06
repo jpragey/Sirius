@@ -107,43 +107,31 @@ moduleDeclaration returns [AstModuleDeclaration declaration]
 moduleImport returns [ModuleImport modImport]
 @init {
 	boolean shared = false;
-	QualifiedName qnameAsQName = null;
+	Optional<AstToken> originOpt = Optional.empty();
 	Optional<QualifiedName> qnameAsQN = Optional.empty();
 	Optional<String> qnameString = Optional.empty();
 }
 	: 
-							{  } 
 		( shared='shared' 			{ shared = true;})? 
 		'import'    		 
 		
 					// format:  (origin:)? qname version
-		(origin=STRING ':'			{	 })?
+		(origin=STRING ':' { originOpt = Optional.of(new AstToken($origin));  })?
 		
-		( 	  nameQName=qname 	{ 
-							qnameAsQN = Optional.of($qname.content);
-							qnameAsQName = $qname.content;
-						
-						} 
-			| 
-			  nameString=STRING 	{ 
-										qnameString = Optional.of($nameString.getText());
-									}
+		( 	  nameQName=qname 		{ qnameAsQN = Optional.of($qname.content); } 
+			| nameString=STRING 	{ qnameString = Optional.of($nameString.getText()); }
 		)
-		( 	  version=LOWER_ID 	{ /*mi.setVersionRef($LOWER_ID);*/ /* TODO */} 
+		( 	  version=LOWER_ID  
 			| versionString=STRING 
 		)
 		';'	
 		{ 
-			$modImport = new ModuleImport(shared, Optional.empty(), 
+			$modImport = new ModuleImport(shared, originOpt, 
 				qnameAsQN.map(qn->qn.toQName()), qnameString, 
 				$version, $versionString
 			);
-			if($origin!=null)
-				$modImport.setOrigin($origin);
-				
-//			if($versionString != null)
-//				$modImport.setVersionString($versionString);
-
+//			if($origin!=null)
+//				$modImport.setOrigin($origin);
 		}
 ;
 

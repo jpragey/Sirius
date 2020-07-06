@@ -64,18 +64,6 @@ public class ModuleImport {
 	public Optional<String> getOriginString() {
 		return origin.map(tk -> {String s = tk.getText(); return s.substring(1, s.length()-1).trim();});
 	}
-	public void setOrigin(Token origin) {
-		this.origin = Optional.of(new AstToken(origin));
-	}
-//		public void setGroupId(Token groupId) {
-//			this.groupId = new AstToken(groupId);
-//			this.setGroupIdString(groupId.getText());
-//		}
-//		public void setGroupId(QualifiedName groupId) {
-//			this.groupId = groupId.getTokenElements().get(0);
-//			assert(this.groupId != null);
-//			this.setGroupIdString(groupId.toQName().dotSeparated());
-//		}
 	public AstToken getVersion() {
 		return version;
 	}

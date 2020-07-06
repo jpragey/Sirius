@@ -117,21 +117,6 @@ public class AstModuleDeclaration implements Visitable {
 		this.getCurrentPackage().addInterfaceDeclaration(interfaceDeclaration);
 	}
 
-//	public void addValueEquivalent(Token name, Token value) {
-//		
-//		equivalents.put(name.getText(), new AstToken(value));
-//	}
-//	
-//	public ModuleImport addImport(boolean shared) {
-//		ModuleImport moduleImport = new ModuleImport(shared /*, equivalents*/,
-//				Optional.empty() /*<AstToken> origin*/ // TODO 
-//				,Optional.empty() /*<QName> qname*/ // TODO 
-//				,Optional.empty() /*<String> qnameString*/ // TODO 
-//				);
-//		this.moduleImports.add(moduleImport);
-//		return moduleImport;
-//		
-//	}
 	public void appendImport(ModuleImport moduleImport) {
 //		ModuleImport moduleImport = new ModuleImport(reporter, shared, equivalents);
 		this.moduleImports.add(moduleImport);
