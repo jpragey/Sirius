@@ -25,6 +25,10 @@ public class PartialList implements Visitable {
 //	private List<AstStatement> statements;
 	private Optional<List<AstStatement>> body;
 
+	public void setContainerQName(QName containerQName) {
+		this.qName = containerQName.child(new QName(name.getText()));
+	}
+	
 	@Override
 	public String toString() {
 		return partials.stream()

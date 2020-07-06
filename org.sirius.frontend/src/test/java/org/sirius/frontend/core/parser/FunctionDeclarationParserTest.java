@@ -43,7 +43,7 @@ public class FunctionDeclarationParserTest {
 	private PartialList parseTypeDeclaration(String inputText, QName containerQName) {
 		
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
-		ParseTree tree = parser.functionDeclaration(containerQName);
+		ParseTree tree = parser.functionDeclaration();
 				
 		FunctionDeclarationParser.FunctionDeclarationVisitor typeVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter, containerQName);
 		PartialList myType = typeVisitor.visit(tree);

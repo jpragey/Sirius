@@ -40,7 +40,7 @@ locals[
     (
     	  moduleDeclaration 	{ $stdUnit.addModuleDeclaration($moduleDeclaration.declaration);    } 
     	| packageDeclaration	{ currentModule.addPackageDeclaration($packageDeclaration.declaration);}
-    	| functionDeclaration 	[QName.empty]	{ $stdUnit.addFunctionDeclaration($functionDeclaration.partialList ); }
+    	| functionDeclaration 	{ $stdUnit.addFunctionDeclaration($functionDeclaration.partialList ); }
     	| classDeclaration 		[currentModule.getCurrentPackage().getQname()] { $stdUnit.addClassDeclaration($classDeclaration.declaration);	}
     	| interfaceDeclaration	[currentModule.getCurrentPackage().getQname()] { $stdUnit.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
     	
@@ -68,7 +68,7 @@ scriptCompilationUnit returns [ScriptCompilationUnit unit]
 										//scriptCurrentState.getCurrentModule().addPackageDeclaration($packageDeclaration.declaration);
 
 									} 
-		| functionDeclaration 		[currentModule.getCurrentPackage().getQname()] 
+		| functionDeclaration 		 
 										{currentModule.addFunctionDeclaration($functionDeclaration.partialList);	}
 		| classDeclaration 			[currentModule.getCurrentPackage().getQname()] {currentModule.addClassDeclaration($classDeclaration.declaration);	}
     	| interfaceDeclaration		[currentModule.getCurrentPackage().getQname()] {currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
@@ -84,7 +84,7 @@ scriptCompilationUnit2 returns [ScriptCompilationUnit unit]
 	(
 		  moduleDeclaration 		 
 		| packageDeclaration 		
-		| functionDeclaration 		[currentModule.getCurrentPackage().getQname()] 
+		| functionDeclaration 		 
 										{currentModule.addFunctionDeclaration($functionDeclaration.partialList);	}
 		| classDeclaration 			[currentModule.getCurrentPackage().getQname()] {currentModule.addClassDeclaration($classDeclaration.declaration);	}
     	| interfaceDeclaration		[currentModule.getCurrentPackage().getQname()] {currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
@@ -225,7 +225,7 @@ memberValueDeclaration returns [AstMemberValueDeclaration declaration]
 // -------------------- (TOP-LEVEL ?) FUNCION
 // Also maps to annotation declaration.
 
-functionDeclaration [QName containerQName] returns [PartialList partialList]
+functionDeclaration returns [PartialList partialList]
 @init {
 	AstType retType;
 	ArrayList<AstFunctionParameter> arguments = new ArrayList<>();
@@ -238,7 +238,7 @@ functionDeclaration [QName containerQName] returns [PartialList partialList]
 	  )
 	  name=LOWER_ID		{ 
 	  	/* builder = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, containerQName);*/
-	  	fdBuilder = factory. createFunctionDeclaration($annotationList.annotations, $name, retType, containerQName);
+	  	fdBuilder = factory. createFunctionDeclaration($annotationList.annotations, $name, retType, QName.empty /*containerQName*/);
 	  }
 	  (
 	    '<'
@@ -447,7 +447,7 @@ classDeclaration [QName containerQName] returns [AstClassDeclaration declaration
 			  
 	  '{'
 	  (
-	  	  functionDeclaration		[$declaration.getQName()] { $declaration = $declaration.withFunctionDeclaration($functionDeclaration.partialList);}
+	  	  functionDeclaration		{ $declaration = $declaration.withFunctionDeclaration($functionDeclaration.partialList);}
 	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
 	  )*
 	  '}'
@@ -478,7 +478,7 @@ interfaceDeclaration [QName containerQName] returns [AstInterfaceDeclaration dec
 			  
 	  '{'
 	  (
-	  	  functionDeclaration		[$declaration.getQName()] { $declaration = $declaration.withFunctionDeclaration($functionDeclaration.partialList);}
+	  	  functionDeclaration		{ $declaration = $declaration.withFunctionDeclaration($functionDeclaration.partialList);}
 	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
 	  )*
 	  '}'

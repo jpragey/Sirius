@@ -120,6 +120,10 @@ public class Partial implements Visitable{
 		return resolved;
 	}
 
+	public void setContainerQName(QName containerQName) {
+		this.qName = containerQName.child(new QName(name.getText()));
+	}
+
 	public AstToken getName() {
 		return name;
 	}

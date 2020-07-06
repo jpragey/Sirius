@@ -7,8 +7,11 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
+import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
+import org.sirius.frontend.ast.Partial;
+import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.TypeParameter;
 
@@ -38,12 +41,12 @@ public class QNameSetterVisitor implements AstVisitor {
 	@Override
 	public void startClassDeclaration(AstClassDeclaration classDeclaration) {
 
-//		String className = classDeclaration.getName().getText();
 		QName packageQName = qnameStack.lastElement();
 		classDeclaration.setPackageQName(packageQName);
 		
 //		QName classQName = packageQName.child(className);
 		QName classQName = classDeclaration.getQName();
+//System.out.println("startClass : " + classQName);		
 		qnameStack.push(classQName);
 //		classDeclaration.setqName(classQName);
 		
@@ -54,7 +57,8 @@ public class QNameSetterVisitor implements AstVisitor {
 
 	@Override
 	public void endClassDeclaration(AstClassDeclaration classDeclaration) {
-		qnameStack.pop();
+		QName classQName = qnameStack.pop();
+//System.out.println("endClass : " + classQName);		
 	}
 
 	@Override
@@ -65,6 +69,7 @@ public class QNameSetterVisitor implements AstVisitor {
 		
 //		QName classQName = packageQName.child(className);
 		QName classQName = interfaceDeclaration.getQName();
+//System.out.println("startInterface : " + classQName);		
 		qnameStack.push(classQName);
 //		classDeclaration.setqName(classQName);
 		
@@ -74,9 +79,42 @@ public class QNameSetterVisitor implements AstVisitor {
 	}
 	@Override
 	public void endInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
+		QName classQName = qnameStack.pop();
+//System.out.println("endInterface : " + classQName);		
+	}
+	
+	@Override
+	public void startModuleDeclaration(AstModuleDeclaration declaration) {
+		QName moduleQName = declaration.getqName();
+		qnameStack.push(moduleQName);
+	}
+	@Override
+	public void endModuleDeclaration(AstModuleDeclaration declaration) {
 		qnameStack.pop();
 	}
 	
+	
+	@Override
+	public void startPartialList(PartialList partialList) {
+		QName containerQName = qnameStack.peek();
+		partialList.setContainerQName(containerQName);
+		qnameStack.push(containerQName);
+	}
+	@Override
+	public void endPartialList(PartialList partialList) {
+		qnameStack.pop();
+	}
+
+	@Override
+	public void startPartial(Partial partial) {
+		QName containerQName = qnameStack.peek();
+		partial.setContainerQName(containerQName);
+		qnameStack.push(containerQName);
+	}
+	@Override
+	public void endPartial(Partial partialFunctionDeclaration) {
+		qnameStack.pop();
+	}
 	
 	@Override
 	public void startFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
