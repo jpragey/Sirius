@@ -41,7 +41,7 @@ public class ClassDeclarationParserTest {
 	private AstClassDeclaration parseClassDeclaration(String inputText, QName containerQName) {
 		
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
-		ParseTree tree = parser.classDeclaration(containerQName);
+		ParseTree tree = parser.classDeclaration();
 				
 		ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser.ClassDeclarationVisitor(reporter, containerQName);
 		AstClassDeclaration classDeclaration = visitor.visit(tree);

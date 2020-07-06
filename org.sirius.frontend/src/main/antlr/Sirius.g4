@@ -41,8 +41,8 @@ locals[
     	  moduleDeclaration 	{ $stdUnit.addModuleDeclaration($moduleDeclaration.declaration);    } 
     	| packageDeclaration	{ currentModule.addPackageDeclaration($packageDeclaration.declaration);}
     	| functionDeclaration 	{ $stdUnit.addFunctionDeclaration($functionDeclaration.partialList ); }
-    	| classDeclaration 		[currentModule.getCurrentPackage().getQname()] { $stdUnit.addClassDeclaration($classDeclaration.declaration);	}
-    	| interfaceDeclaration	[currentModule.getCurrentPackage().getQname()] { $stdUnit.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
+    	| classDeclaration 		{ $stdUnit.addClassDeclaration($classDeclaration.declaration);	}
+    	| interfaceDeclaration	{ $stdUnit.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
     	
     	
     	
@@ -62,16 +62,10 @@ scriptCompilationUnit returns [ScriptCompilationUnit unit]
 		  								$unit.addModuleDeclaration($moduleDeclaration.declaration);
 		  								currentModule = $moduleDeclaration.declaration;
 		  							} 
-		| packageDeclaration 		{
-										//$unit.addPackageDeclaration($packageDeclaration.declaration);
-										currentModule.addPackageDeclaration($packageDeclaration.declaration);
-										//scriptCurrentState.getCurrentModule().addPackageDeclaration($packageDeclaration.declaration);
-
-									} 
-		| functionDeclaration 		 
-										{currentModule.addFunctionDeclaration($functionDeclaration.partialList);	}
-		| classDeclaration 			[currentModule.getCurrentPackage().getQname()] {currentModule.addClassDeclaration($classDeclaration.declaration);	}
-    	| interfaceDeclaration		[currentModule.getCurrentPackage().getQname()] {currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
+		| packageDeclaration 		{currentModule.addPackageDeclaration($packageDeclaration.declaration);	} 
+		| functionDeclaration 		{currentModule.addFunctionDeclaration($functionDeclaration.partialList);	}
+		| classDeclaration 			{currentModule.addClassDeclaration($classDeclaration.declaration);	}
+    	| interfaceDeclaration		{currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
 	)*
 	EOF
 	;
@@ -86,8 +80,8 @@ scriptCompilationUnit2 returns [ScriptCompilationUnit unit]
 		| packageDeclaration 		
 		| functionDeclaration 		 
 										{currentModule.addFunctionDeclaration($functionDeclaration.partialList);	}
-		| classDeclaration 			[currentModule.getCurrentPackage().getQname()] {currentModule.addClassDeclaration($classDeclaration.declaration);	}
-    	| interfaceDeclaration		[currentModule.getCurrentPackage().getQname()] {currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
+		| classDeclaration 			{currentModule.addClassDeclaration($classDeclaration.declaration);	}
+    	| interfaceDeclaration		{currentModule.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
 	)*
 	EOF
 	;
@@ -415,7 +409,7 @@ packageDeclaration returns [AstPackageDeclaration declaration]
 
 // -------------------- CLASS 
 //
-classDeclaration [QName containerQName] returns [AstClassDeclaration declaration]
+classDeclaration returns [AstClassDeclaration declaration]
 @init {
 //	List<Annotation> annos = new ArrayList<Annotation> ();
 	boolean isInterface;
@@ -424,7 +418,7 @@ classDeclaration [QName containerQName] returns [AstClassDeclaration declaration
 	  (   'class' 		{isInterface = false;}
 	  	/*| 'interface'	{isInterface = true;}*/
 	  )
-	  TYPE_ID		{ $declaration = factory.createClassOrInterface($TYPE_ID /* , currentPackage*/, isInterface, containerQName); }
+	  TYPE_ID		{ $declaration = factory.createClassOrInterface($TYPE_ID /* , currentPackage*/, isInterface /* , containerQName*/); }
 	  '('
 	  	(  functionFormalArgument		{ $declaration.addAnonConstructorArgument($functionFormalArgument.argument); }
 	  	  (  ',' functionFormalArgument	{ $declaration.addAnonConstructorArgument($functionFormalArgument.argument); } )*
@@ -452,7 +446,7 @@ classDeclaration [QName containerQName] returns [AstClassDeclaration declaration
 	  )*
 	  '}'
 	;
-interfaceDeclaration [QName containerQName] returns [AstInterfaceDeclaration declaration]
+interfaceDeclaration returns [AstInterfaceDeclaration declaration]
 @init {
 //	List<Annotation> annos = new ArrayList<Annotation> ();
 	boolean isInterface;
@@ -460,7 +454,7 @@ interfaceDeclaration [QName containerQName] returns [AstInterfaceDeclaration dec
 	: 
 	  ('interface'	{isInterface = true;} // TODO: no need of isInterface
 	  )
-	  TYPE_ID		{ $declaration = factory.createInterface($TYPE_ID, containerQName); }
+	  TYPE_ID		{ $declaration = factory.createInterface($TYPE_ID); }
 	  (
 	  	'<'
 	  	(

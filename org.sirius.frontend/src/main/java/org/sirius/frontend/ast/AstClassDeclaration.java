@@ -51,7 +51,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 	private Reporter reporter;
 	
-	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/, QName packageQName,
+	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/ , QName packageQName,
 			ImmutableList<TypeParameter> typeParameters,
 			ImmutableList<PartialList> functionDeclarations,
 			List<AstMemberValueDeclaration> valueDeclarations,
@@ -62,8 +62,8 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		this.reporter = reporter;
 		this.interfaceType = interfaceType;
 		this.name = name;
-		this.packageQName = packageQName;
 		
+		this.packageQName = new QName();
 		this.qName = packageQName.child(name.getText());
 		
 //		packageQName.ifPresent((pkgQName) -> {this.qName = pkgQName.child(name.getText());});

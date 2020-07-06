@@ -36,10 +36,10 @@ public class InterfaceDeclarationParserTest {
 	}
 	
 	
-	private AstInterfaceDeclaration parseInterfaceDeclaration(String inputText, QName containerQName) {
+	private AstInterfaceDeclaration parseInterfaceDeclaration(String inputText) {
 		
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
-		ParseTree tree = parser.interfaceDeclaration(containerQName);
+		ParseTree tree = parser.interfaceDeclaration();
 				
 		InterfaceDeclarationParser.TypeParameterVisitor visitor = new InterfaceDeclarationParser.TypeParameterVisitor(reporter);
 		AstInterfaceDeclaration interfaceDeclaration = visitor.visit(tree);
@@ -55,8 +55,8 @@ public class InterfaceDeclarationParserTest {
 	}
 	
 	public void simplestTypecheck(String inputText) {
-		QName containerQName = new QName ("a", "b", "c");
-		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration(inputText, containerQName);
+//		QName containerQName = new QName ("a", "b", "c");
+		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration(inputText);
 		//TypeParameter typeParameter = (TypeParameter)myType;
 		
 		assertEquals(myInterface.getName().getText(), "I");
@@ -67,7 +67,7 @@ public class InterfaceDeclarationParserTest {
 	@Test
 	@DisplayName("Interface declarations with type parameters")
 	public void interfaceDeclarationsWithTypeParameters() {
-		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I<T0,T1,T2>{}", new QName ());
+		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I<T0,T1,T2>{}");
 
 		assertEquals(myInterface.getTypeParameters().size(), 3);
 		assertEquals(myInterface.getTypeParameters().stream()
@@ -79,7 +79,7 @@ public class InterfaceDeclarationParserTest {
 	@Test
 	@DisplayName("Interface declarations satisfying interfaces")
 	public void interfaceDeclarationsImplementingInterfaces() {
-		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I implements I0 {}", new QName ());
+		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I implements I0 {}");
 
 		assertEquals(myInterface.getAncestors().size(), 1);
 		
@@ -92,14 +92,14 @@ public class InterfaceDeclarationParserTest {
 	@Test
 	@DisplayName("Interface with methods")
 	public void interfaceDeclarationsHavingMethods() {
-		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I {void f(){} void g(){} }", new QName ());
+		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I {void f(){} void g(){} }");
 
 		assertEquals(myInterface.getFunctionDeclarations().size(), 2);
 	}
 	@Test
 	@DisplayName("Interface with values")
 	public void interfaceHavingValues() {
-		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I {Integer v0; Integer v1;}", new QName ());
+		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I {Integer v0; Integer v1;}");
 
 		assertEquals(myInterface.getValueDeclarations().size(), 2);
 	}
