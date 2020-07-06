@@ -54,17 +54,7 @@ public class ModuleDeclarationParserTest {
 	public void simplestModuleImport() {
 		moduleImportCheck("import a.b.c \" 1.0 \" ;", md-> {
 			assertTrue(md.getOrigin().isEmpty());
-			
-//			assertThat(md.getqName().dotSeparated(), equalTo("a.b.c"));
-//			assertThat(md.getVersion()().getText(), equalTo("\" 1.0 \""));
-//			assertThat(md.getVersionString(), equalTo("1.0"));
 		});
-//		moduleImportCheck("import a.b.c \" 1.0 \" {}", md-> {
-////			assertThat(md.getOrigin()., equalTo("a.b.c"));
-////			assertThat(md.getqName().dotSeparated(), equalTo("a.b.c"));
-////			assertThat(md.getVersion()().getText(), equalTo("\" 1.0 \""));
-////			assertThat(md.getVersionString(), equalTo("1.0"));
-//		});
 	}
 	
 	@Test
@@ -146,6 +136,31 @@ public class ModuleDeclarationParserTest {
 			assertThat(md.getqName().dotSeparated(), equalTo("a.b.c"));
 			assertThat(md.getVersion().getText(), equalTo("\" 1.0 \""));
 			assertThat(md.getVersionString(), equalTo("1.0"));
+		});
+	}
+	
+	@Test
+	@DisplayName("Module declaration with imports")
+	public void moduleDeclarationsImports() {
+		simplestModuleCheck("module a.b.c \"1\" { import lib0 \"1\"; import lib1 \"1\";   }", md-> {
+			List<ModuleImport> imports = md.getModuleImports();
+			assertThat(imports.size(), equalTo(2));
+			assertThat(imports.get(0).getQname().get().dotSeparated(), equalTo("lib0"));
+			assertThat(imports.get(1).getQname().get().dotSeparated(), equalTo("lib1"));
+		});
+	}
+	
+	@Test
+	@DisplayName("Module declaration with equivalents")
+	public void moduleDeclarationsEquivalents() {
+		simplestModuleCheck("module a.b.c \"1\" { "
+				+ "lib0version = \"0\"; "
+				+ "import lib0 \"0\"; "
+				+ "lib1version = \" 1 \"; "
+				+ "import lib1 \"1\";   }", md-> {
+					assertThat(md.getEquivalents().getEquivalentsMap().size(), equalTo(2));
+					assertThat(md.getEquivalents().getTrimmed("lib0version").get(), equalTo("0"));
+					assertThat(md.getEquivalents().getTrimmed("lib1version").get(), equalTo("1"));
 		});
 	}
 	

@@ -64,6 +64,10 @@ public class AstModuleDeclaration implements Visitable {
 
 	
 	
+	public ModuleImportEquivalents getEquivalents() {
+		return equiv;
+	}
+
 	public List<AstPackageDeclaration> getPackageDeclarations() {
 		return packageDeclarations;
 	}

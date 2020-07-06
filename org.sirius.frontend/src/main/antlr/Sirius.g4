@@ -99,10 +99,21 @@ moduleDeclaration returns [AstModuleDeclaration declaration]
 }
 	: 'module' qname version=STRING				{ /*$declaration = factory.createModuleDeclaration($qname.content, $version); */}
 	  '{'
-	  		( moduleImport 			{ moduleImports.add($moduleImport.modImport);} )*
+	  		( 
+	  			  moduleVersionEquivalent
+	  			| moduleImport 				{ moduleImports.add($moduleImport.modImport);}
+	  		)*
 	  '}'
 	  { $declaration = factory.createModuleDeclaration($qname.content, $version, importEquiv, moduleImports); }
 	;
+
+moduleVersionEquivalent returns [AstToken key, AstToken value]
+	:	
+		equivKey=LOWER_ID '=' equivValue=STRING ';'	{ 
+														$key = new AstToken($equivKey); 
+														$value = new AstToken($equivValue);
+													}
+;
 
 moduleImport returns [ModuleImport modImport]
 @init {

@@ -17,6 +17,7 @@ import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.ModuleDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.ModuleImportContext;
+import org.sirius.frontend.parser.SiriusParser.ModuleVersionEquivalentContext;
 import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.QnameContext;
 
@@ -26,18 +27,6 @@ import org.sirius.frontend.parser.SiriusParser.QnameContext;
  *
  */
 public class ModuleDeclarationParser {
-
-//	public static class QNameVisitor extends SiriusBaseVisitor<QName> {
-//		public QName visitQname(QnameContext ctx) 
-//		{
-//			List<String> elements = ctx.LOWER_ID().stream()
-//					.map(termNode -> termNode.getSymbol().getText())
-//					.collect(Collectors.toList());
-//			
-//			QName qName = new QName(elements);
-//			return qName;
-//		};
-//	}
 
 	public static class ModuleImportVisitor extends SiriusBaseVisitor<ModuleImport> {
 		@Override
@@ -77,7 +66,22 @@ public class ModuleDeclarationParser {
 		}
 	}
 	
-	
+	public static class ImportEquivalentVisitor extends SiriusBaseVisitor<Void> {
+		ModuleImportEquivalents equivalents;
+
+		public ImportEquivalentVisitor(ModuleImportEquivalents equivalents) {
+			super();
+			this.equivalents = equivalents;
+		}
+		@Override
+		public Void visitModuleVersionEquivalent(ModuleVersionEquivalentContext ctx) {
+			AstToken key = ctx.key;
+			AstToken val = ctx.value;
+			
+			equivalents.put(key, val);
+			return null;
+		}
+	}	
 	public static class ModuleDeclarationVisitor extends SiriusBaseVisitor<AstModuleDeclaration> {
 		private Reporter reporter;
 
@@ -88,26 +92,27 @@ public class ModuleDeclarationParser {
 
 		@Override
 		public AstModuleDeclaration visitModuleDeclaration(ModuleDeclarationContext ctx) {
-			// TODO Auto-generated method stub
 			
-			AstToken version = new AstToken(ctx.version);
-
+			// -- name
 			PackageDeclarationParser.QNameVisitor nameVisitor = new PackageDeclarationParser.QNameVisitor();
 			QName qualifiedName = ctx.qname.accept(nameVisitor);
 			
-			ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO
-			List<ModuleImport> moduleImports = new ArrayList<>();	// TODO
-//			assert(false);
+			// -- version
+			AstToken version = new AstToken(ctx.version);
+
+			// -- equivalents
+			ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); 
+			ImportEquivalentVisitor equivalentVisitor = new ImportEquivalentVisitor(equivalents);
+			ctx.moduleVersionEquivalent().stream().forEach(equivCtxt ->{equivCtxt.accept(equivalentVisitor);});
+			
+			// -- imports
+			ModuleImportVisitor moduleImportVisitor = new ModuleImportVisitor();
+			List<ModuleImport> moduleImports = ctx.children.stream()
+				.map(tree -> tree.accept(moduleImportVisitor))
+				.filter(modImport -> modImport!=null)
+				.collect(Collectors.toList());
+			
 			return new AstModuleDeclaration(reporter, qualifiedName, version, equivalents, moduleImports);
 		}
-		
-//		@Override
-//		public AstPackageDeclaration visitPackageDeclaration(PackageDeclarationContext ctx) {
-//			
-//			QNameVisitor visitor = new QNameVisitor();
-//			QName packageQName = ctx.qname().accept(visitor);
-//			
-//			return new AstPackageDeclaration(reporter, packageQName);
-//		}
 	}
 }
