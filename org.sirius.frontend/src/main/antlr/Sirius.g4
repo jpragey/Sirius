@@ -77,13 +77,15 @@ scriptCompilationUnit returns [ScriptCompilationUnit unit]
 	;
 
 /** CompilationUnit from module descriptor */
+/*
 moduleDescriptorCompilationUnit returns [ModuleDescriptor unit]
 @init {
 }
 	: moduleDeclaration		{ $unit = factory.createModuleDescriptorCompilationUnit($moduleDeclaration.declaration);} 
 	;
-
+*/
 /** CompilationUnit from package descriptor */
+
 packageDescriptorCompilationUnit returns [PackageDescriptorCompilationUnit unit]
 	: packageDeclaration 	{ $unit = factory.createPackageDescriptorCompilationUnit($packageDeclaration.declaration);}
 	;
