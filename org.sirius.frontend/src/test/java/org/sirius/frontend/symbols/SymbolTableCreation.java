@@ -42,7 +42,7 @@ public class SymbolTableCreation {
 //		st.dump();
 		
 		
-		ModuleDeclaration md = session.getModuleDeclarations().get(1);
+		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		assertEquals(md.getPackages().size(), 1);
 		PackageDeclaration pd = md.getPackages().get(0);

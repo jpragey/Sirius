@@ -18,8 +18,8 @@ public class ScriptSessionTest {
 	public void parsedModuleResultsInModuleDeclaration() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {} ");
 
-		assertEquals(session.getModuleDeclarations().size(), 2);
-		assertEquals(session.getModuleDeclarations().get(1).getQName().toString(), "a.b");
+		assertEquals(session.getModuleDeclarations().size(), 1);
+		assertEquals(session.getModuleDeclarations().get(0).getQName().toString(), "a.b");
 		
 	}
 	
@@ -35,7 +35,7 @@ public class ScriptSessionTest {
 	public void missingModuleAndPackageDeclarationResultsInNoModuleDeclaration() {
 		ScriptSession session = Compiler.compileScript("#!\n");
 
-		assertEquals(session.getModuleDeclarations().size(), 1);
+		assertEquals(session.getModuleDeclarations().size(), 0);
 	}
 	
 	@Test 

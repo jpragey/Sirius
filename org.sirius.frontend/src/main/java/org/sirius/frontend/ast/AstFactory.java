@@ -99,27 +99,14 @@ public class AstFactory {
 	public StandardCompilationUnit createStandardCompilationUnit() {
 		return new StandardCompilationUnit(reporter, globalSymbolTable);
 	}
-	public ScriptCompilationUnit createScriptCompilationUnit(/*AstModuleDeclaration rootModule*/ /* initially empty module*/) {
-		Optional<ShebangDeclaration> shebangDeclaration = Optional.empty();
-		List<ImportDeclaration> importDeclarations = new ArrayList<ImportDeclaration>();
-		List<AstPackageDeclaration> packages = new ArrayList<AstPackageDeclaration> ();
-		List<AstModuleDeclaration> modules = new ArrayList<AstModuleDeclaration>();
-		//modules.add(rootModule);
-		return new ScriptCompilationUnit(reporter, globalSymbolTable, 
-//				rootModule
-shebangDeclaration,
-importDeclarations,
-packages,
-modules
-				);
-		
-//		public ScriptCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable,
-//				Optional<ShebangDeclaration> shebangDeclaration,
-//				List<ImportDeclaration> importDeclarations,
-//				List<AstPackageDeclaration> packages,
-//				List<AstModuleDeclaration> modules) {
-
+	public ScriptCompilationUnit createScriptCompilationUnit(
+			Optional<ShebangDeclaration> shebangDeclaration,
+			List<ImportDeclaration> importDeclarations,
+			List<AstModuleDeclaration> modules) 
+	{
+		return new ScriptCompilationUnit(reporter, globalSymbolTable, shebangDeclaration, importDeclarations, /*packages, */modules);
 	}
+	
 	public ModuleDescriptor createModuleDescriptorCompilationUnit(AstModuleDeclaration moduleDeclaration) {
 		return new ModuleDescriptor(reporter, moduleDeclaration);
 	}

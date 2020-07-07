@@ -20,7 +20,6 @@ import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.parser.SiriusParser;
 
 
-@Disabled("Transitional")
 public class ScriptCompilationUnitTest {
 
 	private Reporter reporter ;
@@ -36,7 +35,7 @@ public class ScriptCompilationUnitTest {
 	
 	private ScriptCompilationUnit parseScriptCU(String inputText) {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
-		ParseTree tree = parser.scriptCompilationUnit2();
+		ParseTree tree = parser.scriptCompilationUnit();
 				
 		ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor visitor = new ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor(reporter);
 		ScriptCompilationUnit packageCU = visitor.visit(tree);
@@ -45,11 +44,14 @@ public class ScriptCompilationUnitTest {
 	}
 	
 	@Test
-//	@Disabled("Transitional")
 	@DisplayName("Simplest script compilation unit")
-	public void simplestPackageCU() {
-		scriptCUCheck("#!\n", cu-> {
+	public void simplestScriptCU() {
+		scriptCUCheck("", cu-> {
 			assertTrue(cu.getShebangDeclaration().isEmpty());
+		});
+		scriptCUCheck("#!\n", cu-> {
+			assertTrue(cu.getShebangDeclaration().isPresent());
+			assertThat(cu.getShebangDeclaration().get().getTrimmedText(), equalTo(""));
 		});
 		scriptCUCheck("#! run it \n", cu-> {
 			assertTrue(cu.getShebangDeclaration().isPresent());
@@ -58,7 +60,6 @@ public class ScriptCompilationUnitTest {
 	}
 	
 	@Test
-//	@Disabled("Transitional")
 	@DisplayName("Script compilation unit with imports")
 	public void scriptCUWithImports() {
 		scriptCUCheck("#!\nimport a.b.c; import a.b.d {}", cu-> {
@@ -69,24 +70,12 @@ public class ScriptCompilationUnitTest {
 	}
 	
 	@Test
-	@Disabled("Transitional")
-//	@DisplayName("Script compilation unit with modules")
+	@DisplayName("Script compilation unit with modules")
 	public void scriptCUWithModules() {
 		scriptCUCheck("#!\n module a.b.c \"42\" {} module a.b.d \"42\" {}", cu-> {
 			assertThat(cu.getModuleDeclarations().size(), equalTo(2));
 			assertThat(cu.getModuleDeclarations().get(0).getqName().dotSeparated(), equalTo("a.b.c"));
 			assertThat(cu.getModuleDeclarations().get(1).getqName().dotSeparated(), equalTo("a.b.d"));
-		});
-	}
-	
-	@Test
-//	@Disabled("Transitional")
-	@DisplayName("Script compilation unit with packages")
-	public void scriptCUWithPackages() {
-		scriptCUCheck("#!\n package a.b.c ; package a.b.d;", cu-> {
-			assertThat(cu.getPackages().size(), equalTo(2));
-			assertThat(cu.getPackages().get(0).getQname().dotSeparated(), equalTo("a.b.c"));
-			assertThat(cu.getPackages().get(1).getQname().dotSeparated(), equalTo("a.b.d"));
 		});
 	}
 	

@@ -50,31 +50,31 @@ locals[
 /** CompilationUnit from script */
 scriptCompilationUnit returns [ScriptCompilationUnit unit]
 @init {     
-	$unit = factory.createScriptCompilationUnit(/*currentModule*/);
 	Optional<ShebangDeclaration> shebang = Optional.empty();
-	
-	AstModuleDeclaration module0 = factory.createEmptyModuleDeclaration();
 	List<ImportDeclaration> importDeclarations = new ArrayList<>();
-	
-	
-	$unit.addModuleDeclaration(module0); 	
+	List<AstModuleDeclaration> moduleDeclarations = new ArrayList<>();
 }
 	: (shebangDeclaration			{shebang = Optional.of($shebangDeclaration.declaration); })?
     ( importDeclaration 			{importDeclarations.add($importDeclaration.declaration); })*
-    
-    ( moduleContent					{module0.addContent($moduleContent.content); })*
-    
-	(
-		  moduleDeclaration 		{ AstModuleDeclaration md = $moduleDeclaration.declaration; }
-		( moduleContent				{ md.addContent($moduleContent.content); })*
-									{ $unit.addModuleDeclaration(md); }
-	)*
+	( concreteModule				{moduleDeclarations.add($concreteModule.md);} )*
 	{
-		$unit.setShebang(shebang);
-		$unit.addAllImport(importDeclarations);
+		$unit = factory.createScriptCompilationUnit(shebang, importDeclarations, moduleDeclarations);
 	}	
 	EOF
 	;
+	
+concreteModule returns [AstModuleDeclaration md]
+@init {
+	$md = factory.createEmptyModuleDeclaration();
+}
+	: 
+	  (moduleDeclaration	{$md = $moduleDeclaration.declaration;   })
+	  (moduleContent 		{$md.addContent($moduleContent.content); })*
+	  |
+	  (moduleContent 		{$md.addContent($moduleContent.content); })+
+	  
+	;
+	
 moduleContent returns [AstModuleContent content]
 @init {
 	 $content = new AstModuleContent();
@@ -84,23 +84,6 @@ moduleContent returns [AstModuleContent content]
 	| classDeclaration 			{$content.addClass($classDeclaration.declaration);	}
 	| interfaceDeclaration		{$content.addInterface($interfaceDeclaration.declaration);	}
 	; 
-
-
-scriptCompilationUnit2 returns [ScriptCompilationUnit unit]
-@init {     
-}
-	: (shebangDeclaration )?
-    ( importDeclaration )*
-	(
-		  moduleDeclaration 		 
-		| packageDeclaration 		
-		| functionDeclaration 		 
-										
-		| classDeclaration 			
-    	| interfaceDeclaration		
-	)*
-	EOF
-	;
 
 /** CompilationUnit from module descriptor */
 /*

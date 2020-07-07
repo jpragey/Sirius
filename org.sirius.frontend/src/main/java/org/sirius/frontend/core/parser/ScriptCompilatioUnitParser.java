@@ -55,21 +55,14 @@ public class ScriptCompilatioUnitParser {
 			
 			// -- module declarations
 			ModuleDeclarationParser.ModuleDeclarationVisitor moduleVisitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter);
-			List<AstModuleDeclaration> modules = ctx.moduleDeclaration().stream()
+			List<AstModuleDeclaration> modules = ctx.concreteModule().stream()
 					.map(mCtx -> mCtx.accept(moduleVisitor))
 					.collect(Collectors.toList());
 			
-			// -- package declarations
-//			PackageDeclarationParser.PackageDeclarationVisitor packageVisitor = new PackageDeclarationParser.PackageDeclarationVisitor(reporter);
-//			List<AstPackageDeclaration> packages = ctx.packageDeclaration().stream()
-//					.map(mCtx -> mCtx.accept(packageVisitor))
-//					.collect(Collectors.toList());
-			List<AstPackageDeclaration> packages = Collections.emptyList();
 			
 			DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable("root");	// TODO
-//			List<AstModuleDeclaration> modules = new ArrayList<>(); 
 
-			return new ScriptCompilationUnit(reporter, globalSymbolTable, shebangDeclaration, imports, packages, modules);
+			return new ScriptCompilationUnit(reporter, globalSymbolTable, shebangDeclaration, imports, /*packages, */modules);
 		}
 	}
 }
