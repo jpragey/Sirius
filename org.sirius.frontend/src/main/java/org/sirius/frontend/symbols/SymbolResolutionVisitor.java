@@ -104,7 +104,7 @@ public class SymbolResolutionVisitor implements AstVisitor {
 	@Override
 	public void startFunctionCallExpression(AstFunctionCallExpression expression) {
 		String funcName = expression.getName().getText();
-		Optional<Symbol> f = stack.peek().lookup(funcName);
+		Optional<Symbol> f = stack.peek().lookupBySimpleName(funcName);
 		if(f.isPresent()) {
 			resolveFctCallSymbol(expression, f.get());
 		} else {

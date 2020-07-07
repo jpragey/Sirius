@@ -4,6 +4,8 @@ import static org.testng.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.sirius.frontend.ast.AstBooleanConstantExpression;
 import org.sirius.frontend.ast.AstExpression;
 import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
@@ -13,11 +15,11 @@ import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstReturnStatement;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.parser.Compiler;
-import org.testng.annotations.Test;
 
 public class IfElseTest {
 
-	@Test(description = "")
+	@Test
+	@Disabled("Restore when scope stuff is OK")
 	public void classTest() throws Exception {
 		String script = "#!\n "
 //				+ "class A() {Integer mi;}   "

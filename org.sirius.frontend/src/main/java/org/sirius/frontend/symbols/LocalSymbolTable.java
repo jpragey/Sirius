@@ -30,13 +30,13 @@ public class LocalSymbolTable implements SymbolTable {
 		this.parent = Optional.of(parentTable);
 	}
 	
-	public Optional<Symbol> lookup(String simpleName) {
+	public Optional<Symbol> lookupBySimpleName(String simpleName) {
 		Symbol s = symbolMap.get(simpleName);
 		if(s != null) {
 			return Optional.of(s);
 		}
 		if(parent.isPresent()) {
-			return parent.get().lookup(simpleName);
+			return parent.get().lookupBySimpleName(simpleName);
 		}
 		return Optional.empty();
 	}

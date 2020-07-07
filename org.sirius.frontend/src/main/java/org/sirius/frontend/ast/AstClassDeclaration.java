@@ -414,7 +414,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 		for(AncestorInfo ai: descDecl.ancestors) {
 			AstToken ancTk = ai.getSimpleName();
-			Optional<Symbol> optSymbol = symbolTable.lookup(ancTk.getText());
+			Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(ancTk.getText());
 			if(! optSymbol.isPresent())
 				continue;
 			
@@ -447,7 +447,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	List<AstClassDeclaration> getAncestorClasses() {
 		return this.ancestors.stream()
 				.filter(ancestorInfo -> ancestorInfo.getAstClassDecl().isPresent())
-				.map(ancestorInfo -> symbolTable.lookup(ancestorInfo.getSimpleName().getText()))
+				.map(ancestorInfo -> symbolTable.lookupBySimpleName(ancestorInfo.getSimpleName().getText()))
 				.filter(optSymbol -> optSymbol.isPresent())
 				.map(optSymbol -> optSymbol.get())
 				.map(symbol -> symbol.getClassDeclaration())

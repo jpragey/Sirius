@@ -31,18 +31,18 @@ public class ImportTest {
 		
 		SymbolTable st = scu.getSymbolTable();
 		
-		System.out.println(st.lookup("aa"));
+		System.out.println(st.lookupBySimpleName("aa"));
 		
-		assertTrue(st.lookup("aa").isPresent());
-		Symbol aa = st.lookup("aa").get();
+		assertTrue(st.lookupBySimpleName("aa").isPresent());
+		Symbol aa = st.lookupBySimpleName("aa").get();
 		assertEquals(aa.getImportDeclaration().get().getSymbolQName().dotSeparated(), "a.b.aa");
 		
-		assertTrue(st.lookup("bb").isPresent());
-		Symbol bb = st.lookup("bb").get();
+		assertTrue(st.lookupBySimpleName("bb").isPresent());
+		Symbol bb = st.lookupBySimpleName("bb").get();
 		assertEquals(bb.getImportDeclaration().get().getSymbolQName().dotSeparated(), "a.b.bbb");
 		
-		assertTrue(st.lookup("CC").isPresent());
-		Symbol cc = st.lookup("CC").get();
+		assertTrue(st.lookupBySimpleName("CC").isPresent());
+		Symbol cc = st.lookupBySimpleName("CC").get();
 		assertEquals(cc.getImportDeclaration().get().getSymbolQName().dotSeparated(), "a.b.CCC");
 		
 		

@@ -37,7 +37,11 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		assert(shebangDeclaration != null);
 		this.shebangDeclaration = shebangDeclaration;
 		this.importDeclarations = importDeclarations;
+		
+		modules.forEach(md->{assert(md != null);});
 		this.moduleDeclarations = modules;
+		
+		
 		
 	}
 
@@ -80,6 +84,7 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	}
 
 	private void addModuleDeclaration(AstModuleDeclaration moduleDeclaration) {
+		assert(moduleDeclaration != null);
 		this.moduleDeclarations.add(moduleDeclaration);
 //		this.currentModule = moduleDeclaration;
 	}

@@ -16,6 +16,7 @@ import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
+import org.sirius.frontend.parser.SiriusParser.ConcreteModuleContext;
 import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.PackageDescriptorCompilationUnitContext;
 import org.sirius.frontend.parser.SiriusParser.QnameContext;
@@ -54,9 +55,12 @@ public class ScriptCompilatioUnitParser {
 					.collect(Collectors.toList());
 			
 			// -- module declarations
-			ModuleDeclarationParser.ModuleDeclarationVisitor moduleVisitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter);
+			ModuleDeclarationParser.ConcreteModuleVisitor moduleVisitor = new ModuleDeclarationParser.ConcreteModuleVisitor(reporter);
+//			ModuleDeclarationParser.ModuleDeclarationVisitor moduleVisitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter);
+//			List<ConcreteModuleContext> cmodules = ctx.concreteModule();
 			List<AstModuleDeclaration> modules = ctx.concreteModule().stream()
 					.map(mCtx -> mCtx.accept(moduleVisitor))
+					.filter(md -> md!=null)
 					.collect(Collectors.toList());
 			
 			

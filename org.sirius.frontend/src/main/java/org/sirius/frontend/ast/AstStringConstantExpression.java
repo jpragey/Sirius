@@ -37,7 +37,7 @@ public class AstStringConstantExpression implements AstExpression {
 		this.symbolTable = symbolTable;
 		
 		// TODO: Maybe we should check ??? 
-		this.stringType = symbolTable.lookup(new QName("sirius", "lang", "String") ).get().getClassDeclaration().get();
+		this.stringType = symbolTable.lookupByQName(new QName("sirius", "lang", "String") ).get().getClassDeclaration().get();
 	}
 
 //	@Override

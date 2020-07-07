@@ -96,7 +96,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	public AstType getType() {
 		String fctName = name.getText();
 		
-		Optional<Symbol> symbol = symbolTable.lookup(fctName);
+		Optional<Symbol> symbol = symbolTable.lookupBySimpleName(fctName);
 		if(symbol.isPresent()) {
 			Optional<PartialList> fct = symbol.get().getFunctionDeclaration();
 			if(fct.isPresent()) {
@@ -199,7 +199,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 
 		@Override
 		public Optional<AbstractFunction> getDeclaration() {
-			Optional<Symbol> optSymbol = symbolTable.lookup(name.getText());
+			Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(name.getText());
 			if(optSymbol.isPresent()) {
 				Optional<PartialList> optFunc =  optSymbol.get().getFunctionDeclaration();
 				if(optFunc.isPresent()) {
@@ -237,7 +237,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	
 	@Override
 	public FunctionCall getExpression() {
-		Optional<Symbol> symbol = symbolTable.lookup(name.getText());
+		Optional<Symbol> symbol = symbolTable.lookupBySimpleName(name.getText());
 		if(symbol.isPresent()) {
 			Optional<PartialList> fd = symbol.get().getFunctionDeclaration();
 			if(fd.isPresent()) {

@@ -54,7 +54,7 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 
 	@Override
 	public AstType getType() {
-		Optional<Symbol> optSymbol = symbolTable.lookup(referenceName.getText());
+		Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(referenceName.getText());
 		if(optSymbol.isPresent()) {
 			Symbol symbol = optSymbol.get();
 			
@@ -177,7 +177,7 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 	@Override
 	public Expression getExpression() {
 		if(impl == null) {
-			Optional<Symbol> optSymbol = symbolTable.lookup(referenceName.getText());
+			Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(referenceName.getText());
 			if(optSymbol.isPresent()) {
 				Symbol symbol = optSymbol.get();
 				

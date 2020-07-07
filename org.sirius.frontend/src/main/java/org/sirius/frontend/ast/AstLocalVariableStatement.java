@@ -98,7 +98,7 @@ public class AstLocalVariableStatement implements AstStatement {
 	public LocalVariableStatement toAPI() {
 		if(impl == null) {
 //			impl = new LocalVariableStatementImpl(this);	// TODO: restore
-			Optional<Symbol> optSymbol = symbolTable.lookup(varName.getText());
+			Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(varName.getText());
 			if(optSymbol.isPresent()) {
 				Symbol symbol = optSymbol.get();
 				Optional<AstLocalVariableStatement> lvs = symbol.getLocalVariableStatement();

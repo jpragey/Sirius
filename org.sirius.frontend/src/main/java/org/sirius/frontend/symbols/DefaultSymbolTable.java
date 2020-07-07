@@ -125,22 +125,22 @@ public class DefaultSymbolTable implements SymbolTable {
 	
 	
 //	public Optional<Symbol> lookup(QName packageQName, String simpleName) {
-	public Optional<Symbol> lookup(QName symbolQName) {
+	public Optional<Symbol> lookupByQName(QName symbolQName) {
 		Symbol symbol = symbols.get(symbolQName);
 		
 		if(symbol == null && parent.isPresent()) {
-			return parent.get().lookup(symbolQName);
+			return parent.get().lookupByQName(symbolQName);
 		}
 		Optional<Symbol> s = Optional.ofNullable(symbol);
 		return s;
 	}
 
 	@Override
-	public Optional<Symbol> lookup(String simpleName) {
+	public Optional<Symbol> lookupBySimpleName(String simpleName) {
 		Symbol symbol = symbolsBySimpleName.get(simpleName);
 
 		if(symbol == null && parent.isPresent()) {
-			return parent.get().lookup(simpleName);
+			return parent.get().lookupBySimpleName(simpleName);
 		}
 		return Optional.ofNullable(symbol);
 	}

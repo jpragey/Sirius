@@ -40,7 +40,7 @@ public class AstIntegerConstantExpression implements AstExpression {
 		this.symbolTable = symbolTable;
 		
 		// TODO: Maybe we should check ??? 
-		this.intType = symbolTable.lookup(new QName("sirius", "lang", "Integer") ).get().getClassDeclaration().get();
+		this.intType = symbolTable.lookupByQName(new QName("sirius", "lang", "Integer") ).get().getClassDeclaration().get();
 	}
 	
 	@Override

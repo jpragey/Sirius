@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
+import org.sirius.frontend.ast.AstModuleDeclaration;
+import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.parser.SiriusParser;
@@ -79,9 +81,61 @@ public class ScriptCompilationUnitTest {
 		});
 	}
 	
+	@Test
+	@DisplayName("Script compilation with a top-level func must have un (unnamed) module")
+	public void scriptWithTLFuncHasAModule() {
+		scriptCUCheck("#!\n void f(){}", cu-> {
+			assertThat(cu.getModuleDeclarations().size(), equalTo(1));
+			assertThat(cu.getModuleDeclarations().get(0).getqName().dotSeparated(), equalTo(""));
+//			assertThat(cu.getModuleDeclarations().get(1).getqName().dotSeparated(), equalTo("a.b.d"));
+		});
+	}
+	
 	public ScriptCompilationUnit scriptCUCheck(String inputText, Consumer<ScriptCompilationUnit> verify) {
 		ScriptCompilationUnit packageCU = parseScriptCU(inputText);
 		verify.accept(packageCU);
 		return packageCU;
 	}
+	
+	// -- concrete modules
+	private AstModuleDeclaration parseConcreteModule(String inputText) {
+		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		ParseTree tree = parser.concreteModule();
+				
+		ModuleDeclarationParser.ConcreteModuleVisitor visitor = new ModuleDeclarationParser.ConcreteModuleVisitor(reporter);
+		AstModuleDeclaration md = visitor.visit(tree);
+		return md;
+		
+	}
+	@Test
+	@DisplayName("Module declaration with a top-level func must have un (unnamed) module")
+	public void concreteModuleWithTLFuncHasAModule() {
+		concreteModuleCheck("void f(){}", cu-> {
+			assertThat(cu.getPackageDeclarations().size(), equalTo(1));
+			AstPackageDeclaration pd = cu.getPackageDeclarations().get(0);
+			assertThat(pd.getFunctionDeclarations().size(), equalTo(1));
+			assertThat(pd.getFunctionDeclarations().get(0).getNameString(), equalTo("f"));
+		});
+		concreteModuleCheck("package a.b.c;", cu-> {
+			assertThat(cu.getPackageDeclarations().size(), equalTo(2));	// TODO: must be 1
+			assertThat(cu.getPackageDeclarations().get(1).getPackageDeclaration().getQName().dotSeparated(), equalTo("a.b.c"));
+		});
+		concreteModuleCheck("class C() {}", cu-> {
+			assertThat(cu.getPackageDeclarations().size(), equalTo(1));
+			assertThat(cu.getPackageDeclarations().get(0).getClassDeclarations().size(), equalTo(1));
+			assertThat(cu.getPackageDeclarations().get(0).getClassDeclarations().get(0).getName().getText(), equalTo("C"));
+		});
+		concreteModuleCheck("interface I {}", cu-> {
+			assertThat(cu.getPackageDeclarations().size(), equalTo(1));
+			assertThat(cu.getPackageDeclarations().get(0).getInterfaceDeclarations().size(), equalTo(1));
+			assertThat(cu.getPackageDeclarations().get(0).getInterfaceDeclarations().get(0).getName().getText(), equalTo("I"));
+		});
+	}
+	
+	public AstModuleDeclaration concreteModuleCheck(String inputText, Consumer<AstModuleDeclaration> verify) {
+		AstModuleDeclaration md = parseConcreteModule(inputText);
+		verify.accept(md);
+		return md;
+	}
+	
 }

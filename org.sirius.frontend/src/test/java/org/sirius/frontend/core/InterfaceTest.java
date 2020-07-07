@@ -2,6 +2,8 @@ package org.sirius.frontend.core;
 
 import static org.testng.Assert.assertEquals;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
@@ -9,11 +11,11 @@ import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.parser.Compiler;
-import org.testng.annotations.Test;
 
 public class InterfaceTest {
 
-	@Test (enabled = true)
+	@Test
+	@Disabled("Restore when scope stuff is OK")
 	public void simpleInterfaceParsing() {
 //		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){String s;}}");
 		ScriptSession session = Compiler.compileScript("#!\n package p.k; "

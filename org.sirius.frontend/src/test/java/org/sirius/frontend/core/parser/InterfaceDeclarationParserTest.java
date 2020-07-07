@@ -41,7 +41,7 @@ public class InterfaceDeclarationParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.interfaceDeclaration();
 				
-		InterfaceDeclarationParser.TypeParameterVisitor visitor = new InterfaceDeclarationParser.TypeParameterVisitor(reporter);
+		InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser.InterfaceDeclarationVisitor(reporter);
 		AstInterfaceDeclaration interfaceDeclaration = visitor.visit(tree);
 		return interfaceDeclaration;
 	}

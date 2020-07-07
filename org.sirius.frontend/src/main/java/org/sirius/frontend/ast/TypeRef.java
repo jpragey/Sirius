@@ -41,7 +41,7 @@ public final class TypeRef  {
 	}
 	
 	private Optional<AstClassDeclaration> getClassDeclaration(DefaultSymbolTable symbolTable) {
-		Optional<Symbol> optSymbol = symbolTable.lookup(name.getText());
+		Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(name.getText());
 		if(optSymbol.isPresent()) {
 			Symbol symbol = optSymbol.get();
 			Optional<AstClassDeclaration> optClassDeclaration = symbol.getClassDeclaration();

@@ -95,7 +95,7 @@ public final class SimpleType implements AstType {
 	}
 
 	private Optional<AstClassDeclaration> getClassDeclaration() {
-		Optional<Symbol> optSymbol = symbolTable.lookup(name.getText());
+		Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(name.getText());
 		if(optSymbol.isPresent()) {
 			Symbol symbol = optSymbol.get();
 			Optional<AstClassDeclaration> optClassDeclaration = symbol.getClassDeclaration();
@@ -106,7 +106,7 @@ public final class SimpleType implements AstType {
 	
 	@Override
 	public boolean isExactlyA(AstType type) {
-		Optional<Symbol> optSymbol = symbolTable.lookup(name.getText());
+		Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(name.getText());
 		if(optSymbol.isPresent()) {
 			Symbol symbol = optSymbol.get();
 			Optional<AstClassDeclaration> optClassDeclaration = symbol.getClassDeclaration();
@@ -135,7 +135,7 @@ public final class SimpleType implements AstType {
 
 	
 	private Optional<AstType> fetchResolveType(SymbolTable symbolTable) {
-		Optional<Symbol> optSymbol = symbolTable.lookup(name.getText());
+		Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(name.getText());
 		if(optSymbol.isPresent()) {
 			Symbol symbol = optSymbol.get();
 			

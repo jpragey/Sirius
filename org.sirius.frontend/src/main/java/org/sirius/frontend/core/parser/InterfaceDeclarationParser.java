@@ -36,10 +36,10 @@ public class InterfaceDeclarationParser {
 		this.reporter = reporter;
 	}
 
-	public static class TypeParameterVisitor extends SiriusBaseVisitor<AstInterfaceDeclaration> {
+	public static class InterfaceDeclarationVisitor extends SiriusBaseVisitor<AstInterfaceDeclaration> {
 		private Reporter reporter;
 
-		public TypeParameterVisitor(Reporter reporter) {
+		public InterfaceDeclarationVisitor(Reporter reporter) {
 			super();
 			this.reporter = reporter;
 		}

@@ -17,6 +17,7 @@ import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.ShebangDeclaration;
+import org.sirius.frontend.core.parser.ScriptCompilatioUnitParser;
 import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.parser.SiriusParser.ScriptCompilationUnitContext;
@@ -77,6 +78,31 @@ public class ScriptSession implements Session {
 	}
 	
 
+	private ScriptCompilationUnit parseScriptInput_old(InputTextProvider input) {
+		
+		String sourceCode = input.getText();
+		
+		CharStream stream = CharStreams.fromString(sourceCode); 
+		
+		SiriusLexer lexer = new SiriusLexer(stream);
+		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+		
+		SiriusParser parser = new SiriusParser(tokenStream);
+
+		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
+		parser.factory = astFactory;
+		
+		parser.removeErrorListeners();
+		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
+
+
+		// -- Parsing
+		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
+		ScriptCompilationUnit compilationUnit = unitContext.unit;
+		
+		return compilationUnit;
+	}
+
 	private ScriptCompilationUnit parseScriptInput(InputTextProvider input) {
 		
 		String sourceCode = input.getText();
@@ -91,19 +117,18 @@ public class ScriptSession implements Session {
 		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
 		parser.factory = astFactory;
 		
-//		ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO
-//		List<ModuleImport> moduleImports = new ArrayList<>(); // TODO
-//		//assert(false);
-//		parser.currentModule = AstModuleDeclaration.createUnnamed(reporter, equivalents, moduleImports);	// TODO: WTF ???
-
 		parser.removeErrorListeners();
 		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
 
 
 		// -- Parsing
 		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
-		ScriptCompilationUnit compilationUnit = unitContext.unit;
-		
+//		ScriptCompilationUnit compilationUnit = unitContext.unit;
+//
+//		
+		ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor visitor = new ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor(reporter);
+		ScriptCompilationUnit compilationUnit = visitor.visit(unitContext);
+
 		return compilationUnit;
 	}
 

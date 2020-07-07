@@ -38,7 +38,7 @@ public interface AstClassOrInterface extends AstType {
 		}
 		public Optional<AstInterfaceDeclaration> getAstClassDecl(DefaultSymbolTable symbolTable, Reporter reporter) {
 			String nameText = simpleName.getText();
-			Optional<Symbol> optSymbol = symbolTable.lookup(nameText);
+			Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(nameText);
 			if(! optSymbol.isPresent()) {
 				reporter.error("Symbol " + nameText + " not found.", simpleName);
 				return Optional.empty();

@@ -3,6 +3,7 @@ package org.sirius.frontend.core.parser;
 import static org.testng.Assert.assertEquals;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
+import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.parser.SiriusParser;
 
@@ -41,12 +43,14 @@ public class PackageDeclarationParserTest {
 	@Test
 	@DisplayName("Simplest package declarations")
 	public void simplestPackageDeclarations() {
-		simplestPackageCheck("package a.b.c;");
+		simplestPackageCheck("package a.b.c;", pkg -> {
+			assertEquals(pkg.getQname().getStringElements(), List.of("a", "b", "c"));
+		});
 	}
 	
-	public void simplestPackageCheck(String inputText) {
+	public AstPackageDeclaration simplestPackageCheck(String inputText, Consumer<AstPackageDeclaration> verify) {
 		AstPackageDeclaration myPackage = parsePackageDeclaration(inputText);
-		
-		assertEquals(myPackage.getQname().getStringElements(), List.of("a", "b", "c"));
+		verify.accept(myPackage);
+		return myPackage;
 	}
 }

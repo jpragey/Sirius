@@ -69,7 +69,7 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 	public AstType getType() {
 		String fctName = name.getText();
 		
-		Optional<Symbol> symbol = symbolTable.lookup(fctName);
+		Optional<Symbol> symbol = symbolTable.lookupBySimpleName(fctName);
 		if(symbol.isPresent()) {
 			Optional<AstClassDeclaration> fct = symbol.get().getClassDeclaration();
 			if(fct.isPresent()) {
@@ -98,7 +98,7 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 		@Override
 		public ClassDeclaration getType() {
 			String simpleName = name.getText();
-			Optional<Symbol> s = symbolTable.lookup(simpleName);
+			Optional<Symbol> s = symbolTable.lookupBySimpleName(simpleName);
 			if(s.isPresent()) {
 				Optional<AstClassDeclaration> cd = s.get().getClassDeclaration();
 				if(cd.isPresent()) {
