@@ -51,21 +51,28 @@ locals[
 scriptCompilationUnit returns [ScriptCompilationUnit unit]
 @init {     
 	$unit = factory.createScriptCompilationUnit(/*currentModule*/);
-	
+	Optional<ShebangDeclaration> shebang = Optional.empty();
 	
 	AstModuleDeclaration module0 = factory.createEmptyModuleDeclaration();
+	List<ImportDeclaration> importDeclarations = new ArrayList<>();
+	
+	
 	$unit.addModuleDeclaration(module0); 	
 }
-	: (shebangDeclaration			{$unit.setShebang($shebangDeclaration.declaration); })?
-    ( importDeclaration 			{$unit.addImport($importDeclaration.declaration);  })*
+	: (shebangDeclaration			{shebang = Optional.of($shebangDeclaration.declaration); })?
+    ( importDeclaration 			{importDeclarations.add($importDeclaration.declaration); })*
     
     ( moduleContent					{module0.addContent($moduleContent.content); })*
     
 	(
-		  moduleDeclaration 		{ $unit.addModuleDeclaration($moduleDeclaration.declaration); }
-		( moduleContent				{$moduleDeclaration.declaration.addContent($moduleContent.content); })*
+		  moduleDeclaration 		{ AstModuleDeclaration md = $moduleDeclaration.declaration; }
+		( moduleContent				{ md.addContent($moduleContent.content); })*
+									{ $unit.addModuleDeclaration(md); }
 	)*
-	
+	{
+		$unit.setShebang(shebang);
+		$unit.addAllImport(importDeclarations);
+	}	
 	EOF
 	;
 moduleContent returns [AstModuleContent content]

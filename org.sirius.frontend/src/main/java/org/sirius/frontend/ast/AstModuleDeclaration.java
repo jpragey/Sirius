@@ -132,7 +132,11 @@ public class AstModuleDeclaration implements Visitable {
 		content.getClassDeclarations().stream().forEach(d->addClassDeclaration(d));
 		content.getFunctionsDeclarations().stream().forEach(d->addFunctionDeclaration(d));
 	}
-	
+
+	public void addAllContent(List<AstModuleContent> content) {
+		content.forEach(ct -> addContent(ct));
+	}
+
 	public void appendImport(ModuleImport moduleImport) {
 //		ModuleImport moduleImport = new ModuleImport(reporter, shared, equivalents);
 		this.moduleImports.add(moduleImport);

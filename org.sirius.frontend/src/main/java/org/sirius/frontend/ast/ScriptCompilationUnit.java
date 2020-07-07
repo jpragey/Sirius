@@ -64,8 +64,8 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	public List<AstPackageDeclaration> getPackages() {
 		return packages;
 	}
-	public void setShebang(ShebangDeclaration declaration) {
-		this.shebangDeclaration = Optional.of(declaration);
+	public void setShebang(Optional<ShebangDeclaration> declaration) {
+		this.shebangDeclaration = declaration;
 	}
 	
 	public Optional<ShebangDeclaration> getShebangDeclaration() {
@@ -85,6 +85,10 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		}
 	}
 
+	public void addAllImport(List<ImportDeclaration> importDeclarations) {
+		importDeclarations.forEach(id -> addImport(id));
+	}
+	
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startScriptCompilationUnit(this);
