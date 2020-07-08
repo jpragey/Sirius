@@ -77,27 +77,28 @@ locals [
 	; 
 
 
-packageDescriptorCompilationUnit returns [PackageDescriptorCompilationUnit unit]
-	: packageDeclaration 	{ $unit = factory.createPackageDescriptorCompilationUnit($packageDeclaration.declaration);}
+packageDescriptorCompilationUnit 
+	: packageDeclaration 	
+	;
+
+moduleDescriptorCompilationUnit 
+	: moduleDeclaration 	
 	;
 
 
 
 // -------------------- MODULE DECLARATION
 
-moduleDeclaration returns [AstModuleDeclaration declaration]
+moduleDeclaration 
 @init {
-	ModuleImportEquivalents importEquiv = new ModuleImportEquivalents();
-	List<ModuleImport> moduleImports= new ArrayList<>();
 }
-	: 'module' qname version=STRING				{ /*$declaration = factory.createModuleDeclaration($qname.content, $version); */}
+	: 'module' qname version=STRING				{}
 	  '{'
 	  		( 
 	  			  moduleVersionEquivalent
-	  			| moduleImport 				{ moduleImports.add($moduleImport.modImport);}
+	  			| moduleImport 				
 	  		)*
 	  '}'
-	  { $declaration = factory.createModuleDeclaration($qname.content, $version, importEquiv, moduleImports); }
 	;
 
 moduleVersionEquivalent returns [AstToken key, AstToken value]

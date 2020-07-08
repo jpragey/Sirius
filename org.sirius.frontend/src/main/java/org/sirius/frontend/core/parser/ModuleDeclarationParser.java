@@ -192,7 +192,7 @@ public class ModuleDeclarationParser {
 			
 			// -- name
 			PackageDeclarationParser.QNameVisitor nameVisitor = new PackageDeclarationParser.QNameVisitor();
-			QName qualifiedName = ctx.qname.accept(nameVisitor);
+			QName qualifiedName = ctx.qname().accept(nameVisitor);
 			
 			// -- version
 			AstToken version = new AstToken(ctx.version);

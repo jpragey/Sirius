@@ -9,21 +9,23 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Session;
 import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
-import org.sirius.frontend.ast.QualifiedName;
+import org.sirius.frontend.ast.ModuleDescriptor;
+import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
 import org.sirius.frontend.ast.StandardCompilationUnit;
+import org.sirius.frontend.core.parser.ModuleDescriptorCompilatioUnitParser;
+import org.sirius.frontend.core.parser.PackageDescriptorCompilatioUnitParser;
 import org.sirius.frontend.core.parser.StandardCompilatioUnitParser;
 import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.parser.SiriusParser.ModuleDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.StandardCompilationUnitContext;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
-import org.sirius.common.core.QName;
 
 public class StandardSession implements Session {
 
@@ -70,8 +72,11 @@ public class StandardSession implements Session {
 	
 	private AstModuleDeclaration parseModuleDescriptor(InputTextProvider input) {
 		SiriusParser parser = createParser(input, new AstFactory(reporter, globalSymbolTable));
-		ModuleDeclarationContext ctxt = parser.moduleDeclaration();
-		return ctxt.declaration;
+		
+		ModuleDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor v = new ModuleDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor(reporter);
+		
+		AstModuleDeclaration md = parser.moduleDescriptorCompilationUnit().accept(v);
+		return md;
 	}
 
 	private void parseStandardInput(InputTextProvider input) {
@@ -115,8 +120,15 @@ public class StandardSession implements Session {
 
 	private AstPackageDeclaration parsePackageDescriptor(InputTextProvider input) {
 		SiriusParser parser = createParser(input, new AstFactory(reporter, globalSymbolTable));
-		AstPackageDeclaration pd = parser.packageDescriptorCompilationUnit().packageDeclaration.declaration;
-		return pd;
+//		AstPackageDeclaration pd = parser.packageDescriptorCompilationUnit().packageDeclaration.declaration;
+		
+//		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		ParseTree tree = parser.packageDescriptorCompilationUnit();
+				
+		PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor visitor = new PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor(reporter);
+		PackageDescriptorCompilationUnit packageCU = visitor.visit(tree);
+		
+		return packageCU.getPackageDeclaration();
 	}
 
 	/** Parse package declarations for a module.
