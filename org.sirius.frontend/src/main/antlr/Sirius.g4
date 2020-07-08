@@ -46,8 +46,6 @@ locals[
 
 /** CompilationUnit from script */
 scriptCompilationUnit
-@init {     
-}
 	: shebangDeclaration ?
       importDeclaration *
 	  concreteModule *
@@ -55,27 +53,18 @@ scriptCompilationUnit
 	;
 	
 concreteModule
-@init {
-
-}
-	: 
-	  moduleDeclaration
+	: moduleDeclaration
 	  (moduleContent 		)*
 	|
 	  (moduleContent 		)+
 	;
 	
 moduleContent 
-locals [
-]
-@init {
-}
 	: packageDeclaration 		 
 	| functionDeclaration 		
 	| classDeclaration 			
 	| interfaceDeclaration		
 	; 
-
 
 packageDescriptorCompilationUnit 
 	: packageDeclaration 	
@@ -84,8 +73,6 @@ packageDescriptorCompilationUnit
 moduleDescriptorCompilationUnit 
 	: moduleDeclaration 	
 	;
-
-
 
 // -------------------- MODULE DECLARATION
 
@@ -101,70 +88,45 @@ moduleDeclaration
 	  '}'
 	;
 
-moduleVersionEquivalent returns [AstToken key, AstToken value]
-	:	
-		equivKey=LOWER_ID '=' equivValue=STRING ';'	{ 
-														$key = new AstToken($equivKey); 
-														$value = new AstToken($equivValue);
-													}
-;
+moduleVersionEquivalent 
+	: key=LOWER_ID '=' value=STRING ';'	
+	;
 
-moduleImport returns [ModuleImport modImport]
-@init {
-	boolean shared = false;
-	Optional<AstToken> originOpt = Optional.empty();
-	Optional<QualifiedName> qnameAsQN = Optional.empty();
-	Optional<String> qnameString = Optional.empty();
-}
+moduleImport
 	: 
-		( shared='shared' 			{ shared = true;})? 
+		( shared='shared' 			)? 
 		'import'    		 
 		
-					// format:  (origin:)? qname version
-		(origin=STRING ':' { originOpt = Optional.of(new AstToken($origin));  })?
+		(origin=STRING ':' )?
 		
-		( 	  nameQName=qname 		{ qnameAsQN = Optional.of($qname.content); } 
-			| nameString=STRING 	{ qnameString = Optional.of($nameString.getText()); }
+		(	  nameQName=qname 		 
+			| nameString=STRING 	
 		)
 		( 	  version=LOWER_ID  
 			| versionString=STRING 
 		)
 		';'	
-		{ 
-			$modImport = new ModuleImport(shared, originOpt, 
-				qnameAsQN.map(qn->qn.toQName()), qnameString, 
-				$version, $versionString
-			);
-		}
 ;
 
 
 
-
-qname returns [QualifiedName content]
-@init {
-//	$content = new QualifiedName();
-	List<AstToken> elements = new ArrayList<>();
-}	
-	: LOWER_ID		{ /*$content.add($LOWER_ID); */elements.add(new AstToken($LOWER_ID));}
-	('.' LOWER_ID	{ /*$content.add($LOWER_ID); */elements.add(new AstToken($LOWER_ID));} )*
-	{$content = new QualifiedName(elements);}
+qname 
+	: LOWER_ID		
+	('.' LOWER_ID	)*
 	;
 
 // -------------------- SHEBANG
-
-shebangDeclaration returns [ShebangDeclaration declaration]  
-	: SHEBANG { $declaration = new ShebangDeclaration($SHEBANG); }
+shebangDeclaration  
+	: SHEBANG 
 	;
 
 // -------------------- IMPORTS
-importDeclaration returns [ImportDeclaration declaration]
+importDeclaration
 	: 'import'
-	   //package
-	  qname								{ $declaration = factory.createImportDeclaration($qname.content); }
+	  qname		
 	  (('{'
-	  	  ( e=importDeclarationElement		{ $declaration.add($e.declaration); }
-	  	    (',' e=importDeclarationElement	{ $declaration.add($e.declaration); })*
+	  	  ( e=importDeclarationElement		
+	  	    (',' e=importDeclarationElement	)*
 	  	  )?
 	  '}')
 	  | ';'
@@ -172,54 +134,41 @@ importDeclaration returns [ImportDeclaration declaration]
 	;
 
 
-importDeclarationElement returns [ImportDeclarationElement declaration]
-	: 
-	//	al=ID '=' t=ID		{ $declaration = factory.createImportDeclarationElement($t, $al); }
-		importName=(LOWER_ID | TYPE_ID)				{ $declaration = factory.createImportDeclarationElement($importName); }
-	|	alias=(LOWER_ID | TYPE_ID) '=' importName=(LOWER_ID | TYPE_ID)				{ $declaration = factory.createImportDeclarationElement($importName, $alias); }
-
-	( '{'
-		
-	'}')?
+importDeclarationElement 
+	: 	importName=(LOWER_ID | TYPE_ID)
+	|	alias=(LOWER_ID | TYPE_ID) '=' importName=(LOWER_ID | TYPE_ID)
+	    ( '{' '}')?
 	;
 
 // -------------------- VALUE
-memberValueDeclaration returns [AstMemberValueDeclaration declaration]
+memberValueDeclaration 
 	:
 		annotationList
 		type
-		LOWER_ID		{$declaration = factory.valueDeclaration( $annotationList.annotations, $type.declaration, $LOWER_ID);}
-		('=' expression	{$declaration.setInitialValue($expression.express); }
+		LOWER_ID		
+		('=' expression	
 			
 		)?
 		';'
 	;
 
-// -------------------- (TOP-LEVEL ?) FUNCION
-// Also maps to annotation declaration.
+// -------------------- FUNCION (top-level or member)
 
-functionDeclaration returns [PartialList partialList]
+functionDeclaration 
 @init {
-	AstType retType;
-	ArrayList<AstFunctionParameter> arguments = new ArrayList<>();
-	AstFunctionDeclarationBuilder fdBuilder;
-	//AstFunctionDeclaration.Builder builder;
 }
 	: annotationList
-	  (	  returnType=type	{retType = $returnType.declaration; } 
-	  	| 'void' 	{retType = new AstVoidType();}
+	  (	  returnType=type	 
+	  	| 'void' 	
 	  )
-	  name=LOWER_ID		{ 
-	  	/* builder = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, containerQName);*/
-	  	fdBuilder = factory. createFunctionDeclaration($annotationList.annotations, $name, retType /* , QName.empty */ /*containerQName*/);
-	  }
+	  name=LOWER_ID		
 	  (
 	    '<'
 	  		  	(
-	  		d=typeParameterDeclaration 		{ fdBuilder = fdBuilder.withFormalParameter($d.declaration); }
+	  		d=typeParameterDeclaration 		
 	  		(
 	  			','
-		  		d=typeParameterDeclaration 	{ fdBuilder = fdBuilder.withFormalParameter($d.declaration); }
+		  		d=typeParameterDeclaration 	
 	  		)*
 	  	)?
 	  	'>'
@@ -227,121 +176,103 @@ functionDeclaration returns [PartialList partialList]
 	  
 	    
 	  '('
-	  	(  functionFormalArgument		{ arguments.add($functionFormalArgument.argument);}
-	  	  (  ',' functionFormalArgument	{ arguments.add($functionFormalArgument.argument);} )*
+	  	(  functionFormalArgument		
+	  	  (  ',' functionFormalArgument	)*
 	    )?								{  }
 	  ')' 
-	  ('{' 					{ fdBuilder.setConcrete(true); }
+	  ('{' 					
 	  		(
-	  			statement	{ fdBuilder.addStatement($statement.stmt); }
+	  			statement	
 	  		)*
 	   '}')?
-	   { $partialList = fdBuilder.withFunctionArguments(arguments); }
-	   
 	;
 
-functionFormalArgument returns [AstFunctionParameter argument]
+functionFormalArgument 
 :
-	type LOWER_ID	{$argument = new AstFunctionParameter($type.declaration, new AstToken($LOWER_ID));}
+	type LOWER_ID
 ;
 
 
 // -------------------- STATEMENT
 
-statement returns [AstStatement stmt]
-	: returnStatement	{ $stmt = $returnStatement.stmt; }								# isReturnStatement
-	| expression ';'	{ $stmt = new AstExpressionStatement($expression.express); }	# isExpressionStatement
-	| localVariableStatement	{ $stmt = $localVariableStatement.lvStatement; }		# isLocalVaribleStatement
-	| ifElseStatement	{ $stmt = $ifElseStatement.stmt; }								# isIfElseStatement
+statement 
+	: returnStatement			# isReturnStatement
+	| expression ';'			# isExpressionStatement
+	| localVariableStatement	# isLocalVaribleStatement
+	| ifElseStatement			# isIfElseStatement
 	;
 
-returnStatement returns [AstReturnStatement stmt]
-	: 'return' expression ';' { $stmt = new AstReturnStatement($expression.express); }
+returnStatement 
+	: 'return' expression ';' 
 	; 
 
-localVariableStatement returns [AstLocalVariableStatement lvStatement]
-	: /*Annotations*/
+localVariableStatement 
+	: 
 		annotationList
 		type
-		LOWER_ID		{$lvStatement = factory.localVariableStatement($annotationList.annotations, $type.declaration, $LOWER_ID);}
-		('=' expression	{$lvStatement.setInitialValue($expression.express); }
+		LOWER_ID		
+		('=' expression	
 			
 		)?
 		';'
 	;
 
-ifElseStatement returns [AstIfElseStatement stmt] 
+ifElseStatement  
 @init {
-	AstExpression ifExpression;
-	//, AstBlock ifBlock, Optional<AstBlock> elseBlock
 }
 	: 'if' '(' ifExpression = expression ')'
-		ifBlock = statement {$stmt = factory.ifElseStatement($ifExpression.express, $ifBlock.stmt);}
+		ifBlock = statement 
 		(
-			'else' elseBlock = statement {$stmt = $stmt.withElse($elseBlock.stmt); }
+			'else' elseBlock = statement 
 		)?
 	;
 
 // -------------------- EXPRESSION
 
-expression returns [AstExpression express]
-	: constantExpression { $express = $constantExpression.express ;}	# isConstantExpression
+expression 
+	: constantExpression 									# isConstantExpression
 	
-	| <assoc=right> left=expression op='^' right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression 
+	| <assoc=right> left=expression op='^' right=expression # isBinaryExpression 
 	
+	| left=expression op=('*'|'/') right=expression 	# isBinaryExpression
+	| left=expression op=('+'|'-') right=expression 	# isBinaryExpression
 	
-	| left=expression op=('*'|'/') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
-	| left=expression op=('+'|'-') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
-	
-	| left=expression op=('<'|'>'|'<='|'>=') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
+	| left=expression op=('<'|'>'|'<='|'>=') right=expression 	# isBinaryExpression
 
-	| left=expression op=('=='|'!=') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
-	| left=expression op='&&' right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
-	| left=expression op='||' right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
-	| left=expression op=('='|'+='|'-='|'*='|'/=') right=expression 	{ $express = new AstBinaryOpExpression($left.express, $right.express, $op); } # isBinaryExpression
+	| left=expression op=('=='|'!=') right=expression 	# isBinaryExpression
+	| left=expression op='&&' right=expression 	# isBinaryExpression
+	| left=expression op='||' right=expression 	# isBinaryExpression
+	| left=expression op=('='|'+='|'-='|'*='|'/=') right=expression 	# isBinaryExpression
 	
 	// -- Function call
 	| 
-		functionCallExpression 		{$express = $functionCallExpression.call; } # isFunctionCallExpression
+		functionCallExpression 		# isFunctionCallExpression
 	| 
-	    thisExpr=expression '.' functionCallExpression 		{  
-				$functionCallExpression.call.setThisExpression($thisExpr.express); 
-				$express = $functionCallExpression.call;
-		} # isMethodCallExpression
-	
+	    thisExpr=expression '.' functionCallExpression 		# isMethodCallExpression
 	
 	|  // -- Constructor call
-	  name=TYPE_ID '('		{ ConstructorCallExpression call = factory.createConstructorCall($name); 
-	  							$express = call;
-	  						}
+	  name=TYPE_ID '('		
 		
-		(arg0=expression 			{ call.addArgument($arg0.express); }
-			( ',' arg1=expression	{ call.addArgument($arg1.express); } )*
+		(arg0=expression 	
+			( ',' arg1=expression)*
 		)?
 	  ')' # isConstructorCallExpression
 	| 
 	  // -- Field access
-	  lhs = expression '.' LOWER_ID		{
-	  	AstMemberAccessExpression expr = factory.valueAccess($lhs.express, $LOWER_ID); 
-	  	$express = expr;
-	  }# isFieldAccessExpression
+	  lhs = expression '.' LOWER_ID		# isFieldAccessExpression
 	| 
 		// -- Local/member/global variable, function parameter
- 		ref = LOWER_ID                                                { $express = factory.simpleReference($ref); } # isVariableRefExpression
+ 		ref = LOWER_ID                  # isVariableRefExpression
 	;
 
-functionCallExpression returns [AstFunctionCallExpression call]
+functionCallExpression 
 	: 
-		LOWER_ID '('				{ $call = factory.functionCall($LOWER_ID); }
-		(arg0=expression 			{ $call.addActualArgument($arg0.express); }
-			( ',' arg1=expression	{ $call.addActualArgument($arg1.express); } )*
+		LOWER_ID '('	
+		(arg0=expression
+			( ',' arg1=expression )*
 		)?
 	  ')'
 	;
-
-
-
-
 
 
 constantExpression returns [AstExpression express]
@@ -352,138 +283,107 @@ constantExpression returns [AstExpression express]
 	;
 
 
-
 // -------------------- ANNOTATION
 
 annotation returns [Annotation anno]
 	: LOWER_ID	{ $anno = factory.annotation($LOWER_ID); }
-	(
-		'(' ')'
-	)?
+	( '(' ')' )?
 	;
 
-annotationList returns [AnnotationList annotations]
-@init {
-	$annotations = new AnnotationList();
-}
+annotationList 
 	:
-	( annotation 		{$annotations.addAnnotation($annotation.anno ); })*
+	( annotation )*
 	;
 
 
 // -------------------- PACKAGE 
 
-packageDeclaration returns [AstPackageDeclaration declaration]
-@init {
-//	$declaration = factory.createPackageDeclaration();
-}
-	: 'package' qname ';'	  {$declaration = factory.createPackageDeclaration0($qname.content);}
-	moduleContent *		//returns [AstModuleContent content]
+packageDeclaration 
+	: 'package' qname ';'
+	moduleContent *
 	;
 	
 // -------------------- CLASS 
 //
-classDeclaration returns [AstClassDeclaration declaration]
-@init {
-}
-	: 
-	  'class' 		
-	  TYPE_ID		{ $declaration = factory.createClassOrInterface($TYPE_ID); }
+classDeclaration 
+	: 'class' 		
+	  TYPE_ID		
 	  '('
-	  	(  functionFormalArgument		{ $declaration.addAnonConstructorArgument($functionFormalArgument.argument); }
-	  	  (  ',' functionFormalArgument	{ $declaration.addAnonConstructorArgument($functionFormalArgument.argument); } )*
+	  	(  functionFormalArgument		
+	  	  (  ',' functionFormalArgument	)*
 	    )?
 	  ')'
 	  (
 	  	'<'
 	  	(
-	  		d=typeParameterDeclaration 		{$declaration = $declaration.withFormalParameter($d.declaration);}
+	  		d=typeParameterDeclaration 	
 	  		(
 	  			','
-		  		d=typeParameterDeclaration 	{$declaration = $declaration.withFormalParameter($d.declaration);}
+		  		d=typeParameterDeclaration 	
 	  		)*
 	  	)?
 	  	'>'
 	  )? 
-	  ( 'implements' implementedInterface=TYPE_ID { $declaration.addAncestor($implementedInterface);} 
+	  ( 'implements' implementedInterface=TYPE_ID  
 	  	
 	  )?
 			  
 	  '{'
-	  (
-	  	  functionDeclaration		{ $declaration = $declaration.withFunctionDeclaration($functionDeclaration.partialList);}
-	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
-	  )*
+		  (
+		  	  functionDeclaration		
+		  	| memberValueDeclaration	
+		  )*
 	  '}'
 	;
-interfaceDeclaration returns [AstInterfaceDeclaration declaration]
+interfaceDeclaration 
 @init {
-//	List<Annotation> annos = new ArrayList<Annotation> ();
-	boolean isInterface;
 }
 	: 
-	  ('interface'	{isInterface = true;} // TODO: no need of isInterface
-	  )
-	  TYPE_ID		{ $declaration = factory.createInterface($TYPE_ID); }
+	  'interface'	
+	  TYPE_ID		
 	  (
 	  	'<'
 	  	(
-	  		d=typeParameterDeclaration 		{$declaration = $declaration.withFormalParameter($d.declaration);}
-	  		(
-	  			','
-		  		d=typeParameterDeclaration 	{$declaration = $declaration.withFormalParameter($d.declaration);}
-	  		)*
+	  		d=typeParameterDeclaration 		
+	  		( ',' d=typeParameterDeclaration )*
 	  	)?
 	  	'>'
 	  )? 
-	  ( 'implements' TYPE_ID { $declaration.addAncestor($TYPE_ID);} 
-	  	
-	  )?
-			  
+	  ( 'implements' TYPE_ID  )?
 	  '{'
 	  (
-	  	  functionDeclaration		{ $declaration = $declaration.withFunctionDeclaration($functionDeclaration.partialList);}
-	  	| memberValueDeclaration	{ $declaration.addValueDeclaration($memberValueDeclaration.declaration);}
+	  	  functionDeclaration		
+	  	| memberValueDeclaration	
 	  )*
 	  '}'
 	;
 
-typeParameterDeclaration returns [TypeParameter declaration]
-locals [
-	Variance variance = Variance.INVARIANT;
-]
+typeParameterDeclaration 
 	:
 	 ( 
-		  IN 	{$variance = Variance.IN;} 
-		| OUT		{$variance = Variance.OUT;}
+		  IN 	 
+		| OUT	
 	  )?
-	  TYPE_ID		{$declaration = factory.createTypeFormalParameter($variance, $TYPE_ID); }
-	  (
-	  	'=' type
-	  )?
+	  TYPE_ID	
+	  ( '=' type  )?
 	;
 
 
 // -------------------- TYPES
 	
-	
-type returns [AstType declaration]
-locals [
-	SimpleType simpleType = null; 
-]
+type
 	:
-	  TYPE_ID						{ $simpleType = factory.createSimpleType($TYPE_ID); }
+	  TYPE_ID						
 	  (
 	  	'<'
-	  		type					{ $simpleType.appliedParameter($type.declaration);}
-	  		( ',' type				{ $simpleType.appliedParameter($type.declaration);} )*
+	  		type					
+	  		( ',' type				)*
 	  	'>'
-	  )?							{ $declaration = $simpleType;}								# simpleType0	
-	  
-	| first=type '|' second=type	{ $declaration = factory.createUnionType($first.declaration, $second.declaration); } 		# unionType
-	| first=type '&' second=type	{ $declaration = factory.createIntersectionType($first.declaration, $second.declaration); }	# intersectionType
-	| '<' type '>'					{ $declaration = $type.declaration; }						# bracketedType
-	| el=type '[' ']'				{ $declaration = factory.createArray($el.declaration); }	# arrayType
+	  )?							# simpleType0	
+	| first=type '|' second=type	# unionType
+	| first=type '&' second=type	# intersectionType
+	| '<' type '>'					# bracketedType
+	| el=type '[' ']'				# arrayType
 ////	| '{' type '*' '}'				{ $declaration = factory.createIterable($type.declaration); }
 	;
 	

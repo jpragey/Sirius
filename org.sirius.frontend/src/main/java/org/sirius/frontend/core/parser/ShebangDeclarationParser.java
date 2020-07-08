@@ -34,7 +34,7 @@ public class ShebangDeclarationParser {
 
 		@Override
 		public ShebangDeclaration visitShebangDeclaration(ShebangDeclarationContext ctx) {
-			AstToken content = new AstToken(ctx.SHEBANG);
+			AstToken content = new AstToken(ctx.SHEBANG().getSymbol());
 			return new ShebangDeclaration(content);
 		}
 	}

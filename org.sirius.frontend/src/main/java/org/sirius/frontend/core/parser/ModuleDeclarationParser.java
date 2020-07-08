@@ -49,12 +49,14 @@ public class ModuleDeclarationParser {
 					Optional.of(new AstToken(ctx.origin));
 					
 			// -- qname
-			Optional<QName> qname = Optional.empty();
 			QNameParser.QNameVisitor nameVisitor = new QNameParser.QNameVisitor();
-			if(ctx.qname != null) {
-				QualifiedName qualifiedName = ctx.qname.accept(nameVisitor);
-				qname = Optional.of(qualifiedName.toQName());
-			}
+			Optional<QName> qname = Optional.empty();
+			if(ctx.nameQName != null )
+				qname = Optional.of(ctx.nameQName.accept(nameVisitor).toQName());
+//			if(ctx.qname != null) {
+//				QualifiedName qualifiedName = ctx.qname.accept(nameVisitor);
+//				qname = Optional.of(qualifiedName.toQName());
+//			}
 				
 			Optional<String> qnameString = Optional.empty();
 			if(ctx.nameString != null) {
@@ -83,8 +85,8 @@ public class ModuleDeclarationParser {
 		}
 		@Override
 		public Void visitModuleVersionEquivalent(ModuleVersionEquivalentContext ctx) {
-			AstToken key = ctx.key;
-			AstToken val = ctx.value;
+			AstToken key = new AstToken(ctx.key);
+			AstToken val = new AstToken(ctx.value);
 			
 			equivalents.put(key, val);
 			return null;

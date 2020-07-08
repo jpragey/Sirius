@@ -13,10 +13,12 @@ import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
+import org.sirius.frontend.parser.SiriusParser.ExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.IfElseStatementContext;
 import org.sirius.frontend.parser.SiriusParser.IsExpressionStatementContext;
 import org.sirius.frontend.parser.SiriusParser.LocalVariableStatementContext;
 import org.sirius.frontend.parser.SiriusParser.ReturnStatementContext;
+
 
 /** Visitor-based parser for the 'statement' rule.
  *
@@ -51,7 +53,7 @@ public class StatementParser {
 		@Override
 		public AstReturnStatement visitReturnStatement(ReturnStatementContext ctx) {
 			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser.ExpressionVisitor(reporter);
-			AstExpression returnStatement = ctx.expression.accept(visitor);
+			AstExpression returnStatement = ctx.expression().accept(visitor);
 			
 			return new AstReturnStatement(returnStatement);
 		}
@@ -59,7 +61,7 @@ public class StatementParser {
 		@Override
 		public AstExpressionStatement visitIsExpressionStatement(IsExpressionStatementContext ctx) {
 			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser.ExpressionVisitor(reporter);
-			AstExpression expression = ctx.expression.accept(visitor);
+			AstExpression expression = ctx.expression().accept(visitor);
 			
 			return new AstExpressionStatement(expression);
 		}
@@ -69,14 +71,15 @@ public class StatementParser {
 			AnnotationList annotationList = new AnnotationList();	// TODO
 			
 			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
-			AstType type = ctx.type.accept(typeVisitor);
+			AstType type = ctx.type().accept(typeVisitor);
 			AstToken varName = new AstToken(ctx.LOWER_ID().getSymbol());
 
 			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser.ExpressionVisitor(reporter);
 			
 			Optional<AstExpression> initExpression = Optional.empty();
-			if(ctx.expression != null) {
-				initExpression = Optional.of(ctx.expression.accept(visitor));
+			ExpressionContext exprCtxt = ctx.expression();
+			if(exprCtxt != null) {
+				initExpression = Optional.of(exprCtxt.accept(visitor));
 			}
 			
 			return new AstLocalVariableStatement(annotationList, type, varName, initExpression);

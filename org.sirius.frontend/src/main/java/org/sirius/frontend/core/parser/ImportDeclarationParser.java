@@ -52,7 +52,7 @@ public class ImportDeclarationParser {
 		@Override
 		public ImportDeclaration visitImportDeclaration(ImportDeclarationContext ctx) {
 			QNameParser.QNameVisitor nameVisitor = new QNameParser.QNameVisitor();
-			QualifiedName pack = ctx.qname.accept(nameVisitor);
+			QualifiedName pack = ctx.qname().accept(nameVisitor);
 
 			ImportDeclarationElementVisitor elementVisitor = new ImportDeclarationElementVisitor();
 			List<ImportDeclarationElement> elements = ctx.importDeclarationElement().stream()

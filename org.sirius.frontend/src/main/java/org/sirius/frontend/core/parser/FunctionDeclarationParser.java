@@ -102,7 +102,7 @@ public class FunctionDeclarationParser {
 			// TODO
 			Optional<List<AstStatement>> body = Optional.empty();
 //			List<StatementContext> statementContexts = ctx.statement();
-			if(ctx.statement != null) {
+			if(ctx.statement() != null) {
 				List<AstStatement> statements = ctx.statement().stream()
 						.map(stmtContext -> stmtContext.accept(statementVisitor))
 						.collect(Collectors.toList())

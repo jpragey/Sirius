@@ -28,11 +28,11 @@ public class MemberValueDeclarationParser {
 			AnnotationList annotations = new AnnotationList(); // TODO
 			
 			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
-			AstType type = ctx.type.accept(typeVisitor);
-			AstToken name = new AstToken(ctx.LOWER_ID);
+			AstType type = ctx.type().accept(typeVisitor);
+			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
 			
 			ExpressionParser.ExpressionVisitor expressionVisitor = new ExpressionParser.ExpressionVisitor(reporter);
-			Optional<AstExpression> initialValue = (ctx.expression == null) ?  Optional.empty() : Optional.of(ctx.expression.accept(expressionVisitor));
+			Optional<AstExpression> initialValue = (ctx.expression() == null) ?  Optional.empty() : Optional.of(ctx.expression().accept(expressionVisitor));
 
 			return new AstMemberValueDeclaration(annotations, type, name, initialValue);
 		}

@@ -88,7 +88,7 @@ public class ExpressionParser {
 
 		@Override
 		public AstFunctionCallExpression visitFunctionCallExpression(FunctionCallExpressionContext ctx) {
-			AstToken name = new AstToken(ctx.LOWER_ID);
+			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
 			
 			ExpressionVisitor argVisitor = new ExpressionVisitor(reporter);
 			
@@ -112,7 +112,7 @@ public class ExpressionParser {
 			AstExpression thisExpr = thisExprContext.accept(argVisitor);
 			assert(thisExpr != null); // TODO: implements all this-expressions...
 
-			AstFunctionCallExpression fctCallExpr = visitFunctionCallExpression(ctx.functionCallExpression);
+			AstFunctionCallExpression fctCallExpr = visitFunctionCallExpression(ctx.functionCallExpression());
 			
 			fctCallExpr.setThisExpression(thisExpr);
 			
@@ -141,7 +141,7 @@ public class ExpressionParser {
 		public AstExpression visitIsFieldAccessExpression(IsFieldAccessExpressionContext ctx) {
 			
 			AstExpression thisExpression = ctx.lhs.accept(this /*Osé*/ );
-			AstToken valueName = new AstToken(ctx.LOWER_ID);
+			AstToken valueName = new AstToken(ctx.LOWER_ID().getSymbol());
 			
 			return new AstMemberAccessExpression(reporter, thisExpression, valueName);
 		}
