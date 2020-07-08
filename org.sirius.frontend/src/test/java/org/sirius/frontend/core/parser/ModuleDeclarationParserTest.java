@@ -21,7 +21,6 @@ import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.parser.SiriusParser;
 import static org.hamcrest.CoreMatchers.equalTo;
-//import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 

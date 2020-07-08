@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
+import org.sirius.frontend.ast.AstModuleDeclaration;
+import org.sirius.frontend.ast.AstPackageDeclaration;
+import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.core.ScriptSession;
 
@@ -25,11 +28,21 @@ public class CompilationUnitTest {
 	}
 	
 	@Test
-	@Disabled("Restore when scope stuff is OK")
 	public void testCUcontainsTopLevelFunctions() {
 		String source = "#!\n void ff(){} void gg () {} void hh () {}";
 		ScriptSession session = Compiler.compileScript(source);
 		
+		// -- AST
+		List<AstModuleDeclaration> astModules = session.getAstModules();
+		assertEquals(astModules.size(), 1);
+		
+		List<AstPackageDeclaration> astPackageDeclarations = astModules.get(0).getPackageDeclarations();
+		assertEquals(astPackageDeclarations.size(), 1);
+
+		List<PartialList> partialLists = astPackageDeclarations.get(0).getFunctionDeclarations();
+		assertEquals(partialLists.size(), 3);
+		
+		// -- API
 		List<ModuleDeclaration> modules = session.getModuleDeclarations();
 		assertEquals(modules.size(), 1);
 				

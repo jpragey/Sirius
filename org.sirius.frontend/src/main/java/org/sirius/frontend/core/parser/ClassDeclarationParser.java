@@ -42,12 +42,12 @@ public class ClassDeclarationParser {
 
 	public static class ClassDeclarationVisitor extends SiriusBaseVisitor<AstClassDeclaration> {
 		private Reporter reporter;
-		private QName containerQName;
+//		private QName containerQName0;
 
-		public ClassDeclarationVisitor(Reporter reporter, QName containerQName) {
+		public ClassDeclarationVisitor(Reporter reporter/*, QName containerQName*/) {
 			super();
 			this.reporter = reporter;
-			this.containerQName = containerQName;
+//			this.containerQName = containerQName;
 		}
 
 		@Override
@@ -77,7 +77,7 @@ public class ClassDeclarationParser {
 			
 			// -- Member functions
 //			QName containerQName = new QName("TODO");	// TODO
-			FunctionDeclarationParser.FunctionDeclarationVisitor fctVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter, containerQName);
+			FunctionDeclarationParser.FunctionDeclarationVisitor fctVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter/*, containerQName*/);
 			List<PartialList> methods = ctx.children.stream()
 				.map(parseTree -> parseTree.accept(fctVisitor))
 				.filter(partialList -> partialList!=null)

@@ -228,7 +228,7 @@ functionDeclaration returns [PartialList partialList]
 	  )
 	  name=LOWER_ID		{ 
 	  	/* builder = factory. createFunctionDeclaration($annotationList.annotations, $LOWER_ID, retType, containerQName);*/
-	  	fdBuilder = factory. createFunctionDeclaration($annotationList.annotations, $name, retType, QName.empty /*containerQName*/);
+	  	fdBuilder = factory. createFunctionDeclaration($annotationList.annotations, $name, retType /* , QName.empty */ /*containerQName*/);
 	  }
 	  (
 	    '<'
@@ -394,7 +394,8 @@ packageDeclaration returns [AstPackageDeclaration declaration]
 @init {
 //	$declaration = factory.createPackageDeclaration();
 }
-	: 'package' qname ';'	  {$declaration = factory.createPackageDeclaration($qname.content);}
+	: 'package' qname ';'	  {$declaration = factory.createPackageDeclaration0($qname.content);}
+	moduleContent *		//returns [AstModuleContent content]
 	;
 	
 // -------------------- CLASS 

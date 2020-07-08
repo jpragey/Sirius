@@ -67,12 +67,12 @@ public class FunctionDeclarationParser {
 	
 	public static class FunctionDeclarationVisitor extends SiriusBaseVisitor<PartialList> {
 		private Reporter reporter;
-		private QName containerQName;
+//		private QName containerQName;
 
-		public FunctionDeclarationVisitor(Reporter reporter, QName containerQName) {
+		public FunctionDeclarationVisitor(Reporter reporter/*, QName containerQName*/) {
 			super();
 			this.reporter = reporter;
-			this.containerQName = containerQName;
+//			this.containerQName = containerQName;
 		}
 
 		
@@ -80,7 +80,7 @@ public class FunctionDeclarationParser {
 		public PartialList visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 			
 			AstToken name = new AstToken(ctx.name);
-			QName qName = containerQName.child(name.getText());
+//			QName qName = containerQName.child(name.getText());
 			
 			// -- Function parameters
 			FunctionParameterVisitor paramVisitor = new FunctionParameterVisitor(reporter);
@@ -113,7 +113,7 @@ public class FunctionDeclarationParser {
 			boolean member = false; 
 			
 			
-			return new PartialList(functionParams, returnType, member, qName, /*concrete, */name, body) ;
+			return new PartialList(functionParams, returnType, member, /* qName,*/ /*concrete, */name, body) ;
 		}
 
 

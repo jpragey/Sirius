@@ -71,8 +71,8 @@ public class InterfaceDeclarationParser {
 //			ImmutableList<PartialList> functionDeclarations = ImmutableList.of();
 			
 			// -- Member functions
-			QName containerQName = new QName("TODO");	// TODO
-			FunctionDeclarationParser.FunctionDeclarationVisitor fctVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter, containerQName);
+//			QName containerQName = new QName("TODO");	// TODO
+			FunctionDeclarationParser.FunctionDeclarationVisitor fctVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter /*, containerQName*/);
 			List<PartialList> methods = ctx.children.stream()
 				.map(parseTree -> parseTree.accept(fctVisitor))
 				.filter(partialList -> partialList!=null)

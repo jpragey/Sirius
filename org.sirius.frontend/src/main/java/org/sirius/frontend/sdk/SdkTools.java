@@ -141,25 +141,25 @@ public class SdkTools {
 	}
 	
 	private List<PartialList> parseTopLevel(Class<?> clss, TopLevelMethods topLevelMethods, DefaultSymbolTable symbolTable) {
-		QName classPkgQName = new QName(topLevelMethods.packageQName().split("\\."));
-		if(!classPkgQName.equals(siriusLangQName)) {
-			reporter.error("SDK top-level " + clss.getName() + " refers to package " + classPkgQName + ", only root package " + siriusLangQName + " allowed yet.");
-			return List.of();
-		}
+//		QName classPkgQName = new QName(topLevelMethods.packageQName().split("\\."));
+//		if(!classPkgQName.equals(siriusLangQName)) {
+//			reporter.error("SDK top-level " + clss.getName() + " refers to package " + classPkgQName + ", only root package " + siriusLangQName + " allowed yet.");
+//			return List.of();
+//		}
 		
 		List<PartialList> partialLists = new ArrayList<>();
 		for(Method method: clss.getDeclaredMethods()) {
 			
 			SiriusMethod m = method.getDeclaredAnnotation(SiriusMethod.class);
 			if(m != null ) {
-				PartialList partialList = parseTopLevelFunction(method, m, classPkgQName, symbolTable);
+				PartialList partialList = parseTopLevelFunction(method, m, /*classPkgQName, */symbolTable);
 				partialLists.add(partialList);
 			}
 		}
 		return partialLists;
 	}
 	
-	private PartialList parseTopLevelFunction(Method method, SiriusMethod m, QName classPkgQName, DefaultSymbolTable symbolTable) {
+	private PartialList parseTopLevelFunction(Method method, SiriusMethod m, /*QName classPkgQName, */DefaultSymbolTable symbolTable) {
 		
 		String methodName = m.methodName();
 		if(methodName.isEmpty())
@@ -170,7 +170,7 @@ public class SdkTools {
 				new AnnotationList() ,	// TODO 
 				AstToken.internal(methodName), 
 				returnType,
-				classPkgQName,
+//				classPkgQName,
 				true /*TODO: concrete ???*/
 				, (method.getModifiers() & Modifier.STATIC) != 0	// TODO: ???
 				, Collections.emptyList()

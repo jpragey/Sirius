@@ -61,7 +61,7 @@ public class AstFactory {
 	
 //	public AstFunctionDeclaration.Builder createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType, boolean concrete, boolean member) {
 	
-	public AstFunctionDeclarationBuilder createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType, QName containerQName) {
+	public AstFunctionDeclarationBuilder createFunctionDeclaration(AnnotationList annotationList, Token name, AstType returnType /*, QName containerQName*/) {
 //		return new AstFunctionDeclaration(reporter, annotationList, new AstToken(name), returnType, concrete, member, new DefaultSymbolTable());
 		return new AstFunctionDeclarationBuilder(
 				reporter, 
@@ -70,7 +70,7 @@ public class AstFactory {
 				returnType,
 				ImmutableList.of(), //<TypeParameter> typeParameters,
 				ImmutableList.of(), //<AstFunctionFormalArgument> formalArguments,
-				containerQName,
+//				containerQName,
 				true, // concrete,
 				true, //boolean member,
 				null,	// DefaultSymbolTable symbolTable,
@@ -116,7 +116,7 @@ public class AstFactory {
 	
 
 	
-	public AstPackageDeclaration createPackageDeclaration(QualifiedName qname) {
+	public AstPackageDeclaration createPackageDeclaration0(QualifiedName qname) {
 		return new AstPackageDeclaration(reporter, qname.toQName());
 	}
 

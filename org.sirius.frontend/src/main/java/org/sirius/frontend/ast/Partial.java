@@ -18,10 +18,8 @@ public class Partial implements Visitable{
 	private AstToken name;
 	private ImmutableList<AstFunctionParameter> args;
 
-//	private boolean concrete;
 	private boolean member = false;
 	private QName qName;
-
 
 	private AstType returnType = new AstVoidType();
 	private Optional<List<AstStatement>> body/* = new ArrayList<>()*/; 
@@ -88,7 +86,6 @@ public class Partial implements Visitable{
 	public Partial(
 			AstToken name,
 			List<AstFunctionParameter> args, 
-//			boolean concrete,
 			boolean member,
 			QName qName,
 
@@ -99,7 +96,6 @@ public class Partial implements Visitable{
 		this.name = name;
 		this.args = ImmutableList.copyOf(args);
 	
-//		this.concrete = concrete;
 		this.member = member;
 		this.qName = qName;
 

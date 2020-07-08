@@ -49,16 +49,12 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		this.qname = qname;
 		this.symbolTable = new LocalSymbolTable(reporter);
 		
-//		this.functionDeclarations = functionDeclarations;
-//		this.classDeclarations = classDeclarations;
-//		this.interfaceDeclarations = interfaceDeclarations;
-//		this.valueDeclarations = valueDeclarations;
 		functionDeclarations.forEach(fct -> addFunctionDeclaration(fct));
 		classDeclarations.forEach(cd -> addClassDeclaration(cd));
 		interfaceDeclarations.forEach(id -> addInterfaceDeclaration(id));
 		valueDeclarations.forEach(mvd -> addValueDeclaration(mvd));
-		
 	}
+	
 	public AstPackageDeclaration(Reporter reporter, QName qname) {
 		this(reporter, qname, 
 				new ArrayList<PartialList>(), new ArrayList<AstClassDeclaration> (), 
@@ -83,7 +79,6 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 
 	public void addFunctionDeclaration(PartialList declaration) {
 		assert(declaration != null);
-//		AstFunctionDeclaration declaration = declarationBuilder.build(new DefaultSymbolTable() /*TODO: wtf ???*/);
 		this.functionDeclarations.add(declaration);
 		this.visitables.add(declaration);
 	}
@@ -144,7 +139,6 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		@Override
 		public List<ClassDeclaration> getClasses() {
 			return classDeclarations.stream()
-//					.filter(cd -> !cd.isInterfaceType())
 					.map(cd -> cd.getClassDeclaration( /*qname*/ ))
 					.collect(Collectors.toList());
 		}
@@ -176,12 +170,6 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 				}
 			}
 			return funcs;
-//			
-//			return functionDeclarations.stream()
-//					.map(fd -> fd.toAPI())
-////					.filter(fd -> fd.isPresent())
-////					.map(fd -> fd.get())
-//					.collect(Collectors.toList());
 		}
 
 		@Override
@@ -210,6 +198,4 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 	public List<AstInterfaceDeclaration> getInterfaceDeclarations() {
 		return interfaceDeclarations;
 	}
-	
-
 }

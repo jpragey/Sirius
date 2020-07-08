@@ -19,7 +19,7 @@ public class PartialList implements Visitable {
 	private List<Partial> partials;
 	private Partial allArgsPartial;
 	
-	private QName qName;
+	private QName qName = null;
 	private AstToken name;
 	private Optional<List<AstStatement>> body;
 
@@ -31,18 +31,18 @@ public class PartialList implements Visitable {
 	public String toString() {
 		return partials.stream()
 				.map(part -> part.toString())
-				.collect(Collectors.joining(", ", "{Part. " + name, "}"));
+				.collect(Collectors.joining(", ", "{Part. " + name + ": ", "}"));
 	}
 	
 	public PartialList(List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/,             
-			QName qName, 
+//			QName qName, 
 			AstToken name, 
 			Optional<List<AstStatement>> body) 
 	{
 		super();
 		this.partials = new ArrayList<>(args.size() + 1);
-		this.qName = qName;
+//		this.qName = qName;
 		this.name = name;
 		this.body = body;
 		for(int from = 0; from <= args.size(); from++) 
@@ -91,6 +91,9 @@ public class PartialList implements Visitable {
 	
 	
 	public QName getqName() {
+		if(qName == null)
+			throw new NullPointerException("qName for " + name.getText() + " - call setContainerQName() first");
+			
 		return qName;
 	}
 

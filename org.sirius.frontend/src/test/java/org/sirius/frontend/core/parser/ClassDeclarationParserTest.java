@@ -38,12 +38,12 @@ public class ClassDeclarationParserTest {
 	}
 	
 	
-	private AstClassDeclaration parseClassDeclaration(String inputText, QName containerQName) {
+	private AstClassDeclaration parseClassDeclaration(String inputText/*, QName containerQName*/) {
 		
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.classDeclaration();
 				
-		ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser.ClassDeclarationVisitor(reporter, containerQName);
+		ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser.ClassDeclarationVisitor(reporter/*, containerQName*/);
 		AstClassDeclaration classDeclaration = visitor.visit(tree);
 		return classDeclaration;
 	}
@@ -55,8 +55,8 @@ public class ClassDeclarationParserTest {
 	}
 	
 	public void simplestTypecheck(String inputText) {
-		QName containerQName = new QName ("a", "b", "c");
-		AstClassDeclaration myClass = parseClassDeclaration(inputText, containerQName);
+//		QName containerQName = new QName ("a", "b", "c");
+		AstClassDeclaration myClass = parseClassDeclaration(inputText/*, containerQName*/);
 		//TypeParameter typeParameter = (TypeParameter)myType;
 		
 		assertEquals(myClass.getName().getText(), "I");
@@ -67,7 +67,7 @@ public class ClassDeclarationParserTest {
 	@Test
 	@DisplayName("Class declarations with type parameters")
 	public void classDeclarationsWithTypeParameters() {
-		AstClassDeclaration myClass = parseClassDeclaration("class C()<T0,T1,T2>{}", new QName ());
+		AstClassDeclaration myClass = parseClassDeclaration("class C()<T0,T1,T2>{}");
 
 		assertEquals(myClass.getTypeParameters().size(), 3);
 		assertEquals(myClass.getTypeParameters().stream()
@@ -79,7 +79,7 @@ public class ClassDeclarationParserTest {
 	@Test
 	@DisplayName("Class declarations satisfying interfaces")
 	public void classDeclarationsImplementingInterfaces() {
-		AstClassDeclaration myClass = parseClassDeclaration("class I() implements I0 {}", new QName ());
+		AstClassDeclaration myClass = parseClassDeclaration("class I() implements I0 {}" /*, new QName ()*/);
 
 		assertEquals(myClass.getAncestors().size(), 1);
 		
@@ -92,14 +92,14 @@ public class ClassDeclarationParserTest {
 	@Test
 	@DisplayName("Class with methods")
 	public void classDeclarationsContainingMethods() {
-		AstClassDeclaration myInterface = parseClassDeclaration("class C() {void f(){} void g(){} }", new QName ());
+		AstClassDeclaration myInterface = parseClassDeclaration("class C() {void f(){} void g(){} }" /*, new QName ()*/);
 
 		assertEquals(myInterface.getFunctionDeclarations().size(), 2);
 	}
 	@Test
 	@DisplayName("Class with values")
 	public void classHavingValues() {
-		AstClassDeclaration myClass = parseClassDeclaration("class C() {Integer v0; Integer v1;}", new QName ());
+		AstClassDeclaration myClass = parseClassDeclaration("class C() {Integer v0; Integer v1;}" /*, new QName ()*/);
 
 		assertEquals(myClass.getValueDeclarations().size(), 2);
 	}

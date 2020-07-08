@@ -118,7 +118,7 @@ public class ModuleDeclarationParser {
 		}
 		@Override
 		public Void visitFunctionDeclaration(FunctionDeclarationContext ctx) {
-			FunctionDeclarationParser.FunctionDeclarationVisitor v = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter, new QName() /* containerQName */);
+			FunctionDeclarationParser.FunctionDeclarationVisitor v = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter);
 			
 			PartialList partialList = ctx.accept(v);
 			this.partialLists.add(partialList);
@@ -126,7 +126,7 @@ public class ModuleDeclarationParser {
 		}
 		@Override
 		public Void visitClassDeclaration(ClassDeclarationContext ctx) {
-			ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser.ClassDeclarationVisitor (reporter, new QName() /* containerQName */);
+			ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser.ClassDeclarationVisitor (reporter/*, new QName()*/ /* containerQName */);
 
 			AstClassDeclaration cd = ctx.accept(visitor);
 			this.classDeclarations.add(cd);

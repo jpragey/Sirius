@@ -16,6 +16,9 @@ import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.parser.SiriusParser;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 
 public class PackageDeclarationParserTest {
 
@@ -45,6 +48,18 @@ public class PackageDeclarationParserTest {
 	public void simplestPackageDeclarations() {
 		simplestPackageCheck("package a.b.c;", pkg -> {
 			assertEquals(pkg.getQname().getStringElements(), List.of("a", "b", "c"));
+		});
+	}
+	
+	@Test
+	@DisplayName("Package with top-level functions")
+	public void packageWithTLFunctions() {
+			simplestPackageCheck("package a.b.c; void f(){} void g(){} void h(){} ", pkg -> {
+			assertEquals(pkg.getQname().getStringElements(), List.of("a", "b", "c"));
+			assertThat(pkg.getFunctionDeclarations().size(), equalTo(3));
+			assertThat(pkg.getFunctionDeclarations().get(0).getNameString(), equalTo("f"));
+			assertThat(pkg.getFunctionDeclarations().get(1).getNameString(), equalTo("g"));
+			assertThat(pkg.getFunctionDeclarations().get(2).getNameString(), equalTo("h"));
 		});
 	}
 	

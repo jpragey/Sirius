@@ -25,7 +25,7 @@ public class AstFunctionDeclarationBuilder implements Scoped, Visitable, AstPara
 	private ImmutableList<AstFunctionParameter> formalArguments;
 	
 
-	private Optional<List<AstStatement>> statements/* = new ArrayList<>()*/; 
+	private Optional<List<AstStatement>> statements; 
 	
 	private AstType returnType = new AstVoidType();
 
@@ -38,13 +38,13 @@ public class AstFunctionDeclarationBuilder implements Scoped, Visitable, AstPara
 	// True it it has a body
 	private boolean concrete;
 	// 
-	private QName containerQName;
+	private QName containerQName = null;
 	
 	// -- nonnull for instance method
 	private boolean member = false;
 	
 	
-	private QName qName; // deduced from containerQName + name
+	private QName qName = null; // deduced from containerQName + name
 	
 private List<Partial> partials = Collections.emptyList();
 	
@@ -55,12 +55,10 @@ private List<Partial> partials = Collections.emptyList();
 			AstType returnType,
 			ImmutableList<TypeParameter> typeParameters,
 			ImmutableList<AstFunctionParameter> formalArguments,
-			QName containerQName,
 			boolean concrete,
 			boolean member,
 			DefaultSymbolTable symbolTable,
 			Optional<List<AstStatement>> statements,
-//			Optional<AstFunctionDeclaration> delegate,
 			List<Partial> partials
 			) {
 		super();
@@ -71,13 +69,10 @@ private List<Partial> partials = Collections.emptyList();
 		this.typeParameters = typeParameters;
 		this.formalArguments = formalArguments;
 		
-		this.containerQName = containerQName;
-		this.qName = containerQName.child(name.getText());
 		this.concrete = concrete;
 		this.member = member;
 		this.symbolTable = symbolTable;
 		this.statements = statements;
-//		this.delegate = delegate;
 		this.partials = partials;
 	}
 
@@ -88,12 +83,9 @@ private List<Partial> partials = Collections.emptyList();
 			AstType returnType,
 			ImmutableList<TypeParameter> typeParameters,
 			ImmutableList<AstFunctionParameter> formalArguments,
-			QName containerQName,
 			boolean concrete,
 			boolean member,
 			DefaultSymbolTable symbolTable,
-//			Optional<List<AstStatement>> statements,
-//			Optional<AstFunctionDeclaration> delegate,
 			List<Partial> partials
 			) {
 		this(
@@ -103,12 +95,10 @@ private List<Partial> partials = Collections.emptyList();
 				returnType,
 				typeParameters,
 				formalArguments,
-				containerQName,
 				concrete,
 				member,
 				symbolTable,
 				Optional.empty() /*statements*/,
-//				Optional<AstFunctionDeclaration> delegate,
 				partials
 				);
 	}
@@ -132,23 +122,17 @@ private List<Partial> partials = Collections.emptyList();
 			AnnotationList annotationList, 
 			AstToken name, 
 			AstType returnType,
-			QName containerQName,
 			boolean concrete,
 			boolean member,
-//			Optional<AstFunctionDeclaration> delegate,
 			List<Partial> partials
-//			,
-//			ImmutableList<AstStatement> statements
 			) {
 		this(reporter, annotationList, name, returnType,
 				ImmutableList.of(),	//<TypeParameter> typeParameters,
 				ImmutableList.of(),	//<AstFunctionFormalArgument> formalArguments,
-				containerQName,
 				concrete,
 				member,
 				null, //DefaultSymbolTable symbolTable,
 				Optional.of(new ArrayList<AstStatement> ()),	// TODO: ???
-//				delegate,
 				partials
 				); 
 	}
@@ -173,12 +157,10 @@ private List<Partial> partials = Collections.emptyList();
 				returnType,
 				newTypeParams,
 				formalArguments,
-				containerQName,
 				concrete,
 				member,
 				symbolTable,
 				statements,
-//				delegate,	// TODO: ???
 				partials);
 		
 		return fd;
@@ -192,7 +174,7 @@ private List<Partial> partials = Collections.emptyList();
 		if(!annotationList.contains("static"))
 			setMember(true);
 
-		PartialList partialList = new PartialList(args, returnType, member /* this*/, qName, /*concrete,*/ name, statements); 
+		PartialList partialList = new PartialList(args, returnType, member /* this*/, /*qName,*/ /*concrete,*/ name, statements); 
 		
 		return partialList;
 	}
@@ -222,7 +204,6 @@ private List<Partial> partials = Collections.emptyList();
 
 	public void assignSymbolTable(DefaultSymbolTable symbolTable) {
 		this.symbolTable = symbolTable;
-//		this.symbolTable.addFunction(this);
 	}
 
 	public boolean isConcrete() {
@@ -233,8 +214,6 @@ private List<Partial> partials = Collections.emptyList();
 		this.concrete = concrete;
 		if(concrete) {
 			this.statements = Optional.of(new ArrayList<>());
-//			Optional<List<AstStatement>> statements; 
-
 		}
 	}
 
@@ -293,12 +272,14 @@ private List<Partial> partials = Collections.emptyList();
 
 	@Override
 	public QName getQName() {
+		assert(qName != null);
 		return qName;
 	}
 
 	@Override
 	public String toString() {
-		return qName.toString() + "(" + formalArguments.size() + " args)";
+		String qnString = (qName == null) ? "<null>" : qName.toString();
+		return qnString + "(" + formalArguments.size() + " args)";
 	}
 	
 	/** Convert 'simple' return type using symbol table
