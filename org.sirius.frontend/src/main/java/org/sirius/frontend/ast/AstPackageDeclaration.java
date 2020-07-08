@@ -41,11 +41,28 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 	// Set after parsing
 	private Optional<AstModuleDeclaration> containingModule = Optional.empty();
 	
-	public AstPackageDeclaration(Reporter reporter, QName qname) {
+	public AstPackageDeclaration(Reporter reporter, QName qname, 
+			List<PartialList> functionDeclarations, List<AstClassDeclaration> classDeclarations, 
+			List<AstInterfaceDeclaration> interfaceDeclarations, List<AstMemberValueDeclaration> valueDeclarations) {
 		super();
 		this.reporter = reporter;
 		this.qname = qname;
-		this.symbolTable = new LocalSymbolTable(reporter); 
+		this.symbolTable = new LocalSymbolTable(reporter);
+		
+//		this.functionDeclarations = functionDeclarations;
+//		this.classDeclarations = classDeclarations;
+//		this.interfaceDeclarations = interfaceDeclarations;
+//		this.valueDeclarations = valueDeclarations;
+		functionDeclarations.forEach(fct -> addFunctionDeclaration(fct));
+		classDeclarations.forEach(cd -> addClassDeclaration(cd));
+		interfaceDeclarations.forEach(id -> addInterfaceDeclaration(id));
+		valueDeclarations.forEach(mvd -> addValueDeclaration(mvd));
+		
+	}
+	public AstPackageDeclaration(Reporter reporter, QName qname) {
+		this(reporter, qname, 
+				new ArrayList<PartialList>(), new ArrayList<AstClassDeclaration> (), 
+				new ArrayList<AstInterfaceDeclaration> (), new ArrayList<AstMemberValueDeclaration> ()) ;
 	}
 
 	public AstPackageDeclaration(Reporter reporter) {
@@ -127,7 +144,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		@Override
 		public List<ClassDeclaration> getClasses() {
 			return classDeclarations.stream()
-					.filter(cd -> !cd.isInterfaceType())
+//					.filter(cd -> !cd.isInterfaceType())
 					.map(cd -> cd.getClassDeclaration( /*qname*/ ))
 					.collect(Collectors.toList());
 		}

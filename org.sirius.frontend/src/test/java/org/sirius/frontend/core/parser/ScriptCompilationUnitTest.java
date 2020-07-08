@@ -117,8 +117,8 @@ public class ScriptCompilationUnitTest {
 			assertThat(pd.getFunctionDeclarations().get(0).getNameString(), equalTo("f"));
 		});
 		concreteModuleCheck("package a.b.c;", cu-> {
-			assertThat(cu.getPackageDeclarations().size(), equalTo(2));	// TODO: must be 1
-			assertThat(cu.getPackageDeclarations().get(1).getPackageDeclaration().getQName().dotSeparated(), equalTo("a.b.c"));
+			assertThat(cu.getPackageDeclarations().size(), equalTo(1));
+			assertThat(cu.getPackageDeclarations().get(0).getPackageDeclaration().getQName().dotSeparated(), equalTo("a.b.c"));
 		});
 		concreteModuleCheck("class C() {}", cu-> {
 			assertThat(cu.getPackageDeclarations().size(), equalTo(1));

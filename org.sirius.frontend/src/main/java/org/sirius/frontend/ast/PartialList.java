@@ -20,9 +20,7 @@ public class PartialList implements Visitable {
 	private Partial allArgsPartial;
 	
 	private QName qName;
-//	private boolean concrete;// Has a body
 	private AstToken name;
-//	private List<AstStatement> statements;
 	private Optional<List<AstStatement>> body;
 
 	public void setContainerQName(QName containerQName) {
@@ -36,10 +34,9 @@ public class PartialList implements Visitable {
 				.collect(Collectors.joining(", ", "{Part. " + name, "}"));
 	}
 	
-	public PartialList(List<AstFunctionParameter> args /*List<Partial> partials*/, AstType returnType, 
+	public PartialList(List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/,             
 			QName qName, 
-//			boolean concrete /* ie has a body */, 
 			AstToken name, 
 			Optional<List<AstStatement>> body) 
 	{
@@ -47,25 +44,15 @@ public class PartialList implements Visitable {
 		this.partials = new ArrayList<>(args.size() + 1);
 		this.qName = qName;
 		this.name = name;
-//		this.concrete = concrete;
 		this.body = body;
 		for(int from = 0; from <= args.size(); from++) 
 		{
 			List<AstFunctionParameter> partialArgs = args.subList(0, from); 
 			Partial partial = new Partial(
 					name,
-					////				args.subList(0, from) .stream().map(arg -> new Capture(arg.getType(), arg.getName())).collect(Collectors.toList()), 
 					partialArgs, 
-					
-//					concrete,
-//					function.isConcrete(), //boolean concrete,
-					
 					member,
-//					function.isMember(),//boolean member,
-					
 					qName,
-//					function.getQName(), //QName qName,
-					
 					returnType,
 					body
 					);

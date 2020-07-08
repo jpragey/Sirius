@@ -152,8 +152,6 @@ moduleImport returns [ModuleImport modImport]
 				qnameAsQN.map(qn->qn.toQName()), qnameString, 
 				$version, $versionString
 			);
-//			if($origin!=null)
-//				$modImport.setOrigin($origin);
 		}
 ;
 
@@ -204,11 +202,10 @@ importDeclarationElement returns [ImportDeclarationElement declaration]
 
 // -------------------- VALUE
 memberValueDeclaration returns [AstMemberValueDeclaration declaration]
-	: /*Annotations*/
+	:
 		annotationList
 		type
 		LOWER_ID		{$declaration = factory.valueDeclaration( $annotationList.annotations, $type.declaration, $LOWER_ID);}
-//		LOWER_ID		{$declaration = factory.valueDeclaration( $type.declaration, $LOWER_ID);}
 		('=' expression	{$declaration.setInitialValue($expression.express); }
 			
 		)?
@@ -400,24 +397,14 @@ packageDeclaration returns [AstPackageDeclaration declaration]
 	: 'package' qname ';'	  {$declaration = factory.createPackageDeclaration($qname.content);}
 	;
 	
-
-//// -------------------- TYPES
-//type0 returns [TypeDeclaration typeval]
-//	: TYPE_ID //{$typeval = new SimpleType($TYPE_ID);} 
-//	;
-
 // -------------------- CLASS 
 //
 classDeclaration returns [AstClassDeclaration declaration]
 @init {
-//	List<Annotation> annos = new ArrayList<Annotation> ();
-	boolean isInterface;
 }
 	: 
-	  (   'class' 		{isInterface = false;}
-	  	/*| 'interface'	{isInterface = true;}*/
-	  )
-	  TYPE_ID		{ $declaration = factory.createClassOrInterface($TYPE_ID /* , currentPackage*/, isInterface /* , containerQName*/); }
+	  'class' 		
+	  TYPE_ID		{ $declaration = factory.createClassOrInterface($TYPE_ID); }
 	  '('
 	  	(  functionFormalArgument		{ $declaration.addAnonConstructorArgument($functionFormalArgument.argument); }
 	  	  (  ',' functionFormalArgument	{ $declaration.addAnonConstructorArgument($functionFormalArgument.argument); } )*
@@ -518,20 +505,6 @@ locals [
 	
 	
 	
-	
-//topDeclaration : 
-//	  classDeclaration2 
-//	| interfaceDeclaration2
-//	;
-//
-//classDeclaration2 : 'class' className '{' (method)* '}';
-//interfaceDeclaration2 : 'interface' className '{' (method)* '}';
-//className : ID ;
-//method : methodName '{' (instruction)+ '}' ;
-//methodName : ID ;
-//instruction : ID ;
-
-
 BOOLEAN : 'true' | 'false' ;
 IN : 'in';
 OUT : 'out';

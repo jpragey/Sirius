@@ -31,10 +31,10 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 
-	private Optional<QName> packageQName;
-	private QName qName; 
+//	private Optional<QName> packageQName;
+	private QName qName = new QName("<not_set>"); 
 
-	public AstInterfaceDeclaration(Reporter reporter, AstToken name, Optional<QName> packageQName,
+	public AstInterfaceDeclaration(Reporter reporter, AstToken name, //Optional<QName> packageQName,
 			ImmutableList<PartialList> functionDeclarations,
 			ImmutableList<TypeParameter> typeParameters,
 			ImmutableList<AncestorInfo> ancestorInfos,
@@ -47,23 +47,27 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		this.typeParameters = typeParameters;
 		
 		this.qName = null;
-		this.packageQName = packageQName;
+//		this.packageQName = packageQName;
 		
-		packageQName.ifPresent((pkgQName) -> {this.qName = pkgQName.child(name.getText());});
+//		packageQName.ifPresent((pkgQName) -> {this.qName = pkgQName.child(name.getText());});
 		
 		this.ancestors = new ArrayList<>(ancestorInfos);
 		this.valueDeclarations = new ArrayList<>(valueDeclarations);
 //		implementedInterfaces.forEach(token -> addAncestor(token));
 	}
 
-	public AstInterfaceDeclaration(Reporter reporter, AstToken name, Optional<QName> packageQName) {
+	public AstInterfaceDeclaration(Reporter reporter, AstToken name /*, Optional<QName> packageQName*/) {
 		this(reporter, name,
-				packageQName,
+//				packageQName,
 				ImmutableList.of() /*functionDeclarations*/,
 				ImmutableList.of() /*typeDeclarations*/,
 				ImmutableList.of() /*ancestorInfos*/,
 				ImmutableList.of() /*valueDeclarations*/
 				);
+	}
+
+	public static AstInterfaceDeclaration newInterface(Reporter reporter, AstToken name) {
+		return new AstInterfaceDeclaration (reporter, name);
 	}
 
 	
@@ -161,7 +165,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	}
 
 	public void setPackageQName(QName packageQName) {
-		this.packageQName = Optional.of(packageQName);
+//		this.packageQName = Optional.of(packageQName);
 		this.qName = packageQName.child(this.name.getText());
 	}
 
@@ -197,7 +201,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	public AstInterfaceDeclaration withFormalParameter(TypeParameter param) {
 		ImmutableList.Builder<TypeParameter> builder = ImmutableList.builderWithExpectedSize(typeParameters.size() + 1);
 		ImmutableList<TypeParameter> newTypeParams = builder.addAll(typeParameters).add(param).build();
-		return new AstInterfaceDeclaration(reporter, name, packageQName,
+		return new AstInterfaceDeclaration(reporter, name, // packageQName,
 				functionDeclarations,
 				newTypeParams,
 				ImmutableList.of(),	// TODO
@@ -225,7 +229,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 //		if(!fd.getAnnotationList().contains("static"))
 //			fd.setMember(true);
 
-		return new AstInterfaceDeclaration(reporter, name, packageQName,
+		return new AstInterfaceDeclaration(reporter, name, //packageQName,
 				ImmutableList.<PartialList>builder()
 					.addAll(functionDeclarations)
 					.add(fd)
@@ -237,9 +241,9 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	}
 
 	public InterfaceDeclaration getInterfaceDeclaration() {
-		QName containerQName = packageQName.get();
+//		QName containerQName = packageQName.get();
 		return new InterfaceDeclaration() {
-			QName qName = containerQName.child(name.getText());
+//			QName qName = containerQName.child(name.getText());
 			@Override
 			public List<MemberValue> getMemberValues() {
 				return valueDeclarations.stream()

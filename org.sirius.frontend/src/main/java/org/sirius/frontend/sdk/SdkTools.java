@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
@@ -46,140 +47,119 @@ public class SdkTools {
 
 	private QName siriusLangQName = new QName("sirius", "lang"); 
 	private final static AstToken versionToken = new AstToken(0,0,0,0,"1.0","");
-//	private AstPackageDeclaration rootPd0 = new AstPackageDeclaration(reporter, siriusLangQName);
-
-	/** Class containing top-level functions (named $package$ )*/
-	private AstClassDeclaration topLevelClass;
 
 	private AstModuleDeclaration sdkModule;
-	private AstPackageDeclaration langPackage;	// sirius.lang
 
-	
-	public AstClassDeclaration getTopLevelClass() {
-		return topLevelClass;
-	}
-
-	public SdkTools(Reporter reporter) {
+	public SdkTools(Reporter reporter, DefaultSymbolTable symbolTable) {
 		super();
 		this.reporter = reporter;
 
-		ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO: check
-		List<ModuleImport> moduleImports = Collections.emptyList();
-		// assert(false);
-		this.sdkModule = new AstModuleDeclaration(reporter, siriusLangQName, versionToken, equivalents, moduleImports);
-
-//		this.langPackage = this.sdkModule.createPackageDeclaration(siriusLangQName);
-		this.langPackage = this.sdkModule.getCurrentPackage();
-		
-//		this.topLevelClass = createClassInPackage(reporter, this.langPackage, "$package$");
-		this.topLevelClass = AstClassDeclaration.newClass(reporter, AstToken.internal("$package$"), this.langPackage.getQname());
-		
-		packagesMap.put(siriusLangQName, langPackage);
-		
-//		this.sdkModule.addPackageDeclaration(packageDeclaration);
-//		sdkModule.addPackageDeclaration(langPackage);
+		this.sdkModule = parseSdk(symbolTable);
+				
+		this.sdkModule.getPackageDeclarations().forEach(pkg->{
+			QName pkgQName = pkg.getQname();
+			packagesMap.put(pkgQName, pkg);
+		});
 	}
 
-//	private static AstClassDeclaration createClassInPackage(Reporter reporter, AstPackageDeclaration pkg, String name) {
-//		AstClassDeclaration cd = new AstClassDeclaration(reporter, false/*interfaceType*/, AstToken.internal(name), Optional.of(pkg.getQname()));
-////		cd.setPackageQName(pkg.getQname());
-//		return cd;
-//		
-//	}
-	
-	public void parseSdk(DefaultSymbolTable symbolTable) {
+	AstModuleDeclaration parseSdk(DefaultSymbolTable symbolTable) {
 		
 		List<Class<?>> sdkClasses = Sdk.sdkClasses();
 		
+		List<AstClassOrInterface> classOrInterfaces = new ArrayList<>();
+		List<PartialList> allPartialLists = new ArrayList<>();
 		for(Class<?> clss: sdkClasses) {
 			
 			TopLevelClass topLevelClassAnno = clss.getDeclaredAnnotation(TopLevelClass.class);	// can be null
 			TopLevelMethods topLevelmethodsAnno = clss.getDeclaredAnnotation(TopLevelMethods.class);	// can be null
 			
 			if(topLevelClassAnno != null) {
-				parseClass(clss, topLevelClassAnno, symbolTable);
+				AstClassOrInterface classOrIntf =  parseClass(clss, topLevelClassAnno, symbolTable);
+				classOrInterfaces.add(classOrIntf);
 			}
 			if(topLevelmethodsAnno != null) {
-				parseTopLevel(clss, topLevelmethodsAnno, symbolTable);
+				List<PartialList> partialLists = parseTopLevel(clss, topLevelmethodsAnno, symbolTable);
+				allPartialLists.addAll(partialLists);
 //				System.out.println("- Top-level methods: " + clss + ", anno: " + topLevelmethodsAnno);
 			}
 		}
+		List<AstClassDeclaration> classDeclarations = classOrInterfaces.stream()
+				.filter(cl -> (cl instanceof AstClassDeclaration))
+				.map(cl -> (AstClassDeclaration)cl)
+				.collect(Collectors.toList());
+		List<AstInterfaceDeclaration> interfaceDeclarations = classOrInterfaces.stream()
+				.filter(cl -> (cl instanceof AstInterfaceDeclaration))
+				.map(cl -> (AstInterfaceDeclaration)cl)
+				.collect(Collectors.toList());
+		
+		AstPackageDeclaration pd = new AstPackageDeclaration(reporter, QName.empty, 
+				allPartialLists,		//functionDeclarations, 
+				classDeclarations, 
+				interfaceDeclarations, 
+				List.of()	//valueDeclarations
+				);
+		
+		ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO: check
+		List<ModuleImport> moduleImports = Collections.emptyList();
+		AstModuleDeclaration md = new AstModuleDeclaration(reporter, siriusLangQName, versionToken, equivalents, moduleImports, List.of(pd));
+		
 		QNameSetterVisitor qNameSetterVisitor = new QNameSetterVisitor();
-		this.sdkModule.visit(qNameSetterVisitor);
+		md.visit(qNameSetterVisitor);
 		
 		SymbolTableFillingVisitor fillingVisitor = new SymbolTableFillingVisitor(symbolTable);
-		this.sdkModule.visit(fillingVisitor);
+		md.visit(fillingVisitor);
 		
 		SymbolResolutionVisitor resolutionVisitor = new SymbolResolutionVisitor(reporter, symbolTable);
-		this.sdkModule.visit(resolutionVisitor);
+		md.visit(resolutionVisitor);
+
+		classDeclarations.forEach(cd -> {symbolTable.addClass(cd);});
+		interfaceDeclarations.forEach(id-> {symbolTable.addInterface(id);});
+		allPartialLists.forEach(pl ->  {symbolTable.addFunction(pl);});
 		
+		return md;
 	}
 	
-	private void parseClass(Class<?> clss, TopLevelClass topLevelClassAnno, DefaultSymbolTable symbolTable) {
+	private AstClassOrInterface parseClass(Class<?> clss, TopLevelClass topLevelClassAnno, DefaultSymbolTable symbolTable) {
 		String name = topLevelClassAnno.name();
 		
-		
-		String pkgQName = topLevelClassAnno.packageQName();
-		String[] pkgNameElements = pkgQName.split("\\.");
-		QName classPkgQName = new QName(pkgNameElements);
-		AstPackageDeclaration pd = packagesMap.get(classPkgQName);
-		if(pd == null) {
-			reporter.error("SDK class/interface " + clss + " doesn't belong to the language SDK package " +
-					siriusLangQName.dotSeparated() + " (found : " + classPkgQName + ")");
-			
-			pd = langPackage;	// Just to allow compilation to keep on  
-		}
-
 		AstClassOrInterface classOrIntf;
 		if(clss.isInterface()) {
-//			AstInterfaceDeclaration cd = AstInterfaceDeclaration.newClass(reporter, AstToken.internal(name), pd.getQname());
-			AstInterfaceDeclaration cd = new AstInterfaceDeclaration(reporter, AstToken.internal(name), Optional.of(pd.getQname()));
-			symbolTable.addInterface(cd);	// TODO: check correctness (sirius.lang content is known by default)
-			classOrIntf = cd;
-			this.langPackage.addInterfaceDeclaration(cd);
-
+			classOrIntf = new AstInterfaceDeclaration(reporter, AstToken.internal(name));
 		} else {
-//			AstClassDeclaration cd = new AstClassDeclaration(reporter, false/*interfaceType*/, AstToken.internal(name), Optional.of(pkg.getQname()));
-			AstClassDeclaration cd = AstClassDeclaration.newClass(reporter, AstToken.internal(name), pd.getQname());
-			symbolTable.addClass(cd);	// TODO: check correctness (sirius.lang content is known by default)
-			classOrIntf = cd;
-			this.langPackage.addClassDeclaration(cd);
+			classOrIntf = AstClassDeclaration.newClass(reporter, AstToken.internal(name));
 		}
-//		AstClassDeclaration cd = createClassInPackage(reporter, pd, name);
-		
-//		symbolTable.addClass(cd);	// TODO: check correctness (sirius.lang content is known by default)
-
 		
 		// -- ancestors/implemented interfaces
 		Inherit [] annos = clss.getAnnotationsByType(Inherit.class);
 		for(Inherit inherit: annos ) {
 			QName pkg = QName.parseDotSeparated(inherit.packageQName());
 			QName inheritName = pkg.child(inherit.name());
-//			cd.addAncestor(inheritName /*pkg, inherit.name()*/);
 			classOrIntf.addAncestor(AstToken.internal(inheritName.getLast()) /*pkg, inherit.name()*/);	// TODO: WTF ???
 		}
 
-//		this.langPackage.addClassDeclaration(cd);
-
+		return classOrIntf;
 	}
 	
-	private void parseTopLevel(Class<?> clss, TopLevelMethods topLevelMethods, DefaultSymbolTable symbolTable) {
+	private List<PartialList> parseTopLevel(Class<?> clss, TopLevelMethods topLevelMethods, DefaultSymbolTable symbolTable) {
 		QName classPkgQName = new QName(topLevelMethods.packageQName().split("\\."));
 		if(!classPkgQName.equals(siriusLangQName)) {
 			reporter.error("SDK top-level " + clss.getName() + " refers to package " + classPkgQName + ", only root package " + siriusLangQName + " allowed yet.");
-			return;
+			return List.of();
 		}
 		
+		List<PartialList> partialLists = new ArrayList<>();
 		for(Method method: clss.getDeclaredMethods()) {
-			parseTopLevelFunction(method, classPkgQName, symbolTable);
+			
+			SiriusMethod m = method.getDeclaredAnnotation(SiriusMethod.class);
+			if(m != null ) {
+				PartialList partialList = parseTopLevelFunction(method, m, classPkgQName, symbolTable);
+				partialLists.add(partialList);
+			}
 		}
+		return partialLists;
 	}
 	
-	private void parseTopLevelFunction(Method method, QName classPkgQName, DefaultSymbolTable symbolTable) {
-		SiriusMethod m = method.getDeclaredAnnotation(SiriusMethod.class);
-		if(m == null) {
-			return;
-		}
+	private PartialList parseTopLevelFunction(Method method, SiriusMethod m, QName classPkgQName, DefaultSymbolTable symbolTable) {
 		
 		String methodName = m.methodName();
 		if(methodName.isEmpty())
@@ -193,25 +173,8 @@ public class SdkTools {
 				classPkgQName,
 				true /*TODO: concrete ???*/
 				, (method.getModifiers() & Modifier.STATIC) != 0	// TODO: ???
-//				, Optional.empty() // TODO: delegate ???
-//				, new DefaultSymbolTable()
 				, Collections.emptyList()
 				);
-//		AstFunctionDeclaration.Builder fdb = new AstFunctionDeclaration.Builder(
-//				reporter,
-//				new AnnotationList() ,	// TODO 
-//				AstToken.internal(methodName), 
-//				returnType,
-//				classPkgQName
-//				);
-//
-//		fdb.setConcrete(true);		/*TODO: concrete ???*/
-//		fdb.setMember((method.getModifiers() & Modifier.STATIC) != 0);	// TODO: ???
-//		AstFunctionDeclaration fd = fdb.build(new DefaultSymbolTable());
-		
-//		fdb.setContainerQName(classPkgQName);
-		
-//		fd.setContainerQName(classPkgQName);
 
 		// -- function arguments
 		List<AstFunctionParameter> args = new ArrayList<>(method.getParameters().length);
@@ -221,27 +184,19 @@ public class SdkTools {
 				continue;
 			
 			String name = parameter.getName();
-//			SimpleType type = new SimpleType(AstToken.internal(anno.typeQName()));
 			QNameRefType type = new QNameRefType(anno.typeQName());
 			
 			type.setSymbolTable(symbolTable);
 			
 			AstFunctionParameter arg = new AstFunctionParameter(type, AstToken.internal(name));
 			arg.setSymbolTable(symbolTable);
-//			fdb = fdb.withFunctionArgument(arg);
 			args.add(arg);
-//			fd = fd.withFunctionArgument(arg);
 		}
 		
 		PartialList partialList = fd.withFunctionArguments(args);
-//		AstFunctionDeclaration fd = fdb.build(new DefaultSymbolTable(symbolTable));
 		
-		symbolTable.addFunction(partialList);
 		fd.assignSymbolTable(symbolTable);
 		
-		this.topLevelClass = this.topLevelClass.withFunctionDeclaration(partialList);
-		
-		this.langPackage.addFunctionDeclaration(partialList);
+		return partialList;
 	}
-	
 }

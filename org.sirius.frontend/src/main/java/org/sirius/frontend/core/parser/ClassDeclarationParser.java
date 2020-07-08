@@ -89,15 +89,15 @@ public class ClassDeclarationParser {
 				.filter(partialList -> partialList!=null)
 				.collect(Collectors.toList());
 			
-			boolean interfaceType = false;
+//			boolean interfaceType = false;
 			
-			QName packageQName  = containerQName;
+//			QName packageQName  = containerQName;
 			
 			AstClassDeclaration classDeclaration = new AstClassDeclaration(
 					reporter, 
-					interfaceType, 
+//					interfaceType, 
 					name, 
-					packageQName,
+//					packageQName,
 					ImmutableList.copyOf(typeParameters),
 					ImmutableList.copyOf(methods),
 					memberValues,

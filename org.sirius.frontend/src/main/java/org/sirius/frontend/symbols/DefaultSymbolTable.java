@@ -64,6 +64,7 @@ public class DefaultSymbolTable implements SymbolTable {
 //		this.dbgName = dbgName;
 //	}
 	public void addSymbol(QName symbolQName, Symbol symbol) {
+		assert(symbolQName != null);
 		symbols.put(symbolQName, symbol);
 		symbolsBySimpleName.put(symbolQName.getLast(), symbol);
 	}

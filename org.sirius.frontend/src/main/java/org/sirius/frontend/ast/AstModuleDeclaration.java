@@ -23,22 +23,17 @@ public class AstModuleDeclaration implements Visitable {
 	
 	private Optional<PhysicalPath> modulePPath = Optional.empty(); 
 
-//	private Map<String, AstToken> equivalents = new HashMap<>();
 	private ModuleImportEquivalents equiv = new ModuleImportEquivalents();
 	
 	private List<ModuleImport> moduleImports = new ArrayList<>(); 
 	
-	private List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
+	private ArrayList<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
 	
-	private AstPackageDeclaration currentPackage;
-	// version, without start-=/end double quotes/blanks
 	private String versionString;
 	
 	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, AstToken version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports) {
 		super();
 		this.reporter = reporter;
-		this.currentPackage = new AstPackageDeclaration(reporter, qualifiedName);
-		this.addPackageDeclaration(this.currentPackage);
 
 		this.qName = qualifiedName;
 		PhysicalPath pp = new PhysicalPath(qName/*.toQName()*/.getStringElements());
@@ -48,11 +43,18 @@ public class AstModuleDeclaration implements Visitable {
 		
 		this.equiv = equiv;
 		this.moduleImports = moduleImports;
+		
 		String vs = version.getText();
 		assert(vs.length() >=2);	// contains start/end double quotes
 		this.versionString = vs.substring(1, vs.length()-1).trim();
 	}
 
+	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, AstToken version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports,
+			List<AstPackageDeclaration> packageDeclarations) 
+	{
+		this(reporter, qualifiedName, version, equiv, moduleImports);
+		this.packageDeclarations.addAll(packageDeclarations);
+	}
 	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, Token version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports) {
 		this(reporter, qualifiedName, new AstToken(version), equiv, moduleImports);
 	}
@@ -80,9 +82,6 @@ public class AstModuleDeclaration implements Visitable {
 	 * 
 	 * @return
 	 */
-	public AstPackageDeclaration getCurrentPackage() {
-		return currentPackage;
-	}
 	
 	/** Get verion, without start/end double quotes and trimmed.
 	 * 
@@ -90,7 +89,6 @@ public class AstModuleDeclaration implements Visitable {
 	 */
 	public String getVersionString() {
 		return versionString;
-//		return version.getText();
 	}
 
 	/** Add a new package, update current package reference
@@ -98,7 +96,6 @@ public class AstModuleDeclaration implements Visitable {
 	 * @param packageDeclaration
 	 */
 	public void addPackageDeclaration(AstPackageDeclaration packageDeclaration) {
-		this.currentPackage = packageDeclaration;
 		this.packageDeclarations.add(packageDeclaration);
 	}
 	
@@ -109,7 +106,15 @@ public class AstModuleDeclaration implements Visitable {
 	}
 	
 	
-	
+	public AstPackageDeclaration getCurrentPackage() {
+		if(this.packageDeclarations.isEmpty()) {
+			AstPackageDeclaration pkg = new AstPackageDeclaration(reporter, qName);	// default package
+			this.packageDeclarations.add(pkg);
+			return pkg;
+		} else {
+			return this.packageDeclarations.get(this.packageDeclarations.size()-1);
+		}
+	}
 	
 	public void addFunctionDeclaration(PartialList d) {
 		this.getCurrentPackage().addFunctionDeclaration(d);
@@ -138,23 +143,12 @@ public class AstModuleDeclaration implements Visitable {
 	}
 
 	public void appendImport(ModuleImport moduleImport) {
-//		ModuleImport moduleImport = new ModuleImport(reporter, shared, equivalents);
 		this.moduleImports.add(moduleImport);
-//		return moduleImport;
-		
 	}
 
 	public AstToken getVersion() {
 		return version;
 	}
-
-//	public Map<String, AstToken> getEquivalents() {
-//		return equivalents;
-//	}
-//
-//	public void setEquivalents(Map<String, AstToken> equivalents) {
-//		this.equivalents = equivalents;
-//	}
 
 	public QName getqName() {
 		return qName;
@@ -169,7 +163,6 @@ public class AstModuleDeclaration implements Visitable {
 		visitor.startModuleDeclaration(this);
 		for(AstPackageDeclaration pd : packageDeclarations)
 			pd.visit(visitor);
-//		packageDeclarations.stream().forEach(pd -> pd.visit(visitor));
 		visitor.endModuleDeclaration(this);		
 	}
 	

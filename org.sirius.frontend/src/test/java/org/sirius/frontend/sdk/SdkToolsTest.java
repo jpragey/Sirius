@@ -27,9 +27,9 @@ public class SdkToolsTest {
 	@BeforeMethod
 	public void setup() throws Exception {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
-		this.sdkTools = new SdkTools(reporter);
 		symbolTable = new DefaultSymbolTable("SdkToolsTest");
-		sdkTools.parseSdk(symbolTable);
+		this.sdkTools = new SdkTools(reporter, symbolTable);
+//		sdkTools.parseSdk(symbolTable);
 		
 		if(this.reporter.hasErrors()) 
 			throw new Exception("SDK error, see logs in shell");
@@ -39,10 +39,8 @@ public class SdkToolsTest {
 	@Test
 	public void sdkSLClassesCanBeRetrievedBySimpleName() {
 		assertTrue(symbolTable.lookupBySimpleName("String").isPresent());
-		
-		
-		
 	}
+	
 	@Test
 	public void sdkParsingMustCreateBasicClasses() {
 		assertEquals(reporter.getErrorCount(), 0);

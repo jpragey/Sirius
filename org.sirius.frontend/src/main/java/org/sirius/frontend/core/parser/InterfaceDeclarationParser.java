@@ -56,7 +56,7 @@ public class InterfaceDeclarationParser {
 				.collect(Collectors.toList());
 			
 			
-			Optional<QName> packageQName = Optional.empty();
+//			Optional<QName> packageQName = Optional.empty();
 			
 			
 			// -- type parameters
@@ -86,7 +86,7 @@ public class InterfaceDeclarationParser {
 				.collect(Collectors.toList());
 			
 			
-			AstInterfaceDeclaration interfaceDeclaration = new AstInterfaceDeclaration(reporter, name, packageQName, 
+			AstInterfaceDeclaration interfaceDeclaration = new AstInterfaceDeclaration(reporter, name, //packageQName, 
 					ImmutableList.copyOf(methods), 
 					ImmutableList.copyOf(typeParameters),
 					ImmutableList.copyOf(intfList),

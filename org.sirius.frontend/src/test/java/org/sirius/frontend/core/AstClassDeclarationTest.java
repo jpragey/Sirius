@@ -35,15 +35,15 @@ public class AstClassDeclarationTest {
 		
 		DefaultSymbolTable symbolTable = new DefaultSymbolTable("AstClassDeclarationTest");
 		
-		QName pkgQName = new QName("a", "b", "c");
+		AstClassDeclaration ancestor = AstClassDeclaration.newClass(reporter, AstToken.internal("ancestor"));
 		
-		AstClassDeclaration ancestor = AstClassDeclaration.newClass(reporter, AstToken.internal("ancestor"), pkgQName);
+		AstClassDeclaration child = AstClassDeclaration.newClass(reporter, AstToken.internal("child"));
+		
+		QName pkgQName = new QName("some", "pkg");
+		ancestor.setPackageQName(pkgQName);
+		child.setPackageQName(pkgQName);
 		
 		
-		AstClassDeclaration child = AstClassDeclaration.newClass(reporter, AstToken.internal("child"), pkgQName);
-		
-		
-//		child.addAncestor(ancestor.getQName());
 		child.addAncestor(ancestor.getName());
 		
 		symbolTable.addClass(ancestor);

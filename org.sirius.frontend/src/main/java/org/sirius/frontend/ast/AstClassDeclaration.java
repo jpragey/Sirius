@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableList;
 public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParametric<AstClassDeclaration>, AstClassOrInterface, Named {
 
 	private AstToken name;
-	private QName qName; 
+	private QName qName = new QName("<not_set>"); 
 	
 	// Formal parameters
 	private ImmutableList<TypeParameter> typeParameters;
@@ -34,13 +34,8 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	private List<AstFunctionParameter> anonConstructorArguments = new ArrayList<>(); 
 
-	/** Root package at first */
-	private QName packageQName;
-	
 	/** True for annotation classes (ConstrainedAnnotation subtypes, ie OptionalAnnotation or SequencedAnnotation) */
 	private boolean annotationType = false; 
-	
-	private boolean interfaceType;
 	
 	private List<AncestorInfo> ancestors = new ArrayList<>();
 	
@@ -51,22 +46,16 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 	private Reporter reporter;
 	
-	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/ , QName packageQName,
+	public AstClassDeclaration(Reporter reporter, AstToken name, 
 			ImmutableList<TypeParameter> typeParameters,
 			ImmutableList<PartialList> functionDeclarations,
 			List<AstMemberValueDeclaration> valueDeclarations,
 			List<AstFunctionParameter> anonConstructorArguments,
-			List<AncestorInfo> ancestorInfos
-			) {
+			List<AncestorInfo> ancestorInfos) 
+	{
 		super();
 		this.reporter = reporter;
-		this.interfaceType = interfaceType;
 		this.name = name;
-		
-		this.packageQName = new QName();
-		this.qName = packageQName.child(name.getText());
-		
-//		packageQName.ifPresent((pkgQName) -> {this.qName = pkgQName.child(name.getText());});
 		
 		this.typeParameters = typeParameters;
 		this.functionDeclarations = functionDeclarations;
@@ -76,12 +65,13 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	}
 
 	// TODO: remove ?
-	public AstClassDeclaration(Reporter reporter, boolean interfaceType, AstToken name/*, PackageDeclaration packageDeclaration*/, QName packageQName) {
-		this(reporter,interfaceType, name, packageQName,
-			ImmutableList.of(),//<TypeFormalParameterDeclaration> typeParameters,
-			ImmutableList.of(), //new ArrayList<AstFunctionDeclaration>(), // functionDeclarations,
+	public AstClassDeclaration(Reporter reporter, AstToken name)
+	{
+		this(reporter, name, 
+			ImmutableList.of(),							//<TypeFormalParameterDeclaration> typeParameters,
+			ImmutableList.of(), 						//<AstFunctionDeclaration>(), // functionDeclarations,
 			new ArrayList<AstMemberValueDeclaration>(), //List valueDeclarations,
-			new ArrayList<AstFunctionParameter>() //List anonConstructorArguments
+			new ArrayList<AstFunctionParameter>() 		//List anonConstructorArguments
 			, new ArrayList<AncestorInfo>()
 		);
 	}
@@ -91,9 +81,9 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		ImmutableList<TypeParameter> newTypeParams = builder.addAll(typeParameters).add(param).build();
 
 		AstClassDeclaration fd = new AstClassDeclaration(reporter,
-				interfaceType,
+//				interfaceType,
 				name, 
-				packageQName, 
+//				packageQName, 
 				newTypeParams,
 				functionDeclarations,
 				valueDeclarations, anonConstructorArguments, ancestors);
@@ -102,36 +92,22 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 	public AstClassDeclaration withFunctionDeclaration(PartialList fd) {
 		
-		// 
-//		if(!fd.getAnnotationList().contains("static"))
-//			fd.setMember(true);
-		
 		ImmutableList.Builder<PartialList> builder = ImmutableList.builderWithExpectedSize(functionDeclarations.size() + 1);
 		ImmutableList<PartialList> newFunctions = builder.addAll(functionDeclarations).add(fd).build();
 
-		AstClassDeclaration cd = new AstClassDeclaration(reporter,
-				interfaceType,
-				name, 
-				packageQName, 
-				typeParameters,
-				newFunctions,
+		AstClassDeclaration cd = new AstClassDeclaration(reporter, name, typeParameters, newFunctions, 
 				valueDeclarations, anonConstructorArguments, ancestors);
 		return cd;
 	}
 
 	
-	public AstClassDeclaration(Reporter reporter, boolean interfaceType, Token name/*, PackageDeclaration packageDeclaration*/, QName packageQName) {
-		this(reporter, interfaceType, new AstToken(name), packageQName);
+	public AstClassDeclaration(Reporter reporter, boolean interfaceType, Token name/*, PackageDeclaration packageDeclaration*//*, QName packageQName*/) {
+		this(reporter, /*interfaceType, */new AstToken(name)/*, packageQName*/);
 	}
 
-	public static AstClassDeclaration newClass(Reporter reporter, AstToken name, QName packageQName) {
-		return new AstClassDeclaration (reporter, false /*interfaceType */ , name, packageQName);
+	public static AstClassDeclaration newClass(Reporter reporter, AstToken name) {
+		return new AstClassDeclaration (reporter, name);
 	}
-	
-	public static AstClassDeclaration newInterface(Reporter reporter, AstToken name, QName packageQName) {
-		return new AstClassDeclaration (reporter, true /*interfaceType */ , name, packageQName);
-	}
-
 	
 	
 	public void setSymbolTable(DefaultSymbolTable symbolTable) {
@@ -140,6 +116,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		
 		this.symbolTable = symbolTable;
 
+		assert(this.qName != null);
 		for(TypeParameter d: typeParameters)
 			this.symbolTable.addFormalParameter(this.qName, d);
 	}
@@ -162,7 +139,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	}
 	
 	public void setPackageQName(QName packageQName) {
-		this.packageQName = packageQName;
+//		this.packageQName = packageQName;
 		this.qName = packageQName.child(this.name.getText());
 	}
 	
@@ -171,11 +148,12 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		return interfaces;
 	}
 
-	public boolean isInterfaceType() {
-		return interfaceType;
-	}
+//	public boolean isInterfaceType() {
+//		return interfaceType;
+//	}
 	@Override
 	public QName getQName() {
+		assert(this.qName != null);
 		return this.qName;
 	}
 
@@ -224,7 +202,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			return Optional.empty();
 		}
 		
-		AstClassDeclaration cd = new AstClassDeclaration(reporter, interfaceType, name, packageQName,
+		AstClassDeclaration cd = new AstClassDeclaration(reporter, /*interfaceType, */name, //packageQName,
 				typeParameters.subList(1, typeParameters.size()),
 				functionDeclarations,
 				valueDeclarations,
@@ -250,9 +228,11 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	public boolean isExactlyA(AstType type) {
 		if(type instanceof AstClassDeclaration) {
 			AstClassDeclaration other = (AstClassDeclaration)type;
-			if(this.interfaceType != other.interfaceType)
-				return false;
+//			if(this.interfaceType != other.interfaceType)
+//				return false;
 			
+			assert(this.qName != null);
+
 			if(!this.qName.equals(other.qName))
 				return false;
 			
@@ -266,6 +246,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 	@Override
 	public String toString() {
+		assert(this.qName != null);
 		return "class " + qName;
 	}
 	public boolean isAnnotationType() {
@@ -276,7 +257,8 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	}
 
 	private class ClassDeclarationImpl implements ClassDeclaration {
-		QName qName = packageQName.child(name.getText());
+//		QName qName = packageQName.child(name.getText());
+//		QName qName0 = qName;
 		@Override
 		public List<MemberValue> getMemberValues() {
 			return valueDeclarations.stream()
@@ -311,6 +293,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 		@Override
 		public QName getQName() {
+			assert(qName != null);
 			return qName;
 		}
 		@Override
@@ -328,73 +311,17 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		}
 		@Override
 		public String toString() {
+			assert(qName != null);
 			return "API class " + qName;
 		}
 		
 	}
 	
 	private ClassDeclarationImpl classDeclarationImpl = null;
-
-	
 	
 	public ClassDeclaration getClassDeclaration() {
-//		QName containerQName = packageQName.get();
 		if(classDeclarationImpl == null)
 			classDeclarationImpl =  new ClassDeclarationImpl() {
-//			QName qName = packageQName.child(name.getText());
-//			@Override
-//			public List<MemberValue> getMemberValues() {
-//				return valueDeclarations.stream()
-//					.map(v->v.getMemberValue())
-//					.collect(Collectors.toList());
-//			}
-//
-//			@Override
-//			public List<AbstractFunction> getFunctions() {
-//				
-//				MapOfList<QName, PartialList> allFctMap = getAllFunctions();
-//				
-//				ArrayList<AbstractFunction> memberFunctions = new ArrayList<>();
-//				
-//				for(QName qn: allFctMap.keySet()) {
-//					List<PartialList> functions = allFctMap.get(qn);
-//					for(PartialList func: functions) {
-//						if(func.isConcrete()) {
-////							func.getMemberFunction().ifPresent((MemberFunction mf) -> {
-////								memberFunctions.add(mf);
-////							} );
-//							for(Partial partial: func.getPartials()) {
-//								memberFunctions.add(partial.toAPI());
-//							}
-////							memberFunctions.add(func.toAPI());
-//						}
-//					}
-//					
-//				}
-//				return memberFunctions;
-//			}
-//
-//			@Override
-//			public QName getQName() {
-//				return qName;
-//			}
-//			@Override
-//			public boolean isAncestorOrSame(Type type) {
-//				throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-//			}
-//
-//			List<InterfaceDeclaration> interfaces = null;
-//			@Override
-//			public List<InterfaceDeclaration> getDirectInterfaces() {
-//				if(interfaces == null) {
-//					interfaces = createDirectInterfaces();
-//				}
-//				return interfaces;
-//			}
-//			@Override
-//			public String toString() {
-//				return "API class " + qName;
-//			}
 		};
 		return classDeclarationImpl;
 	}
@@ -492,6 +419,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	}
 	@Override
 	public int hashCode() {
+		assert(this.qName != null);
 		int h = qName.hashCode();
 		for(TypeParameter formalParam : typeParameters)
 			h = 31 * h + formalParam.hashCode();

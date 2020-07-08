@@ -60,8 +60,8 @@ public class ScriptSession implements Session {
 
 	
 	private void addInput(InputTextProvider input) {
-		SdkTools sdkTools = new SdkTools(reporter);
-		sdkTools.parseSdk(globalSymbolTable);
+		SdkTools sdkTools = new SdkTools(reporter, globalSymbolTable);
+//		sdkTools.parseSdk(globalSymbolTable);
 
 		this.compilationUnit = parseScriptInput(input);
 

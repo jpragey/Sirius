@@ -20,7 +20,6 @@ public class CompilationUnitTest {
 	public void testCUcontainsShebang() {
 		
 		ScriptSession session = Compiler.compileScript("#!/bin.bash");
-//		List<ModuleContent> cu = Compiler.compileScript("#!/bin.bash");
 		Optional<ShebangDeclaration> shebang = session.getShebang();
 		assertTrue(shebang.isPresent());
 	}
@@ -31,26 +30,13 @@ public class CompilationUnitTest {
 		String source = "#!\n void ff(){} void gg () {} void hh () {}";
 		ScriptSession session = Compiler.compileScript(source);
 		
-//		List<ModuleContent> modules = session
-//				.getModuleContents();
-		List<ModuleDeclaration> modules = session
-				.getModuleDeclarations();
+		List<ModuleDeclaration> modules = session.getModuleDeclarations();
 		assertEquals(modules.size(), 1);
 				
-		List<PackageDeclaration> packageDeclarations = modules
-				.get(0)
-				.getPackages();
+		List<PackageDeclaration> packageDeclarations = modules.get(0).getPackages();
 		assertEquals(packageDeclarations.size(), 1);
 				
-//		List<AstFunctionDeclaration> fds = packageDeclarations
-//				.get(0)
-//				.getFunctionDeclarations();
-		List<AbstractFunction> fds = packageDeclarations
-				.get(0)
-				.getFunctions();
-		
-//		AstPackageDeclaration pd = packageDeclarations.get(0);
-		
+		List<AbstractFunction> fds = packageDeclarations.get(0).getFunctions();
 		
 		assertEquals(fds.size(), 3);
 		assertEquals(fds.get(0).getQName().getLast(), "ff");

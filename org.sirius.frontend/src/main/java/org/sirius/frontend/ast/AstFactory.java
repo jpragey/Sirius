@@ -25,12 +25,12 @@ public class AstFactory {
 
 	// -- Types
 
-	public AstClassDeclaration createClassOrInterface(Token name, boolean isInterface/*, QName containerQName*/) {
-		return new AstClassDeclaration(reporter,  isInterface, new AstToken(name), new QName()/*, containerQName*/);
+	public AstClassDeclaration createClassOrInterface(Token name/*, boolean isInterface*/) {
+		return new AstClassDeclaration(reporter,  /*isInterface, */new AstToken(name));
 	}
 
 	public AstInterfaceDeclaration createInterface(Token name) {
-		return new AstInterfaceDeclaration(reporter, new AstToken(name), Optional.of(new QName() /*TODO*/));
+		return new AstInterfaceDeclaration(reporter, new AstToken(name));
 	}
 
 	public TypeParameter createTypeFormalParameter(Variance variance, Token formalName) {
