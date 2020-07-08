@@ -48,41 +48,38 @@ locals[
 	;
 
 /** CompilationUnit from script */
-scriptCompilationUnit returns [ScriptCompilationUnit unit]
+scriptCompilationUnit
 @init {     
 	Optional<ShebangDeclaration> shebang = Optional.empty();
 	List<ImportDeclaration> importDeclarations = new ArrayList<>();
 	List<AstModuleDeclaration> moduleDeclarations = new ArrayList<>();
 }
-	: (shebangDeclaration			{shebang = Optional.of($shebangDeclaration.declaration); })?
-    ( importDeclaration 			{importDeclarations.add($importDeclaration.declaration); })*
-	( concreteModule				{moduleDeclarations.add($concreteModule.md);} )*
-	{
-		$unit = factory.createScriptCompilationUnit(shebang, importDeclarations, moduleDeclarations);
-	}	
-	EOF
+	: shebangDeclaration ?
+      importDeclaration *
+	  concreteModule *
+	  EOF
 	;
 	
-concreteModule returns [AstModuleDeclaration md]
+concreteModule /*returns [AstModuleDeclaration md]*/
 @init {
-	$md = factory.createEmptyModuleDeclaration();
+
 }
 	: 
-	  (moduleDeclaration	{$md = $moduleDeclaration.declaration;   })
-	  (moduleContent 		{$md.addContent($moduleContent.content); })*
-	  |
-	  (moduleContent 		{$md.addContent($moduleContent.content); })+
-	  
+	  (moduleDeclaration	/*{$md = $moduleDeclaration.declaration;   }*/)
+	  (moduleContent 		)*
+	|
+	  (moduleContent 		)+
 	;
 	
-moduleContent returns [AstModuleContent content]
+moduleContent 
+locals [
+]
 @init {
-	 $content = new AstModuleContent();
 }
-	: packageDeclaration 		{$content.addPackageDeclaration($packageDeclaration.declaration);	} 
-	| functionDeclaration 		{$content.addPartialList($functionDeclaration.partialList);	}
-	| classDeclaration 			{$content.addClass($classDeclaration.declaration);	}
-	| interfaceDeclaration		{$content.addInterface($interfaceDeclaration.declaration);	}
+	: packageDeclaration 		 
+	| functionDeclaration 		
+	| classDeclaration 			
+	| interfaceDeclaration		
 	; 
 
 /** CompilationUnit from module descriptor */

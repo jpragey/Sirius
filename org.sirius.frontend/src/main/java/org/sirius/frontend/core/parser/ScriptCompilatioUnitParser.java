@@ -44,8 +44,8 @@ public class ScriptCompilatioUnitParser {
 			// -- Shebang
 			ShebangDeclarationParser.ShebangVisitor shebangVisitor = new ShebangDeclarationParser.ShebangVisitor();
 			Optional<ShebangDeclaration> shebangDeclaration = Optional.empty();
-			if(ctx.shebangDeclaration != null)
-				shebangDeclaration = Optional.of(ctx.shebangDeclaration.accept(shebangVisitor));
+			//if(ctx.shebangDeclaration() != null)
+				shebangDeclaration = Optional.of(ctx.shebangDeclaration().accept(shebangVisitor));
 			
 			// -- Import declarations
 		    //( importDeclaration 			{$unit.addImport($importDeclaration.declaration);  })*

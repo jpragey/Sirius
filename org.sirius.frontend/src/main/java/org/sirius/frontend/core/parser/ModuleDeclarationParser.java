@@ -156,15 +156,21 @@ public class ModuleDeclarationParser {
 			List<AstClassDeclaration> classDeclarations = new ArrayList<>();
 			List<PartialList> partialLists = new ArrayList<>();
 			ModuleContentVisitor moduleContentVisitor = new ModuleContentVisitor(reporter, packageDeclarations, interfaceDeclarations, classDeclarations, partialLists);
-			if(ctx.moduleContent != null)
-				ctx.moduleContent.accept(moduleContentVisitor);
+			
+			ctx.moduleContent().forEach(mcContext -> mcContext.accept(moduleContentVisitor));
 			
 			// --
 			ModuleDeclarationVisitor mdVisitor = new ModuleDeclarationVisitor(reporter);
-			AstModuleDeclaration result = (ctx.moduleDeclaration == null) ?
-					AstModuleDeclaration.createUnnamed(reporter, new ModuleImportEquivalents(), Collections.emptyList() /*moduleImports*/):
-					ctx.moduleDeclaration.accept(mdVisitor);
-
+			AstModuleDeclaration result;
+			ModuleDeclarationContext moduleDeclarationContext = ctx.moduleDeclaration();
+			if(moduleDeclarationContext != null) {
+				result = moduleDeclarationContext.accept(mdVisitor);
+			} else {
+				ModuleImportEquivalents equiv = new ModuleImportEquivalents();
+				List<ModuleImport> moduleImports = List.of();
+				result = AstModuleDeclaration.createUnnamed(reporter, equiv, moduleImports);
+			}
+			
 			packageDeclarations.forEach(pkdDecl->result.addPackageDeclaration(pkdDecl));
 			interfaceDeclarations.forEach(pkdDecl->result.addInterfaceDeclaration(pkdDecl));
 			classDeclarations.forEach(pkdDecl->result.addClassDeclaration(pkdDecl));

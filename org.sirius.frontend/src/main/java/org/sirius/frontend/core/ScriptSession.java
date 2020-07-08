@@ -78,30 +78,30 @@ public class ScriptSession implements Session {
 	}
 	
 
-	private ScriptCompilationUnit parseScriptInput_old(InputTextProvider input) {
-		
-		String sourceCode = input.getText();
-		
-		CharStream stream = CharStreams.fromString(sourceCode); 
-		
-		SiriusLexer lexer = new SiriusLexer(stream);
-		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-		
-		SiriusParser parser = new SiriusParser(tokenStream);
-
-		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
-		parser.factory = astFactory;
-		
-		parser.removeErrorListeners();
-		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
-
-
-		// -- Parsing
-		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
-		ScriptCompilationUnit compilationUnit = unitContext.unit;
-		
-		return compilationUnit;
-	}
+//	private ScriptCompilationUnit parseScriptInput_old(InputTextProvider input) {
+//		
+//		String sourceCode = input.getText();
+//		
+//		CharStream stream = CharStreams.fromString(sourceCode); 
+//		
+//		SiriusLexer lexer = new SiriusLexer(stream);
+//		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+//		
+//		SiriusParser parser = new SiriusParser(tokenStream);
+//
+//		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
+//		parser.factory = astFactory;
+//		
+//		parser.removeErrorListeners();
+//		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
+//
+//
+//		// -- Parsing
+//		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
+//		ScriptCompilationUnit compilationUnit = unitContext.unit;
+//		
+//		return compilationUnit;
+//	}
 
 	private ScriptCompilationUnit parseScriptInput(InputTextProvider input) {
 		
