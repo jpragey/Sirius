@@ -27,22 +27,19 @@ grammar Sirius;
 // -------------------- COMPILATION UNITS
 
 /** Usual compilation unit */
-standardCompilationUnit returns [StandardCompilationUnit stdUnit]
+standardCompilationUnit 
 locals[
 ]
 @init {     
-/*	currentPackage = factory.createPackageDeclaration();*/
-	$stdUnit = factory.createStandardCompilationUnit();
-//	AstModuleDeclaration currentModule;
 }
     : 						
-    ( importDeclaration 		{ $stdUnit.addImport($importDeclaration.declaration);  })*
+    ( importDeclaration )*
     (
-    	  moduleDeclaration 	{ $stdUnit.addModuleDeclaration($moduleDeclaration.declaration);    } 
-    	| packageDeclaration	{ /** currentModule.addPackageDeclaration($packageDeclaration.declaration);*/}
-    	| functionDeclaration 	{ $stdUnit.addFunctionDeclaration($functionDeclaration.partialList ); }
-    	| classDeclaration 		{ $stdUnit.addClassDeclaration($classDeclaration.declaration);	}
-    	| interfaceDeclaration	{ $stdUnit.addInterfaceDeclaration($interfaceDeclaration.declaration);	}
+    	  moduleDeclaration 	 
+    	| packageDeclaration	
+    	| functionDeclaration 	
+    	| classDeclaration 		
+    	| interfaceDeclaration	
     )*
 	EOF
 	;
@@ -50,9 +47,6 @@ locals[
 /** CompilationUnit from script */
 scriptCompilationUnit
 @init {     
-	Optional<ShebangDeclaration> shebang = Optional.empty();
-	List<ImportDeclaration> importDeclarations = new ArrayList<>();
-	List<AstModuleDeclaration> moduleDeclarations = new ArrayList<>();
 }
 	: shebangDeclaration ?
       importDeclaration *
@@ -60,12 +54,12 @@ scriptCompilationUnit
 	  EOF
 	;
 	
-concreteModule /*returns [AstModuleDeclaration md]*/
+concreteModule
 @init {
 
 }
 	: 
-	  (moduleDeclaration	/*{$md = $moduleDeclaration.declaration;   }*/)
+	  moduleDeclaration
 	  (moduleContent 		)*
 	|
 	  (moduleContent 		)+
@@ -82,15 +76,6 @@ locals [
 	| interfaceDeclaration		
 	; 
 
-/** CompilationUnit from module descriptor */
-/*
-moduleDescriptorCompilationUnit returns [ModuleDescriptor unit]
-@init {
-}
-	: moduleDeclaration		{ $unit = factory.createModuleDescriptorCompilationUnit($moduleDeclaration.declaration);} 
-	;
-*/
-/** CompilationUnit from package descriptor */
 
 packageDescriptorCompilationUnit returns [PackageDescriptorCompilationUnit unit]
 	: packageDeclaration 	{ $unit = factory.createPackageDescriptorCompilationUnit($packageDeclaration.declaration);}

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Session;
@@ -15,6 +16,8 @@ import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.QualifiedName;
+import org.sirius.frontend.ast.StandardCompilationUnit;
+import org.sirius.frontend.core.parser.StandardCompilatioUnitParser;
 import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.parser.SiriusParser.ModuleDeclarationContext;
@@ -74,9 +77,14 @@ public class StandardSession implements Session {
 	private void parseStandardInput(InputTextProvider input) {
 		SiriusParser parser = createParser(input, new AstFactory(reporter, globalSymbolTable));
 		// -- Parsing
-		StandardCompilationUnitContext unitContext = parser.standardCompilationUnit();
-		AbstractCompilationUnit compilationUnit = unitContext.stdUnit;
+//		StandardCompilationUnitContext unitContext = parser.standardCompilationUnit();
+//		AbstractCompilationUnit compilationUnit = unitContext.stdUnit;
+
+		ParseTree tree = parser.standardCompilationUnit();
 		
+		StandardCompilatioUnitParser.StandardCompilationUnitVisitor visitor = new StandardCompilatioUnitParser.StandardCompilationUnitVisitor(reporter);
+		StandardCompilationUnit compilationUnit = visitor.visit(tree);
+
 		parseInput(input, compilationUnit);
 	}
 
