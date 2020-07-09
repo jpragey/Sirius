@@ -32,15 +32,15 @@ public class ModuleContent {
 		return packageContents;
 	}
 	
-	public void addPackageContents(List<AstPackageDeclaration> packageContents) {
-		for(AstPackageDeclaration pc: packageContents)
-			addPackage(pc);
-	}
-	
-	public void addPackage(AstPackageDeclaration packageContent) {
-		this.moduleDeclaration.addPackageDeclaration(packageContent);
-		this.packageContents.add(packageContent);
-	}
+//	public void addPackageContents(List<AstPackageDeclaration> packageContents) {
+//		for(AstPackageDeclaration pc: packageContents)
+//			addPackage(pc);
+//	}
+//	
+//	public void addPackage(AstPackageDeclaration packageContent) {
+//		this.moduleDeclaration.addPackageDeclaration(packageContent);
+//		this.packageContents.add(packageContent);
+//	}
 	
 	/** Create an empty package with same qname as this module, if there's no matching package declarator.
 	 * 

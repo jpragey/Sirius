@@ -39,7 +39,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 	private LocalSymbolTable symbolTable; 
 
 	// Set after parsing
-	private Optional<AstModuleDeclaration> containingModule = Optional.empty();
+//	private Optional<AstModuleDeclaration> containingModule = Optional.empty();
 	
 	public AstPackageDeclaration(Reporter reporter, QName qname, 
 			List<PartialList> functionDeclarations, List<AstClassDeclaration> classDeclarations, 
@@ -105,9 +105,9 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		return functionDeclarations;
 	}
 
-	public void setContainingModule(AstModuleDeclaration declaration) {
-		this.containingModule = Optional.of(declaration);
-	}
+//	public void setContainingModule(AstModuleDeclaration declaration) {
+////		this.containingModule = Optional.of(declaration);
+//	}
 
 	@Override
 	public SymbolTable getSymbolTable() {

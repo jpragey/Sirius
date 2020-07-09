@@ -12,28 +12,8 @@ import org.sirius.frontend.parser.Compiler;
 
 public class SymbolTableCreation {
 
-	@Test
-	@Disabled
-	void testCUSymbolTablesContainsImportedSymbols() {
-//		
-//		List<ModuleContent> mcs = Compiler.compile(
-//				new TextInputTextProvider("a/b", "module.sirius", "module a.b \"1\" {}"),
-//				new TextInputTextProvider("a/b", "A.sirius", "import a.b {C}")
-//				);
-//
-//		ModuleContent mc = mcs.get(0);
-//		assertNotNull(mc);
-//		
-//		CompilationUnit cu = mc.getCompilationUnits().get(0);
-//		
-//		AliasingSymbolTable st = cu.getSymbolTable();
-//		
-//		Optional<ImportedSymbol> s = st.lookupImport("C");
-//		assertTrue(s.isPresent());
-	}
 
 	@Test
-	@Disabled("Restore when scope stuff is OK")
 	void testImportedSymbols() {
 		ScriptSession session = Compiler.compileScript(
 				"#!\n"

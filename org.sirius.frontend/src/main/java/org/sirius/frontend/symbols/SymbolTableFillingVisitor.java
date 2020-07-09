@@ -42,6 +42,7 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 	}
 
 	private void processImports(DefaultSymbolTable st, List<ImportDeclaration> imports) {
+		assert(st != null);
 		symbolTableStack.push(st);
 		
 		for(ImportDeclaration importDecl: imports) {

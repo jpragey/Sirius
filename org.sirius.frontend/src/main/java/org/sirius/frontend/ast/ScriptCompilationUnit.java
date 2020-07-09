@@ -22,10 +22,6 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	
 	private DefaultSymbolTable symbolTable; 
 
-//	private AstModuleDeclaration currentModule = null; // TODO: remove
-	
-
-
 	public ScriptCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable,
 			Optional<ShebangDeclaration> shebangDeclaration,
 			List<ImportDeclaration> importDeclarations,
@@ -40,9 +36,6 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		
 		modules.forEach(md->{assert(md != null);});
 		this.moduleDeclarations = modules;
-		
-		
-		
 	}
 
 	public void setShebang(Optional<ShebangDeclaration> declaration) {
@@ -86,14 +79,10 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	private void addModuleDeclaration(AstModuleDeclaration moduleDeclaration) {
 		assert(moduleDeclaration != null);
 		this.moduleDeclarations.add(moduleDeclaration);
-//		this.currentModule = moduleDeclaration;
 	}
 	public void addAllModuleDeclaration(List<AstModuleDeclaration> moduleDeclarations) {
 		moduleDeclarations.forEach(md -> addModuleDeclaration(md));
 	}
-//	public AstModuleDeclaration getCurrentModule() { // TODO: remove
-//		return currentModule;
-//	}
 
 	@Override
 	public DefaultSymbolTable getSymbolTable() {

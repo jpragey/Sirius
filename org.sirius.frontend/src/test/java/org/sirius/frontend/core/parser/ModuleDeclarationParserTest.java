@@ -123,7 +123,10 @@ public class ModuleDeclarationParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.moduleDeclaration();
 				
-		ModuleDeclarationParser.ModuleDeclarationVisitor visitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter);
+		ModuleDeclarationParser.ModuleDeclarationVisitor visitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter
+				, List.of() 
+//				new ModuleDeclarationParser.PackageElements()
+				);
 		AstModuleDeclaration moduleDeclaration = visitor.visit(tree);
 		return moduleDeclaration;
 	}

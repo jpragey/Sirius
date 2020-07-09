@@ -1,8 +1,9 @@
 package org.sirius.frontend.core.parser;
 
+import java.util.List;
+
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstModuleDeclaration;
-import org.sirius.frontend.ast.ModuleDescriptor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.ModuleDescriptorCompilationUnitContext;
 
@@ -22,7 +23,9 @@ public class ModuleDescriptorCompilatioUnitParser {
 		}
 		@Override
 		public AstModuleDeclaration visitModuleDescriptorCompilationUnit(ModuleDescriptorCompilationUnitContext ctx) {
-			ModuleDeclarationParser.ModuleDeclarationVisitor visitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter);
+			
+			ModuleDeclarationParser.ModuleDeclarationVisitor visitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter, 
+					List.of() /*packageElements*/);
 			AstModuleDeclaration moduleDeclaration = ctx.moduleDeclaration().accept(visitor);
 			
 			return moduleDeclaration;

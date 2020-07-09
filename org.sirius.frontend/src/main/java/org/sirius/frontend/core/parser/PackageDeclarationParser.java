@@ -11,7 +11,8 @@ import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.PartialList;
-import org.sirius.frontend.core.parser.ModuleDeclarationParser.ModuleContentVisitor;
+import org.sirius.frontend.core.parser.ModuleDeclarationParser.PackageElementVisitor;
+import org.sirius.frontend.core.parser.ModuleDeclarationParser.PackageElements;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.QnameContext;
@@ -51,19 +52,21 @@ public class PackageDeclarationParser {
 			QName packageQName = ctx.qname().accept(visitor);
 			
 			List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
-			List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
-			List<AstClassDeclaration> classDeclarations = new ArrayList<>();
-			List<PartialList> partialLists = new ArrayList<>();
+//			List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
+//			List<AstClassDeclaration> classDeclarations = new ArrayList<>();
+//			List<PartialList> partialLists = new ArrayList<>();
+			
+			PackageElements packageElements = new PackageElements();
 
-			ModuleDeclarationParser.ModuleContentVisitor mcVisitor = new ModuleDeclarationParser.ModuleContentVisitor(reporter, 
-					packageDeclarations, interfaceDeclarations, classDeclarations, partialLists);
-			ctx.moduleContent().forEach(mcContext -> mcContext.accept(mcVisitor));
+			ModuleDeclarationParser.PackageElementVisitor mcVisitor = new ModuleDeclarationParser.PackageElementVisitor(reporter, 
+					packageDeclarations, packageElements /*interfaceDeclarations, classDeclarations, partialLists*/);
+			ctx.packageElement().forEach(mcContext -> mcContext.accept(mcVisitor));
 			
 			
 			return new AstPackageDeclaration(reporter, packageQName,
-					partialLists, 
-					classDeclarations, 
-					interfaceDeclarations, 
+					packageElements.partialLists, 
+					packageElements.classDeclarations, 
+					packageElements.interfaceDeclarations, 
 					List.of()// <AstMemberValueDeclaration> valueDeclarations
 					);
 		}

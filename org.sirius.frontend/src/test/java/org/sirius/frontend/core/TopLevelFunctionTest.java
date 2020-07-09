@@ -24,6 +24,8 @@ import org.sirius.frontend.api.StringConstantExpression;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.api.VoidType;
+import org.sirius.frontend.ast.AstModuleDeclaration;
+import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.parser.Compiler;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.*;
@@ -32,10 +34,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TopLevelFunctionTest {
 
 	@Test
-	@Disabled("TODO: restore")
+//	@Disabled("TODO: restore")
 	public void findTopLevelFunction() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(){}");
-
+		
+		// -- AST
+		List<AstModuleDeclaration> astModules = session.getAstModules();
+		AstModuleDeclaration astModule = astModules.get(0);
+		AstPackageDeclaration astPackage = astModule.getPackageDeclarations().get(0);
+				
+		// -- API
 		List<ModuleDeclaration> moduleDeclarations = session.getModuleDeclarations();
 		assertEquals(moduleDeclarations.size(), 1);
 		
@@ -61,10 +69,6 @@ public class TopLevelFunctionTest {
 	@Disabled("TODO: restore")
 	public void checkFunctionArgumentsInAPIFunction() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(Integer i, Integer j){}");
-		
-//		AstModuleDeclaration md = session.getModuleContents().get(0).getModuleDeclaration();
-//		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
-//		AstFunctionDeclaration fd = pd.getFunctionDeclarations().get(0);
 
 		AbstractFunction tlf = session.getModuleDeclarations().get(0).getPackages().get(0).getFunctions().get(2);
 		
@@ -73,19 +77,6 @@ public class TopLevelFunctionTest {
 		assertEquals(tlf.getArguments().get(1).getQName().dotSeparated(), "a.b.f.j");
 	}
 
-	
-//	@Test(description = "", enabled = true)
-//	public void checkPartialParsingCausesAnError() {
-//		ScriptSession session = Compiler.compileScript(
-//				"#!\n module a.b \"1.0\" {} "
-//				//+ "import sirius.lang {String} "
-//				+ "void f(){println(\"Hello World\");}"
-//				//+ "impor t sirius.lang1 {String1 "
-//				);
-//		assertEquals(session.getReporter().getErrorCount(), 1);
-//	}
-	
-	
 	@Test
 	@Disabled("Restore when scope stuff is OK")
 	public void checkFunctionBodyContainsAnExpressionStatement() {
@@ -110,16 +101,6 @@ public class TopLevelFunctionTest {
 //		assertEquals(functionCall.getFunctionName().getText(), "println");
 		
 		
-		
-//		// -- API
-//		TopLevelFunction tlf = session.getModuleDeclarations().get(0).getPackages().get(0).getFunctions().get(0);
-//		assertEquals(tlf.getQName().dotSeparated(), "a.b.f");
-//		
-//		List<Statement> apiStatements = tlf.getBodyStatements();
-//		assertEquals(apiStatements.size(), 1);
-//		ExpressionStatement functionCallst = (ExpressionStatement)apiStatements.get(0);
-//		
-//		FunctionCall functionCall = (FunctionCall)functionCallst.getExpression();
 		assertEquals(functionCall.getFunctionName().getText(), "println");
 		assertEquals(functionCall.getArguments().size(), 1);
 

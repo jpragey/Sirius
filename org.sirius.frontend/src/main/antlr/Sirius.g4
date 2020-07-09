@@ -54,12 +54,12 @@ scriptCompilationUnit
 	
 concreteModule
 	: moduleDeclaration
-	  (moduleContent 		)*
+	  (packageElement		)*
 	|
-	  (moduleContent 		)+
+	  (packageElement 		)+
 	;
 	
-moduleContent 
+packageElement
 	: packageDeclaration 		 
 	| functionDeclaration 		
 	| classDeclaration 			
@@ -300,7 +300,7 @@ annotationList
 
 packageDeclaration 
 	: 'package' qname ';'
-	moduleContent *
+	packageElement *
 	;
 	
 // -------------------- CLASS 
@@ -400,8 +400,6 @@ TYPE_ID : [A-Z][a-zA-Z0-9_]* ;	// start by uppercase
 LOWER_ID : [a-z][a-zA-Z0-9_]* ;	// start by lowercase
 
 //ALIAS_ID : [a-zA-Z][a-zA-Z0-9_]* ;
-
-//ANNOTATION_ID : '@'[a-zA-Z][a-zA-Z0-9_]* ;
 
 ID : [a-zA-Z][a-zA-Z0-9_]* ;
 

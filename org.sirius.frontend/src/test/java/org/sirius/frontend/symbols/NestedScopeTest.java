@@ -1,38 +1,20 @@
 package org.sirius.frontend.symbols;
 
 
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.sirius.common.core.QName;
-import org.sirius.common.error.AccumulatingReporter;
-import org.sirius.common.error.Reporter;
-import org.sirius.common.error.ShellReporter;
-import org.sirius.frontend.api.ClassDeclaration;
-import org.sirius.frontend.api.ModuleDeclaration;
-import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstLocalVariableStatement;
-import org.sirius.frontend.ast.AstMemberValueDeclaration;
-import org.sirius.frontend.ast.AstStatement;
-import org.sirius.frontend.ast.AstType;
-import org.sirius.frontend.ast.AstVoidType;
-import org.sirius.frontend.ast.PartialList;
-import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.core.ScriptSession;
-import org.sirius.frontend.parser.Compiler;
-import org.sirius.frontend.parser.SiriusParser;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.sirius.common.core.QName;
+import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstLocalVariableStatement;
+import org.sirius.frontend.ast.AstMemberValueDeclaration;
+import org.sirius.frontend.ast.PartialList;
+import org.sirius.frontend.core.ScriptSession;
+import org.sirius.frontend.parser.Compiler;
 
 public class NestedScopeTest {
 

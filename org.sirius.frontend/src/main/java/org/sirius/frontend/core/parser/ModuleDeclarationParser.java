@@ -29,6 +29,8 @@ import org.sirius.frontend.parser.SiriusParser.ModuleVersionEquivalentContext;
 import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.QnameContext;
 
+import com.google.common.collect.Lists;
+
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
  * @author jpragey
@@ -53,10 +55,6 @@ public class ModuleDeclarationParser {
 			Optional<QName> qname = Optional.empty();
 			if(ctx.nameQName != null )
 				qname = Optional.of(ctx.nameQName.accept(nameVisitor).toQName());
-//			if(ctx.qname != null) {
-//				QualifiedName qualifiedName = ctx.qname.accept(nameVisitor);
-//				qname = Optional.of(qualifiedName.toQName());
-//			}
 				
 			Optional<String> qnameString = Optional.empty();
 			if(ctx.nameString != null) {
@@ -93,23 +91,19 @@ public class ModuleDeclarationParser {
 		}
 	}	
 	
-	public static class ModuleContentVisitor extends SiriusBaseVisitor<Void> {
+	public static class PackageElementVisitor extends SiriusBaseVisitor<Void> {
 		Reporter reporter; 
 		List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
-		List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
-		List<AstClassDeclaration> classDeclarations = new ArrayList<>();
-		List<PartialList> partialLists = new ArrayList<>();
+		PackageElements packageElements;
 		
-		public ModuleContentVisitor(Reporter reporter,
+		public PackageElementVisitor(Reporter reporter,
 				List<AstPackageDeclaration> packageDeclarations,
-				List<AstInterfaceDeclaration> interfaceDeclarations, List<AstClassDeclaration> classDeclarations,
-				List<PartialList> partialLists) {
+				PackageElements packageElements) 
+		{
 			super();
 			this.reporter = reporter;
 			this.packageDeclarations = packageDeclarations;
-			this.interfaceDeclarations = interfaceDeclarations;
-			this.classDeclarations = classDeclarations;
-			this.partialLists = partialLists;
+			this.packageElements = packageElements;
 		}
 			@Override
 		public Void visitPackageDeclaration(PackageDeclarationContext ctx) {
@@ -123,7 +117,7 @@ public class ModuleDeclarationParser {
 			FunctionDeclarationParser.FunctionDeclarationVisitor v = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter);
 			
 			PartialList partialList = ctx.accept(v);
-			this.partialLists.add(partialList);
+			this.packageElements.partialLists.add(partialList);
 			return null;
 		}
 		@Override
@@ -131,7 +125,7 @@ public class ModuleDeclarationParser {
 			ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser.ClassDeclarationVisitor (reporter/*, new QName()*/ /* containerQName */);
 
 			AstClassDeclaration cd = ctx.accept(visitor);
-			this.classDeclarations.add(cd);
+			this.packageElements.classDeclarations.add(cd);
 			return null;
 		}
 		@Override
@@ -139,10 +133,17 @@ public class ModuleDeclarationParser {
 			InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser.InterfaceDeclarationVisitor(reporter);
 
 			AstInterfaceDeclaration id = ctx.accept(visitor);
-			this.interfaceDeclarations.add(id);
+			this.packageElements.interfaceDeclarations.add(id);
 			return null;
 		}
 	}
+	
+	public static class PackageElements {
+		public List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
+		public List<AstClassDeclaration> classDeclarations = new ArrayList<>();
+		public List<PartialList> partialLists = new ArrayList<>();
+	}
+	
 	public static class ConcreteModuleVisitor extends SiriusBaseVisitor<AstModuleDeclaration> {
 		private Reporter reporter;
 
@@ -152,41 +153,41 @@ public class ModuleDeclarationParser {
 		}
 		@Override
 		public AstModuleDeclaration visitConcreteModule(ConcreteModuleContext ctx) {
-			// -- concrete module
+			PackageElements packageElements = new PackageElements();
+			
+			// -- package content
 			List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
-			List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
-			List<AstClassDeclaration> classDeclarations = new ArrayList<>();
-			List<PartialList> partialLists = new ArrayList<>();
-			ModuleContentVisitor moduleContentVisitor = new ModuleContentVisitor(reporter, packageDeclarations, interfaceDeclarations, classDeclarations, partialLists);
+			PackageElementVisitor moduleContentVisitor = new PackageElementVisitor(reporter, packageDeclarations, packageElements);
 			
-			ctx.moduleContent().forEach(mcContext -> mcContext.accept(moduleContentVisitor));
+			ctx.packageElement().forEach(mcContext -> mcContext.accept(moduleContentVisitor));
 			
-			// --
-			ModuleDeclarationVisitor mdVisitor = new ModuleDeclarationVisitor(reporter);
+			
+			// -- Module declaration
 			AstModuleDeclaration result;
 			ModuleDeclarationContext moduleDeclarationContext = ctx.moduleDeclaration();
-			if(moduleDeclarationContext != null) {
+			if(moduleDeclarationContext != null) {	// Explicit module
+				
+				AstPackageDeclaration pd = new AstPackageDeclaration(reporter, QName.empty, packageElements.partialLists, packageElements.classDeclarations, 
+						packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/);
+				ModuleDeclarationVisitor mdVisitor = new ModuleDeclarationVisitor(reporter, List.of(pd)/*packageElements*/);
 				result = moduleDeclarationContext.accept(mdVisitor);
-			} else {
+			} else {								// Unnamed module
 				ModuleImportEquivalents equiv = new ModuleImportEquivalents();
 				List<ModuleImport> moduleImports = List.of();
-				result = AstModuleDeclaration.createUnnamed(reporter, equiv, moduleImports);
+				result = AstModuleDeclaration.createUnnamed(reporter, equiv, moduleImports, packageDeclarations);
 			}
-			
-			packageDeclarations.forEach(pkdDecl->result.addPackageDeclaration(pkdDecl));
-			interfaceDeclarations.forEach(pkdDecl->result.addInterfaceDeclaration(pkdDecl));
-			classDeclarations.forEach(pkdDecl->result.addClassDeclaration(pkdDecl));
-			partialLists.forEach(pkdDecl->result.addFunctionDeclaration(pkdDecl));
 					
 			return result;
 		}
 	}
 	public static class ModuleDeclarationVisitor extends SiriusBaseVisitor<AstModuleDeclaration> {
 		private Reporter reporter;
+		private List<AstPackageDeclaration> packageDeclarations;
 
-		public ModuleDeclarationVisitor(Reporter reporter) {
+		public ModuleDeclarationVisitor(Reporter reporter, /*PackageElements packageElements*/List<AstPackageDeclaration> packageDeclarations) {
 			super();
 			this.reporter = reporter;
+			this.packageDeclarations  =packageDeclarations;
 		}
 
 		@Override
@@ -211,7 +212,7 @@ public class ModuleDeclarationParser {
 				.filter(modImport -> modImport!=null)
 				.collect(Collectors.toList());
 			
-			return new AstModuleDeclaration(reporter, qualifiedName, version, equivalents, moduleImports);
+			return new AstModuleDeclaration(reporter, qualifiedName, version, equivalents, moduleImports, packageDeclarations);
 		}
 	}
 }

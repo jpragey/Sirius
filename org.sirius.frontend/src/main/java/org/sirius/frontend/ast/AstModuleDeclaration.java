@@ -27,11 +27,12 @@ public class AstModuleDeclaration implements Visitable {
 	
 	private List<ModuleImport> moduleImports = new ArrayList<>(); 
 	
-	private ArrayList<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
+	private List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
 	
 	private String versionString;
 	
-	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, AstToken version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports) {
+	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, AstToken version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports,
+			List<AstPackageDeclaration> packageDeclarations) {
 		super();
 		this.reporter = reporter;
 
@@ -43,24 +44,28 @@ public class AstModuleDeclaration implements Visitable {
 		
 		this.equiv = equiv;
 		this.moduleImports = moduleImports;
+		this.packageDeclarations = packageDeclarations;
 		
 		String vs = version.getText();
 		assert(vs.length() >=2);	// contains start/end double quotes
 		this.versionString = vs.substring(1, vs.length()-1).trim();
 	}
 
-	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, AstToken version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports,
+//	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, AstToken version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports,
+//			List<AstPackageDeclaration> packageDeclarations) 
+//	{
+//		this(reporter, qualifiedName, version, equiv, moduleImports, packageDeclarations);
+//		this.packageDeclarations.addAll(packageDeclarations);
+//	}
+//	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, Token version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports) {
+//		this(reporter, qualifiedName, new AstToken(version), equiv, moduleImports);
+//	}
+	
+	public static AstModuleDeclaration createUnnamed(Reporter reporter, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports, 
+			//List<PartialList> partialLists, List<AstClassDeclaration> classDeclarations, List<AstInterfaceDeclaration> interfaceDeclarations,
 			List<AstPackageDeclaration> packageDeclarations) 
 	{
-		this(reporter, qualifiedName, version, equiv, moduleImports);
-		this.packageDeclarations.addAll(packageDeclarations);
-	}
-	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, Token version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports) {
-		this(reporter, qualifiedName, new AstToken(version), equiv, moduleImports);
-	}
-	
-	public static AstModuleDeclaration createUnnamed(Reporter reporter, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports) {
-		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, new QName(), new AstToken(0,0,0,0,"\"\"",""), equiv, moduleImports);
+		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, new QName(), new AstToken(0,0,0,0,"\"\"",""), equiv, moduleImports, packageDeclarations);
 		return mod;
 	}
 
@@ -91,19 +96,19 @@ public class AstModuleDeclaration implements Visitable {
 		return versionString;
 	}
 
-	/** Add a new package, update current package reference
-	 * 
-	 * @param packageDeclaration
-	 */
-	public void addPackageDeclaration(AstPackageDeclaration packageDeclaration) {
-		this.packageDeclarations.add(packageDeclaration);
-	}
-	
-	public AstPackageDeclaration createPackageDeclaration(QName packageQName) {
-		AstPackageDeclaration packageDeclaration = new AstPackageDeclaration(reporter, packageQName);
-		addPackageDeclaration(packageDeclaration);
-		return packageDeclaration;
-	}
+//	/** Add a new package, update current package reference
+//	 * 
+//	 * @param packageDeclaration
+//	 */
+//	public void addPackageDeclaration(AstPackageDeclaration packageDeclaration) {
+//		this.packageDeclarations.add(packageDeclaration);
+//	}
+//	
+//	public AstPackageDeclaration createPackageDeclaration(QName packageQName) {
+//		AstPackageDeclaration packageDeclaration = new AstPackageDeclaration(reporter, packageQName);
+//		addPackageDeclaration(packageDeclaration);
+//		return packageDeclaration;
+//	}
 	
 	
 	public AstPackageDeclaration getCurrentPackage() {
@@ -126,21 +131,21 @@ public class AstModuleDeclaration implements Visitable {
 		this.getCurrentPackage().addInterfaceDeclaration(interfaceDeclaration);
 	}
 
-	public void addPackageDeclarations(List<AstPackageDeclaration> packageDeclaration) {
-		packageDeclaration.stream().forEach(d->addPackageDeclaration(d));
-	}
+//	public void addPackageDeclarations(List<AstPackageDeclaration> packageDeclaration) {
+//		packageDeclaration.stream().forEach(d->addPackageDeclaration(d));
+//	}
 
-	public void addContent(AstModuleContent content) {
-		assert(content != null);
-		content.getPackageDeclarations().stream().forEach(d->addPackageDeclaration(d));
-		content.getInterfaceDeclarations().stream().forEach(d->addInterfaceDeclaration(d));
-		content.getClassDeclarations().stream().forEach(d->addClassDeclaration(d));
-		content.getFunctionsDeclarations().stream().forEach(d->addFunctionDeclaration(d));
-	}
+//	public void addContent(AstModuleContent content) {
+//		assert(content != null);
+//		content.getPackageDeclarations().stream().forEach(d->addPackageDeclaration(d));
+//		content.getInterfaceDeclarations().stream().forEach(d->addInterfaceDeclaration(d));
+//		content.getClassDeclarations().stream().forEach(d->addClassDeclaration(d));
+//		content.getFunctionsDeclarations().stream().forEach(d->addFunctionDeclaration(d));
+//	}
 
-	public void addAllContent(List<AstModuleContent> content) {
-		content.forEach(ct -> addContent(ct));
-	}
+//	public void addAllContent(List<AstModuleContent> content) {
+//		content.forEach(ct -> addContent(ct));
+//	}
 
 	public void appendImport(ModuleImport moduleImport) {
 		this.moduleImports.add(moduleImport);

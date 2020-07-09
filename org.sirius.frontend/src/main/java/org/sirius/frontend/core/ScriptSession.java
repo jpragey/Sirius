@@ -63,7 +63,7 @@ public class ScriptSession implements Session {
 		SdkTools sdkTools = new SdkTools(reporter, globalSymbolTable);
 //		sdkTools.parseSdk(globalSymbolTable);
 
-		this.compilationUnit = parseScriptInput(input);
+		this.compilationUnit = parseScriptInput(input, globalSymbolTable);
 
 		stdTransform(reporter, input, compilationUnit, globalSymbolTable);
 
@@ -103,7 +103,7 @@ public class ScriptSession implements Session {
 //		return compilationUnit;
 //	}
 
-	private ScriptCompilationUnit parseScriptInput(InputTextProvider input) {
+	private ScriptCompilationUnit parseScriptInput(InputTextProvider input, DefaultSymbolTable getGlobalSymbolTable) {
 		
 		String sourceCode = input.getText();
 		
@@ -126,7 +126,8 @@ public class ScriptSession implements Session {
 //		ScriptCompilationUnit compilationUnit = unitContext.unit;
 //
 //		
-		ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor visitor = new ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor(reporter);
+		ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor visitor = new ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor(
+				reporter, getGlobalSymbolTable);
 		ScriptCompilationUnit compilationUnit = visitor.visit(unitContext);
 
 		return compilationUnit;

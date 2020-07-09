@@ -32,10 +32,12 @@ public class ScriptCompilatioUnitParser {
 
 	public static class ScriptCompilationUnitVisitor extends SiriusBaseVisitor<ScriptCompilationUnit> {
 		private Reporter reporter;
+		private DefaultSymbolTable globalSymbolTable;
 
-		public ScriptCompilationUnitVisitor(Reporter reporter) {
+		public ScriptCompilationUnitVisitor(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
 			super();
 			this.reporter = reporter;
+			this.globalSymbolTable = globalSymbolTable;
 		}
 
 		@Override
@@ -64,7 +66,7 @@ public class ScriptCompilatioUnitParser {
 					.collect(Collectors.toList());
 			
 			
-			DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable("root");	// TODO
+//			DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable("root");	// TODO
 
 			return new ScriptCompilationUnit(reporter, globalSymbolTable, shebangDeclaration, imports, /*packages, */modules);
 		}

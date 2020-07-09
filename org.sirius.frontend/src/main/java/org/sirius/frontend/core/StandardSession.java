@@ -160,7 +160,9 @@ public class StandardSession implements Session {
 			packageDeclarations.add(unnamedPackage);
 		}
 		
-		moduleContent.addPackageContents(packageDeclarations);
+		// TODO: ???
+		//moduleContent.addPackageContents(packageDeclarations); 
+		assert(false); 
 	}
 	
 	void parseCodeInput(InputTextProvider input, AstPackageDeclaration packageContent, ModuleContent  moduleContent) {
