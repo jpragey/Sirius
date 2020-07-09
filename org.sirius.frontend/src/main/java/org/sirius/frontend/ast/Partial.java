@@ -11,6 +11,7 @@ import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.Scope;
 
 import com.google.common.collect.ImmutableList;
 
@@ -185,6 +186,29 @@ public class Partial implements Visitable{
 
 	public Optional<List<AstStatement>> getBodyStatements() {
 		return body;
+	}
+	
+	private Scope scope = null;
+	
+	public void assignScope(Scope scope) {
+		this.scope = scope;
+		
+		if(body.isPresent()) {
+			for(AstStatement stmt: body.get()) {
+				if(stmt instanceof AstLocalVariableStatement) {
+					scope.addLocalVariable((AstLocalVariableStatement)stmt);
+				}
+			}
+		}
+		
+	}
+
+	public QName getqName() {
+		return qName;
+	}
+
+	public Scope getScope() {
+		return scope;
 	}
 	
 }

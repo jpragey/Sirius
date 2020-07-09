@@ -172,6 +172,46 @@ public class DefaultSymbolTable implements SymbolTable {
 		return symbol.getFunctionArgument();
 	}
 
+	public Optional<PartialList> lookupPartialList(String simpleName) {
+		Symbol symbol = symbolsBySimpleName.get(simpleName);
+
+		if(symbol == null && parent.isPresent()) {
+			return parent.get().lookupPartialList(simpleName);
+		}
+		if(symbol == null) {
+			return Optional.empty();
+		}
+		
+		return symbol.getFunctionDeclaration();
+	}
+
+	public Optional<AstMemberValueDeclaration> lookupValue(String simpleName) {
+		Symbol symbol = symbolsBySimpleName.get(simpleName);
+
+		if(symbol == null && parent.isPresent()) {
+			return parent.get().lookupValue(simpleName);
+		}
+		if(symbol == null) {
+			return Optional.empty();
+		}
+		
+		return symbol.getValueDeclaration();
+	}
+
+	
+	public Optional<AstLocalVariableStatement> lookupLocalVariable(String simpleName) {
+		Symbol symbol = symbolsBySimpleName.get(simpleName);
+
+		if(symbol == null && parent.isPresent()) {
+			return parent.get().lookupLocalVariable(simpleName);
+		}
+		if(symbol == null) {
+			return Optional.empty();
+		}
+		
+		return symbol.getLocalVariableStatement();
+	}
+	
 	public Optional<AstInterfaceDeclaration> lookupInterfaceDeclaration(String simpleName) {
 		Symbol symbol = symbolsBySimpleName.get(simpleName);
 

@@ -11,6 +11,7 @@ import org.sirius.frontend.core.AbstractCompilationUnit;
 import org.sirius.frontend.core.InputTextProvider;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.QNameSetterVisitor;
+import org.sirius.frontend.symbols.ScopeSetterVisitor;
 import org.sirius.frontend.symbols.SymbolResolutionVisitor;
 import org.sirius.frontend.symbols.SymbolTableFillingVisitor;
 
@@ -64,6 +65,9 @@ public interface Session {
 		
 		// -- Set qualified names 
 		applyVisitors(reporter, compilationUnit, new QNameSetterVisitor());
+		
+		// -- Set scopes
+		applyVisitors(reporter, compilationUnit, new ScopeSetterVisitor());
 		
 		// -- Set symbol tables (thus create the ST tree), add symbols to tables
 		applyVisitors(reporter, compilationUnit, new SymbolTableFillingVisitor(globalSymbolTable));

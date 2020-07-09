@@ -3,6 +3,7 @@ package org.sirius.frontend.ast;
 import java.util.List;
 import java.util.Optional;
 
+import org.sirius.common.core.QName;
 import org.sirius.common.core.Token;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.MemberValue;
@@ -15,7 +16,8 @@ public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable  {
 	private AstToken name;
 	private List<Annotation> annotations;
 	private Optional<AstExpression> initialValue;
-	
+	private QName qname = null;
+		
 	public AstMemberValueDeclaration(AnnotationList annotations, AstType type, AstToken name, Optional<AstExpression> initialValue) {
 		super();
 		this.annotations = annotations.getAnnotations();
@@ -110,6 +112,14 @@ public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable  {
 	}
 	public Optional<AstExpression> getInitialValue() {
 		return initialValue;
+	}
+	
+	
+	public QName getQname() {
+		return qname;
+	}
+	public void setContainerQName(QName containerQName) {
+		this.qname = containerQName.child(this.name.getText());
 	}
 	
 }

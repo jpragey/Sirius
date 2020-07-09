@@ -7,6 +7,7 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
+import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
@@ -140,4 +141,12 @@ public class QNameSetterVisitor implements AstVisitor {
 	@Override
 	public void start(SimpleType simpleType) {
 	}
+	
+	
+	@Override
+	public void startValueDeclaration(AstMemberValueDeclaration valueDeclaration) {
+		QName containerQName = qnameStack.peek();
+		valueDeclaration.setContainerQName(containerQName);
+	}
+	
 }

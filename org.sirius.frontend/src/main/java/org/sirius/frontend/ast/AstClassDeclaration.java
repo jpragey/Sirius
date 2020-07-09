@@ -17,6 +17,7 @@ import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.ast.AstClassOrInterface.AncestorInfo;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.Symbol;
 
 import com.google.common.collect.ImmutableList;
@@ -34,6 +35,8 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	private List<AstFunctionParameter> anonConstructorArguments = new ArrayList<>(); 
 
+	private Scope scope = null;
+	
 	/** True for annotation classes (ConstrainedAnnotation subtypes, ie OptionalAnnotation or SequencedAnnotation) */
 	private boolean annotationType = false; 
 	
@@ -122,8 +125,37 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	}
 
 	
+	public void assignScope(Scope scope) {
+		assert(this.scope == null);	// No duplicate assignment
+		this.scope = scope;
+
+		// -- 
+		for(TypeParameter typeParameter : this.typeParameters) {
+			
+		}
+//		private ImmutableList<TypeParameter> typeParameters;
+//		
+		for(PartialList partialList : this.functionDeclarations) {
+			scope.addFunction(partialList);
+		}
+//		private ImmutableList<PartialList> functionDeclarations;
+		for(AstMemberValueDeclaration memberValueDeclaration: this.valueDeclarations) {
+			scope.addMemberValue(memberValueDeclaration);
+		}
+//		private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
+		for(AstFunctionParameter constructorArg : this.anonConstructorArguments) {
+			
+		}
+//		private List<AstFunctionParameter> anonConstructorArguments = new ArrayList<>(); 
+
+		
+	}
 	
 	
+	public Scope getScope() {
+		return scope;
+	}
+
 	@Override
 	public AstToken getName() {
 		return name;

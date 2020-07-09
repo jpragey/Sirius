@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
+import org.sirius.frontend.symbols.Scope;
 
 public class PartialList implements Visitable {
 
@@ -110,5 +111,6 @@ public class PartialList implements Visitable {
 	public Optional<List<AstStatement>> getBody() {
 		return body;
 	}
+
 	
 }
