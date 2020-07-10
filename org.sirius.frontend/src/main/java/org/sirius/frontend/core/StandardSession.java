@@ -9,14 +9,11 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Session;
-import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
-import org.sirius.frontend.ast.ModuleDescriptor;
 import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
 import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.core.parser.ModuleDescriptorCompilatioUnitParser;
@@ -24,7 +21,6 @@ import org.sirius.frontend.core.parser.PackageDescriptorCompilatioUnitParser;
 import org.sirius.frontend.core.parser.StandardCompilatioUnitParser;
 import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
-import org.sirius.frontend.parser.SiriusParser.ModuleDeclarationContext;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 public class StandardSession implements Session {
@@ -48,7 +44,7 @@ public class StandardSession implements Session {
 		return reporter;
 	}
 
-	private SiriusParser createParser(InputTextProvider input, AstFactory astFactory) {
+	private SiriusParser createParser(InputTextProvider input/*, AstFactory astFactory*/) {
 		String sourceCode = input.getText();
 		
 		CharStream stream = CharStreams.fromString(sourceCode); 
@@ -58,12 +54,6 @@ public class StandardSession implements Session {
 		
 		SiriusParser parser = new SiriusParser(tokenStream);
 
-//		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
-		parser.factory = astFactory;
-		
-		//parser.currentModule = new AstModuleDeclaration(reporter);
-////		parser.currentModule = AstModuleDeclaration.createUnnamed(reporter);	// TODO: WTF ???
-
 		parser.removeErrorListeners();
 		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
 		
@@ -71,7 +61,7 @@ public class StandardSession implements Session {
 	}
 	
 	private AstModuleDeclaration parseModuleDescriptor(InputTextProvider input) {
-		SiriusParser parser = createParser(input, new AstFactory(reporter, globalSymbolTable));
+		SiriusParser parser = createParser(input);
 		
 		ModuleDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor v = new ModuleDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor(reporter);
 		
@@ -80,10 +70,7 @@ public class StandardSession implements Session {
 	}
 
 	private void parseStandardInput(InputTextProvider input) {
-		SiriusParser parser = createParser(input, new AstFactory(reporter, globalSymbolTable));
-		// -- Parsing
-//		StandardCompilationUnitContext unitContext = parser.standardCompilationUnit();
-//		AbstractCompilationUnit compilationUnit = unitContext.stdUnit;
+		SiriusParser parser = createParser(input);
 
 		ParseTree tree = parser.standardCompilationUnit();
 		
@@ -119,7 +106,7 @@ public class StandardSession implements Session {
 	}
 
 	private AstPackageDeclaration parsePackageDescriptor(InputTextProvider input) {
-		SiriusParser parser = createParser(input, new AstFactory(reporter, globalSymbolTable));
+		SiriusParser parser = createParser(input);
 //		AstPackageDeclaration pd = parser.packageDescriptorCompilationUnit().packageDeclaration.declaration;
 		
 //		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
@@ -151,13 +138,6 @@ public class StandardSession implements Session {
 					packageDeclarations.add(pd);
 				}
 			}
-		}
-		
-		if(packageDeclarations.isEmpty()) {
-			// -- Add initial package (name is module qname)
-			QName name = moduleContent.getModuleDeclaration().getqName();
-			AstPackageDeclaration unnamedPackage = new AstPackageDeclaration (reporter, name);
-			packageDeclarations.add(unnamedPackage);
 		}
 		
 		// TODO: ???
@@ -197,9 +177,6 @@ public class StandardSession implements Session {
 				}
 			}
 		}
-		for(ModuleContent mc: this.moduleContents) {
-			mc.createDefaultPackageIfNeeded();
-		}		
 	}
 
 	@Override

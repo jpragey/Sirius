@@ -31,27 +31,6 @@ public class ModuleContent {
 	public List<AstPackageDeclaration> getPackageContents() {
 		return packageContents;
 	}
-	
-//	public void addPackageContents(List<AstPackageDeclaration> packageContents) {
-//		for(AstPackageDeclaration pc: packageContents)
-//			addPackage(pc);
-//	}
-//	
-//	public void addPackage(AstPackageDeclaration packageContent) {
-//		this.moduleDeclaration.addPackageDeclaration(packageContent);
-//		this.packageContents.add(packageContent);
-//	}
-	
-	/** Create an empty package with same qname as this module, if there's no matching package declarator.
-	 * 
-	 */
-	public void createDefaultPackageIfNeeded() {
-		if(packageContents.isEmpty()) {
-			
-			AstPackageDeclaration pc = new AstPackageDeclaration(reporter, moduleDeclaration.getqName());
-			packageContents.add(pc);
-		}
-	}
 
 	public AstModuleDeclaration getModuleDeclaration() {
 		return moduleDeclaration;

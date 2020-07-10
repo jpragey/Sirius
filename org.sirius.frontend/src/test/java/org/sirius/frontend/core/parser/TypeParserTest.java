@@ -1,10 +1,9 @@
 package org.sirius.frontend.core.parser;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.testng.Assert.assertEquals;
 
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,17 +15,12 @@ import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.AstArrayType;
-import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.IntersectionType;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.UnionType;
 import org.sirius.frontend.core.parser.TypeParser.TypeVisitor;
-import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.instanceOf;
 
 public class TypeParserTest {
 
@@ -45,7 +39,6 @@ public class TypeParserTest {
 	private AstType parseTypeDeclaration(String inputText) {
 		
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
-//		ParseTree tree = parser.typeParameterDeclaration();
 		ParseTree tree = parser.type();
 				
 		TypeVisitor typeVisitor = new TypeVisitor(reporter);

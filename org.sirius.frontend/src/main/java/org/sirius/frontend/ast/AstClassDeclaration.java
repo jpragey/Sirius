@@ -38,13 +38,13 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	private Scope scope = null;
 	
 	/** True for annotation classes (ConstrainedAnnotation subtypes, ie OptionalAnnotation or SequencedAnnotation) */
-	private boolean annotationType = false; 
+	private boolean annotationType0 = false; 
 	
 	private List<AncestorInfo> ancestors = new ArrayList<>();
 	
 	private List<AstInterfaceDeclaration> interfaces = new ArrayList<>();
 
-	private DefaultSymbolTable symbolTable /*= new SymbolTable()*/; 
+	private DefaultSymbolTable symbolTable; 
 	
 
 	private Reporter reporter;
@@ -103,14 +103,9 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		return cd;
 	}
 
-	
-	public AstClassDeclaration(Reporter reporter, boolean interfaceType, Token name/*, PackageDeclaration packageDeclaration*//*, QName packageQName*/) {
-		this(reporter, /*interfaceType, */new AstToken(name)/*, packageQName*/);
-	}
-
-	public static AstClassDeclaration newClass(Reporter reporter, AstToken name) {
-		return new AstClassDeclaration (reporter, name);
-	}
+//	public static AstClassDeclaration newClass(Reporter reporter, AstToken name) {
+//		return new AstClassDeclaration (reporter, name);
+//	}
 	
 	
 	public void setSymbolTable(DefaultSymbolTable symbolTable) {
@@ -133,22 +128,16 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		for(TypeParameter typeParameter : this.typeParameters) {
 			
 		}
-//		private ImmutableList<TypeParameter> typeParameters;
-//		
+		
 		for(PartialList partialList : this.functionDeclarations) {
 			scope.addFunction(partialList);
 		}
-//		private ImmutableList<PartialList> functionDeclarations;
 		for(AstMemberValueDeclaration memberValueDeclaration: this.valueDeclarations) {
 			scope.addMemberValue(memberValueDeclaration);
 		}
-//		private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 		for(AstFunctionParameter constructorArg : this.anonConstructorArguments) {
 			
 		}
-//		private List<AstFunctionParameter> anonConstructorArguments = new ArrayList<>(); 
-
-		
 	}
 	
 	
@@ -180,9 +169,6 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		return interfaces;
 	}
 
-//	public boolean isInterfaceType() {
-//		return interfaceType;
-//	}
 	@Override
 	public QName getQName() {
 		assert(this.qName != null);
@@ -281,16 +267,9 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		assert(this.qName != null);
 		return "class " + qName;
 	}
-	public boolean isAnnotationType() {
-		return annotationType;
-	}
-	public void setAnnotationType(boolean annotationType) {
-		this.annotationType = annotationType;
-	}
 
 	private class ClassDeclarationImpl implements ClassDeclaration {
-//		QName qName = packageQName.child(name.getText());
-//		QName qName0 = qName;
+		
 		@Override
 		public List<MemberValue> getMemberValues() {
 			return valueDeclarations.stream()

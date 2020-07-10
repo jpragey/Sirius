@@ -32,7 +32,7 @@ public class AnnotationListParser {
 	public static class AnnotationVisitor extends SiriusBaseVisitor<Annotation> {
 		@Override
 		public Annotation visitAnnotation(AnnotationContext ctx) {
-			AstToken name = new AstToken(ctx.LOWER_ID);
+			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
 			return new Annotation(name);
 		}
 	}

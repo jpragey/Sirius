@@ -16,7 +16,7 @@ import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 import com.google.common.collect.ImmutableList;
 
-public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstParametric<AstClassDeclaration>, AstClassOrInterface, Named {
+public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstParametric<AstInterfaceDeclaration>, AstClassOrInterface, Named {
 
 	private Reporter reporter;
 
@@ -47,18 +47,13 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		this.typeParameters = typeParameters;
 		
 		this.qName = null;
-//		this.packageQName = packageQName;
-		
-//		packageQName.ifPresent((pkgQName) -> {this.qName = pkgQName.child(name.getText());});
 		
 		this.ancestors = new ArrayList<>(ancestorInfos);
 		this.valueDeclarations = new ArrayList<>(valueDeclarations);
-//		implementedInterfaces.forEach(token -> addAncestor(token));
 	}
 
 	public AstInterfaceDeclaration(Reporter reporter, AstToken name /*, Optional<QName> packageQName*/) {
 		this(reporter, name,
-//				packageQName,
 				ImmutableList.of() /*functionDeclarations*/,
 				ImmutableList.of() /*typeDeclarations*/,
 				ImmutableList.of() /*ancestorInfos*/,
@@ -99,7 +94,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	}
 	
 	@Override
-	public Optional<AstClassDeclaration> apply(AstType parameter) {
+	public Optional<AstInterfaceDeclaration> apply(AstType parameter) {
 		throw new UnsupportedOperationException("AstInterfaceDeclaration...");
 	}
 

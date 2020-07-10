@@ -37,9 +37,6 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	
 	private LocalSymbolTable symbolTable; 
-
-	// Set after parsing
-//	private Optional<AstModuleDeclaration> containingModule = Optional.empty();
 	
 	public AstPackageDeclaration(Reporter reporter, QName qname, 
 			List<PartialList> functionDeclarations, List<AstClassDeclaration> classDeclarations, 
@@ -49,20 +46,10 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		this.qname = qname;
 		this.symbolTable = new LocalSymbolTable(reporter);
 		
-		functionDeclarations.forEach(fct -> addFunctionDeclaration(fct));
-		classDeclarations.forEach(cd -> addClassDeclaration(cd));
-		interfaceDeclarations.forEach(id -> addInterfaceDeclaration(id));
-		valueDeclarations.forEach(mvd -> addValueDeclaration(mvd));
-	}
-	
-	public AstPackageDeclaration(Reporter reporter, QName qname) {
-		this(reporter, qname, 
-				new ArrayList<PartialList>(), new ArrayList<AstClassDeclaration> (), 
-				new ArrayList<AstInterfaceDeclaration> (), new ArrayList<AstMemberValueDeclaration> ()) ;
-	}
-
-	public AstPackageDeclaration(Reporter reporter) {
-		this(reporter, new QName());
+		functionDeclarations.forEach (fct -> {this.functionDeclarations.add(fct);	this.visitables.add(fct);});
+		classDeclarations.forEach	 (cd  -> {this.classDeclarations.add(cd);		this.visitables.add(cd);});
+		interfaceDeclarations.forEach(id  -> {this.interfaceDeclarations.add(id);	this.visitables.add(id);});
+		valueDeclarations.forEach    (vd  -> {this.valueDeclarations.add(vd);		this.visitables.add(vd);});
 	}
 
 	public String getQnameString() {
@@ -77,37 +64,10 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		return qname;
 	}
 
-	public void addFunctionDeclaration(PartialList declaration) {
-		assert(declaration != null);
-		this.functionDeclarations.add(declaration);
-		this.visitables.add(declaration);
-	}
-
-	public void addClassDeclaration(AstClassDeclaration declaration) {
-		assert(declaration != null);
-		this.classDeclarations.add(declaration);
-		this.visitables.add(declaration);
-	}
-	public void addInterfaceDeclaration(AstInterfaceDeclaration declaration) {
-		assert(declaration != null);
-		this.interfaceDeclarations.add(declaration);
-		this.visitables.add(declaration);	// TODO: ???
-	}
-	
-	
-	public void addValueDeclaration(AstMemberValueDeclaration declaration) {
-		assert(declaration != null);
-		this.valueDeclarations.add(declaration);
-		this.visitables.add(declaration);
-	}
 
 	public List<PartialList> getFunctionDeclarations() {
 		return functionDeclarations;
 	}
-
-//	public void setContainingModule(AstModuleDeclaration declaration) {
-////		this.containingModule = Optional.of(declaration);
-//	}
 
 	@Override
 	public SymbolTable getSymbolTable() {

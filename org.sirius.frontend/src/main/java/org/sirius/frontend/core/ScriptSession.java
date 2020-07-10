@@ -1,7 +1,6 @@
 package org.sirius.frontend.core;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,10 +10,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Session;
-import org.sirius.frontend.ast.AstFactory;
 import org.sirius.frontend.ast.AstModuleDeclaration;
-import org.sirius.frontend.ast.ModuleImport;
-import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.core.parser.ScriptCompilatioUnitParser;
@@ -77,32 +73,6 @@ public class ScriptSession implements Session {
 		}
 	}
 	
-
-//	private ScriptCompilationUnit parseScriptInput_old(InputTextProvider input) {
-//		
-//		String sourceCode = input.getText();
-//		
-//		CharStream stream = CharStreams.fromString(sourceCode); 
-//		
-//		SiriusLexer lexer = new SiriusLexer(stream);
-//		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-//		
-//		SiriusParser parser = new SiriusParser(tokenStream);
-//
-//		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
-//		parser.factory = astFactory;
-//		
-//		parser.removeErrorListeners();
-//		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
-//
-//
-//		// -- Parsing
-//		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
-//		ScriptCompilationUnit compilationUnit = unitContext.unit;
-//		
-//		return compilationUnit;
-//	}
-
 	private ScriptCompilationUnit parseScriptInput(InputTextProvider input, DefaultSymbolTable getGlobalSymbolTable) {
 		
 		String sourceCode = input.getText();
@@ -114,18 +84,12 @@ public class ScriptSession implements Session {
 		
 		SiriusParser parser = new SiriusParser(tokenStream);
 
-		AstFactory astFactory = new AstFactory(reporter, globalSymbolTable);
-		parser.factory = astFactory;
-		
 		parser.removeErrorListeners();
 		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
 
-
 		// -- Parsing
 		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
-//		ScriptCompilationUnit compilationUnit = unitContext.unit;
-//
-//		
+
 		ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor visitor = new ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor(
 				reporter, getGlobalSymbolTable);
 		ScriptCompilationUnit compilationUnit = visitor.visit(unitContext);

@@ -5,7 +5,6 @@ grammar Sirius;
 
 @lexer::header {
 	package org.sirius.frontend.parser;
-	import org.sirius.frontend.ast.AstFactory;
 	import org.sirius.frontend.ast.AstModuleDeclaration;
 }
 @parser::header {
@@ -20,7 +19,6 @@ grammar Sirius;
 }
 
 @members {
-	public AstFactory factory;
 }
 
 
@@ -276,17 +274,17 @@ functionCallExpression
 
 
 constantExpression returns [AstExpression express]
-	: STRING	{ $express = factory.stringConstant($STRING); }
-	| INTEGER	{ $express = factory.integerConstant($INTEGER); }
-	| FLOAT		{ $express = factory.floatConstant($FLOAT); }
-	| BOOLEAN	{ $express = factory.booleanConstant($BOOLEAN); }
+	: STRING	
+	| INTEGER	
+	| FLOAT		
+	| BOOLEAN	
 	;
 
 
 // -------------------- ANNOTATION
 
-annotation returns [Annotation anno]
-	: LOWER_ID	{ $anno = factory.annotation($LOWER_ID); }
+annotation 
+	: LOWER_ID	
 	( '(' ')' )?
 	;
 

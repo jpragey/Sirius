@@ -66,10 +66,6 @@ public class SymbolExportVisitorTest {
 		return md;
 	}
 
-	private	AstClassDeclaration newClass(String simpleName) {
-		AstClassDeclaration cd = AstClassDeclaration.newClass(reporter, AstToken.internal("C"));
-		return cd;
-	}
 	private	AstClassDeclaration newClass(String simpleName, List<PartialList> partialLists) {
 		AstClassDeclaration cd = new AstClassDeclaration(reporter, AstToken.internal(simpleName), 
 				ImmutableList.of(),	//<TypeParameter> typeParameters,
