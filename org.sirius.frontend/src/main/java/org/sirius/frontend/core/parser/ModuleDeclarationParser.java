@@ -1,7 +1,7 @@
 package org.sirius.frontend.core.parser;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,7 +17,6 @@ import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.PartialList;
-import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.ClassDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.ConcreteModuleContext;
@@ -27,9 +26,6 @@ import org.sirius.frontend.parser.SiriusParser.ModuleDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.ModuleImportContext;
 import org.sirius.frontend.parser.SiriusParser.ModuleVersionEquivalentContext;
 import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.QnameContext;
-
-import com.google.common.collect.Lists;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
@@ -142,6 +138,11 @@ public class ModuleDeclarationParser {
 		public List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
 		public List<AstClassDeclaration> classDeclarations = new ArrayList<>();
 		public List<PartialList> partialLists = new ArrayList<>();
+		public boolean isEmpty() {
+			return interfaceDeclarations.isEmpty() && 
+					classDeclarations.isEmpty() &&
+					partialLists.isEmpty();
+		}
 	}
 	
 	public static class ConcreteModuleVisitor extends SiriusBaseVisitor<AstModuleDeclaration> {
@@ -156,7 +157,7 @@ public class ModuleDeclarationParser {
 			PackageElements packageElements = new PackageElements();
 			
 			// -- package content
-			List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
+			LinkedList<AstPackageDeclaration> packageDeclarations = new LinkedList<>();
 			PackageElementVisitor moduleContentVisitor = new PackageElementVisitor(reporter, packageDeclarations, packageElements);
 			
 			ctx.packageElement().forEach(mcContext -> mcContext.accept(moduleContentVisitor));
@@ -174,6 +175,14 @@ public class ModuleDeclarationParser {
 			} else {								// Unnamed module
 				ModuleImportEquivalents equiv = new ModuleImportEquivalents();
 				List<ModuleImport> moduleImports = List.of();
+				
+				if(!packageElements.isEmpty()) { // package elements before first package declaration => prepend unnamed package
+					AstPackageDeclaration unnamedPackage = new AstPackageDeclaration(reporter, QName.empty, 
+							packageElements.partialLists, packageElements.classDeclarations, packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/);
+					
+					packageDeclarations.addFirst(unnamedPackage);
+				}
+				
 				result = AstModuleDeclaration.createUnnamed(reporter, equiv, moduleImports, packageDeclarations);
 			}
 					

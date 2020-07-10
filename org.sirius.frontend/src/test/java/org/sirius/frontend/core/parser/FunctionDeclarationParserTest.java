@@ -101,7 +101,6 @@ public class FunctionDeclarationParserTest {
 	}
 
 	@Test
-//	@Disabled("Doesn't pass, pure declaration is not correctly handled by the grammar.")
 	@DisplayName("Function declaration (without body)")
 	public void functionWithoutBodyStatements() {
 		PartialList partialList = parseTypeDeclaration("void f()" /*, new QName()*/);

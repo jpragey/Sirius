@@ -33,7 +33,6 @@ public class BooleanExpressionTest {
 	}
 	
 	@Test
-	@Disabled("Restore when scope stuff is OK")
 	public void functionLocalBooleanVariableExpression() {
 		ScriptSession session = Compiler.compileScript("#!\n "
 				+ "void f(){Boolean b = true; }");

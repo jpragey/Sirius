@@ -58,7 +58,6 @@ public class CompilationUnitTest {
 	}
 	
 	@Test
-	@Disabled("???")
 	public void testDummyTopLevelFunctionsReturnsString() {
 //		
 //		ModuleContent md = Compiler.compile("ff(){ return \"hello\";}");

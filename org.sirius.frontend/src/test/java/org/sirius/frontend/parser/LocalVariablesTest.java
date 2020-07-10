@@ -19,14 +19,13 @@ import org.sirius.frontend.core.ScriptSession;
 public class LocalVariablesTest {
 
 	@Test
-	@Disabled("Restore when scope stuff is OK")
 	public void testMemberValuesAreResolved() {
 		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){C s;}");
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		List<PackageDeclaration> packages = md.getPackages();
-		PackageDeclaration pack = packages.get(1);
+		PackageDeclaration pack = packages.get(0);
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		
@@ -45,13 +44,12 @@ public class LocalVariablesTest {
 	}
 	
 	@Test
-	@Disabled("Restore when scope stuff is OK")
 	public void testLocalVariablesAreResolved() {
 		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){void f(){C s;}}");
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
-		PackageDeclaration pack = md.getPackages().get(1);
+		PackageDeclaration pack = md.getPackages().get(0);
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		

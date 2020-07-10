@@ -40,14 +40,13 @@ import org.sirius.frontend.symbols.Symbol;
 public class MethodTests {
 
 	@Test 
-	@Disabled("Restore when scope stuff is OK")
 	public void checkLocalVariableParsing() {
 //		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){String s;}}");
 		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){C s; public void f(){C s;}}");
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
-		PackageDeclaration pack = md.getPackages().get(1);
+		PackageDeclaration pack = md.getPackages().get(0);
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		
@@ -72,7 +71,6 @@ public class MethodTests {
 	}
 	
 	@Test 
-	@Disabled("Restore when scope stuff is OK")
 	public void checkMemberValueParsing() {
 		String script = "#!\n "
 //				+ "class B() {}   "
@@ -137,7 +135,6 @@ public class MethodTests {
 	
 	@Test
 	@DisplayName("A local variable can have an initializer")
-	@Disabled("Restore when scope stuff is OK")
 	public void localVariableInitializerTest() {
 //		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){String s;}}");
 		ScriptSession session = Compiler.compileScript("#!\n package p.k; "
@@ -148,7 +145,7 @@ public class MethodTests {
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
-		PackageDeclaration pack = md.getPackages().get(1);
+		PackageDeclaration pack = md.getPackages().get(0);
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		
@@ -228,7 +225,6 @@ public class MethodTests {
 	
 	@Test
 	@DisplayName("Definition of a simple global function with parameters")
-	@Disabled("Restore when scope stuff is OK")
 	public void defineFunctionWithParamsTest() {
 		ScriptSession session = Compiler.compileScript("#!\n"
 				+ "Integer add(Integer x, Integer y) {return x;}"
@@ -297,7 +293,6 @@ public class MethodTests {
 	
 	@Test
 	@DisplayName("Simple call of a global function")
-	@Disabled("Restore when scope stuff is OK")
 	public void callFunctionWithParamsTest() {
 //		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){String s;}}");
 		ScriptSession session = Compiler.compileScript("#!\n"

@@ -19,7 +19,6 @@ import org.sirius.frontend.parser.Compiler;
 public class IfElseTest {
 
 	@Test
-	@Disabled("Restore when scope stuff is OK")
 	public void classTest() throws Exception {
 		String script = "#!\n "
 //				+ "class A() {Integer mi;}   "

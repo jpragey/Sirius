@@ -34,7 +34,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TopLevelFunctionTest {
 
 	@Test
-//	@Disabled("TODO: restore")
 	public void findTopLevelFunction() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(){}");
 		
@@ -66,7 +65,6 @@ public class TopLevelFunctionTest {
 	}
 
 	@Test
-	@Disabled("TODO: restore")
 	public void checkFunctionArgumentsInAPIFunction() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(Integer i, Integer j){}");
 
@@ -78,7 +76,6 @@ public class TopLevelFunctionTest {
 	}
 
 	@Test
-	@Disabled("Restore when scope stuff is OK")
 	public void checkFunctionBodyContainsAnExpressionStatement() {
 		ScriptSession session = Compiler.compileScript(
 				"#!\n "
@@ -120,7 +117,6 @@ public class TopLevelFunctionTest {
 	}
 
 	@Test
-	@Disabled("Restore when scope stuff is OK")
 	public void checkFunctionArgumentFoundInApi() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(String s){}");
 		
@@ -152,7 +148,6 @@ public class TopLevelFunctionTest {
 	}
 	
 	@Test
-	@Disabled("Restore when scope stuff is OK")
 	public void checkArrayFunctionArgumentFoundInApi() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(String[] s){}");
 		
@@ -190,7 +185,6 @@ public class TopLevelFunctionTest {
 	}
 	
 	@Test
-	@Disabled("TODO: restore")
 	public void checkFunctionLocalArgument() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(){String s ;}");
 		
@@ -207,11 +201,18 @@ public class TopLevelFunctionTest {
 	}
 	
 	@Test
-	@Disabled("Restore when scope stuff is OK")
 	@DisplayName("Check that a function returning a String return in fact a sirius.lang.String")
 	public void checkFunctionReturnsConvertsStringIntoSiriusLangString() {
 		ScriptSession session = Compiler.compileScript("#!\n String f(){ return \"\";}");
 		
+		// -- AST
+		assertThat(session.getAstModules().size(), equalTo(1));
+		AstModuleDeclaration astModule = session.getAstModules().get(0);
+		
+		assertThat(astModule.getPackageDeclarations().size(), equalTo(1));
+		AstPackageDeclaration astPackage = astModule.getPackageDeclarations().get(0);
+		
+		// -- API
 		List<ModuleDeclaration> moduleDeclarations = session.getModuleDeclarations();
 		assertEquals(moduleDeclarations.size(), 1);
 		
@@ -226,7 +227,6 @@ public class TopLevelFunctionTest {
 	}
 	
 	@Test
-	@Disabled("Restore when scope stuff is OK")
 	@DisplayName("Check that a String function parameter takes in fact a sirius.lang.String")
 	public void checkStringFunctionParameterIsASiriusLangString() {
 		ScriptSession session = Compiler.compileScript("#!\n void f(String s){}");
@@ -246,8 +246,5 @@ public class TopLevelFunctionTest {
 		ClassDeclaration argType = (ClassDeclaration)arg.getType();
 		assertEquals(argType.getQName().dotSeparated(), "sirius.lang.String");
 	}
-	
-	
-	
 	
 }

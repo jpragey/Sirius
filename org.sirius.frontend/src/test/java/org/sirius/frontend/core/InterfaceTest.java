@@ -15,7 +15,6 @@ import org.sirius.frontend.parser.Compiler;
 public class InterfaceTest {
 
 	@Test
-	@Disabled("Restore when scope stuff is OK")
 	public void simpleInterfaceParsing() {
 //		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){String s;}}");
 		ScriptSession session = Compiler.compileScript("#!\n package p.k; "

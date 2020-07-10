@@ -37,7 +37,7 @@ public class TypeInheritanceTest {
 			assertEquals(moduleDeclarations.size(), 1);
 			
 			ModuleDeclaration md = session.getModuleDeclarations().get(0);
-			PackageDeclaration pd = md.getPackages().get(1);
+			PackageDeclaration pd = md.getPackages().get(0);
 			
 			List<ClassDeclaration> classes = pd.getClasses();
 			assertEquals(classes.size(), 1);
@@ -55,7 +55,7 @@ public class TypeInheritanceTest {
 			
 			List<AstModuleDeclaration> astModules = session.getAstModules();
 			List<AstPackageDeclaration> astPackages = astModules.get(0).getPackageDeclarations();
-			AstPackageDeclaration astPack = astPackages.get(1);
+			AstPackageDeclaration astPack = astPackages.get(0);
 			
 			this.astClasses = astPack.getClassDeclarations();
 			assertEquals(astClasses.size(), 1);
@@ -67,7 +67,6 @@ public class TypeInheritanceTest {
 	
 	@Test
 	@DisplayName("Check a class implementing an interface results in ClassDeclaration inheritance (ancestor declared before)")
-	@Disabled("Restore when scope stuff is OK")
 	public void checkAstClassInheritanceWithAncestorEarlyDeclared() {
 		TypeInheritanceTest.ParseDualClassSource code = new TypeInheritanceTest.ParseDualClassSource("#!\n "
 				+ "package p.a;"
@@ -86,7 +85,6 @@ public class TypeInheritanceTest {
 
 	@Test
 	@DisplayName("Check a class implementing an interface results in ClassDeclaration inheritance (ancestor declared after)")
-	@Disabled("Restore when scope stuff is OK")
 	public void checkAstClassInheritanceWithAncestorLateDeclared() {
 		TypeInheritanceTest.ParseDualClassSource code = new TypeInheritanceTest.ParseDualClassSource("#!\n "
 				+ "package p.a;"

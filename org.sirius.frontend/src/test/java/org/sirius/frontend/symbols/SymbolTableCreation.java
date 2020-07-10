@@ -2,7 +2,6 @@ package org.sirius.frontend.symbols;
 
 import static org.testng.Assert.assertEquals;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ModuleDeclaration;

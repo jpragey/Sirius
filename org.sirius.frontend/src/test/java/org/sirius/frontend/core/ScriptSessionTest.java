@@ -43,16 +43,15 @@ public class ScriptSessionTest {
 	}
 	
 	@Test 
-	@Disabled("Restore when scope stuff is OK")
 	public void checkQNameAreSetInClassAndFunctions() {
 		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){public void f(){}}");
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 
 		List<PackageDeclaration> packDecls = md.getPackages();
-		assertEquals(packDecls.size(), 2);
+		assertEquals(packDecls.size(), 1);
 
-		PackageDeclaration pack = md.getPackages().get(1);
+		PackageDeclaration pack = md.getPackages().get(0);
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		
