@@ -2,16 +2,13 @@ package org.sirius.frontend.symbols;
 
 import java.util.Optional;
 
-import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
-import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.ast.AstMemberValueDeclaration;
-import org.sirius.frontend.ast.ImportDeclaration;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
+import org.sirius.frontend.ast.AstMemberValueDeclaration;
+import org.sirius.frontend.ast.AstToken;
+import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.TypeParameter;
 
 public class Symbol {

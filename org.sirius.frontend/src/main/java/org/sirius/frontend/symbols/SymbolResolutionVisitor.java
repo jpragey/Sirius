@@ -6,12 +6,11 @@ import java.util.Stack;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
-import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
+import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstReturnStatement;
 import org.sirius.frontend.ast.AstStringConstantExpression;
-import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.SimpleType;
@@ -25,10 +24,8 @@ import org.sirius.frontend.ast.StandardCompilationUnit;
 public class SymbolResolutionVisitor implements AstVisitor {
 
 
-//	private List<SymbolTable> stack = new ArrayList<>();
 	private Stack<SymbolTable> stack = new Stack<>();
 	
-//	private QName packageQName;
 	private DefaultSymbolTable globalSymbolTable;
 	private Reporter reporter;
 	
@@ -82,15 +79,6 @@ public class SymbolResolutionVisitor implements AstVisitor {
 //		endScope(classDeclaration);
 	}
 	
-	@Override
-	public void startFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
-//		startScope(functionDeclaration);
-	}
-	
-	@Override
-	public void endFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
-//		endScope(functionDeclaration);
-	}
 	
 	@Override
 	public void startFunctionFormalArgument(AstFunctionParameter formalArgument) {

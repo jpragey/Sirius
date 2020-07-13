@@ -5,14 +5,12 @@ import java.util.Stack;
 
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
-import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstIntegerConstantExpression;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberAccessExpression;
 import org.sirius.frontend.ast.AstPackageDeclaration;
-import org.sirius.frontend.ast.AstReturnStatement;
 import org.sirius.frontend.ast.AstStringConstantExpression;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.ConstructorCallExpression;
@@ -117,23 +115,24 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 		symbolTableStack.pop();
 	}	
 
-	@Override
-	public void startFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
-		/*
-		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
-		
-		DefaultSymbolTable functionSymbolTable = new DefaultSymbolTable(parentSymbolTable, functionDeclaration.getName().getText());
-		functionDeclaration.assignSymbolTable(functionSymbolTable);
-		symbolTableStack.push(functionSymbolTable);
-		
-		parentSymbolTable.addFunction(functionDeclaration);
-		*/
-	}
+//	@Override
+//	public void startFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
+//		/*
+//		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
+//		
+//		DefaultSymbolTable functionSymbolTable = new DefaultSymbolTable(parentSymbolTable, functionDeclaration.getName().getText());
+//		functionDeclaration.assignSymbolTable(functionSymbolTable);
+//		symbolTableStack.push(functionSymbolTable);
+//		
+//		parentSymbolTable.addFunction(functionDeclaration);
+//		*/
+//	}
+//
+//	@Override
+//	public void endFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
+//		symbolTableStack.pop();
+//	}
 
-	@Override
-	public void endFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
-		symbolTableStack.pop();
-	}
 	@Override
 	public void startPartial (Partial partial) {
 		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();

@@ -5,13 +5,11 @@ import java.util.Stack;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
-import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
-import org.sirius.frontend.ast.ModuleDescriptor;
 import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.SimpleType;
@@ -120,19 +118,19 @@ public class QNameSetterVisitor implements AstVisitor {
 		qnameStack.pop();
 	}
 	
-	@Override
-	public void startFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
-		
-//		functionDeclaration.setContainerQName(qnameStack.lastElement());
-		String funcName = functionDeclaration.getName().getText();
-		QName funcQName = qnameStack.lastElement().child(funcName);
-		qnameStack.push(funcQName);
-	}
-
-	@Override
-	public void endFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
-		qnameStack.pop();
-	}
+//	@Override
+//	public void startFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
+//		
+////		functionDeclaration.setContainerQName(qnameStack.lastElement());
+//		String funcName = functionDeclaration.getName().getText();
+//		QName funcQName = qnameStack.lastElement().child(funcName);
+//		qnameStack.push(funcQName);
+//	}
+//
+//	@Override
+//	public void endFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
+//		qnameStack.pop();
+//	}
 	
 	@Override
 	public void startFunctionCallExpression(AstFunctionCallExpression expression) {

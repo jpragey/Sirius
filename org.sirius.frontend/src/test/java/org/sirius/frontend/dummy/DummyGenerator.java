@@ -1,13 +1,9 @@
 package org.sirius.frontend.dummy;
 
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static org.objectweb.asm.Opcodes.ACC_STATIC;
 import static org.objectweb.asm.Opcodes.ACC_SUPER;
 import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.GETSTATIC;
 import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
-import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.util.ArrayList;
@@ -16,9 +12,8 @@ import java.util.List;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
-import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.AstReturnStatement;
+import org.sirius.frontend.ast.AstVisitor;
 
 
 public class DummyGenerator {
@@ -120,39 +115,6 @@ public class DummyGenerator {
 			this.byteCode = byteCode;
 		}
 
-		@Override
-		public void startFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
-			System.out.println(" -- Starting FunctionDeclaration " + functionDeclaration.getName().getText());
-		}
-
-		@Override
-		public void endFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
-			System.out.println(" -- Exit FunctionDeclaration " + functionDeclaration.getName().getText());
-			MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC + ACC_STATIC,
-		            "main",
-		//            "([Ljava/lang/String;)V",
-//		            "(Ljava/lang/String;)V",
-		            "(Ljava/lang/String;)I",
-		            null /* String signature */,
-		            null /* String[] exceptions */);
-		    mv.visitFieldInsn(GETSTATIC,
-		            "java/lang/System",
-		            "out",
-		            "Ljava/io/PrintStream;");
-		    mv.visitLdcInsn("hello");
-		    mv.visitMethodInsn(INVOKEVIRTUAL,
-		            "java/io/PrintStream",
-		            "println",
-		            "(Ljava/lang/String;)V",
-		            false /*isInterface*/);
-//		    mv.visitInsn(RETURN);
-		    
-		    mv.visitLdcInsn(42);
-		    mv.visitInsn(IRETURN);
-		    
-		    mv.visitMaxs(2, 1);
-		    mv.visitEnd();
-		}
 
 //		@Override
 //		public void startConstantExpression(ConstantExpression expression) {

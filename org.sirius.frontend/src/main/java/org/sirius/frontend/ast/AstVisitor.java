@@ -41,10 +41,10 @@ public interface AstVisitor {
 	
 	
 	
-	public default void startFunctionDeclaration (AstFunctionDeclarationBuilder functionDeclaration) {}
-	public default void endFunctionDeclaration (AstFunctionDeclarationBuilder functionDeclaration) {}
-	
-	
+//	public default void startFunctionDeclaration (AstFunctionDeclarationBuilder functionDeclaration) {}
+//	public default void endFunctionDeclaration (AstFunctionDeclarationBuilder functionDeclaration) {}
+//	
+//	
 	
 	
 	public default void startPartialList (PartialList partialList) {}

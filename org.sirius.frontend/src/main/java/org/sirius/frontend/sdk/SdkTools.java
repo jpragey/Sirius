@@ -1,7 +1,6 @@
 package org.sirius.frontend.sdk;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,11 +12,9 @@ import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.api.Session;
 import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstClassOrInterface;
-import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
@@ -161,15 +158,7 @@ public class SdkTools {
 			methodName = method.getName();
 
 		AstType returnType = new AstVoidType();	// TODO
-		AstFunctionDeclarationBuilder fd = new AstFunctionDeclarationBuilder(reporter, 
-				new AnnotationList() ,	// TODO 
-				AstToken.internal(methodName), 
-				returnType,
-				true /*TODO: concrete ???*/
-				, (method.getModifiers() & Modifier.STATIC) != 0	// TODO: ???
-				, Collections.emptyList()
-				);
-
+		
 		// -- function arguments
 		List<AstFunctionParameter> args = new ArrayList<>(method.getParameters().length);
 		for(Parameter parameter: method.getParameters()) {
@@ -187,9 +176,11 @@ public class SdkTools {
 			args.add(arg);
 		}
 		
-		PartialList partialList = fd.withFunctionArguments(args);
-		
-		fd.assignSymbolTable(symbolTable);
+		AnnotationList annotationList = new AnnotationList();	// TODO 
+		boolean member = !annotationList.contains("static");
+		PartialList partialList = new PartialList(args, returnType, member /* this*/, /*qName,*/ /*concrete,*/ AstToken.internal(methodName), 
+				Optional.empty() /*statements*/); 
+
 		
 		return partialList;
 	}

@@ -6,10 +6,9 @@ import java.util.Optional;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
+import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.PartialList;
-import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.TypeParameter;
 
 public class LocalSymbolTable implements SymbolTable {

@@ -1,23 +1,9 @@
 package org.sirius.frontend.symbols;
 
-import java.util.Optional;
-import java.util.Stack;
-
-import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFunctionCallExpression;
-import org.sirius.frontend.ast.AstFunctionDeclarationBuilder;
-import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
-import org.sirius.frontend.ast.AstLocalVariableStatement;
-import org.sirius.frontend.ast.AstReturnStatement;
-import org.sirius.frontend.ast.AstStringConstantExpression;
-import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.PartialList;
-import org.sirius.frontend.ast.ScriptCompilationUnit;
-import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.ast.StandardCompilationUnit;
 
 /** Visitor that sets the 'parent' symbol table field throughout the AST.
  * 
