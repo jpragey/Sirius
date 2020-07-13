@@ -60,7 +60,7 @@ public class JvmMemberValue {
 	 * @param scope
 	 * @param qName
 	 */
-	public void writeInitBytecode(ClassWriter classWriter/*, MemberFunction declaration*/, MethodVisitor mv, JvmScope scope, /*ClassDeclaration containerType, */QName qName) {
+	public void writeInitBytecode(ClassWriter classWriter, MethodVisitor mv, JvmScope scope, QName qName) {
 		Optional<Expression> optExpr = memberValue.getInitialValue();
 		if(optExpr.isEmpty())
 			return;
@@ -77,9 +77,5 @@ public class JvmMemberValue {
 		String descriptor = descriptorFactory.fieldDescriptor(memberValue.getType());
 
 		mv.visitFieldInsn(Opcodes.PUTFIELD, owner, name, descriptor);
-
-		
 	}
-
-	
 }

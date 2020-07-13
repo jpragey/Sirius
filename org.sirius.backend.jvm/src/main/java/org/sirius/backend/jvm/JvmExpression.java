@@ -82,8 +82,6 @@ public class JvmExpression {
 //		scope.
 //		new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, expression, scope);
 
-		
-		
 //		throw new UnsupportedOperationException("Try to create bytecode for FunctionActualArgument : " + expression);
 	}
 
@@ -129,8 +127,7 @@ public class JvmExpression {
 				Opcodes.ICONST_0;
 		mv.visitInsn(opcode);
 	}
-	public void processBinaryOpExpression(MethodVisitor mv, BinaryOpExpression expression, JvmScope scope) {
-//		MethodVisitor mv = methodStack.peek().mv;
+	private void processBinaryOpExpression(MethodVisitor mv, BinaryOpExpression expression, JvmScope scope) {
 		writeExpressionBytecode(mv, expression.getLeft(), scope);
 		writeExpressionBytecode(mv, expression.getRight(), scope);
 		
@@ -138,22 +135,16 @@ public class JvmExpression {
 		String opFuncName;
 		switch(operator) {
 		case Add:
-			
-//			String descriptor = descriptorFactory.methodDescriptor(tlFunc.get());
 			opFuncName = "add";
-			//mv.visitInsn(IADD);
 			break;
 		case Mult:
 			opFuncName = "mult";
-//			mv.visitInsn(IMUL);
 			break;
 		case Substract:
 			opFuncName = "sub";
-//			mv.visitInsn(ISUB);
 			break;
 		case Divide:
 			opFuncName = "div";
-//			mv.visitInsn(IDIV);
 			break;
 		default:
 			throw new UnsupportedOperationException("Binary operator not supported in JVM: " + operator);
@@ -244,17 +235,17 @@ public class JvmExpression {
 			for(Expression expr: call.getArguments()) {
 				writeExpressionBytecode(mv, expr, scope);
 			}
-//			call.getArguments().forEach(expr -> writeExpressionBytecode(mv, expr, scope));
 
-			Optional<AbstractFunction> tlFunc = call.getDeclaration();
-			if(tlFunc.isPresent()) {
-				String descriptor = descriptorFactory.methodDescriptor(tlFunc.get());
+			Optional<AbstractFunction> topLevelFunc = call.getDeclaration();
+			if(topLevelFunc.isPresent()) {
+				String methodDescriptor = descriptorFactory.methodDescriptor(topLevelFunc.get());
 				mv.visitMethodInsn(
-						invokeOpcode,	// opcode 
-						"$package$", // owner "java/io/PrintStream", 
+						invokeOpcode,		// opcode 
+						"$package$",		// owner "java/io/PrintStream", 
 						call.getFunctionName().getText(), //"println", 
-						descriptor,	// "(Ljava/lang/String;)V",	// method descriptor 
-						false /*isInterface*/);
+						methodDescriptor,			// "(Ljava/lang/String;)V",	// method descriptor 
+						false 				// isInterface
+						);
 			} else {
 				reporter.error("Backend: top-level function not defined: " + funcName);
 			}

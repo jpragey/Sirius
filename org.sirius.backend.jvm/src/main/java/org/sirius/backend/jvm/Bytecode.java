@@ -54,7 +54,7 @@ public class Bytecode {
 		File classFile = classDirPath.resolve(Paths.get(classFilePath.getFileName().toString() + ".class")).toFile();
 
 		try(FileOutputStream writer = new FileOutputStream(classFile)) {
-reporter.info("Writing bytecode of " + classQName + " to: " + classFile.getAbsolutePath());
+//reporter.info("Writing bytecode of " + classQName + " to: " + classFile.getAbsolutePath());
 			
 			writer.write(bytes);
 			

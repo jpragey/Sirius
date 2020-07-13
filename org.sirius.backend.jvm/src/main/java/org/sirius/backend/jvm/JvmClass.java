@@ -22,7 +22,7 @@ import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.PackageDeclaration;
 
-public class JvmNodeClass {
+public class JvmClass {
 	
 	private final static int VERSION = 52; // Java SE 8
 	private Reporter reporter;
@@ -35,20 +35,20 @@ public class JvmNodeClass {
 	
 	private ArrayList<JvmMemberValue> memberValues = new ArrayList<>();
 	
-	public JvmNodeClass(Reporter reporter, QName qName) {
+	public JvmClass(Reporter reporter, QName qName) {
 		super();
 		this.reporter = reporter;
 		this.qName = qName;
 	}
 	
-	public JvmNodeClass(Reporter reporter, ClassDeclaration cd) {
+	public JvmClass(Reporter reporter, ClassDeclaration cd) {
 		super();
 		this.reporter = reporter;
 		this.qName = cd.getQName();
 		addMemberFunctions(cd);
 		addMemberValues(cd);
 	}
-	public JvmNodeClass(Reporter reporter, InterfaceDeclaration cd) {
+	public JvmClass(Reporter reporter, InterfaceDeclaration cd) {
 		super();
 		this.reporter = reporter;
 		this.qName = cd.getQName();
@@ -56,7 +56,7 @@ public class JvmNodeClass {
 		addMemberValues(cd);
 	}
 	// For Package class
-	public JvmNodeClass(Reporter reporter, PackageDeclaration pd) {
+	public JvmClass(Reporter reporter, PackageDeclaration pd) {
 		super();
 		this.reporter = reporter;
 		this.qName = pd.getQName().child("$package$");	// TODO
@@ -154,7 +154,7 @@ public class JvmNodeClass {
 //		 * The internal name of a class is its fully qualified name (as returned by Class.getName(), where '.' are replaced by '/'). 
 //		 * This method should only be used for an object or array type.
 //		 */
-		String classInternalName = qName.getStringElements().stream().collect(Collectors.joining("/"));
+		String classInternalName = Util.classInternalName(qName);
 
 		classWriter.visit(VERSION, access, classInternalName/*"Hello"*/, null /*signature*/, "java/lang/Object"/*superName*/, null /*interfaces*/);
 	}
@@ -175,7 +175,6 @@ public class JvmNodeClass {
 				false /*isInterface*/);
 
 		for(JvmMemberValue mf: this.memberValues) {
-//			mf.writeBytecode(classWriter);
 			mf.writeInitBytecode(classWriter, mv, scope, qName);
 		}
 

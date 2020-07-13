@@ -238,62 +238,13 @@ public class JvmMemberFunction {
 			FunctionFormalArgument param = remainingParams.remove(0);
 			LocalVarHolder varHolder = scope.addFunctionArgument(param);
 			
-//			String descriptor = descriptorFactory.fieldDescriptor(h.localVarType);		// TODO: field ???      var descriptor
-//			String signature = null; // the type signature of this local variable. May be {@literal null} if the local variable type does not use generic types.
-//			//		Label start;
-//			//		Label end;
-//			int index=locvarIndex;
-
-//			String name = param.getQName().getLast();
-//			String descriptor = descriptorFactory.fieldDescriptor(param.getType());
-//			String signature = null; // the type signature of this local variable. May be {@literal null} if the local variable type does not use generic types.
-//			Label start = scope.;
-//			Label end;
-//			int index;
-//			mv.visitLocalVariable(name, descriptor, signature, start, end, index);
-			
 			writeFunctionContent(classWriter, mv, remainingParams);
-			
-			
-////			scope.markEnd();
-//			scope.writeLocalVariableStatements(classWriter, mv); 
-
-//			scopeManager.writeLocalVariables(classWriter, mv);
-			
 		}
 		
 		scope.markEnd();
-//		this.scopes.pop();
 		scopeManager.leaveScope();
 	}
 
-//	private void writeFunctionArgs(ClassWriter classWriter, MethodVisitor mv) {
-//		QName integerQName = new QName("sirius", "lang", "Integer");
-//		List<Label> endScopeLabels = new ArrayList<>();
-//		
-//		for(FunctionFormalArgument arg: memberFunction.getArguments()) {
-//			Type type = arg.getType();
-//			
-//			if(type instanceof ClassDeclaration && ((ClassDeclaration)type).getQName().equals(integerQName)) {
-//				JvmScope funcScope = this.scopes.peek();
-////				scopes.push(funcScope);
-//				
-//				
-//				
-//				LocalVarHolder varHolder = funcScope.addFunctionArgument(arg);
-//				//endScopeLabels.add(varHolder.)
-//				
-//				
-//				
-//				
-////				scopes.pop();
-//			} else {
-//				reporter.error("Can't generate bytecode for function parameter " + arg.getQName().dotSeparated() + ", unsupported type " + type + " (Only Integer supported yet)"); // TODO add function location to message
-//			}
-//			
-//System.out.println(type);
-//		}
-//	}
 
 	/** Write bytecode for the whole function
 	 * 
