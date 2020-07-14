@@ -1,16 +1,17 @@
 package org.sirius.compiler.core;
 
-import static org.testng.Assert.assertEquals;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class VersionTest {
 
 	@Test
 	public void testVersionIsReadInResource() throws IOException {
 		String version = new Version().getVersion().trim();
-		assertEquals(version, "0.0.1-SNAPSHOT");	// not ${sirius.version}
+		assertThat(version, is("0.0.1-SNAPSHOT"));	// not ${sirius.version}
 	}
 }

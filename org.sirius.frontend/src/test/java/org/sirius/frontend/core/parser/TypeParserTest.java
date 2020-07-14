@@ -2,7 +2,7 @@ package org.sirius.frontend.core.parser;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterEach;
@@ -21,6 +21,8 @@ import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.UnionType;
 import org.sirius.frontend.core.parser.TypeParser.TypeVisitor;
 import org.sirius.frontend.parser.SiriusParser;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TypeParserTest {
 
@@ -64,10 +66,10 @@ public class TypeParserTest {
 		
 		assertEquals(myType.getName().getText(), "SomeType");
 		
-		assertEquals(myType.getTypeParameters().stream()
+		assertThat(myType.getTypeParameters().stream()
 				.map(myt -> ((SimpleType)myt).getNameString())
 				.toArray(), 
-				new String[]{"Type0","Type1","Type2"});
+				is(new String[]{"Type0","Type1","Type2"}));
 	}
 
 	@Test

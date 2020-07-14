@@ -1,7 +1,7 @@
 package org.sirius.frontend.core;
 
-import static org.testng.Assert.assertEquals;
 
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
@@ -28,7 +28,7 @@ public class InterfaceTest {
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
-		PackageDeclaration pack = md.getPackages().get(1);
+		PackageDeclaration pack = md.getPackages().get(0);
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		// -- check interface

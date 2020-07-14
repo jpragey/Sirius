@@ -1,7 +1,10 @@
 package org.sirius.frontend.core.parser;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.stream.Collectors;
 
@@ -70,10 +73,10 @@ public class InterfaceDeclarationParserTest {
 		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I<T0,T1,T2>{}");
 
 		assertEquals(myInterface.getTypeParameters().size(), 3);
-		assertEquals(myInterface.getTypeParameters().stream()
+		assertThat(myInterface.getTypeParameters().stream()
 				.map(typeParam -> typeParam.getNameString())
 				.toArray(), 
-				new String[]{"T0", "T1", "T2"});
+				equalTo( new String[]{"T0", "T1", "T2"}));
 	}
 	
 	@Test
@@ -83,10 +86,10 @@ public class InterfaceDeclarationParserTest {
 
 		assertEquals(myInterface.getAncestors().size(), 1);
 		
-		assertEquals(myInterface.getAncestors().stream()
+		assertThat(myInterface.getAncestors().stream()
 				.map(interf -> interf.getSimpleName().getText())
 				.toArray(), 
-				new String[]{"I0"});
+				equalTo(new String[]{"I0"}));
 	}
 
 	@Test

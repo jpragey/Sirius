@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
-import org.testng.annotations.Test;
 
 public class PartialTest {
 
@@ -18,7 +18,8 @@ public class PartialTest {
 		AstFunctionParameter par1 = new AstFunctionParameter(AstType.noType, AstToken.internal("param 1"));
 		Partial partial = new Partial (
 				AstToken.internal("partial") ,
-////				List<Capture> captures, 
+////				List<Capture> captures,
+				List.of(),
 				Arrays.asList(par0, par1), 
 //				AstFunctionDeclarationBuilder function,
 				

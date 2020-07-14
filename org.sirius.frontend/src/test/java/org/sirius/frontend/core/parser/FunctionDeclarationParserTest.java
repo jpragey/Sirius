@@ -1,6 +1,6 @@
 package org.sirius.frontend.core.parser;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -21,6 +21,8 @@ import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.QNameSetterVisitor;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -47,6 +49,9 @@ public class FunctionDeclarationParserTest {
 				
 		FunctionDeclarationParser.FunctionDeclarationVisitor typeVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter /*, containerQName*/);
 		PartialList myType = typeVisitor.visit(tree);
+		
+		myType.visit(new QNameSetterVisitor());
+		
 		return myType;
 	}
 	
@@ -55,7 +60,7 @@ public class FunctionDeclarationParserTest {
 	public void simplestFunction() {
 		PartialList partialList = parseTypeDeclaration("void f() {}" /*, new QName("a", "b", "c")*/);
 		assertEquals(partialList.getNameString(), "f");
-		assertEquals(partialList.getqName().dotSeparated(), "a.b.c.f");
+		assertEquals(partialList.getqName().dotSeparated(), "f");
 	}
 
 	@Test
@@ -65,9 +70,9 @@ public class FunctionDeclarationParserTest {
 		//assertEquals(partialList.getNameString(), "f");
 		assertEquals(partialList.getPartials().size(), 3 /* NB: 1 more than parameters*/);
 		
-		assertEquals(
+		assertThat(
 				partialList.getAllArgsPartial().getArgs().stream().map(astFuncParam -> astFuncParam.getNameString()).toArray(),
-				new String[] {"a", "b"});
+				equalTo(new String[] {"a", "b"}));
 	}
 
 	@Test

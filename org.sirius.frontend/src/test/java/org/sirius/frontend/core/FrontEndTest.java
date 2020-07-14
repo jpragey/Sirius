@@ -1,23 +1,27 @@
 package org.sirius.frontend.core;
 
-import static org.testng.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
-import org.testng.annotations.Test;
 
 
 public class FrontEndTest {
 
 	// TODO: restore
-	@Test(enabled = false, description = "Standard compilation unit not implemented in new visitor-based parser")
+	@Test
+	@Disabled
+	@DisplayName("Standard compilation unit not implemented in new visitor-based parser")
 	public void singleEmptyModuleMustHaveOneModuleContent() {
 		Reporter reporter = new AccumulatingReporter(new ShellReporter());
  
@@ -30,7 +34,8 @@ public class FrontEndTest {
 		assertEquals(moduleContents.get(0).getPhysicalPath().getElements(), Arrays.asList("a", "b"));
 	}
 	
-	@Test(enabled = false)
+	@Test
+	@Disabled
 	public void moduleWithoutExplicitPackageHasADefautltPackage() {
 		Reporter reporter = new AccumulatingReporter(new ShellReporter());
  
@@ -49,7 +54,8 @@ public class FrontEndTest {
 		assertEquals(pd.getQName().getStringElements(), Arrays.asList("a", "b"));
 	}
 	
-	@Test(enabled = false)
+	@Test
+	@Disabled
 	public void moduleWithExplicitPackageHasNoDefautltPackage() {
 		Reporter reporter = new AccumulatingReporter(new ShellReporter());
  
@@ -70,7 +76,8 @@ public class FrontEndTest {
 	}
 	
 	
-	@Test(enabled = false)
+	@Test
+	@Disabled
 	public void parseNamedModuleContent() {
 		Reporter reporter = new AccumulatingReporter(new ShellReporter());
  

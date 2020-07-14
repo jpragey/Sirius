@@ -47,5 +47,9 @@ public class Scope {
 		return lvpl;
 	}
 	
+	public Optional<Symbol> lookupSymbol(String simpleName) {
+		Optional<Symbol> symb = symbolTable.lookupBySimpleName(simpleName);
+		return symb;
+	}
 	
 }

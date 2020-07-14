@@ -1,6 +1,6 @@
 package org.sirius.frontend.symbols;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.sirius.frontend.api.AbstractFunction;

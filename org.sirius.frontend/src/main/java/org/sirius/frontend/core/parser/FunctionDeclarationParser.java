@@ -12,6 +12,7 @@ import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
+import org.sirius.frontend.parser.SiriusParser.FunctionBodyContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionFormalArgumentContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
@@ -50,15 +51,33 @@ public class FunctionDeclarationParser {
 		}
 		
 	}
+
+	public static class FunctionBodyVisitor extends SiriusBaseVisitor<List<AstStatement> > {
+		private Reporter reporter;
+		
+		public FunctionBodyVisitor(Reporter reporter) {
+			super();
+			this.reporter = reporter;
+		}
+
+		@Override
+		public List<AstStatement> visitFunctionBody(FunctionBodyContext ctx) {
+			StatementParser.StatementVisitor statementVisitor = new StatementParser.StatementVisitor(reporter);
+			
+			List<AstStatement> statements =  ctx.statement().stream()
+				.map(stmtCtxt -> stmtCtxt.accept(statementVisitor))
+				.collect(Collectors.toList());
+			
+			return statements;
+		}
+	}
 	
 	public static class FunctionDeclarationVisitor extends SiriusBaseVisitor<PartialList> {
 		private Reporter reporter;
-//		private QName containerQName;
 
 		public FunctionDeclarationVisitor(Reporter reporter/*, QName containerQName*/) {
 			super();
 			this.reporter = reporter;
-//			this.containerQName = containerQName;
 		}
 
 		
@@ -83,58 +102,18 @@ public class FunctionDeclarationParser {
 				typeVisitor.visit(returnContext);
 			
 			// -- Body
-			StatementParser.StatementVisitor statementVisitor = new StatementParser.StatementVisitor(reporter);
 			
-			// TODO
 			Optional<List<AstStatement>> body = Optional.empty();
-//			List<StatementContext> statementContexts = ctx.statement();
-			if(ctx.statement() != null) {
-				List<AstStatement> statements = ctx.statement().stream()
-						.map(stmtContext -> stmtContext.accept(statementVisitor))
-						.collect(Collectors.toList())
-						;
+			if(ctx.functionBody() != null) {
+				FunctionBodyVisitor bodyVisitor = new FunctionBodyVisitor(reporter);
+				List<AstStatement> statements = ctx.functionBody().accept(bodyVisitor);
 				body = Optional.of(statements);
 			}
-//			boolean concrete = false; 
-			boolean member = false; 
 			
+			boolean member = false; 
 			
 			return new PartialList(functionParams, returnType, member, /* qName,*/ /*concrete, */name, body) ;
 		}
-
-
-//		@Override
-//		public AstInterfaceDeclaration visitInterfaceDeclaration(InterfaceDeclarationContext ctx) {
-//			
-//			AstToken name = new AstToken(ctx.TYPE_ID(0).getSymbol());
-//			
-////			AstToken intfName = new AstToken(ctx.TYPE_ID(1).getSymbol());
-//			List<AstClassOrInterface.AncestorInfo> intfList = ctx.TYPE_ID().stream()
-//				.skip(1)
-//				.map(terminalNode -> new AstClassOrInterface.AncestorInfo(new AstToken(terminalNode.getSymbol())))
-//				.collect(Collectors.toList());
-//			
-//			
-//			Optional<QName> packageQName = Optional.empty();
-//			
-//			
-//			// -- type parameters
-//			TypeParameterParser.TypeParameterVisitor typeParameterVisitor = new TypeParameterParser.TypeParameterVisitor(reporter);
-//			List<TypeParameter> typeParameters = ctx.typeParameterDeclaration().stream()
-//				.map(typeParamDeclCtxt -> typeParamDeclCtxt.accept(typeParameterVisitor))
-//				.collect(Collectors.toUnmodifiableList());
-//
-//			
-////			ImmutableList<TypeParameter> typeParameters = ImmutableList.of();
-//			
-//			ImmutableList<PartialList> functionDeclarations = ImmutableList.of();
-//			
-//			AstInterfaceDeclaration interfaceDeclaration = new AstInterfaceDeclaration(reporter, name, packageQName, 
-//					functionDeclarations, 
-//					ImmutableList.copyOf(typeParameters),
-//					ImmutableList.copyOf(intfList));
-//			return interfaceDeclaration;
-//		}
 	}
 
 }

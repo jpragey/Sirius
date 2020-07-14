@@ -2,7 +2,7 @@ package org.sirius.frontend.core.parser;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.function.Consumer;
 

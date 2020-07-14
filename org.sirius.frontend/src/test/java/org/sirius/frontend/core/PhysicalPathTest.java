@@ -1,8 +1,8 @@
 package org.sirius.frontend.core;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class PhysicalPathTest {
 

@@ -1,12 +1,19 @@
 package org.sirius.backend.jvm.integration;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.Bytecode;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
 import org.sirius.backend.jvm.JvmBackend;
@@ -14,20 +21,17 @@ import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.core.ScriptSession;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 public class FunctionTest {
 	private Reporter reporter;
 
-	@BeforeMethod
+	@BeforeEach
 	public void setup() {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
 		
 	}
 	
-	@AfterMethod
+	@AfterEach
 	public void teardown() {
 		assertTrue(reporter.ok());
 	}
@@ -71,7 +75,7 @@ public class FunctionTest {
 //		return 43;
 	}
 
-	@Test(enabled = true)
+	@Test
 	public void simpleFunctionCall() throws Exception {
 		String script = "#!\n "
 //				+ "Integer inc() {return 0;} "
@@ -88,11 +92,12 @@ public class FunctionTest {
 		assert(sirResult instanceof sirius.lang.Integer);
 		int result = ((sirius.lang.Integer)sirResult).getValue();
 
-		assertEquals(result, 43);
+		assertThat(result, is(43));
 		
 	}
 
-	@Test(enabled = false)
+	@Test
+	@Disabled
 	public void twoArgumentsFunctionCall() throws Exception {
 		String script = "#!\n "
 //				+ "Integer inc() {return 0;} "
@@ -109,7 +114,7 @@ public class FunctionTest {
 		assert(sirResult instanceof sirius.lang.Integer);
 		int result = ((sirius.lang.Integer)sirResult).getValue();
 
-		assertEquals(result, 43);
+		assertThat(result, is(43));
 		
 	}
 

@@ -1,8 +1,9 @@
 package org.sirius.frontend.core;
 
-import static org.testng.Assert.assertEquals;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.sirius.frontend.ast.AstBooleanConstantExpression;

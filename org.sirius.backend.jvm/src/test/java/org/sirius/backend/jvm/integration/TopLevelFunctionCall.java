@@ -1,12 +1,13 @@
 package org.sirius.backend.jvm.integration;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.Bytecode;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
 import org.sirius.backend.jvm.JvmBackend;
@@ -15,26 +16,26 @@ import org.sirius.common.error.FailFastReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.core.ScriptSession;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 
 public class TopLevelFunctionCall {
 
 	private Reporter reporter;
 
-	@BeforeMethod
+	@BeforeEach
 	public void setup() {
 		this.reporter = new FailFastReporter(new AccumulatingReporter(new ShellReporter()));
 		
 	}
 	
-	@AfterMethod
+	@AfterEach
 	public void teardown() {
 	}
 	
 
-	@Test(enabled = true)
+	@Test
 	public void callTopLevelFunctionTest() throws Exception {
 		
 		String script = "#!\n "
@@ -78,7 +79,7 @@ public class TopLevelFunctionCall {
 		
 	}
 
-	@Test(enabled = true)
+	@Test
 	public void callUserDefinedFunctionTest() throws Exception {
 		
 		String script = "#!\n "
@@ -118,7 +119,7 @@ public class TopLevelFunctionCall {
 		
 		sirius.lang.Integer result = (sirius.lang.Integer)main.invoke(null, new Object[] {}/*args*/);
 		System.out.println("Result: " + result.getValue());
-		assertEquals(result.getValue(), 43);
+		assertThat(result.getValue(), is(43));
 		
 	}
 

@@ -16,14 +16,27 @@
       <groupId>org.sirius</groupId>
       <artifactId>org.sirius.common</artifactId>
     </dependency>
+
+<!--
+  	<dependency>
+	    <groupId>org.sirius</groupId>
+	    <artifactId>org.sirius.runtime</artifactId>
+  	</dependency>
+  -->
+   	<dependency>
+		<groupId>org.junit.jupiter</groupId>
+		<artifactId>junit-jupiter-api</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.junit.jupiter</groupId>
+		<artifactId>junit-jupiter-params</artifactId>
+	</dependency>
+    <dependency>
+		<groupId>org.hamcrest</groupId>
+		<artifactId>hamcrest</artifactId>
+		<scope>test</scope>
+	</dependency>
   
-  <!-- https://mvnrepository.com/artifact/org.testng/testng -->
-  <dependency>
-    <groupId>org.testng</groupId>
-    <artifactId>testng</artifactId>
-    <scope>test</scope>
-  </dependency>
-	    
   </dependencies>
   
   <build>

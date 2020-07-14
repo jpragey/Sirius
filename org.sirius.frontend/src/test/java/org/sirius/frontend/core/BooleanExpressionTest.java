@@ -1,10 +1,10 @@
 package org.sirius.frontend.core;
 
-import static org.testng.Assert.assertEquals;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.LocalVariableStatement;

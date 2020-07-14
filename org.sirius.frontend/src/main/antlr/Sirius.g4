@@ -178,11 +178,13 @@ functionDeclaration
 	  	  (  ',' functionFormalArgument	)*
 	    )?								{  }
 	  ')' 
-	  ('{' 					
-	  		(
-	  			statement	
-	  		)*
-	   '}')?
+	  ( functionBody )?
+	;
+	
+functionBody
+	:'{' 					
+	  		( statement )*
+	 '}'
 	;
 
 functionFormalArgument 

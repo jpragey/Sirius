@@ -1,23 +1,24 @@
 package org.sirius.compiler.cli.framework;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ExtendedOptionTest {
 
 	private List<String> parsedArgs;
 	private boolean emptyOptionArg;
 	
-	@BeforeMethod
+	@BeforeEach
 	public void setup() {
 		this.parsedArgs = new ArrayList<>();
 		this.emptyOptionArg = false;
@@ -44,8 +45,8 @@ public class ExtendedOptionTest {
 		Cursor cursor = new Cursor( args);
 		ArgumentParsingResult r = opt.bind(this::parseArg).parse(cursor);
 		assertTrue(r.matched);
-		assertEquals(parsedArgs, Arrays.asList("aa", "bb", "cc"));
-		assertEquals(emptyOptionArg, false);
+		assertThat(parsedArgs, is(List.of("aa", "bb", "cc")));
+		assertThat(emptyOptionArg, is(false));
 	}
 	
 	@Test
@@ -57,8 +58,8 @@ public class ExtendedOptionTest {
 		Cursor cursor = new Cursor( args);
 		ArgumentParsingResult r = opt.bind(this::parseArg).parse(cursor);
 		assertTrue(r.matched);
-		assertEquals(parsedArgs, Arrays.asList());
-		assertEquals(emptyOptionArg, true);
+		assertThat(parsedArgs, is(Arrays.asList()));
+		assertThat(emptyOptionArg, is(true));
 	}
 	
 	@Test
@@ -69,10 +70,10 @@ public class ExtendedOptionTest {
 		
 		Cursor cursor = new Cursor( args);
 		ArgumentParsingResult r = opt.bind(this::parseArg).parse(cursor);
-		assertEquals(r.matched, true);
+		assertThat(r.matched, is(true));
 		assertTrue(r.errorMessage.get().contains("Error"));
-		assertEquals(parsedArgs, Arrays.asList());
-		assertEquals(emptyOptionArg, false);
+		assertThat(parsedArgs, is(Arrays.asList()));
+		assertThat(emptyOptionArg, is(false));
 	}
 	
 }

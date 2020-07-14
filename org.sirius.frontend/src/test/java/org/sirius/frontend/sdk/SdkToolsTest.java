@@ -1,9 +1,12 @@
 package org.sirius.frontend.sdk;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
@@ -15,24 +18,25 @@ import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.QNameRefType;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 public class SdkToolsTest {
 	private Reporter reporter;
 	private DefaultSymbolTable symbolTable ;
 	private SdkTools sdkTools;
 	
-	@BeforeMethod
+	@BeforeEach
 	public void setup() throws Exception {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
 		symbolTable = new DefaultSymbolTable("SdkToolsTest");
 		this.sdkTools = new SdkTools(reporter, symbolTable);
 //		sdkTools.parseSdk(symbolTable);
 		
+		
+	}
+	@AfterEach
+	public void tearDown() throws Exception {
 		if(this.reporter.hasErrors()) 
 			throw new Exception("SDK error, see logs in shell");
-		
 	}
 
 	@Test

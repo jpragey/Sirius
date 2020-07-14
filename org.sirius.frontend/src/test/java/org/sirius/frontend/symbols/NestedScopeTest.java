@@ -3,15 +3,19 @@ package org.sirius.frontend.symbols;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
+import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.core.ScriptSession;
 import org.sirius.frontend.parser.Compiler;
@@ -36,6 +40,50 @@ public class NestedScopeTest {
 		
 
 	}
+
+	@Test
+	@DisplayName("Check qnames in class methods and values")
+	@Disabled
+	public void functionScopeByArumentsScopeTest() {
+		ScriptSession session = Compiler.compileScript("#!\n public void f(Integer x, Integer y, Integer z){}");
+		PartialList methodF = session.getAstModules().get(0).getPackageDeclarations().get(0).getFunctionDeclarations().get(0);
+		
+		assertThat(methodF.getPartials(), hasSize(4));
+		
+		Partial partial0 = methodF.getPartials().get(0);
+		assertTrue(partial0.getScope().lookupSymbol("x").isEmpty());
+		assertTrue(partial0.getScope().lookupSymbol("y").isEmpty());
+		assertTrue(partial0.getScope().lookupSymbol("z").isEmpty());
+		
+		Partial partial1 = methodF.getPartials().get(1);
+		assertTrue(partial1.getScope().lookupSymbol("x").isPresent());
+		assertTrue(partial1.getScope().lookupSymbol("y").isEmpty());
+		assertTrue(partial1.getScope().lookupSymbol("z").isEmpty());
+		
+		Partial partial2 = methodF.getPartials().get(2);
+		assertTrue(partial2.getScope().lookupSymbol("x").isPresent());
+		assertTrue(partial2.getScope().lookupSymbol("y").isPresent());
+		assertTrue(partial2.getScope().lookupSymbol("z").isEmpty());
+		
+		Partial partial3 = methodF.getPartials().get(3);
+		assertTrue(partial3.getScope().lookupSymbol("x").isPresent());
+		assertTrue(partial3.getScope().lookupSymbol("y").isPresent());
+		assertTrue(partial3.getScope().lookupSymbol("z").isPresent());
+		
+		
+//		PartialList methodF = cd.getFunctionDeclarations().get(0);
+		
+//		Optional<PartialList> fFunct =  cd.getScope().getFunction("f");
+//		assertThat(fFunct.isPresent(), equalTo(true));
+//		assertThat(fFunct.get().getqName(), equalTo(new QName("p", "k", "C", "f")));
+//		assertThat(fFunct.get().getPartials().get(0).getqName(), equalTo(new QName("p", "k", "C", "f")));
+//		
+//		Optional<AstMemberValueDeclaration> sValue =  cd.getScope().getValue("s");
+//		assertThat(sValue.isPresent(), equalTo(true));
+//		assertThat(sValue.get().getQname(), equalTo(new QName("p", "k", "C", "s")));
+		
+	}
+	
 	@Test
 	@DisplayName("Check qnames in functions and values")
 	public void functionsContentScopeTest() {
@@ -50,5 +98,5 @@ public class NestedScopeTest {
 		assertThat(sValue.isPresent(), equalTo(true));
 		assertThat(sValue.get().getVarName().getText(), equalTo("s"));
 	}
-	
+
 }

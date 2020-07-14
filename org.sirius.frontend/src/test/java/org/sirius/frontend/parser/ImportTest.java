@@ -1,14 +1,13 @@
 package org.sirius.frontend.parser;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Test;
 import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.core.ScriptSession;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTable;
-import org.testng.annotations.Test;
 
 public class ImportTest {
 

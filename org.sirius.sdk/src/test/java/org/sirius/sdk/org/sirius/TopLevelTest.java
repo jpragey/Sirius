@@ -2,10 +2,9 @@ package org.sirius.sdk.org.sirius;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.Test;
 import org.sirius.sdk.tooling.TopLevelClass;
-import org.testng.annotations.Test;
 
 public class TopLevelTest {
 

@@ -1,7 +1,9 @@
 package org.sirius.backend.jvm;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.mocktypes.MockAbstractFunction;
 import org.sirius.backend.jvm.mocktypes.MockClassType;
 import org.sirius.backend.jvm.mocktypes.MockFunctionFormalArgument;
@@ -10,15 +12,13 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
-import org.sirius.frontend.api.Type;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 public class DescriptorsFactoryTest {
 
 	private Reporter reporter;
 	private DescriptorFactory factory;
-	@BeforeMethod
+	
+	@BeforeEach
 	public void setup() {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
 		this.factory = new DescriptorFactory(reporter);

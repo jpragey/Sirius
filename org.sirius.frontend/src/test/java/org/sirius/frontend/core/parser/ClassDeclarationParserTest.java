@@ -1,7 +1,6 @@
 package org.sirius.frontend.core.parser;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Collectors;
 
@@ -23,6 +22,9 @@ import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.ast.Variance;
 import org.sirius.frontend.core.parser.TypeParameterParser.TypeParameterVisitor;
 import org.sirius.frontend.parser.SiriusParser;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ClassDeclarationParserTest {
 
@@ -70,10 +72,10 @@ public class ClassDeclarationParserTest {
 		AstClassDeclaration myClass = parseClassDeclaration("class C()<T0,T1,T2>{}");
 
 		assertEquals(myClass.getTypeParameters().size(), 3);
-		assertEquals(myClass.getTypeParameters().stream()
+		assertThat(myClass.getTypeParameters().stream()
 				.map(typeParam -> typeParam.getNameString())
 				.toArray(), 
-				new String[]{"T0", "T1", "T2"});
+				is(new String[]{"T0", "T1", "T2"}));
 	}
 	
 	@Test
@@ -83,10 +85,10 @@ public class ClassDeclarationParserTest {
 
 		assertEquals(myClass.getAncestors().size(), 1);
 		
-		assertEquals(myClass.getAncestors().stream()
+		assertThat(myClass.getAncestors().stream()
 				.map(interf -> interf.getSimpleName().getText())
 				.toArray(), 
-				new String[]{"I0"});
+				is(new String[]{"I0"}));
 	}
 
 	@Test

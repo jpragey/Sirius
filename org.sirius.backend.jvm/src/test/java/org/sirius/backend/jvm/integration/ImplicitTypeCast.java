@@ -1,11 +1,15 @@
 package org.sirius.backend.jvm.integration;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.Bytecode;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
 import org.sirius.backend.jvm.JvmBackend;
@@ -13,21 +17,18 @@ import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.core.ScriptSession;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 public class ImplicitTypeCast {
 
 	private Reporter reporter;
 
-	@BeforeMethod
+	@BeforeEach
 	public void setup() {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
 		
 	}
 	
-	@AfterMethod
+	@AfterEach
 	public void teardown() {
 		assertTrue(reporter.ok());
 	}
@@ -70,7 +71,7 @@ public class ImplicitTypeCast {
 
 	
 	
-	@Test(enabled = true)
+	@Test
 	public void returnConstantInt() throws Exception {
 
 		String script = "#!\n "
@@ -80,50 +81,50 @@ public class ImplicitTypeCast {
 		assert(sirResult instanceof sirius.lang.Integer);
 		int result = ((sirius.lang.Integer)sirResult).getValue();
 		
-		assertEquals(result, 42);
+		assertThat(result, is(42));
 	}
 	
-	@Test(enabled = true)
+	@Test
 	public void returnIntSum() throws Exception {
 		String script = "#!\n Integer main() {return 42 + 43;}";
 		Object sirResult = compileRunAndReturn(script);
 		assert(sirResult instanceof sirius.lang.Integer);
 		int result = ((sirius.lang.Integer)sirResult).getValue();
 
-		assertEquals(result, 85);
+		assertThat(result, is(85));
 	}
 	
-	@Test(enabled = true)
+	@Test
 	public void returnIntSubstraction() throws Exception {
 		String script = "#!\n Integer main() {return 42 - 43;}";
 		Object sirResult = compileRunAndReturn(script);
 		assert(sirResult instanceof sirius.lang.Integer);
 		int result = ((sirius.lang.Integer)sirResult).getValue();
 
-		assertEquals(result, -1);
+		assertThat(result, is(-1));
 	}
 	
-	@Test(enabled = true)
+	@Test
 	public void returnIntMult() throws Exception {
 		String script = "#!\n Integer main() {return 10 * 11;}";
 		Object sirResult = compileRunAndReturn(script);
 		assert(sirResult instanceof sirius.lang.Integer);
 		int result = ((sirius.lang.Integer)sirResult).getValue();
 		
-		assertEquals(result, 110);
+		assertThat(result, is(110));
 	}
 	
-	@Test(enabled = true)
+	@Test
 	public void returnIntDiv() throws Exception {
 		String script = "#!\n Integer main() {return 100 / 3;}";
 		Object sirResult = compileRunAndReturn(script);
 		assert(sirResult instanceof sirius.lang.Integer);
 		int result = ((sirius.lang.Integer)sirResult).getValue();
 		
-		assertEquals(result, 33);
+		assertThat(result, is(33));
 	}
 	
-	@Test(enabled = true)
+	@Test
 	public void returnConstantString() throws Exception {
 
 		String script = "#!\n "
@@ -131,6 +132,6 @@ public class ImplicitTypeCast {
 				+ "void main() {println(\"42\");}";
 		Object result = compileRunAndReturn(script);
 
-		assertEquals(result, null);
+		assertThat(result, is(null));
 	}
 }

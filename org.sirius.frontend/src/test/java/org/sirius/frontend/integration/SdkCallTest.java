@@ -1,7 +1,9 @@
 package org.sirius.frontend.integration;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.Expression;
@@ -15,11 +17,11 @@ import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.core.ScriptSession;
 import org.sirius.frontend.parser.Compiler;
 import org.sirius.frontend.symbols.Symbol;
-import org.testng.annotations.Test;
 
 public class SdkCallTest {
 
-	@Test(enabled = false) // TODO println() Doesn't take Stringifiable for now
+	@Test	 // TODO println() Doesn't take Stringifiable for now
+	@Disabled
 	public void sdkCalled() {
 //		ScriptSession session = Compiler.compileScript("#!\n void run() {println(\"Hello\");}");
 		ScriptSession session = Compiler.compileScript("#!\n void run() {println(42);}");

@@ -1,10 +1,8 @@
 package org.sirius.backend.jvm.integration;
 
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
-import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.core.FrontEnd;
 import org.sirius.frontend.core.ScriptSession;
 import org.sirius.frontend.core.TextInputTextProvider;

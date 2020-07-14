@@ -1,14 +1,14 @@
 package org.sirius.frontend.core;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.ShellReporter;
-import org.testng.annotations.BeforeMethod;
 
 public class ResourceInputTextProviderTest {
 
 	AccumulatingReporter reporter;
 	
-	@BeforeMethod
+	@BeforeEach
 	public void setup() {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
 	}

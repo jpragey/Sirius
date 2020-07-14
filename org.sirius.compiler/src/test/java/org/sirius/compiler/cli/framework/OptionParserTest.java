@@ -1,14 +1,16 @@
 package org.sirius.compiler.cli.framework;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
 import org.sirius.compiler.options.Help;
-import org.testng.annotations.Test;
+
 
 public class OptionParserTest {
 

@@ -83,9 +83,12 @@ public class Partial implements Visitable{
 			return Optional.empty();
 		}
 	}
-
+	
+	private List<AstFunctionParameter> closure;
+	
 	public Partial(
 			AstToken name,
+			List<AstFunctionParameter> closure, 
 			List<AstFunctionParameter> args, 
 			boolean member,
 			QName qName,
@@ -95,6 +98,7 @@ public class Partial implements Visitable{
 	{
 		super();
 		this.name = name;
+		this.closure = ImmutableList.copyOf(closure);
 		this.args = ImmutableList.copyOf(args);
 	
 		this.member = member;

@@ -1,8 +1,11 @@
 package org.sirius.backend.jvm;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
@@ -15,20 +18,17 @@ import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.core.FrontEnd;
 import org.sirius.frontend.core.ScriptSession;
 import org.sirius.frontend.core.TextInputTextProvider;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 public class ExpressionStatementTest {
 
 	Reporter reporter;
 
-	@BeforeMethod
+	@BeforeEach
 	public void setup() {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
 	}
 	
-	@AfterMethod
+	@AfterEach
 	public void teardown() {
 		assertTrue(reporter.ok());
 	}

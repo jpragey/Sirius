@@ -1,6 +1,6 @@
 package org.sirius.frontend.core.parser;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.function.Consumer;
 

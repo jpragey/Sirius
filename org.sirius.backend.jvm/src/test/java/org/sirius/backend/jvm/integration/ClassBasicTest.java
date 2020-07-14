@@ -1,35 +1,33 @@
 package org.sirius.backend.jvm.integration;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Optional;
 
-import org.sirius.backend.jvm.Bytecode;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
 import org.sirius.backend.jvm.JvmBackend;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.core.ScriptSession;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 public class ClassBasicTest {
 
 	private Reporter reporter;
 
-	@BeforeMethod
+	@BeforeEach
 	public void setup() {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
 		
 	}
 
 
-	@Test(description = "Create a class instance (in a return expression)")
+	@Test
+	@DisplayName("Create a class instance (in a return expression)")
 	public void classTest() throws Exception {
 		String script = "#!\n "
 				+ "class A() {Integer mi;}   "
@@ -65,7 +63,8 @@ public class ClassBasicTest {
 
 	}
 	
-	@Test(description = "Create a class instance from SDK (sirius.lang.Integer) (in a return expression)")
+	@Test
+	@DisplayName("Create a class instance from SDK (sirius.lang.Integer) (in a return expression)")
 	public void classFromSDKTest() throws Exception {
 		String script = "#!\n "
 				+ "Integer main() {return Integer();}";
@@ -97,7 +96,8 @@ public class ClassBasicTest {
 	}
 	
 	
-	@Test(description = "access to a member value", enabled = true)
+	@Test
+	@DisplayName("access to a member value")
 	public void fieldAccessTest() throws Exception {
 		String script = "#!\n "
 //				+ "class B() {}   "
@@ -155,7 +155,8 @@ public class ClassBasicTest {
 
 	}
 	
-	@Test(description = "", enabled = true)
+	@Test
+	@DisplayName("TODO")
 	public void localVariableTest() throws Exception {
 		String script = "#!\n "
 		+ "class A(){}\n"

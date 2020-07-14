@@ -1,27 +1,35 @@
 package org.sirius.backend.jvm.integration;
 
-import static org.testng.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Method;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
 import org.sirius.backend.jvm.JvmBackend;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.core.ScriptSession;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 public class IfElseStatementTest {
 
 	private Reporter reporter;
 
-	@BeforeMethod
+	@BeforeEach
 	public void setup() {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
-		
 	}
+	@AfterEach
+	public void teardown() {
+		assertTrue(reporter.ok());
+	}
+
 
 	int runIfThenTest(String ifThenExpr) throws Exception {
 		String script = "#!\n "
@@ -44,29 +52,33 @@ public class IfElseStatementTest {
 		
 		Object result = main.invoke(null, argTypes /*, args*/);
 		
-		assertEquals(result.getClass().getName(), "sirius.lang.Integer");
+		assertThat(result.getClass().getName(), is("sirius.lang.Integer"));
 		sirius.lang.Integer intResult = (sirius.lang.Integer) result;
 		return intResult.value;
 		
 	}
 
-	@Test(description = "")
+	@Test
+	@DisplayName("")
 	public void ifThenEvaluatingFalseTest() throws Exception {
-		assertEquals(runIfThenTest("if(false) return 42;"), 100);
+		assertThat(runIfThenTest("if(false) return 42;"), is(100));
 	}
-	@Test(description = "")
+	@Test
+	@DisplayName("")
 	public void ifThenEvaluatingTrueTest() throws Exception {
-		assertEquals(runIfThenTest("if(true) return 42;"), 42);
+		assertThat(runIfThenTest("if(true) return 42;"), is(42));
 	}
 	
 	
-	@Test(description = "")
+	@Test
+	@DisplayName("")
 	public void ifThenElseEvaluatingFalseTest() throws Exception {
-		assertEquals(runIfThenTest("if(false) return 42; else return 43;"), 43);
+		assertThat(runIfThenTest("if(false) return 42; else return 43;"), is(43));
 	}
-	@Test(description = "")
+	@Test
+	@DisplayName("")
 	public void ifThenElseEvaluatingTrueTest() throws Exception {
-		assertEquals(runIfThenTest("if(true) return 42; else return 43;"), 42);
+		assertThat(runIfThenTest("if(true) return 42; else return 43;"), is(42));
 	}
 
 }
