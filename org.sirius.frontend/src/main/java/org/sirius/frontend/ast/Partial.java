@@ -86,15 +86,13 @@ public class Partial implements Visitable{
 	
 	private List<AstFunctionParameter> closure;
 	
-	public Partial(
-			AstToken name,
+	public Partial(AstToken name,
 			List<AstFunctionParameter> closure, 
 			List<AstFunctionParameter> args, 
 			boolean member,
 			QName qName,
-
 			AstType returnType,
-			Optional<List<AstStatement>> statements) 
+			Optional<List<AstStatement>> body) 
 	{
 		super();
 		this.name = name;
@@ -105,7 +103,7 @@ public class Partial implements Visitable{
 		this.qName = qName;
 
 		this.returnType = returnType;
-		this.body = statements;
+		this.body = body;
 	}
 
 	public void assignSymbolTable(DefaultSymbolTable symbolTable) {
@@ -196,6 +194,16 @@ public class Partial implements Visitable{
 	
 	public void assignScope(Scope scope) {
 		this.scope = scope;
+		
+		// -- add closure to scope
+		for(AstFunctionParameter d : this.closure) {
+			// -- Convert function parameter to local variable
+			// TODO: ???
+			AstLocalVariableStatement stmt = new AstLocalVariableStatement(new AnnotationList(), d.getType(), d.getName(), Optional.empty() /*d.initialValue*/);
+			
+			scope.addLocalVariable(stmt);
+		}
+		
 		
 		if(body.isPresent()) {
 			for(AstStatement stmt: body.get()) {

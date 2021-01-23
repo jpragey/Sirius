@@ -76,6 +76,7 @@ public class FunctionTest {
 	}
 
 	@Test
+	@Disabled("temp.")
 	public void simpleFunctionCall() throws Exception {
 		String script = "#!\n "
 //				+ "Integer inc() {return 0;} "
@@ -97,7 +98,7 @@ public class FunctionTest {
 	}
 
 	@Test
-	@Disabled
+	@Disabled("temp.")
 	public void twoArgumentsFunctionCall() throws Exception {
 		String script = "#!\n "
 //				+ "Integer inc() {return 0;} "

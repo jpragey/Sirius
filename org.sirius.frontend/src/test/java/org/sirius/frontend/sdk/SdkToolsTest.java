@@ -18,6 +18,12 @@ import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.QNameRefType;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
+
 
 public class SdkToolsTest {
 	private Reporter reporter;
@@ -94,10 +100,10 @@ public class SdkToolsTest {
 		
 		assertEquals(func.getqName(), new QName("sirius", "lang", "println"));
 //		assertEquals(func.getFormalArguments().size(), 1);
-		assertEquals(func.getPartials().get(1).getArgs().size(), 1);
+		assertThat(func.getPartials().get(0).getArgs(), hasSize(1));
 		
 //		AstFunctionFormalArgument arg0 = func.getFormalArguments().get(0); 
-		AstFunctionParameter arg0 = func.getPartials().get(1).getArgs().get(0); 
+		AstFunctionParameter arg0 = func.getPartials().get(0).getArgs().get(0); 
 		assertEquals(arg0.getName().getText(), "text"); // TODO
 		assert(arg0.getType() instanceof QNameRefType);
 		QNameRefType arg0Type = (QNameRefType)arg0.getType();

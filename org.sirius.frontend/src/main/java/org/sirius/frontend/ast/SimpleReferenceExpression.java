@@ -12,11 +12,14 @@ import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.MemberValueAccessExpression;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTable;
 
 /** 'single token' reference; meaning is highly context-dependant (local variable, function parameter, member value...)
- * 
+ *
+ * Concrete type determination is done by {@link #getExpression()} and can be:
+ * -  
  * @author jpragey
  *
  */
@@ -24,6 +27,7 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 	private Reporter reporter;
 	private AstToken referenceName;
 	private DefaultSymbolTable symbolTable = null;
+	private Scope scope = null;
 	
 	private SimpleReferenceExpression(Reporter reporter, AstToken referenceName, DefaultSymbolTable symbolTable) {
 		super();
@@ -32,8 +36,6 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 		this.symbolTable = symbolTable;
 	}
 
-	
-	
 	public SimpleReferenceExpression(Reporter reporter, AstToken referenceName) {
 		this(reporter, referenceName, null);
 	}
@@ -173,39 +175,73 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 			return "arg: " + type.toString() + " " + name.getText();
 		}
 	}
-	
+
+	public Scope getScope() {
+		return scope;
+	}
+	public void setScope(Scope scope) {
+		this.scope = scope;
+	}
+
 	@Override
 	public Expression getExpression() {
 		if(impl == null) {
-			Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(referenceName.getText());
-			if(optSymbol.isPresent()) {
-				Symbol symbol = optSymbol.get();
-				
-				Optional<AstLocalVariableStatement> localVarDecl = symbol.getLocalVariableStatement();
-				if(localVarDecl.isPresent()) {
-					AstLocalVariableStatement st = localVarDecl.get();
-					impl = new LocalVariableReferenceImpl(st);
-					return impl;
-				}
-				
-				Optional<AstFunctionParameter> functionParamDecl = symbol.getFunctionArgument();
-				if(functionParamDecl.isPresent()) {
-					AstFunctionParameter st = functionParamDecl.get();
-					impl = new FunctionActualArgumentImpl(st);
-					return impl;
-				}
-				
-				Optional<AstMemberValueDeclaration> valueDecl = symbol.getValueDeclaration();
-				if(valueDecl.isPresent()) {
-					MemberValueAccessExpression expr = new ValueAccessExpressionImpl(valueDecl.get());
-					return expr;
-				} else {
-					reporter.error("Reference: " + referenceName.getText() + " is not a container (class/interface)", referenceName);
-				}
+			String simpleName = referenceName.getText();
 
-			} else {
-				reporter.error("Reference not found: " + referenceName.getText(), referenceName);
+			Optional<AstLocalVariableStatement> localVarDecl = scope.getLocalVariable(simpleName);
+			if(localVarDecl.isPresent()) {
+				AstLocalVariableStatement st = localVarDecl.get();
+				impl = new LocalVariableReferenceImpl(st);
+				return impl;
 			}
+			
+			Optional<AstFunctionParameter> functionParamDecl = scope.getFunctionParameter(simpleName);
+			if(functionParamDecl.isPresent()) {
+				AstFunctionParameter st = functionParamDecl.get();
+				impl = new FunctionActualArgumentImpl(st);
+				return impl;
+			}
+			
+//			Optional<AstMemberValueDeclaration> valueDecl = symbol.getValueDeclaration();
+//			if(valueDecl.isPresent()) {
+//				MemberValueAccessExpression expr = new ValueAccessExpressionImpl(valueDecl.get());
+//				return expr;
+//			} else {
+//				reporter.error("Reference: " + referenceName.getText() + " is not a container (class/interface)", referenceName);
+//			}
+			
+			
+			
+			
+//			Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(referenceName.getText());
+//			if(optSymbol.isPresent()) {
+//				Symbol symbol = optSymbol.get();
+//				
+//				Optional<AstLocalVariableStatement> localVarDecl = symbol.getLocalVariableStatement();
+//				if(localVarDecl.isPresent()) {
+//					AstLocalVariableStatement st = localVarDecl.get();
+//					impl = new LocalVariableReferenceImpl(st);
+//					return impl;
+//				}
+//				
+//				Optional<AstFunctionParameter> functionParamDecl = symbol.getFunctionArgument();
+//				if(functionParamDecl.isPresent()) {
+//					AstFunctionParameter st = functionParamDecl.get();
+//					impl = new FunctionActualArgumentImpl(st);
+//					return impl;
+//				}
+//				
+//				Optional<AstMemberValueDeclaration> valueDecl = symbol.getValueDeclaration();
+//				if(valueDecl.isPresent()) {
+//					MemberValueAccessExpression expr = new ValueAccessExpressionImpl(valueDecl.get());
+//					return expr;
+//				} else {
+//					reporter.error("Reference: " + referenceName.getText() + " is not a container (class/interface)", referenceName);
+//				}
+//
+//			} else {
+//				reporter.error("Reference not found: " + referenceName.getText(), referenceName);
+//			}
 		}
 		return impl;
 		

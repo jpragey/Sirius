@@ -49,8 +49,8 @@ public class PartialList implements Visitable {
 		int argSize = args.size();
 		for(int from = 0; from <= argSize; from++) 
 		{
-			List<AstFunctionParameter> closure = args.subList(from, argSize);
-			List<AstFunctionParameter> partialArgs = args.subList(0, from);
+			List<AstFunctionParameter> closure = args.subList(0, from);
+			List<AstFunctionParameter> partialArgs = args.subList(from, argSize);
 			
 			Partial partial = new Partial(
 					name,
@@ -64,7 +64,7 @@ public class PartialList implements Visitable {
 			partials.add(partial);
 //			this.allArgsPartial = partial; // => last in partial list
 		}
-		this.allArgsPartial = partials.get(argSize); // => last in partial list
+		this.allArgsPartial = partials.get(0); // => last in partial list
 	}
 	
 

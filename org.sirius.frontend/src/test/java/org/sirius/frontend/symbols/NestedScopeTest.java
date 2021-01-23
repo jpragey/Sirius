@@ -43,32 +43,34 @@ public class NestedScopeTest {
 
 	@Test
 	@DisplayName("Check qnames in class methods and values")
-	@Disabled
+//	@Disabled
 	public void functionScopeByArumentsScopeTest() {
 		ScriptSession session = Compiler.compileScript("#!\n public void f(Integer x, Integer y, Integer z){}");
 		PartialList methodF = session.getAstModules().get(0).getPackageDeclarations().get(0).getFunctionDeclarations().get(0);
 		
 		assertThat(methodF.getPartials(), hasSize(4));
 		
-		Partial partial0 = methodF.getPartials().get(0);
-		assertTrue(partial0.getScope().lookupSymbol("x").isEmpty());
-		assertTrue(partial0.getScope().lookupSymbol("y").isEmpty());
-		assertTrue(partial0.getScope().lookupSymbol("z").isEmpty());
+		Scope scope0 = methodF.getPartials().get(0).getScope();
+		assertTrue(scope0.lookupSymbol("x").isEmpty());
+		assertTrue(scope0.lookupSymbol("y").isEmpty());
+		assertTrue(scope0.lookupSymbol("z").isEmpty());
 		
-		Partial partial1 = methodF.getPartials().get(1);
-		assertTrue(partial1.getScope().lookupSymbol("x").isPresent());
-		assertTrue(partial1.getScope().lookupSymbol("y").isEmpty());
-		assertTrue(partial1.getScope().lookupSymbol("z").isEmpty());
+		Scope scope1 = methodF.getPartials().get(1).getScope();
+		assertTrue(scope1.lookupSymbol("x").isPresent());
+		assertTrue(scope1.lookupSymbol("y").isEmpty());
+		assertTrue(scope1.lookupSymbol("z").isEmpty());
 		
-		Partial partial2 = methodF.getPartials().get(2);
-		assertTrue(partial2.getScope().lookupSymbol("x").isPresent());
-		assertTrue(partial2.getScope().lookupSymbol("y").isPresent());
-		assertTrue(partial2.getScope().lookupSymbol("z").isEmpty());
+//		Partial partial2 = methodF.getPartials().get(2);
+		Scope scope2 = methodF.getPartials().get(2).getScope();
+		assertTrue(scope2.lookupSymbol("x").isPresent());
+		assertTrue(scope2.lookupSymbol("y").isPresent());
+		assertTrue(scope2.lookupSymbol("z").isEmpty());
 		
-		Partial partial3 = methodF.getPartials().get(3);
-		assertTrue(partial3.getScope().lookupSymbol("x").isPresent());
-		assertTrue(partial3.getScope().lookupSymbol("y").isPresent());
-		assertTrue(partial3.getScope().lookupSymbol("z").isPresent());
+//		Partial partial3 = methodF.getPartials().get(3);
+		Scope scope3 = methodF.getPartials().get(3).getScope();
+		assertTrue(scope3.lookupSymbol("x").isPresent());
+		assertTrue(scope3.lookupSymbol("y").isPresent());
+		assertTrue(scope3.lookupSymbol("z").isPresent());
 		
 		
 //		PartialList methodF = cd.getFunctionDeclarations().get(0);

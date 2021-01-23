@@ -10,6 +10,7 @@ import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
+import org.sirius.frontend.ast.SimpleReferenceExpression;
 
 public class ScopeSetterVisitor implements AstVisitor {
 
@@ -67,6 +68,11 @@ public class ScopeSetterVisitor implements AstVisitor {
 		popScope();
 	}
 	
+	@Override
+	public void startSimpleReferenceExpression(SimpleReferenceExpression expression) {
+		Scope scope = scopeStack.peek();
+		expression.setScope(scope);
+	}
 	
 	@Override
 	public void startPartial(Partial partialFunctionDeclaration) {

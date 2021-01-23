@@ -24,19 +24,25 @@ public class AstReturnStatement implements AstStatement {
 		visitor.endReturnStatement(this);
 	}
 
+	private class ReturnStatementImpl implements ReturnStatement {
+		private Expression apiExpr = expression.getExpression();
+		@Override
+		public Expression getExpression() {
+			return apiExpr;
+		}
+		@Override
+		public String toString() {
+			return apiExpr.toString();
+		}
+	}
+	private ReturnStatementImpl impl = null;
+	
 	@Override
 	public ReturnStatement toAPI() {
-		return new ReturnStatement() {
-			private Expression apiExpr = expression.getExpression();
-			@Override
-			public Expression getExpression() {
-				return apiExpr;
-			}
-			@Override
-			public String toString() {
-				return apiExpr.toString();
-			}
-		};
+		if(impl == null)
+			impl = new ReturnStatementImpl();
+		
+		return impl;
 	}
 
 	@Override

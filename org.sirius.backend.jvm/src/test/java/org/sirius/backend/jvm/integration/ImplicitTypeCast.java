@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.Bytecode;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
@@ -85,6 +86,7 @@ public class ImplicitTypeCast {
 	}
 	
 	@Test
+	@Disabled("temp.")
 	public void returnIntSum() throws Exception {
 		String script = "#!\n Integer main() {return 42 + 43;}";
 		Object sirResult = compileRunAndReturn(script);
@@ -95,6 +97,7 @@ public class ImplicitTypeCast {
 	}
 	
 	@Test
+	@Disabled("temp.")
 	public void returnIntSubstraction() throws Exception {
 		String script = "#!\n Integer main() {return 42 - 43;}";
 		Object sirResult = compileRunAndReturn(script);
@@ -105,6 +108,7 @@ public class ImplicitTypeCast {
 	}
 	
 	@Test
+	@Disabled("temp.")
 	public void returnIntMult() throws Exception {
 		String script = "#!\n Integer main() {return 10 * 11;}";
 		Object sirResult = compileRunAndReturn(script);
@@ -115,6 +119,7 @@ public class ImplicitTypeCast {
 	}
 	
 	@Test
+	@Disabled("temp.")
 	public void returnIntDiv() throws Exception {
 		String script = "#!\n Integer main() {return 100 / 3;}";
 		Object sirResult = compileRunAndReturn(script);
@@ -125,6 +130,7 @@ public class ImplicitTypeCast {
 	}
 	
 	@Test
+	@Disabled("temp.")
 	public void returnConstantString() throws Exception {
 
 		String script = "#!\n "

@@ -5,6 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import java.util.Optional;
 
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +20,7 @@ import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionActualArgument;
 import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.LocalVariableReference;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.MemberValueAccessExpression;
@@ -205,7 +212,7 @@ public class MethodTests {
 		assertEquals(func.getPartials().size(), 4);
 		Partial partial0 = func.getPartials().get(0);
 ////		assertEquals(partial0.getCaptures().size(), 0);
-		assertEquals(partial0.getArgs().size(), 0);
+		assertThat(partial0.getArgs(), hasSize(3));
 
 		Partial partial1 = func.getPartials().get(1);
 		Partial partial2 = func.getPartials().get(2);
@@ -213,7 +220,7 @@ public class MethodTests {
 		Partial partial3 = func.getPartials().get(3);
 ////		assertEquals(partial3.getCaptures().size(), 3);
 ////		assertEquals(partial3.getCaptures().get(2).getName().getText(), "z");
-		assertEquals(partial3.getArgs().size(), 3);
+		assertThat(partial3.getArgs(), hasSize(0));
 		
 //		assert(func.getDelegate().isPresent());
 		
@@ -222,6 +229,7 @@ public class MethodTests {
 	
 	@Test
 	@DisplayName("Definition of a simple global function with parameters")
+//	@Disabled("")
 	public void defineFunctionWithParamsTest() {
 		ScriptSession session = Compiler.compileScript("#!\n"
 				+ "Integer add(Integer x, Integer y) {return x;}"
@@ -236,7 +244,7 @@ public class MethodTests {
 		//func.getSymbolTable().dump();
 		
 //		assertEquals(func.getFormalArguments().size(), 2);
-		Partial allArgsPartial = func.getPartials().get(2);
+		Partial allArgsPartial = func.getPartials().get(0);
 		assertSame(allArgsPartial, func.getAllArgsPartial());
 		assertEquals(allArgsPartial.getArgs().size(), 2);
 		
@@ -265,7 +273,7 @@ public class MethodTests {
 		PackageDeclaration apiPack = md.getPackages().get(0);
 		assertEquals(apiPack.getQName().dotSeparated(), "");
 		
-		AbstractFunction apiAddFunc = apiPack.getFunctions().get(2);
+		AbstractFunction apiAddFunc = apiPack.getFunctions().get(0);
 		assertEquals(apiAddFunc.getQName().dotSeparated(), "add");
 		assertEquals(apiAddFunc.getArguments().size(), 2);
 
@@ -277,8 +285,9 @@ public class MethodTests {
 		assertEquals(apiAddFunc.getBodyStatements().get().size(), 1);
 		ReturnStatement retStmt = (ReturnStatement)apiAddFunc.getBodyStatements().get().get(0);
 		Expression retExpr = retStmt.getExpression();
-		assert(retExpr instanceof FunctionActualArgument);
-		FunctionActualArgument refToXExpress = (FunctionActualArgument)retExpr;
+		assertThat(retExpr, instanceOf(LocalVariableReference.class /* FunctionActualArgument.class*/));
+//		FunctionActualArgument refToXExpress = (FunctionActualArgument)retExpr;
+		LocalVariableReference refToXExpress = (LocalVariableReference)retExpr;
 		
 		assertEquals(refToXExpress.getName().getText(), "x");
 		Type xArgType = refToXExpress.getType();
@@ -325,7 +334,7 @@ public class MethodTests {
 
 		Partial partial0 = func.getPartials().get(0);
 		FunctionImpl partial0Api = partial0.toAPI();
-		assertEquals(partial0Api.getArguments().size(), 0);
+		assertThat(partial0Api.getArguments(), hasSize(2));
 		
 		Partial partial1 = func.getPartials().get(1);
 		FunctionImpl partial1Api = partial1.toAPI();
@@ -333,7 +342,7 @@ public class MethodTests {
 		
 		Partial partial2 = func.getPartials().get(2);
 		FunctionImpl partial2Api = partial2.toAPI();
-		assertEquals(partial2Api.getArguments().size(), 2);
+		assertEquals(partial2Api.getArguments().size(), 0);
 		
 		
 	}
