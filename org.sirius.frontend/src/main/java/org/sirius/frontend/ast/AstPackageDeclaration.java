@@ -25,7 +25,7 @@ import org.sirius.frontend.symbols.SymbolTable;
 public class AstPackageDeclaration implements Scoped, Visitable {
 
 	private QName qname = new QName();
-	private String qnameString = null;
+//	private String qnameString = null;
 	
 	private Reporter reporter;
 
@@ -53,12 +53,8 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 	}
 
 	public String getQnameString() {
-		if(qnameString == null) {
-			qnameString = qname.dotSeparated();
-		}
-		return qnameString;
+		return qname.dotSeparated();
 	}
-
 
 	public QName getQname() {
 		return qname;

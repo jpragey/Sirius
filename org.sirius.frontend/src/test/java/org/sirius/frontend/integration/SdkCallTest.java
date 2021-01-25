@@ -20,8 +20,8 @@ import org.sirius.frontend.symbols.Symbol;
 
 public class SdkCallTest {
 
-	@Test	 // TODO println() Doesn't take Stringifiable for now
-	@Disabled
+	@Test
+	@Disabled("println() Doesn't take Stringifiable for now")
 	public void sdkCalled() {
 //		ScriptSession session = Compiler.compileScript("#!\n void run() {println(\"Hello\");}");
 		ScriptSession session = Compiler.compileScript("#!\n void run() {println(42);}");

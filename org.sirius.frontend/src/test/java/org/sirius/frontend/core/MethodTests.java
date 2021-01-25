@@ -212,7 +212,7 @@ public class MethodTests {
 		assertEquals(func.getPartials().size(), 4);
 		Partial partial0 = func.getPartials().get(0);
 ////		assertEquals(partial0.getCaptures().size(), 0);
-		assertThat(partial0.getArgs(), hasSize(3));
+		assertThat(partial0.getArgs(), hasSize(0));
 
 		Partial partial1 = func.getPartials().get(1);
 		Partial partial2 = func.getPartials().get(2);
@@ -220,7 +220,7 @@ public class MethodTests {
 		Partial partial3 = func.getPartials().get(3);
 ////		assertEquals(partial3.getCaptures().size(), 3);
 ////		assertEquals(partial3.getCaptures().get(2).getName().getText(), "z");
-		assertThat(partial3.getArgs(), hasSize(0));
+		assertThat(partial3.getArgs(), hasSize(3));
 		
 //		assert(func.getDelegate().isPresent());
 		
@@ -244,7 +244,7 @@ public class MethodTests {
 		//func.getSymbolTable().dump();
 		
 //		assertEquals(func.getFormalArguments().size(), 2);
-		Partial allArgsPartial = func.getPartials().get(0);
+		Partial allArgsPartial = func.getPartials().get(2);
 		assertSame(allArgsPartial, func.getAllArgsPartial());
 		assertEquals(allArgsPartial.getArgs().size(), 2);
 		
@@ -273,7 +273,7 @@ public class MethodTests {
 		PackageDeclaration apiPack = md.getPackages().get(0);
 		assertEquals(apiPack.getQName().dotSeparated(), "");
 		
-		AbstractFunction apiAddFunc = apiPack.getFunctions().get(0);
+		AbstractFunction apiAddFunc = apiPack.getFunctions().get(2);
 		assertEquals(apiAddFunc.getQName().dotSeparated(), "add");
 		assertEquals(apiAddFunc.getArguments().size(), 2);
 
@@ -285,9 +285,10 @@ public class MethodTests {
 		assertEquals(apiAddFunc.getBodyStatements().get().size(), 1);
 		ReturnStatement retStmt = (ReturnStatement)apiAddFunc.getBodyStatements().get().get(0);
 		Expression retExpr = retStmt.getExpression();
-		assertThat(retExpr, instanceOf(LocalVariableReference.class /* FunctionActualArgument.class*/));
-//		FunctionActualArgument refToXExpress = (FunctionActualArgument)retExpr;
-		LocalVariableReference refToXExpress = (LocalVariableReference)retExpr;
+//		assertThat(retExpr, instanceOf(LocalVariableReference.class /* FunctionActualArgument.class*/));
+		assertThat(retExpr, instanceOf(FunctionActualArgument.class));
+		FunctionActualArgument refToXExpress = (FunctionActualArgument)retExpr;
+//		LocalVariableReference refToXExpress = (LocalVariableReference)retExpr;
 		
 		assertEquals(refToXExpress.getName().getText(), "x");
 		Type xArgType = refToXExpress.getType();
@@ -334,7 +335,7 @@ public class MethodTests {
 
 		Partial partial0 = func.getPartials().get(0);
 		FunctionImpl partial0Api = partial0.toAPI();
-		assertThat(partial0Api.getArguments(), hasSize(2));
+		assertThat(partial0Api.getArguments(), hasSize(0));
 		
 		Partial partial1 = func.getPartials().get(1);
 		FunctionImpl partial1Api = partial1.toAPI();
@@ -342,7 +343,7 @@ public class MethodTests {
 		
 		Partial partial2 = func.getPartials().get(2);
 		FunctionImpl partial2Api = partial2.toAPI();
-		assertEquals(partial2Api.getArguments().size(), 0);
+		assertEquals(partial2Api.getArguments().size(), 2);
 		
 		
 	}

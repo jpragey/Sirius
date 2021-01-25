@@ -68,7 +68,7 @@ public class TopLevelFunctionTest {
 	public void checkFunctionArgumentsInAPIFunction() {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {}  void f(Integer i, Integer j){}");
 
-		AbstractFunction tlf = session.getModuleDeclarations().get(0).getPackages().get(0).getFunctions().get(0);
+		AbstractFunction tlf = session.getModuleDeclarations().get(0).getPackages().get(0).getFunctions().get(2);
 		
 		assertEquals(tlf.getArguments().size(), 2);
 		assertEquals(tlf.getArguments().get(0).getQName().dotSeparated(), "a.b.f.i");
@@ -125,7 +125,7 @@ public class TopLevelFunctionTest {
 
 		ModuleDeclaration md = moduleDeclarations.get(0);
 		PackageDeclaration pd = md.getPackages().get(0);
-		AbstractFunction fd = pd.getFunctions().get(0);
+		AbstractFunction fd = pd.getFunctions().get(1);
 		
 		assertThat(fd.getArguments().size(), is(1));
 		FunctionFormalArgument fctArg0 = fd.getArguments().get(0);
@@ -133,7 +133,7 @@ public class TopLevelFunctionTest {
 //		System.out.println("Arg: type=" + fctArg0.getType().getClass() + " : " + fctArg0.getType() + ", name=" + fctArg0.getQName().getLast());
 		
 		// -- API
-		List<FunctionFormalArgument> apiArgs = moduleDeclarations.get(0).getPackages().get(0).getFunctions().get(0).getArguments();
+		List<FunctionFormalArgument> apiArgs = moduleDeclarations.get(0).getPackages().get(0).getFunctions().get(1).getArguments();
 		assertEquals(apiArgs.size(), 1);
 		FunctionFormalArgument apiArg0 = apiArgs.get(0);
 		
@@ -155,7 +155,7 @@ public class TopLevelFunctionTest {
 		assertEquals(moduleDeclarations.size(), 1);
 		ModuleDeclaration md = moduleDeclarations.get(0);
 		PackageDeclaration pd = md.getPackages().get(0);
-		AbstractFunction fd = pd.getFunctions().get(0);
+		AbstractFunction fd = pd.getFunctions().get(1);
 		
 		assertEquals(fd.getArguments().size(), 1);
 		FunctionFormalArgument fctArg0 = fd.getArguments().get(0);
@@ -166,10 +166,10 @@ public class TopLevelFunctionTest {
 		// -- API
 		List<AbstractFunction> apiFunc = moduleDeclarations.get(0).getPackages().get(0).getFunctions();
 
-		assertEquals(apiFunc.get(0).getArguments().size(), 1);
-		assertEquals(apiFunc.get(1).getArguments().size(), 0);
+		assertEquals(apiFunc.get(0).getArguments().size(), 0);
+		assertEquals(apiFunc.get(1).getArguments().size(), 1);
 		
-		List<FunctionFormalArgument> apiArgs = apiFunc.get(0).getArguments();
+		List<FunctionFormalArgument> apiArgs = apiFunc.get(1).getArguments();
 		assertEquals(apiArgs.size(), 1);
 		FunctionFormalArgument apiArg0 = apiArgs.get(0);
 		
@@ -237,7 +237,7 @@ public class TopLevelFunctionTest {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		PackageDeclaration pd = md.getPackages().get(0);
 		assertEquals(pd.getFunctions().size(), 2);
-		AbstractFunction fd = pd.getFunctions().get(0);
+		AbstractFunction fd = pd.getFunctions().get(1);
 		
 		List<FunctionFormalArgument> args = fd.getArguments();
 		assertEquals(args.size(), 1);

@@ -89,6 +89,11 @@ public class AstModuleDeclaration implements Visitable {
 	public QName getqName() {
 		return qName;
 	}
+	
+	public String getQnameString() {
+		return qName.dotSeparated();
+	}
+
 
 	public List<ModuleImport> getModuleImports() {
 		return moduleImports;

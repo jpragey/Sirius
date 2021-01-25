@@ -90,8 +90,12 @@ public class FunctionDeclarationParser {
 			// -- Function parameters
 			FunctionParameterVisitor paramVisitor = new FunctionParameterVisitor(reporter);
 			List<AstFunctionParameter> functionParams = ctx.functionFormalArgument().stream()
-				.map(funcParam -> paramVisitor.visitFunctionFormalArgument(funcParam))
-				.collect(Collectors.toList());
+					.map(funcParam -> paramVisitor.visitFunctionFormalArgument(funcParam))
+					.collect(Collectors.toList());
+			int currentArgIndex = 0; // index in argument list
+			for(var fp: functionParams) {
+				fp.setIndex(currentArgIndex++);
+			}
 			
 			// -- Return type
 			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);

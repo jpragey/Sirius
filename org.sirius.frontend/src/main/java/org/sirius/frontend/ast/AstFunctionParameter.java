@@ -17,18 +17,37 @@ public class AstFunctionParameter {
 	private AstType type;
 	private AstToken name;
 	private DefaultSymbolTable symbolTable;
-	
+	/** index in arg list (set *after* construction */
+	private int index;
+
 	public AstFunctionParameter(AstType type, AstToken name) {
 		super();
 		this.type = type;
 		this.name = name;
+		this.index = -1;
 	}
 	
+	
+	public int getIndex() {
+		return index;
+	}
+
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
+
 	public void visit(AstVisitor visitor) {
 		visitor.startFunctionFormalArgument(this);
 		type.visit(visitor);
 		visitor.endFunctionFormalArgument(this);
 	}
+	
+//	/** index in argument list */
+//	public int getIndex() {
+//		return index;
+//	}
 	
 	public AstType getType() {
 		return type;

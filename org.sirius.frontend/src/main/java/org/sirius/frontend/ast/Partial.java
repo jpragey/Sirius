@@ -84,10 +84,10 @@ public class Partial implements Visitable{
 		}
 	}
 	
-	private List<AstFunctionParameter> closure;
+	private List<AstFunctionParameter> closure0;
 	
 	public Partial(AstToken name,
-			List<AstFunctionParameter> closure, 
+//			List<AstFunctionParameter> closure, 
 			List<AstFunctionParameter> args, 
 			boolean member,
 			QName qName,
@@ -96,7 +96,7 @@ public class Partial implements Visitable{
 	{
 		super();
 		this.name = name;
-		this.closure = ImmutableList.copyOf(closure);
+//		this.closure = ImmutableList.copyOf(closure);
 		this.args = ImmutableList.copyOf(args);
 	
 		this.member = member;
@@ -110,6 +110,7 @@ public class Partial implements Visitable{
 		this.symbolTable = symbolTable;
 		for(AstFunctionParameter arg: args) {
 			this.symbolTable.addFunctionArgument(arg);
+//			this.scope.addFunctionArgument(arg);
 		}
 	}
 
@@ -129,6 +130,11 @@ public class Partial implements Visitable{
 
 	public ImmutableList<AstFunctionParameter> getArgs() {
 		return args;
+	}
+	public AstFunctionParameter getArg(int argIndex) {
+		if(argIndex<0 || argIndex > args.size())
+			throw new IllegalArgumentException("Trying to get arg " + argIndex + " of function of " + args.size() + " args; function " + toString());
+		return args.get(argIndex);
 	}
 
 	public DefaultSymbolTable getSymbolTable() {
@@ -194,15 +200,18 @@ public class Partial implements Visitable{
 	
 	public void assignScope(Scope scope) {
 		this.scope = scope;
-		
+
+		for(AstFunctionParameter arg: args)
+			this.scope.addFunctionArgument(arg);
+
 		// -- add closure to scope
-		for(AstFunctionParameter d : this.closure) {
-			// -- Convert function parameter to local variable
-			// TODO: ???
-			AstLocalVariableStatement stmt = new AstLocalVariableStatement(new AnnotationList(), d.getType(), d.getName(), Optional.empty() /*d.initialValue*/);
-			
-			scope.addLocalVariable(stmt);
-		}
+//		for(AstFunctionParameter d : this.closure) {
+//			// -- Convert function parameter to local variable
+//			// TODO: ???
+//			AstLocalVariableStatement stmt = new AstLocalVariableStatement(new AnnotationList(), d.getType(), d.getName(), Optional.empty() /*d.initialValue*/);
+//			
+//			scope.addLocalVariable(stmt);
+//		}
 		
 		
 		if(body.isPresent()) {

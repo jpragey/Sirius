@@ -9,7 +9,9 @@ import java.util.stream.Collectors;
 public class QName {
 
 	private List<String> elements;
-	
+
+	private String cachedDotSeparatedString = null;
+
 	public QName(List<String> elements) {
 		super();
 		this.elements = new ArrayList<String>(elements);
@@ -93,9 +95,13 @@ public class QName {
 		return elements.isEmpty();
 	}
 	
+	
 	public String dotSeparated() {
-		return getStringElements().stream()
+		if(cachedDotSeparatedString == null)
+			cachedDotSeparatedString = getStringElements().stream()
 				.collect(Collectors.joining("."));
+		
+		return cachedDotSeparatedString;
 	}
 	public String slashSeparated() {
 		return getStringElements().stream()

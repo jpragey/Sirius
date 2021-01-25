@@ -156,9 +156,11 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 	class FunctionActualArgumentImpl implements FunctionActualArgument {
 		private Type type;
 		private Token name;
+		private int paramIndex;
 		public FunctionActualArgumentImpl(AstFunctionParameter param) {
 			this.type = param.getType().getApiType();
 			this.name = param.getName().asToken();
+			this.paramIndex = param.getIndex();
 		}
 		
 		@Override
@@ -173,6 +175,11 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 		@Override
 		public String toString() {
 			return "arg: " + type.toString() + " " + name.getText();
+		}
+
+		@Override
+		public int getIndex() {
+			return paramIndex;
 		}
 	}
 

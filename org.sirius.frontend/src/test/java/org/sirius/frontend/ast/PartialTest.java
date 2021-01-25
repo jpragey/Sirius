@@ -19,7 +19,7 @@ public class PartialTest {
 		Partial partial = new Partial (
 				AstToken.internal("partial") ,
 ////				List<Capture> captures,
-				List.of(),
+//				List.of(),
 				Arrays.asList(par0, par1), 
 //				AstFunctionDeclarationBuilder function,
 				

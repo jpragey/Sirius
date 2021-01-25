@@ -9,7 +9,11 @@ public interface ModuleDeclaration {
 
 	List<PackageDeclaration> getPackages();
 	
-	QName getQName(); 
+	QName getQName();
+	
+	default String getQNameString() {
+		return getQName().dotSeparated();
+	}
 	
 	PhysicalPath getPhysicalPath();
 	

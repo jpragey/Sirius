@@ -12,8 +12,9 @@ public class PartialList implements Visitable {
 
 	/** Partial, sorted by 
 	 * For example, for f(x, y, z):
-	 *  partials[0] = f()
-	 *  partials[1] = f(x)
+	 * 								closure
+	 *  partials[0] = f()			x y z
+	 *  partials[1] = f(x)			
 	 *  partials[2] = f(x, y)
 	 *  partials[3] = f(x, y, z)
 	 *  */
@@ -49,12 +50,12 @@ public class PartialList implements Visitable {
 		int argSize = args.size();
 		for(int from = 0; from <= argSize; from++) 
 		{
-			List<AstFunctionParameter> closure = args.subList(0, from);
-			List<AstFunctionParameter> partialArgs = args.subList(from, argSize);
+//			List<AstFunctionParameter> closure = args.subList(0, from);
+			List<AstFunctionParameter> partialArgs = args.subList(0, from/*, argSize*/);
 			
 			Partial partial = new Partial(
 					name,
-					closure,
+//					closure,
 					partialArgs, 
 					member,
 					qName,
@@ -64,7 +65,7 @@ public class PartialList implements Visitable {
 			partials.add(partial);
 //			this.allArgsPartial = partial; // => last in partial list
 		}
-		this.allArgsPartial = partials.get(0); // => last in partial list
+		this.allArgsPartial = partials.get(argSize); // => last in partial list
 	}
 	
 

@@ -90,7 +90,8 @@ public class JvmMemberFunction {
 	public void writeReturnStatementBytecode(ClassWriter classWriter/*, MemberFunction declaration*/, MethodVisitor mv, ReturnStatement statement, JvmScope scope) {
 
 		// -- write return expression
-		new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, statement.getExpression(), scope);
+		JvmExpression expr = new JvmExpression(reporter, descriptorFactory);
+		expr.writeExpressionBytecode(mv, statement.getExpression(), scope);
 
 		// -- write return
 		org.sirius.frontend.api.Type type = statement.getExpressionType();

@@ -161,6 +161,7 @@ public class SdkTools {
 		
 		// -- function arguments
 		List<AstFunctionParameter> args = new ArrayList<>(method.getParameters().length);
+		int paramIndex = 0;
 		for(Parameter parameter: method.getParameters()) {
 			org.sirius.sdk.tooling.Parameter anno = parameter.getAnnotation(org.sirius.sdk.tooling.Parameter.class);
 			if(anno == null)
@@ -172,6 +173,7 @@ public class SdkTools {
 			type.setSymbolTable(symbolTable);
 			
 			AstFunctionParameter arg = new AstFunctionParameter(type, AstToken.internal(name));
+			arg.setIndex(paramIndex++);
 			arg.setSymbolTable(symbolTable);
 			args.add(arg);
 		}
