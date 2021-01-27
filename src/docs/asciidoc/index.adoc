@@ -1,31 +1,20 @@
+
 Asciidoc file
 =============
 
-Some comment
 
-:imagesdir: images666
-
-
-
-Some java code:
-
-[source,java]
+Some code...
+[source, java]
 ----
-/* Some code */
-class MyClass {
-    public MyClass(int i) {
-        for(int j=0; j<10; j++) {
-            System.out.println("Number: " + j);
-        }
-    }
-}
+for(int i=0; i<10; i++)
+	s.o.println("Hello");
 ----
 
-Some diagram:
 
-[ditaa, "myDefaultDiagram"]
+Some diagram...
+
+[ditaa, "myDiagram"]
 ----
-
               +-------------+
               | asciidoctor |-----------+
               |  diagram    |           |
@@ -36,7 +25,6 @@ Some diagram:
  +--------+   +-----+-------+    /---------------\
  |  adoc  |-->+ asciidoctor +    | HTML + image  |
  +--------+   +-------------+    \---------------/
-
 ----
 
 End of ascii doc...

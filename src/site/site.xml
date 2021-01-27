@@ -4,7 +4,7 @@
     <menu ref="modules" />
     
     <menu name="Overview">
-      <item name="Index a (asciidoc)" href="mydocs/indexa.html" />
+      <item name="Index a (asciidoc)" href="mydocs/index.html" />
       
        
       
