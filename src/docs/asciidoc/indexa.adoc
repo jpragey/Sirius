@@ -1,0 +1,47 @@
+Asciidoc file
+=============
+
+Some comment
+
+:imagesdir: images666
+
+
+
+Some java code:
+
+[source,java]
+----
+/* Some code */
+class MyClass {
+    public MyClass(int i) {
+        for(int j=0; j<10; j++) {
+            System.out.println("Number: " + j);
+        }
+    }
+}
+----
+
+Some diagram:
+
+[ditaa, "myDefaultDiagram"]
+----
+
+              +-------------+
+              | asciidoctor |-----------+
+              |  diagram    |           |
+              +-------------+           | image
+                    ^                   |
+                    | diagram source    |
+                    |                   v
+ +--------+   +-----+-------+    /---------------\
+ |  adoc  |-->+ asciidoctor +    | HTML + image  |
+ +--------+   +-------------+    \---------------/
+
+----
+
+End of ascii doc...
+
+
+
+
+

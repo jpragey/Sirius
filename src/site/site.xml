@@ -1,0 +1,19 @@
+<project>
+
+  <body>
+    <menu ref="modules" />
+    
+    <menu name="Overview">
+      <item name="Index a (asciidoc)" href="mydocs/indexa.html" />
+      
+       
+      
+      
+      <item name="FAQ" href="faq.html" />
+    </menu>
+    
+    <menu ref="reports"/>
+    <footer><![CDATA[All rights reserved. (c) 2021 J.P.Ragey]]></footer>
+  </body>
+
+</project>
