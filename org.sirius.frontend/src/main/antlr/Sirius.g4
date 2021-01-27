@@ -24,6 +24,22 @@ grammar Sirius;
 
 // -------------------- COMPILATION UNITS
 
+/** New  */
+newCompilationUnit :
+//	( importDeclaration )*
+	packageContent ?	// unnamed module / unnamed package content
+	(
+		moduleDeclaration
+		packageContent ?	// named module / unnamed package content
+	)*
+		;
+
+packageContent : 
+    	  functionDeclaration 	
+    	| classDeclaration 		
+    	| interfaceDeclaration	
+	;
+	
 /** Usual compilation unit */
 standardCompilationUnit 
 locals[

@@ -20,7 +20,7 @@ public class FrontEndTest {
 
 	// TODO: restore
 	@Test
-	@Disabled
+//	@Disabled
 	@DisplayName("Standard compilation unit not implemented in new visitor-based parser")
 	public void singleEmptyModuleMustHaveOneModuleContent() {
 		Reporter reporter = new AccumulatingReporter(new ShellReporter());
@@ -64,12 +64,12 @@ public class FrontEndTest {
 				new TextInputTextProvider("a/b", "module.sirius", "module a.b \"1\" {}"),
 				new TextInputTextProvider("a/b", "package.sirius", "package a.b;")
 		));
-		List<ModuleDeclaration> moduleContents = session.getModuleDeclarations();
-		assertEquals(moduleContents.size(), 1);
+		List<ModuleDeclaration> moduleDeclarations = session.getModuleDeclarations();
+		assertEquals(moduleDeclarations.size(), 1);
 		
 //		assertEquals(moduleContents.get(0).getModulePath().getElements(), Arrays.asList("a", "b"));
-		ModuleDeclaration mc = moduleContents.get(0);
-		assertEquals(mc.getPackages().size(), 1);
+		ModuleDeclaration mc = moduleDeclarations.get(0);
+		assertEquals(1, mc.getPackages().size());
 		PackageDeclaration pc = mc.getPackages().get(0);
 		
 		assertEquals(pc.getQName().getStringElements(), Arrays.asList("a", "b"));

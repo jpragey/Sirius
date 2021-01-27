@@ -37,6 +37,7 @@ public class TextInputTextProvider implements InputTextProvider {
 
 	@Override
 	public String toString() {
-		return packagePhysicalName + "(" + inputLocation + ") \"" + content.substring(0, 60) + "...\"";
+		return packagePhysicalName + "(" + inputLocation + ") \"" + "...\"";
+//		return packagePhysicalName + "(" + inputLocation + ") \"" + content.substring(0, 60) + "...\"";
 	}
 }

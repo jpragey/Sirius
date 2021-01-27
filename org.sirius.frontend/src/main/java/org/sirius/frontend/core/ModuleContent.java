@@ -11,7 +11,7 @@ import org.sirius.frontend.ast.AstPackageDeclaration;
 public class ModuleContent {
 
 	private Reporter reporter;
-	private List<AstPackageDeclaration> packageContents = new ArrayList<>();
+	private List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
 	private AstModuleDeclaration moduleDeclaration;
 	
 	// cache, from module declaration
@@ -25,11 +25,17 @@ public class ModuleContent {
 		
 		this.modulePath = new PhysicalPath(moduleDeclaration.getqName().getStringElements());
 		
-		this.packageContents.addAll(moduleDeclaration.getPackageDeclarations());
+		this.packageDeclarations.addAll(moduleDeclaration.getPackageDeclarations());
 	}
 	
 	public List<AstPackageDeclaration> getPackageContents() {
-		return packageContents;
+		return packageDeclarations;
+	}
+	public void addPackageDeclaration(AstPackageDeclaration pd) {
+		packageDeclarations.add(pd);
+	}
+	public void addPackageDeclarations(List<AstPackageDeclaration> pd) {
+		packageDeclarations.addAll(pd);
 	}
 
 	public AstModuleDeclaration getModuleDeclaration() {

@@ -30,7 +30,9 @@ public class AstModuleDeclaration implements Visitable {
 	private List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
 	
 	private String versionString;
-	
+
+	private ModuleDeclaration cachedModuleDeclaration = null;
+
 	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, AstToken version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports,
 			List<AstPackageDeclaration> packageDeclarations) {
 		super();
@@ -104,7 +106,8 @@ public class AstModuleDeclaration implements Visitable {
 		visitor.startModuleDeclaration(this);
 		for(AstPackageDeclaration pd : packageDeclarations)
 			pd.visit(visitor);
-		visitor.endModuleDeclaration(this);		
+		visitor.endModuleDeclaration(this);
+		cachedModuleDeclaration = null;
 	}
 	
 	@Override
@@ -113,7 +116,6 @@ public class AstModuleDeclaration implements Visitable {
 	}
 	
 	
-	private ModuleDeclaration moduleDeclaration = null;
  
 	private class ModuleDeclarationImpl implements ModuleDeclaration {
 		private QName moduleQName = qName/*.toQName()*/;
@@ -150,9 +152,9 @@ public class AstModuleDeclaration implements Visitable {
 	
 	public ModuleDeclaration getModuleDeclaration() {
 		
-		if(moduleDeclaration == null) {
-			moduleDeclaration = new ModuleDeclarationImpl(qName);		}
-		return moduleDeclaration;
+		if(cachedModuleDeclaration == null) {
+			cachedModuleDeclaration = new ModuleDeclarationImpl(qName);		}
+		return cachedModuleDeclaration;
 	}
 	
 }

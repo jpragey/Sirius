@@ -1,10 +1,21 @@
+<!-- 
+
+  Site creation:
+  ==============
+  	mvn install site site:stage
+  	
+  	Result in <Sirius>/target/staging/
+  	
+  
+ -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.sirius</groupId>
   <artifactId>parent</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-
+  <url>https://github.com/jpragey/Sirius</url>
+  
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
@@ -172,10 +183,32 @@
 	</dependency>
   </dependencies>
   
+  <distributionManagement>
+  	<site>
+  		<id>staging</id>
+  		<name>Dev. snapshot (temporary - TODO)</name>
+  		<url>file:///tmp/sirius-todo</url>
+  	</site>
+  </distributionManagement>
+  
   <build>
+  	<pluginManagement>
+  		<plugins>
+  			<plugin>
+	          <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-site-plugin</artifactId>
+              <version>3.9.1</version>
+  			</plugin>
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-project-info-reports-plugin</artifactId>
+			  <version>3.1.1</version>
+        	</plugin>
+        </plugins>
+  	</pluginManagement>
   	<plugins>
   	<plugin>
-			<artifactId>maven-compiler-plugin</artifactId>
+		<artifactId>maven-compiler-plugin</artifactId>
 			<version>3.8.1</version>
 			<configuration>
 				<source>${maven.compiler.source}</source>
