@@ -45,21 +45,21 @@ public class Compiler {
 		}
 	}
 	
-	public static List<ModuleDeclaration> compileStandard(InputTextProvider... providers) {
-		
-		AccumulatingReporter reporter = new AccumulatingReporter(new ShellReporter());
-		
-		FrontEnd frontEnd = new FrontEnd(reporter);
-		StandardSession session = frontEnd.createStandardSession(Arrays.asList(providers));
-		
-		assertReporter(reporter);
-		
-		List<ModuleDeclaration> cus = session.getModuleDeclarations();
-		
-		assertTrue(reporter.ok());
-		
-		return cus;
-		
-	}
+//	public static List<ModuleDeclaration> compileStandard(InputTextProvider... providers) {
+//		
+//		AccumulatingReporter reporter = new AccumulatingReporter(new ShellReporter());
+//		
+//		FrontEnd frontEnd = new FrontEnd(reporter);
+//		StandardSession session = frontEnd.createStandardSession(Arrays.asList(providers));
+//		
+//		assertReporter(reporter);
+//		
+//		List<ModuleDeclaration> cus = session.getModuleDeclarations();
+//		
+//		assertTrue(reporter.ok());
+//		
+//		return cus;
+//		
+//	}
 
 }

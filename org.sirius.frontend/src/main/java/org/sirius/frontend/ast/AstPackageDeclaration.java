@@ -25,7 +25,6 @@ import org.sirius.frontend.symbols.SymbolTable;
 public class AstPackageDeclaration implements Scoped, Visitable {
 
 	private QName qname = new QName();
-//	private String qnameString = null;
 	
 	private Reporter reporter;
 

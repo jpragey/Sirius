@@ -2,6 +2,8 @@
 Asciidoc file
 =============
 
+Refer to link:draft_standardSession.html[] for standard file organisation
+
 
 Some code...
 [source, java]
@@ -27,7 +29,7 @@ Some diagram...
  +--------+   +-------------+    \---------------/
 ----
 
-End of ascii doc...
+End of ascii doc.
 
 
 

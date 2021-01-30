@@ -2,6 +2,7 @@ package org.sirius.frontend.core;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,16 +10,23 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Session;
+import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstInterfaceDeclaration;
+import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
+import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.core.parser.ModuleDescriptorCompilatioUnitParser;
 import org.sirius.frontend.core.parser.PackageDescriptorCompilatioUnitParser;
 import org.sirius.frontend.core.parser.StandardCompilatioUnitParser;
+import org.sirius.frontend.core.stdlayout.ModuleFiles;
+import org.sirius.frontend.core.stdlayout.PackageFiles;
 import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
@@ -31,11 +39,10 @@ public class StandardSession implements Session {
 	
 	private List<ModuleContent> moduleContents = new ArrayList<>();
 
-	
-	public StandardSession(Reporter reporter, List<InputTextProvider> inputs) {
+	public StandardSession(Reporter reporter, List<ModuleFiles> inputs) {
 		super();
 		this.reporter = reporter;
-		this.addInput(inputs);
+		this.addInputModules(inputs);
 	}
 
 
@@ -94,7 +101,7 @@ public class StandardSession implements Session {
 		}
 	}
 	
-	private List<AstModuleDeclaration> parseModuleDescriptors(List<InputTextProvider> inputs) {
+	private List<AstModuleDeclaration> parseModuleDescriptors_old(List<InputTextProvider> inputs) { // TODO delete
 		List<AstModuleDeclaration> moduleDeclarations = new ArrayList<>();
 		for(InputTextProvider input: inputs) {
 			if(input.isModuleDescriptor()) {
@@ -107,9 +114,6 @@ public class StandardSession implements Session {
 
 	private AstPackageDeclaration parsePackageDescriptor(InputTextProvider input) {
 		SiriusParser parser = createParser(input);
-//		AstPackageDeclaration pd = parser.packageDescriptorCompilationUnit().packageDeclaration.declaration;
-		
-//		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.packageDescriptorCompilationUnit();
 				
 		PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor visitor = new PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor(reporter);
@@ -118,63 +122,45 @@ public class StandardSession implements Session {
 		return packageCU.getPackageDeclaration();
 	}
 
-	/** Parse package declarations for a module.
-	 * 
-	 * @param inputs
-	 * @param moduleContent
-	 * @return
-	 */
-	private void parsePackagesDescriptors(List<InputTextProvider> inputs, ModuleContent moduleContent) {
-		List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
+	private void addInputModules(List<ModuleFiles> inputs) {
+		
+		for(ModuleFiles mf: inputs) {
+			InputTextProvider input = mf.getModuleDescriptor();
+			assert(input.isModuleDescriptor());
+			AstModuleDeclaration md = parseModuleDescriptor(input);
+			ModuleContent mc = new ModuleContent(reporter, md);
+			this.moduleContents.add(mc);
 
+			// -- parse package declarator
 
-		for(InputTextProvider input: inputs) {
-			if(input.isPackageDescriptor()) {
-				PhysicalPath modulePPath = moduleContent.getModulePath();
-				PhysicalPath packagePPath = input.getPackagePhysicalPath();
+			for(PackageFiles packageFiles: mf.getPackages()) {
+				InputTextProvider pdInputTextProvider = packageFiles.getPackageDescriptor();
+				assert(pdInputTextProvider.isPackageDescriptor());
+
+				PhysicalPath modulePPath = md.getModulePPath().get();
+				PhysicalPath packagePPath = pdInputTextProvider.getPackagePhysicalPath();
 				if(packagePPath.startWith(modulePPath)) {
-					AstPackageDeclaration pd = parsePackageDescriptor(input);
-//					PackageContent pc = new PackageContent(pd);
-					packageDeclarations.add(pd);
+					AstPackageDeclaration pd = parsePackageDescriptor(pdInputTextProvider);
+					md.addPackageDeclaration(pd);
+					
+				}
+				
+				// Parse non-declarators source code
+				for(InputTextProvider sourceInput: packageFiles.getSourceFiles() ) {
+					parseStandardInput(sourceInput);
 				}
 			}
-		}
-		
-		// TODO: ???
-		moduleContent.addPackageDeclarations(packageDeclarations); 
-//		assert(false); 
-	}
-	
-	void parseCodeInput(InputTextProvider input, AstPackageDeclaration packageContent, ModuleContent  moduleContent) {
-		parseStandardInput(input);
-	}
-	
-//	@Override
-	private void addInput(List<InputTextProvider> inputs) {
-		
-		// -- Parse module descriptors
-		List<AstModuleDeclaration> modules = parseModuleDescriptors(inputs);
-		this.moduleContents.addAll(modules.stream()
-				.map(md -> new ModuleContent(reporter, md))
-				.collect(Collectors.toList()));
-		
-		// -- Add packages descriptors
-		for(ModuleContent mc: this.moduleContents) {
-			parsePackagesDescriptors(inputs, mc);
-		}
-
-		// -- Add code to packages
-		for(InputTextProvider input: inputs) {
-			if(input.isModuleDescriptor() || input.isPackageDescriptor())
-				continue;
 			
-			for(ModuleContent mc: this.moduleContents) {
-				for(AstPackageDeclaration pc: mc.getPackageContents()) {
-					if(input.getPackageLogicalPath().matchQName(pc.getQname())) {
-						parseCodeInput(input, pc, mc);
-						break;
-					}
-				}
+			// -- If module has no package declarator, add a default one
+			if(md.getPackageDeclarations().isEmpty()) {
+				QName qname = md.getqName();
+				AstPackageDeclaration pd = new AstPackageDeclaration(reporter, qname, 
+						Collections.emptyList(),	// List<PartialList> functionDeclarations, 
+						Collections.emptyList(),	//List<AstClassDeclaration> classDeclarations, 
+						Collections.emptyList(),	//List<AstInterfaceDeclaration> interfaceDeclarations, 
+						Collections.emptyList()		//List<AstMemberValueDeclaration> valueDeclarations
+						);
+				md.addPackageDeclaration(pd);
 			}
 		}
 	}

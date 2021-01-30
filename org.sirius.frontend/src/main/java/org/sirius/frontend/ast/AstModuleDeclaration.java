@@ -46,7 +46,7 @@ public class AstModuleDeclaration implements Visitable {
 		
 		this.equiv = equiv;
 		this.moduleImports = moduleImports;
-		this.packageDeclarations = packageDeclarations;
+		this.packageDeclarations.addAll(packageDeclarations);
 		
 		String vs = version.getText();
 		assert(vs.length() >=2);	// contains start/end double quotes
@@ -149,6 +149,11 @@ public class AstModuleDeclaration implements Visitable {
 			return "\"" + getQName().toString() + "\"";
 		}
 	}
+	
+	public void addPackageDeclaration(AstPackageDeclaration pd) {
+		this.packageDeclarations.add(pd);
+	}
+
 	
 	public ModuleDeclaration getModuleDeclaration() {
 		

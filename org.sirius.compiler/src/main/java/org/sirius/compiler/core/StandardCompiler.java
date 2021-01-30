@@ -9,37 +9,33 @@ import org.sirius.compiler.options.AbstractOptionValues;
 import org.sirius.frontend.api.Session;
 import org.sirius.frontend.core.FrontEnd;
 import org.sirius.frontend.core.InputTextProvider;
+import org.sirius.frontend.core.StandardSession;
+import org.sirius.frontend.core.stdlayout.ModuleFiles;
 
 public class StandardCompiler implements Compiler {
 	private Reporter reporter;
 	private List<Backend> backends;
 	private FrontEnd frontEnd;
-	private List<InputTextProvider> inputProviders;
+	private List<ModuleFiles> moduleFiles;
 	private AbstractOptionValues options;
 	
-	public StandardCompiler(Reporter reporter, List<Backend> backends, FrontEnd frontEnd, List<InputTextProvider> inputProviders, AbstractOptionValues options) {
+	public StandardCompiler(Reporter reporter, List<Backend> backends, FrontEnd frontEnd, 
+			List<ModuleFiles> moduleFiles,
+			AbstractOptionValues options) {
 		super();
 		this.reporter = reporter;
 		this.backends = backends;
 		this.frontEnd = frontEnd;
-		this.inputProviders = inputProviders;
+		this.moduleFiles = moduleFiles;
 		this.options = options;
 	}
 
-
 	@Override
 	public void compile() {
-		
-		for(InputTextProvider provider: inputProviders) 
-			compileSingleInput(provider);
-	}
-
-	public void compileSingleInput(InputTextProvider provider) {
-		Session session = frontEnd.createStandardSession(Arrays.asList(provider));
+		StandardSession session = new StandardSession(reporter, moduleFiles);
 
 		for(Backend backend: backends) {
 			backend.process(session);
 		}
 	}
-
 }

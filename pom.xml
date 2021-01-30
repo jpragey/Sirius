@@ -203,11 +203,7 @@
 		            <templateDirs>
 		                <dir>src/site/asciidoc/templates</dir>
 		            </templateDirs>
-<!-- 		            <attributes>
-		                <source-highlighter>coderay</source-highlighter>
-		                <coderay-css>style</coderay-css>
-		            </attributes>
- -->		        </asciidoc>
+		        </asciidoc>
 		      </configuration>
               <dependencies>
               
