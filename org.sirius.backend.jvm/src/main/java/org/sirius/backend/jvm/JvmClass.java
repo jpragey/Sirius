@@ -100,7 +100,6 @@ public class JvmClass {
 
 		String fileName = qName.getLast() + ".java";
 		classWriter.visitSource(fileName, null /*debug*/);
-		//			this.classWriter.visitSource("Hello.java", null /*debug*/);
 
 		startClass(classWriter);
 
@@ -118,7 +117,6 @@ public class JvmClass {
 		// -- Terminate class
 		classWriter.visitEnd();
 
-//			byte[] bytes = visitor.toByteCode();
 		byte[] bytes = classWriter.toByteArray();
 		Bytecode bytecode = new Bytecode(bytes, qName);
 		
@@ -128,7 +126,7 @@ public class JvmClass {
 		return bytecode;
 	}
 	
-	private void startClass(ClassWriter classWriter /*ClassDeclaration declaration*/) {
+	private void startClass(ClassWriter classWriter) {
 
 		/* Flags for class/interface:
 		 * @See https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.1
@@ -177,8 +175,6 @@ public class JvmClass {
 		for(JvmMemberValue mf: this.memberValues) {
 			mf.writeInitBytecode(classWriter, mv, scope, qName);
 		}
-
-		
 		
 		mv.visitInsn(RETURN);
 		mv.visitMaxs(1, 1);

@@ -74,7 +74,7 @@ public class DescriptorFactory {
 		}
 	}
 	
-	public String methodDescriptor(AbstractFunction function  ) {
+	String methodDescriptor(AbstractFunction function  ) {
 		Type returnType = function .getReturnType();
 		String descr = function.getArguments().stream()
 			.map((FunctionFormalArgument arg) -> fieldDescriptor(arg.getType()) )

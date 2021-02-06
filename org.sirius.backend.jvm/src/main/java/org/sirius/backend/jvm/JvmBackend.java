@@ -25,7 +25,7 @@ public class JvmBackend implements Backend {
 	}
 
 	public void addFileOutput(String moduleDir, Optional<String> classDir) {
-		listeners.add(new JarCreatorListener(reporter, moduleDir/*, declaration.getQName()*/, classDir));
+		listeners.add(new JarCreatorListener(reporter, moduleDir, classDir));
 	}
 	
 	public InMemoryClassWriterListener addInMemoryOutput() {

@@ -31,7 +31,7 @@ public class JarCreatorListener implements ClassWriterListener {
 	 * @param modulePath   module directory path, as given by '--module' option
 	 * @param moduleQName
 	 */
-	public JarCreatorListener(Reporter reporter, String modulePath/*, QName moduleQName*/, Optional<String> classDir) {
+	public JarCreatorListener(Reporter reporter, String modulePath, Optional<String> classDir) {
 		super();
 		this.reporter = reporter;
 		this.modulePath = modulePath;

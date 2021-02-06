@@ -6,19 +6,18 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Visitor;
 
-public class CodeTreeBuilder implements Visitor {
+class CodeTreeBuilder implements Visitor {
 	private Reporter reporter;
+	private JvmModule nodeModule;
 	
 	public CodeTreeBuilder(Reporter reporter) {
 		super();
 		this.reporter = reporter;
 	}
 
-	JvmModule nodeModule;
 
 	@Override
 	public void start(ModuleDeclaration declaration) {
-		
 		this.nodeModule = new JvmModule(reporter, declaration);
 	}
 

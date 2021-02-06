@@ -100,9 +100,6 @@ public class JvmScope {
 			
 //			System.out.println(" >> leaving scope " + this.jvmScope.dbgName + " index " + this.startIndex);
 		}
-
-		
-		
 	}
 	
 	

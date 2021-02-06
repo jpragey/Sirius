@@ -48,9 +48,9 @@ public class JvmMemberFunction {
 			this.currentScope = this.rootScope;
 		}
 		
-		public JvmScope getCurrent() {
-			return this.currentScope;
-		}
+//		public JvmScope getCurrent() {
+//			return this.currentScope;
+//		}
 
 		@Override
 		public String toString() {
@@ -69,7 +69,6 @@ public class JvmMemberFunction {
 		}
 
 		public void writeLocalVariables(ClassWriter classWriter, MethodVisitor mv) {
-//			rootScope.writeLocalVariableStatements(classWriter, mv, 0/*startIndex*/);
 			rootScope.indexedScope(descriptorFactory).writeLocalVariableStatements(classWriter, mv);
 		}
 	}
@@ -251,7 +250,7 @@ public class JvmMemberFunction {
 	 * 
 	 * @param classWriter
 	 */
-	public void writeBytecode(ClassWriter classWriter/*, MemberFunction declaration*/) {
+	public void writeBytecode(ClassWriter classWriter) {
 
 		String functionName = memberFunction.getQName().getLast();
 		Optional<List<Statement>> optBody = memberFunction.getBodyStatements();

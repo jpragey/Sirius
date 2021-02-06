@@ -20,9 +20,9 @@ public class Bytecode {
 		this.bytes = bytes;
 	}
 
-	public Bytecode(ClassWriter classWriter, QName classQName) {
-		this(classWriter.toByteArray(), classQName);
-	}
+//	public Bytecode(ClassWriter classWriter, QName classQName) {
+//		this(classWriter.toByteArray(), classQName);
+//	}
 	
 	public byte[] getBytes() {
 		return bytes;
