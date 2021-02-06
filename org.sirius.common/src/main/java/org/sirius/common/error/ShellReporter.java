@@ -54,10 +54,12 @@ public class ShellReporter implements Reporter {
 
 		sb.append(message);
 		
-		PrintStream printStream = (severity == Severity.ERROR || severity == Severity.FATAL) ? 
+		try(PrintStream printStream = (severity == Severity.ERROR || severity == Severity.FATAL) ? 
 				System.err : 
-				System.out;
-		printStream.println(sb.toString());
+				System.out;) {
+			
+			printStream.println(sb.toString());
+		}
 		
 		if(exception.isPresent()) {
 			Exception e = exception.get();
