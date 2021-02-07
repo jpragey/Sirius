@@ -90,7 +90,7 @@ public class Partial implements Visitable{
 //			List<AstFunctionParameter> closure, 
 			List<AstFunctionParameter> args, 
 			boolean member,
-			QName qName,
+//			QName qName,
 			AstType returnType,
 			Optional<List<AstStatement>> body) 
 	{
@@ -100,7 +100,8 @@ public class Partial implements Visitable{
 		this.args = ImmutableList.copyOf(args);
 	
 		this.member = member;
-		this.qName = qName;
+//		this.qName = qName;
+		this.qName = null;
 
 		this.returnType = returnType;
 		this.body = body;

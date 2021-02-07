@@ -25,11 +25,9 @@ public class FunctionDeclaration implements Visitable {
 	
 	public FunctionDeclaration(List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/,             
-//			QName qName, 
 			AstToken name) 
 	{
 		super();
-//		this.qName = qName;
 		this.name = name;
 		int argSize = args.size();
 	}

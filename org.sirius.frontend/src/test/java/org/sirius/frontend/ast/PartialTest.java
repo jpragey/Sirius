@@ -25,7 +25,7 @@ public class PartialTest {
 				
 //				false, //boolean concrete,
 				false, //boolean member,
-				new QName(""),
+//				new QName(""),
 
 				AstType.noType,// returnType,
 				Optional.empty() //List<AstStatement> statements/*,

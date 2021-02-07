@@ -21,49 +21,45 @@ public class FunctionDefinition implements Visitable {
 	private List<Partial> partials;
 	private Partial allArgsPartial;
 	
-	private QName qName = null;
-	private AstToken name;
 	private Optional<List<AstStatement>> body;
 
+	private FunctionDeclaration functionDeclaration;
+	
 	public void setContainerQName(QName containerQName) {
-		this.qName = containerQName.child(new QName(name.getText()));
+		this.functionDeclaration.setContainerQName(containerQName);
 	}
 	
 	@Override
 	public String toString() {
 		return partials.stream()
 				.map(part -> part.toString())
-				.collect(Collectors.joining(", ", "{Part. " + name + ": ", "}"));
+				.collect(Collectors.joining(", ", "{Part. " + getName() + ": ", "}"));
 	}
 	
 	public FunctionDefinition(List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/,             
-//			QName qName, 
 			AstToken name, 
 			Optional<List<AstStatement>> body) 
 	{
 		super();
 		this.partials = new ArrayList<>(args.size() + 1);
-//		this.qName = qName;
-		this.name = name;
 		this.body = body;
+		
+		this.functionDeclaration = new FunctionDeclaration(args, returnType, member, name); 
+		
 		int argSize = args.size();
 		for(int from = 0; from <= argSize; from++) 
 		{
-//			List<AstFunctionParameter> closure = args.subList(0, from);
 			List<AstFunctionParameter> partialArgs = args.subList(0, from/*, argSize*/);
 			
 			Partial partial = new Partial(
 					name,
-//					closure,
 					partialArgs, 
 					member,
-					qName,
 					returnType,
 					body
 					);
 			partials.add(partial);
-//			this.allArgsPartial = partial; // => last in partial list
 		}
 		this.allArgsPartial = partials.get(argSize); // => last in partial list
 	}
@@ -98,17 +94,14 @@ public class FunctionDefinition implements Visitable {
 	
 	
 	public QName getqName() {
-		if(qName == null)
-			throw new NullPointerException("qName for " + name.getText() + " - call setContainerQName() first");
-			
-		return qName;
+		return functionDeclaration.getqName();
 	}
 
 	public AstToken getName() {
-		return name;
+		return functionDeclaration.getName();
 	}
 	public String getNameString() {
-		return name.getText();
+		return getName().getText();
 	}
 
 	public boolean isConcrete() {
@@ -118,5 +111,8 @@ public class FunctionDefinition implements Visitable {
 		return body;
 	}
 
+	public FunctionDeclaration getFunctionDeclaration() {
+		return functionDeclaration;
+	}
 	
 }
