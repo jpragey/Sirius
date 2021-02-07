@@ -1,5 +1,6 @@
 package org.sirius.frontend.core.parser;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.InterfaceDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
 import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationContext;
+import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListContext;
 
 import com.google.common.collect.ImmutableList;
 
@@ -49,24 +51,20 @@ public class InterfaceDeclarationParser {
 			
 			AstToken name = new AstToken(ctx.TYPE_ID(0).getSymbol());
 			
-//			AstToken intfName = new AstToken(ctx.TYPE_ID(1).getSymbol());
 			List<AstClassOrInterface.AncestorInfo> intfList = ctx.TYPE_ID().stream()
 				.skip(1)
 				.map(terminalNode -> new AstClassOrInterface.AncestorInfo(new AstToken(terminalNode.getSymbol())))
 				.collect(Collectors.toList());
 			
-			
-//			Optional<QName> packageQName = Optional.empty();
-			
-			
 			// -- type parameters
-			TypeParameterParser.TypeParameterVisitor typeParameterVisitor = new TypeParameterParser.TypeParameterVisitor(reporter);
-			List<TypeParameter> typeParameters = ctx.typeParameterDeclaration().stream()
-				.map(typeParamDeclCtxt -> typeParamDeclCtxt.accept(typeParameterVisitor))
-				.collect(Collectors.toUnmodifiableList());
-
+			FunctionDeclarationParser.TypeParameterListVisitor typeParameterListVisitor = new FunctionDeclarationParser.TypeParameterListVisitor(reporter);
 			
-//			ImmutableList<TypeParameter> typeParameters = ImmutableList.of();
+			TypeParameterDeclarationListContext c =  ctx.typeParameterDeclarationList();
+			List<TypeParameter> typeParameters = // TODO: Optional ???
+					(c == null) 
+					? ImmutableList.of()
+					: typeParameterListVisitor.visit(c);
+			
 			
 //			ImmutableList<PartialList> functionDeclarations = ImmutableList.of();
 			

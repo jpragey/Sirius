@@ -1,5 +1,6 @@
 package org.sirius.frontend.core.parser;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.ClassDeclarationContext;
+import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListContext;
 
 import com.google.common.collect.ImmutableList;
 
@@ -55,10 +57,13 @@ public class ClassDeclarationParser {
 				.collect(Collectors.toList());
 			
 			// -- type parameters
-			TypeParameterParser.TypeParameterVisitor typeParameterVisitor = new TypeParameterParser.TypeParameterVisitor(reporter);
-			List<TypeParameter> typeParameters = ctx.typeParameterDeclaration().stream()
-				.map(typeParamDeclCtxt -> typeParamDeclCtxt.accept(typeParameterVisitor))
-				.collect(Collectors.toUnmodifiableList());
+			FunctionDeclarationParser.TypeParameterListVisitor typeParameterListVisitor = new FunctionDeclarationParser.TypeParameterListVisitor(reporter);
+			
+			TypeParameterDeclarationListContext c =  ctx.typeParameterDeclarationList();
+			List<TypeParameter> typeParameters = // TODO: Optional ???
+					(c == null) 
+					? Collections.emptyList() 
+					: typeParameterListVisitor.visit(c);
 			
 			// -- Member functions
 //			QName containerQName = new QName("TODO");	// TODO

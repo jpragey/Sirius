@@ -177,18 +177,8 @@ functionDeclaration
 	  )
 	  name=LOWER_ID		
 	  (
-	    '<'
-	  		  	(
-	  		d=typeParameterDeclaration 		
-	  		(
-	  			','
-		  		d=typeParameterDeclaration 	
-	  		)*
-	  	)?
-	  	'>'
+	  	typeParameterDeclarationList
 	  )?
-	  
-	    
 	  '('
 		  functionParameterList
 	  ')' 
@@ -201,7 +191,15 @@ functionParameterList
 	  	  (  ',' functionParameter	)*
 	    )?
 	;
-	
+
+typeParameterDeclarationList
+	:
+	'<'	
+	 ( 		typeParameterDeclaration 		
+	  		( ',' typeParameterDeclaration )*
+	 )?
+	 '>'
+	;
 	
 functionBody
 	:'{' 					
@@ -383,17 +381,7 @@ classDeclaration
 	  '('
 			functionParameterList
 	  ')'
-	  (
-	  	'<'
-	  	(
-	  		d=typeParameterDeclaration 	
-	  		(
-	  			','
-		  		d=typeParameterDeclaration 	
-	  		)*
-	  	)?
-	  	'>'
-	  )? 
+	  ( typeParameterDeclarationList )? 
 	  ( 'implements' implementedInterface=TYPE_ID  
 	  	
 	  )?
@@ -412,12 +400,7 @@ interfaceDeclaration
 	  'interface'	
 	  TYPE_ID		
 	  (
-	  	'<'
-	  	(
-	  		d=typeParameterDeclaration 		
-	  		( ',' d=typeParameterDeclaration )*
-	  	)?
-	  	'>'
+	  	typeParameterDeclarationList
 	  )? 
 	  ( 'implements' TYPE_ID  )?
 	  '{'
