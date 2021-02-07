@@ -1,16 +1,18 @@
 package org.sirius.frontend.core.parser;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
@@ -19,16 +21,9 @@ import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.parser.SiriusParser;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.QNameSetterVisitor;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 
 public class FunctionDeclarationParserTest {
 

@@ -17,7 +17,6 @@ import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionDefinitionVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.ClassDeclarationContext;

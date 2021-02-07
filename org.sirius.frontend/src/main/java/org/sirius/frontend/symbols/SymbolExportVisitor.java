@@ -5,7 +5,6 @@ import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
-import org.sirius.frontend.ast.PartialList;
 
 /** Visitor that sets the 'parent' symbol table field throughout the AST.
  * 

@@ -11,7 +11,6 @@ import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.FunctionDefinition;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.ClassDeclarationContext;

@@ -1,10 +1,11 @@
 package org.sirius.frontend.core;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.LocalVariableStatement;
@@ -16,7 +17,6 @@ import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.parser.Compiler;
 
 public class BooleanExpressionTest {

@@ -25,7 +25,6 @@ import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.QNameRefType;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.QNameSetterVisitor;

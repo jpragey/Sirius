@@ -3,12 +3,11 @@ package org.sirius.frontend.symbols;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
@@ -16,8 +15,6 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
-import org.sirius.frontend.ast.Partial;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.core.ScriptSession;
 import org.sirius.frontend.parser.Compiler;
 

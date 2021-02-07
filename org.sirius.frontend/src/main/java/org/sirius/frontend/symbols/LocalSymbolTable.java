@@ -9,7 +9,6 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.FunctionDefinition;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.TypeParameter;
 
 public class LocalSymbolTable implements SymbolTable {

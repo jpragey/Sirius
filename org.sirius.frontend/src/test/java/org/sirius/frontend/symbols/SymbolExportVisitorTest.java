@@ -26,7 +26,6 @@ import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.core.parser.InterfaceDeclarationParser;
 import org.sirius.frontend.core.parser.ParserUtil;
 import org.sirius.frontend.parser.SiriusParser;

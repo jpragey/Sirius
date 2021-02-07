@@ -1,17 +1,17 @@
 package org.sirius.frontend.core.parser;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.function.Consumer;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.hamcrest.core.Is;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
@@ -24,19 +24,10 @@ import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.AstIntegerConstantExpression;
 import org.sirius.frontend.ast.AstMemberAccessExpression;
 import org.sirius.frontend.ast.AstStringConstantExpression;
-import org.sirius.frontend.ast.AstType;
-import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.ConstructorCallExpression;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
-import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.parser.SiriusParser.FunctionCallExpressionContext;
-import org.sirius.frontend.parser.SiriusParser.IsMethodCallExpressionContext;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.equalTo;
 
 public class ExpressionParserTest {
 

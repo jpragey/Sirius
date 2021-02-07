@@ -1,28 +1,18 @@
 package org.sirius.frontend.core.parser;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassOrInterface;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.TypeParameter;
-import org.sirius.frontend.ast.Variance;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.InterfaceDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.TypeContext;
-import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListContext;
 
 import com.google.common.collect.ImmutableList;

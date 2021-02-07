@@ -1,9 +1,9 @@
 package org.sirius.frontend.core;
 
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.sirius.frontend.ast.AstBooleanConstantExpression;
@@ -13,7 +13,6 @@ import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstReturnStatement;
 import org.sirius.frontend.ast.FunctionDefinition;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.parser.Compiler;
 
 public class IfElseTest {

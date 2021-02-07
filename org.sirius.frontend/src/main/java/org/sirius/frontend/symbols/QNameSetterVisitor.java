@@ -12,7 +12,6 @@ import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.TypeParameter;
 
@@ -70,11 +69,9 @@ public class QNameSetterVisitor implements AstVisitor {
 		QName packageQName = qnameStack.lastElement();
 		interfaceDeclaration.setPackageQName(packageQName);
 		
-//		QName classQName = packageQName.child(className);
 		QName classQName = interfaceDeclaration.getQName();
 //System.out.println("startInterface : " + classQName);		
 		qnameStack.push(classQName);
-//		classDeclaration.setqName(classQName);
 		
 		for(TypeParameter formalParameter: interfaceDeclaration.getTypeParameters()) {
 			interfaceDeclaration.getSymbolTable().addFormalParameter(interfaceDeclaration.getQName(), formalParameter);
@@ -97,16 +94,6 @@ public class QNameSetterVisitor implements AstVisitor {
 	}
 	
 	
-	@Override
-	public void startPartialList(PartialList partialList) {
-		QName containerQName = qnameStack.peek();
-		partialList.setContainerQName(containerQName);
-		qnameStack.push(containerQName);
-	}
-	@Override
-	public void endPartialList(PartialList partialList) {
-		qnameStack.pop();
-	}
 
 	@Override
 	public void startFunctionDefinition(FunctionDefinition functionDefinition) {
@@ -132,20 +119,6 @@ public class QNameSetterVisitor implements AstVisitor {
 		qnameStack.pop();
 	}
 	
-//	@Override
-//	public void startFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
-//		
-////		functionDeclaration.setContainerQName(qnameStack.lastElement());
-//		String funcName = functionDeclaration.getName().getText();
-//		QName funcQName = qnameStack.lastElement().child(funcName);
-//		qnameStack.push(funcQName);
-//	}
-//
-//	@Override
-//	public void endFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
-//		qnameStack.pop();
-//	}
-	
 	@Override
 	public void startFunctionCallExpression(AstFunctionCallExpression expression) {
 	}
@@ -153,7 +126,6 @@ public class QNameSetterVisitor implements AstVisitor {
 	@Override
 	public void start(SimpleType simpleType) {
 	}
-	
 	
 	@Override
 	public void startValueDeclaration(AstMemberValueDeclaration valueDeclaration) {

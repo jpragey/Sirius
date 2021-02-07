@@ -1,17 +1,16 @@
 package org.sirius.frontend.core;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
 
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
@@ -20,7 +19,6 @@ import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionActualArgument;
 import org.sirius.frontend.api.FunctionFormalArgument;
-import org.sirius.frontend.api.LocalVariableReference;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.MemberValueAccessExpression;
@@ -36,7 +34,6 @@ import org.sirius.frontend.ast.AstReturnStatement;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.Partial.FunctionImpl;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.parser.Compiler;
 import org.sirius.frontend.symbols.DefaultSymbolTable;

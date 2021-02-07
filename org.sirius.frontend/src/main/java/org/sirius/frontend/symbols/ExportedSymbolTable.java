@@ -9,7 +9,6 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.symbols.ExportedSymbol.ExportedClass;
 import org.sirius.frontend.symbols.ExportedSymbol.ExportedFunction;
 import org.sirius.frontend.symbols.ExportedSymbol.ExportedInterface;

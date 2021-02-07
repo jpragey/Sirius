@@ -1,11 +1,11 @@
 package org.sirius.frontend.parser;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ModuleDeclaration;
@@ -13,7 +13,6 @@ import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.core.ScriptSession;
 

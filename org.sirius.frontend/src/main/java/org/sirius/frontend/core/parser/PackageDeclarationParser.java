@@ -6,12 +6,7 @@ import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
-import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
-import org.sirius.frontend.ast.PartialList;
-import org.sirius.frontend.core.parser.ModuleDeclarationParser.PackageElementVisitor;
 import org.sirius.frontend.core.parser.ModuleDeclarationParser.PackageElements;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;

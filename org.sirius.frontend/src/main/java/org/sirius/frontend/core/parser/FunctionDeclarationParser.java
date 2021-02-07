@@ -12,7 +12,6 @@ import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.FunctionBodyContext;
@@ -21,10 +20,7 @@ import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionParameterContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionParameterListContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
-import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListContext;
-
-import com.google.common.collect.ImmutableList;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 

@@ -12,7 +12,7 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 
 	private List<ImportDeclaration> importDeclarations = new ArrayList<>();
 	
-	private List<PartialList> functionDeclarations = new ArrayList<>();
+//	private List<PartialList> functionDeclarations = new ArrayList<>();
 	private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
 	private List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
 	
@@ -42,24 +42,24 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 		}
 	}
 
-	public void addFunctionDeclaration(PartialList declaration) {
-//		this.functionDeclarations.add(declaration.build(symbolTable /*TODO: ???*/  ));
-		this.functionDeclarations.add(declaration);
-	}
+//	public void addFunctionDeclaration(PartialList declaration) {
+////		this.functionDeclarations.add(declaration.build(symbolTable /*TODO: ???*/  ));
+//		this.functionDeclarations.add(declaration);
+//	}
 
 	public void clearFunctionDeclarations() {
-		functionDeclarations.clear();
+//		functionDeclarations.clear();
 	}
 	
-	public List<PartialList> getFunctionDeclarations() {
-		return functionDeclarations;
-	}
+//	public List<PartialList> getFunctionDeclarations() {
+//		return functionDeclarations;
+//	}
 	
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startCompilationUnit(this);
 		importDeclarations.stream().forEach(imp -> imp.visit(visitor));
-		functionDeclarations.stream().forEach(fd -> fd.visit(visitor));
+//		functionDeclarations.stream().forEach(fd -> fd.visit(visitor));
 		classDeclarations.stream().forEach(cd -> cd.visit(visitor));
 		visitor.endCompilationUnit(this);
 	}
