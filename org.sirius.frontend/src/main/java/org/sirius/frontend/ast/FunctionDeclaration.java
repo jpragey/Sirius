@@ -13,7 +13,10 @@ public class FunctionDeclaration implements Visitable {
 	
 	private QName qName = null;
 	private AstToken name;
-
+	private List<AstFunctionParameter> args;
+	private boolean member /* ie is an instance method*/;
+	private AstType returnType;
+	
 	public void setContainerQName(QName containerQName) {
 		this.qName = containerQName.child(new QName(name.getText()));
 	}
@@ -28,6 +31,9 @@ public class FunctionDeclaration implements Visitable {
 			AstToken name) 
 	{
 		super();
+		this.args = args;
+		this.returnType = returnType;
+		this.member = member;
 		this.name = name;
 		int argSize = args.size();
 	}
@@ -50,6 +56,18 @@ public class FunctionDeclaration implements Visitable {
 	}
 	public String getNameString() {
 		return name.getText();
+	}
+
+	public List<AstFunctionParameter> getArgs() {
+		return args;
+	}
+
+	public boolean isMember() {
+		return member;
+	}
+
+	public AstType getReturnType() {
+		return returnType;
 	}
 
 }

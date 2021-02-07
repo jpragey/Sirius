@@ -15,23 +15,27 @@ import org.sirius.frontend.symbols.Scope;
 
 import com.google.common.collect.ImmutableList;
 
-public class Partial implements Visitable{
+public class Partial implements Visitable {
+	
 	private AstToken name;
+	private QName qName;
+
 	private ImmutableList<AstFunctionParameter> args;
 
 	private boolean member = false;
-	private QName qName;
 
-	private AstType returnType = new AstVoidType();
+	private AstType returnType = AstVoidType.instance;
 	private Optional<List<AstStatement>> body/* = new ArrayList<>()*/; 
+	
 	private DefaultSymbolTable symbolTable = null;
+	private Scope scope = null;
 
 	static public class FunctionImpl implements AbstractFunction {
-		QName functionQName;
+		private QName functionQName;
 		private ImmutableList<FunctionFormalArgument> implArguments;
-		Type returnType;
+		private Type returnType;
 
-		Optional<List<Statement>> bodyStatements;
+		private Optional<List<Statement>> bodyStatements;
 		boolean member;
 
 		public FunctionImpl(QName functionQName, ImmutableList<AstFunctionParameter> formalArguments, Type returnType, 
@@ -51,9 +55,9 @@ public class Partial implements Visitable{
 
 		@Override
 		public String toString() {
-
 			return "API function " + functionQName.dotSeparated() + "(" + implArguments.size() + " args)";
 		}
+		
 		@Override
 		public QName getQName() {
 			return functionQName;
@@ -90,7 +94,6 @@ public class Partial implements Visitable{
 //			List<AstFunctionParameter> closure, 
 			List<AstFunctionParameter> args, 
 			boolean member,
-//			QName qName,
 			AstType returnType,
 			Optional<List<AstStatement>> body) 
 	{
@@ -197,7 +200,6 @@ public class Partial implements Visitable{
 		return body;
 	}
 	
-	private Scope scope = null;
 	
 	public void assignScope(Scope scope) {
 		this.scope = scope;
@@ -222,7 +224,6 @@ public class Partial implements Visitable{
 				}
 			}
 		}
-		
 	}
 
 	public QName getqName() {

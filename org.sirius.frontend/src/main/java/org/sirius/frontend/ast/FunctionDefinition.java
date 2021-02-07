@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.symbols.Scope;
 
+import com.google.common.collect.ImmutableList;
+
 public class FunctionDefinition implements Visitable {
 
 	/** Partial, sorted by 
@@ -25,23 +27,24 @@ public class FunctionDefinition implements Visitable {
 
 	private FunctionDeclaration functionDeclaration;
 	
-	public void setContainerQName(QName containerQName) {
-		this.functionDeclaration.setContainerQName(containerQName);
-	}
-	
-	@Override
-	public String toString() {
-		return partials.stream()
-				.map(part -> part.toString())
-				.collect(Collectors.joining(", ", "{Part. " + getName() + ": ", "}"));
-	}
-	
+	private List<ClosureElement> closure;
+	private Optional<FunctionDefinition> firstArgAppliedFuncDef;
+
 	public FunctionDefinition(List<AstFunctionParameter> args, AstType returnType, 
+			boolean member /* ie is an instance method*/, AstToken name, Optional<List<AstStatement>> body) {
+		this(List.of()/* closure*/, args, returnType, 
+			member /* ie is an instance method*/,             
+			name, 
+			body);
+	}
+
+	public FunctionDefinition(List<ClosureElement> closure, List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/,             
 			AstToken name, 
 			Optional<List<AstStatement>> body) 
 	{
 		super();
+		this.closure = closure;
 		this.partials = new ArrayList<>(args.size() + 1);
 		this.body = body;
 		
@@ -60,10 +63,51 @@ public class FunctionDefinition implements Visitable {
 					body
 					);
 			partials.add(partial);
+			
 		}
 		this.allArgsPartial = partials.get(argSize); // => last in partial list
+		this.firstArgAppliedFuncDef = applyOneArgToClosure(args, this.closure, this.functionDeclaration, body);
+	}
+	 
+	private static Optional<FunctionDefinition> applyOneArgToClosure(List<AstFunctionParameter> currentArgs, List<ClosureElement> closure, FunctionDeclaration functionDeclaration,
+			Optional<List<AstStatement>> body) {
+		
+//		List<AstFunctionParameter> currentArgs = this.functionDeclaration.getArgs();
+		if(currentArgs.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		List<AstFunctionParameter> nextArgs = currentArgs.subList(1, currentArgs.size()); 
+		
+		List<ClosureElement> nextClosure = ImmutableList.<ClosureElement>builder()
+				.addAll(closure)
+				.add(new ClosureElement(currentArgs.get(0)))
+				.build(); 
+				
+		FunctionDefinition applied = new FunctionDefinition(nextClosure, nextArgs, 
+				functionDeclaration.getReturnType(), 
+				functionDeclaration.isMember(), /* ie is an instance method*/             
+				functionDeclaration.getName(), 
+				body); 
+		
+		return Optional.of(applied);
 	}
 	
+	public List<ClosureElement> getClosure() {
+		return closure;
+	}
+
+
+	public void setContainerQName(QName containerQName) {
+		this.functionDeclaration.setContainerQName(containerQName);
+	}
+	
+	@Override
+	public String toString() {
+		return partials.stream()
+				.map(part -> part.toString())
+				.collect(Collectors.joining(", ", "{Part. " + getName() + ": ", "}"));
+	}
 
 	public List<Partial> getPartials() {
 		return partials;
@@ -77,6 +121,7 @@ public class FunctionDefinition implements Visitable {
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startFunctionDefinition(this);
+		this.functionDeclaration.visit(visitor);
 		for(Partial partial: partials) {
 			partial.visit(visitor);
 		}
@@ -114,5 +159,17 @@ public class FunctionDefinition implements Visitable {
 	public FunctionDeclaration getFunctionDeclaration() {
 		return functionDeclaration;
 	}
+
+	public Optional<FunctionDefinition> getFirstArgAppliedFunctionDef() {
+		return firstArgAppliedFuncDef;
+	}
 	
+	public List<AstFunctionParameter> getArgs() {
+		return functionDeclaration.getArgs();
+	}
+
+	/** Return the closed FunctionDefinition that has no argument (all args are in closure)  */
+	public FunctionDefinition mostClosed() {
+		return firstArgAppliedFuncDef.map(fd -> fd.mostClosed()).orElse(this);
+	}
 }
