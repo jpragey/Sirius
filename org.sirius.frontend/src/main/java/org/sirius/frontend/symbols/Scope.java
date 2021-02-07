@@ -6,6 +6,7 @@ import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.PartialList;
 
 public class Scope {
@@ -18,7 +19,7 @@ public class Scope {
 		this.parentScope = parentScope;
 	}
 	
-	public void addFunction(PartialList funct) {
+	public void addFunction(FunctionDefinition funct) {
 		AstToken name = funct.getName();
 		symbolTable.addFunction(funct);
 	}
@@ -36,8 +37,8 @@ public class Scope {
 	
 	
 	
-	public Optional<PartialList> getFunction(String simpleName) {
-		Optional<PartialList> pl = symbolTable.lookupPartialList(simpleName);
+	public Optional<FunctionDefinition> getFunction(String simpleName) {
+		Optional<FunctionDefinition> pl = symbolTable.lookupPartialList(simpleName);
 		return pl;
 	}
 	public Optional<AstMemberValueDeclaration> getValue(String simpleName) {

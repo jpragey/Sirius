@@ -17,6 +17,8 @@ import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
+import org.sirius.frontend.ast.FunctionDeclaration;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.parser.SiriusParser;
@@ -42,43 +44,64 @@ public class FunctionDeclarationParserTest {
 	}
 	
 	
-	private PartialList parseTypeDeclaration(String inputText /*, QName containerQName*/) {
+	private FunctionDeclaration parseTypeDeclaration(String inputText) {
 		
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.functionDeclaration();
 				
-		FunctionDeclarationParser.FunctionDeclarationVisitor typeVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter /*, containerQName*/);
-		PartialList myType = typeVisitor.visit(tree);
+		FunctionDeclarationParser.FunctionDeclarationVisitor fdeclVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter /*, containerQName*/);
+		FunctionDeclaration functionDecl = fdeclVisitor.visit(tree);
 		
-		myType.visit(new QNameSetterVisitor());
+//		FunctionDeclarationParser.FunctionDefinitionVisitor fdefinitionVisitor = new FunctionDeclarationParser.FunctionDefinitionVisitor(reporter /*, containerQName*/);
+//		FunctionDefinition functionDef = fdefinitionVisitor.visit(tree);
 		
-		return myType;
+//		functionDef.visit(new QNameSetterVisitor());
+		functionDecl.visit(new QNameSetterVisitor());
+		
+		return functionDecl;
+	}
+	
+	private FunctionDefinition parseTypeDefinition(String inputText) {
+		
+		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+//		ParseTree tree = parser.functionDeclaration();
+				
+//		FunctionDeclarationParser.FunctionDeclarationVisitor fdeclVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter /*, containerQName*/);
+//		FunctionDeclaration functionDecl = fdeclVisitor.visit(tree);
+		
+		FunctionDeclarationParser.FunctionDefinitionVisitor fdefinitionVisitor = new FunctionDeclarationParser.FunctionDefinitionVisitor(reporter /*, containerQName*/);
+		FunctionDefinition functionDef = fdefinitionVisitor.visit(parser.functionDefinition());
+		
+		functionDef.visit(new QNameSetterVisitor());
+//		functionDecl.visit(new QNameSetterVisitor());
+		
+		return functionDef;
 	}
 	
 	@Test
 	@DisplayName("Simplest function (check name)")
 	public void simplestFunction() {
-		PartialList partialList = parseTypeDeclaration("void f() {}" /*, new QName("a", "b", "c")*/);
-		assertEquals(partialList.getNameString(), "f");
-		assertEquals(partialList.getqName().dotSeparated(), "f");
+		FunctionDefinition fd = parseTypeDefinition("void f() {}" /*, new QName("a", "b", "c")*/);
+		assertEquals(fd.getNameString(), "f");
+		assertEquals(fd.getqName().dotSeparated(), "f");
 	}
 
 	@Test
 	@DisplayName("Function parameters")
 	public void functionWithParameters() {
-		PartialList partialList = parseTypeDeclaration("void f(A a, B b) {}"/*, new QName()*/);
+		FunctionDefinition fd = parseTypeDefinition("void f(A a, B b) {}"/*, new QName()*/);
 		//assertEquals(partialList.getNameString(), "f");
-		assertEquals(partialList.getPartials().size(), 3 /* NB: 1 more than parameters*/);
+		assertEquals(fd.getPartials().size(), 3 /* NB: 1 more than parameters*/);
 		
 		assertThat(
-				partialList.getAllArgsPartial().getArgs().stream().map(astFuncParam -> astFuncParam.getNameString()).toArray(),
+				fd.getAllArgsPartial().getArgs().stream().map(astFuncParam -> astFuncParam.getNameString()).toArray(),
 				equalTo(new String[] {"a", "b"}));
 	}
 
 	@Test
 	@DisplayName("Function Simple return type")
 	public void functionReturnType() {
-		PartialList partialList = parseTypeDeclaration("Result f() {}"/*, new QName()*/);
+		FunctionDefinition partialList = parseTypeDefinition("Result f() {}"/*, new QName()*/);
 		AstType returnType = partialList.getAllArgsPartial().getReturnType();
 		
 		assertThat(returnType, instanceOf(SimpleType.class));
@@ -89,7 +112,7 @@ public class FunctionDeclarationParserTest {
 	@Test
 	@DisplayName("Function with void return type")
 	public void functionVoidReturnType() {
-		PartialList partialList = parseTypeDeclaration("void f() {}"/*, new QName()*/);
+		FunctionDefinition partialList = parseTypeDefinition("void f() {}"/*, new QName()*/);
 		AstType returnType = partialList.getAllArgsPartial().getReturnType();
 		
 		assertThat(returnType, instanceOf(AstVoidType.class));
@@ -98,18 +121,18 @@ public class FunctionDeclarationParserTest {
 	@Test
 	@DisplayName("Function containing statements")
 	public void functionWithBodyStatements() {
-		PartialList partialList = parseTypeDeclaration("void f() {Integer i; return 42;}" /*, new QName()*/);
-		List<AstStatement> bodyStatements = partialList.getAllArgsPartial().getBodyStatements().get();
+		FunctionDefinition fd = parseTypeDefinition("void f() {Integer i; return 42;}" /*, new QName()*/);
+		List<AstStatement> bodyStatements = fd.getAllArgsPartial().getBodyStatements().get();
 		
 		assertThat(bodyStatements.size(), is(2));
-		assertThat(partialList.isConcrete(), is(true));
+		assertThat(fd.isConcrete(), is(true));
 	}
 
 	@Test
 	@DisplayName("Function declaration (without body)")
 	public void functionWithoutBodyStatements() {
-		PartialList partialList = parseTypeDeclaration("void f()" /*, new QName()*/);
+		FunctionDeclaration fd = parseTypeDeclaration("void f()" /*, new QName()*/);
 		
-		assertThat(partialList.getAllArgsPartial().getBodyStatements().isPresent(), is(false));
+//		assertThat(fd.getAllArgsPartial().getBodyStatements().isPresent(), is(false));
 	}
 }

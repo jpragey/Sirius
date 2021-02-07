@@ -27,7 +27,8 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	private ImmutableList<TypeParameter> typeParameters;
 	private AstToken name;
 	
-	private ImmutableList<PartialList> functionDeclarations;
+	private ImmutableList<FunctionDeclaration> functionDeclarations;
+	private ImmutableList<FunctionDefinition> functionDefinitions;
 	
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 
@@ -35,7 +36,8 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	private QName qName = new QName("<not_set>"); 
 
 	public AstInterfaceDeclaration(Reporter reporter, AstToken name, //Optional<QName> packageQName,
-			ImmutableList<PartialList> functionDeclarations,
+			ImmutableList<FunctionDeclaration> functionDeclarations,
+			ImmutableList<FunctionDefinition> functionDefinitions,
 			ImmutableList<TypeParameter> typeParameters,
 			ImmutableList<AncestorInfo> ancestorInfos,
 			List<AstMemberValueDeclaration> valueDeclarations
@@ -44,6 +46,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		this.reporter = reporter;
 		this.name = name;
 		this.functionDeclarations = functionDeclarations;
+		this.functionDefinitions= functionDefinitions;
 		this.typeParameters = typeParameters;
 		
 		this.qName = null;
@@ -55,6 +58,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	public AstInterfaceDeclaration(Reporter reporter, AstToken name /*, Optional<QName> packageQName*/) {
 		this(reporter, name,
 				ImmutableList.of() /*functionDeclarations*/,
+				ImmutableList.of() /*functionDefinitions*/,
 				ImmutableList.of() /*typeDeclarations*/,
 				ImmutableList.of() /*ancestorInfos*/,
 				ImmutableList.of() /*valueDeclarations*/
@@ -118,6 +122,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	public void visit(AstVisitor visitor) {
 		visitor.startInterfaceDeclaration(this);
 		functionDeclarations.stream().forEach(fd -> fd.visit(visitor));
+		functionDefinitions.stream().forEach(fd -> fd.visit(visitor));
 		valueDeclarations.stream().forEach(fd -> fd.visit(visitor));
 		visitor.endInterfaceDeclaration(this);
 	}
@@ -165,8 +170,12 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	}
 
 	@Override
-	public List<PartialList> getFunctionDeclarations() {
+	public List<FunctionDeclaration> getFunctionDeclarations() {
 		return this.functionDeclarations;
+	}
+	@Override
+	public List<FunctionDefinition> getFunctionDefinitions() {
+		return this.functionDefinitions;
 	}
 
 	@Override
@@ -198,6 +207,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		ImmutableList<TypeParameter> newTypeParams = builder.addAll(typeParameters).add(param).build();
 		return new AstInterfaceDeclaration(reporter, name, // packageQName,
 				functionDeclarations,
+				functionDefinitions,
 				newTypeParams,
 				ImmutableList.of(),	// TODO
 				valueDeclarations
@@ -219,16 +229,22 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	}
 
 	
-	public AstInterfaceDeclaration withFunctionDeclaration(PartialList fd) {
+	public AstInterfaceDeclaration withFunctionDeclaration(FunctionDefinition fd) {
 		
 //		if(!fd.getAnnotationList().contains("static"))
 //			fd.setMember(true);
 
 		return new AstInterfaceDeclaration(reporter, name, //packageQName,
-				ImmutableList.<PartialList>builder()
-					.addAll(functionDeclarations)
+				functionDeclarations,
+//				ImmutableList.<FunctionDeclaration>builder()
+//					.addAll(functionDeclarations)
+//					.build(),
+					
+				ImmutableList.<FunctionDefinition>builder()
+					.addAll(functionDefinitions)
 					.add(fd)
 					.build(),
+					
 				typeParameters,
 				ImmutableList.copyOf(ancestors),
 				valueDeclarations
@@ -249,7 +265,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 			@Override
 			public List<AbstractFunction> getFunctions() {
 				List<AbstractFunction> functions = new ArrayList<>();
-				for(PartialList b: functionDeclarations) {
+				for(FunctionDefinition b: functionDefinitions) {
 					for(Partial partial : b.getPartials()) {
 						functions.add(partial.toAPI());
 					}

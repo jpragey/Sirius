@@ -30,7 +30,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 
 	private List<Visitable> visitables = new ArrayList<>();
 
-	private List<PartialList> functionDeclarations = new ArrayList<>();
+	private List<FunctionDefinition> functionDeclarations = new ArrayList<>();
 	private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
 	private List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
@@ -38,7 +38,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 	private LocalSymbolTable symbolTable; 
 	
 	public AstPackageDeclaration(Reporter reporter, QName qname, 
-			List<PartialList> functionDeclarations, List<AstClassDeclaration> classDeclarations, 
+			List<FunctionDefinition> functionDeclarations, List<AstClassDeclaration> classDeclarations, 
 			List<AstInterfaceDeclaration> interfaceDeclarations, List<AstMemberValueDeclaration> valueDeclarations) {
 		super();
 		this.reporter = reporter;
@@ -60,7 +60,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 	}
 
 
-	public List<PartialList> getFunctionDeclarations() {
+	public List<FunctionDefinition> getFunctionDeclarations() {
 		return functionDeclarations;
 	}
 
@@ -118,7 +118,7 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		public List<AbstractFunction> getFunctions() {
 			List<AbstractFunction> funcs = new ArrayList<>();
 			
-			for(PartialList fdBuilder: functionDeclarations) {
+			for(FunctionDefinition fdBuilder: functionDeclarations) {
 				for(Partial partial: fdBuilder.getPartials()) {
 					AbstractFunction apiFunc = partial.toAPI();
 					funcs.add(apiFunc);

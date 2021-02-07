@@ -64,7 +64,7 @@ public class PackageDeclarationParser {
 			
 			
 			return new AstPackageDeclaration(reporter, packageQName,
-					packageElements.partialLists, 
+					packageElements.functiondefinitions, 
 					packageElements.classDeclarations, 
 					packageElements.interfaceDeclarations, 
 					List.of()// <AstMemberValueDeclaration> valueDeclarations

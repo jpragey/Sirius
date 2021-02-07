@@ -33,6 +33,7 @@ import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstReturnStatement;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.Partial.FunctionImpl;
 import org.sirius.frontend.ast.PartialList;
@@ -206,7 +207,7 @@ public class MethodTests {
 		AstModuleDeclaration module = session.getAstModules().get(0);
 		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
 		assertEquals(pack.getQname().dotSeparated(), "");
-		PartialList func = pack.getFunctionDeclarations().get(0);
+		FunctionDefinition func = pack.getFunctionDeclarations().get(0);
 		assertEquals(func.getqName().dotSeparated(), "add");
 		
 		assertEquals(func.getPartials().size(), 4);
@@ -238,7 +239,7 @@ public class MethodTests {
 		AstModuleDeclaration module = session.getAstModules().get(0);
 		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
 		assertEquals(pack.getQname().dotSeparated(), "");
-		PartialList func = pack.getFunctionDeclarations().get(0);
+		FunctionDefinition func = pack.getFunctionDeclarations().get(0);
 		assertEquals(func.getqName().dotSeparated(), "add");
 		
 		//func.getSymbolTable().dump();
@@ -309,10 +310,10 @@ public class MethodTests {
 		AstModuleDeclaration module = session.getAstModules().get(0);
 		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
 		assertEquals(pack.getQname().dotSeparated(), "");
-		PartialList func = pack.getFunctionDeclarations().get(0);
+		FunctionDefinition func = pack.getFunctionDeclarations().get(0);
 		assertEquals(func.getqName().dotSeparated(), "add");
 
-		PartialList funcMain = pack.getFunctionDeclarations().get(1);
+		FunctionDefinition funcMain = pack.getFunctionDeclarations().get(1);
 		assertEquals(funcMain.getqName().dotSeparated(), "main");
 		
 		Partial mainPartial = funcMain.byArgCount(0).get();
@@ -330,7 +331,7 @@ public class MethodTests {
 		AstModuleDeclaration module = session.getAstModules().get(0);
 		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
 		assertEquals(pack.getQname().dotSeparated(), "");
-		PartialList func = pack.getFunctionDeclarations().get(0);
+		FunctionDefinition func = pack.getFunctionDeclarations().get(0);
 		assertEquals(func.getqName().dotSeparated(), "add");
 
 		Partial partial0 = func.getPartials().get(0);

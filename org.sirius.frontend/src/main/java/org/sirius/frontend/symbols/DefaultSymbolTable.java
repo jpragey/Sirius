@@ -13,6 +13,7 @@ import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.ImportDeclarationElement;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.QualifiedName;
@@ -77,7 +78,7 @@ public class DefaultSymbolTable implements SymbolTable {
 		addSymbol(classQName, new Symbol(simpleName, classDeclaration));
 	}
 	
-	public void addFunction(PartialList functionDeclaration) {
+	public void addFunction(FunctionDefinition functionDeclaration) {
 		AstToken simpleName = functionDeclaration.getName();
 		QName funcQName = functionDeclaration.getqName();
 		addSymbol(funcQName, new Symbol(simpleName, functionDeclaration));
@@ -168,7 +169,7 @@ public class DefaultSymbolTable implements SymbolTable {
 		return symbol.getFunctionArgument();
 	}
 
-	public Optional<PartialList> lookupPartialList(String simpleName) {
+	public Optional<FunctionDefinition> lookupPartialList(String simpleName) {	// TODO:rename
 		Symbol symbol = symbolsBySimpleName.get(simpleName);
 
 		if(symbol == null && parent.isPresent()) {

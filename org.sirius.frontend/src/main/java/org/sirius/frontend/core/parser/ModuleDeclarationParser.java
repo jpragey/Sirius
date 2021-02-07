@@ -14,13 +14,16 @@ import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.PartialList;
+import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionDefinitionVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.ClassDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.ConcreteModuleContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
+import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionContext;
 import org.sirius.frontend.parser.SiriusParser.InterfaceDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.ModuleDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.ModuleImportContext;
@@ -110,12 +113,22 @@ public class ModuleDeclarationParser {
 		}
 		@Override
 		public Void visitFunctionDeclaration(FunctionDeclarationContext ctx) {
-			FunctionDeclarationParser.FunctionDeclarationVisitor v = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter);
+//			FunctionDeclarationParser.FunctionDeclarationVisitor v = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter);
+			FunctionDefinitionVisitor v = new FunctionDefinitionVisitor(reporter);
 			
-			PartialList partialList = ctx.accept(v);
-			this.packageElements.partialLists.add(partialList);
+			FunctionDefinition functionDefinition = ctx.accept(v);
+			this.packageElements.functiondefinitions.add(functionDefinition);
 			return null;
 		}
+		@Override
+		public Void visitFunctionDefinition(FunctionDefinitionContext ctx) {
+			FunctionDefinitionVisitor v = new FunctionDefinitionVisitor(reporter);
+			
+			FunctionDefinition functionDefinition = ctx.accept(v);
+			this.packageElements.functiondefinitions.add(functionDefinition);
+			return null;
+		}
+		
 		@Override
 		public Void visitClassDeclaration(ClassDeclarationContext ctx) {
 			ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser.ClassDeclarationVisitor (reporter/*, new QName()*/ /* containerQName */);
@@ -137,11 +150,11 @@ public class ModuleDeclarationParser {
 	public static class PackageElements {
 		public List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
 		public List<AstClassDeclaration> classDeclarations = new ArrayList<>();
-		public List<PartialList> partialLists = new ArrayList<>();
+		public List<FunctionDefinition> functiondefinitions = new ArrayList<>();
 		public boolean isEmpty() {
 			return interfaceDeclarations.isEmpty() && 
 					classDeclarations.isEmpty() &&
-					partialLists.isEmpty();
+					functiondefinitions.isEmpty();
 		}
 	}
 	
@@ -168,7 +181,7 @@ public class ModuleDeclarationParser {
 			ModuleDeclarationContext moduleDeclarationContext = ctx.moduleDeclaration();
 			if(moduleDeclarationContext != null) {	// Explicit module
 				
-				AstPackageDeclaration pd = new AstPackageDeclaration(reporter, QName.empty, packageElements.partialLists, packageElements.classDeclarations, 
+				AstPackageDeclaration pd = new AstPackageDeclaration(reporter, QName.empty, packageElements.functiondefinitions, packageElements.classDeclarations, 
 						packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/);
 				ModuleDeclarationVisitor mdVisitor = new ModuleDeclarationVisitor(reporter, List.of(pd)/*packageElements*/);
 				result = moduleDeclarationContext.accept(mdVisitor);
@@ -178,7 +191,7 @@ public class ModuleDeclarationParser {
 				
 				if(!packageElements.isEmpty()) { // package elements before first package declaration => prepend unnamed package
 					AstPackageDeclaration unnamedPackage = new AstPackageDeclaration(reporter, QName.empty, 
-							packageElements.partialLists, packageElements.classDeclarations, packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/);
+							packageElements.functiondefinitions, packageElements.classDeclarations, packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/);
 					
 					packageDeclarations.addFirst(unnamedPackage);
 				}

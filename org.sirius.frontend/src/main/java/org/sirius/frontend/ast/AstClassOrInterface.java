@@ -60,7 +60,8 @@ public interface AstClassOrInterface extends AstType {
 		}
 	}
 
-	public List<PartialList> getFunctionDeclarations();
+	public List<FunctionDeclaration> getFunctionDeclarations();
+	public List<FunctionDefinition> getFunctionDefinitions();
 
 	public List<AncestorInfo> getAncestors();
 	public List<AstInterfaceDeclaration> getInterfaces();
@@ -80,17 +81,17 @@ public interface AstClassOrInterface extends AstType {
 		});
 	}
 	
-	public default MapOfList<QName, PartialList> getAllFunctions() {
-		MapOfList<QName, PartialList> map = new MapOfList<>();
+	public default MapOfList<QName, FunctionDefinition> getAllFunctions() {
+		MapOfList<QName, FunctionDefinition> map = new MapOfList<>();
 
 		// -- 
-		for(PartialList func : getFunctionDeclarations()) {
+		for(FunctionDefinition func : getFunctionDefinitions()) {
 			QName fqn = func.getqName();
 			map.put(fqn, func);
 		}
 		
 		for(AstInterfaceDeclaration acd: this.getInterfaces()) {
-			MapOfList<QName, PartialList> amap  = acd.getAllFunctions();
+			MapOfList<QName, FunctionDefinition> amap  = acd.getAllFunctions();
 			map.insert(amap);
 		}
 		

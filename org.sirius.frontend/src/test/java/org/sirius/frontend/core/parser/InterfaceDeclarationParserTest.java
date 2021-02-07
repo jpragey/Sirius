@@ -93,11 +93,16 @@ public class InterfaceDeclarationParserTest {
 	}
 
 	@Test
-	@DisplayName("Interface with methods")
+	@DisplayName("Interface with methods definitions")
 	public void interfaceDeclarationsHavingMethods() {
 		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I {void f(){} void g(){} }");
-
-		assertEquals(myInterface.getFunctionDeclarations().size(), 2);
+		assertThat(myInterface.getFunctionDefinitions().size(), is(2));
+	}
+	@Test
+	@DisplayName("Interface with methods declarations")
+	public void interfaceDeclarationsHavingMethodDeclarations() {
+		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I {void f() void g() }");
+		assertThat(myInterface.getFunctionDeclarations().size(), is(2));
 	}
 	@Test
 	@DisplayName("Interface with values")

@@ -15,6 +15,7 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.parser.Compiler;
 
@@ -37,7 +38,7 @@ public class BooleanExpressionTest {
 		List<AstModuleDeclaration> astModules = session.getAstModules();
 		AstModuleDeclaration mod = astModules.get(0);
 		AstPackageDeclaration pack = mod.getPackageDeclarations().get(0);
-		PartialList func = pack.getFunctionDeclarations().get(0);
+		FunctionDefinition func = pack.getFunctionDeclarations().get(0);
 //		Partial partial = func.getAllArgsPartial();
 		assertEquals(func.getBody().get().size(), 1);
 		

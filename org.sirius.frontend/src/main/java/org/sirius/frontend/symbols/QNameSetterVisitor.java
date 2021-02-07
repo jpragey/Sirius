@@ -10,6 +10,7 @@ import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.SimpleType;
@@ -107,6 +108,19 @@ public class QNameSetterVisitor implements AstVisitor {
 		qnameStack.pop();
 	}
 
+	@Override
+	public void startFunctionDefinition(FunctionDefinition functionDefinition) {
+		QName containerQName = qnameStack.peek();
+		functionDefinition.setContainerQName(containerQName);
+		qnameStack.push(containerQName);
+	}
+	@Override
+	public void endFunctionDefinition(FunctionDefinition functionDefinition) {
+		qnameStack.pop();
+	}
+	
+	
+	
 	@Override
 	public void startPartial(Partial partial) {
 		QName containerQName = qnameStack.peek();

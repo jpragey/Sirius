@@ -3,6 +3,8 @@ package org.sirius.frontend.symbols;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
+import org.sirius.frontend.ast.FunctionDeclaration;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.PartialList;
 
 /** Visitor that sets the 'parent' symbol table field throughout the AST.
@@ -28,16 +30,22 @@ public class SymbolExportVisitor implements AstVisitor {
 	}
 	
 	@Override
-		public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
+	public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
 		tableToFill.addInterface(interfaceDeclaration);
-		}
+	}
+	
 	@Override
 	public void startClassDeclaration(AstClassDeclaration classDeclaration) {
 		tableToFill.addClass(classDeclaration);
 	}
+	
 	@Override
-	public void startPartialList(PartialList partialList) {
-		tableToFill.addFunction(partialList);
+	public void startFunctionDefinition(FunctionDefinition functionDefinition) {
+		tableToFill.addFunctionDefinition(functionDefinition);;
+	}
+	@Override
+	public void startFunctionDeclaration(FunctionDeclaration functionDeclaration) {
+		tableToFill.addFunctionDeclaration(functionDeclaration);
 	}
 	
 }

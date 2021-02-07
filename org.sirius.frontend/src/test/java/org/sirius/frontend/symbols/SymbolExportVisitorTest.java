@@ -24,6 +24,7 @@ import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.core.parser.InterfaceDeclarationParser;
@@ -66,7 +67,7 @@ public class SymbolExportVisitorTest {
 		return md;
 	}
 
-	private	AstClassDeclaration newClass(String simpleName, List<PartialList> partialLists) {
+	private	AstClassDeclaration newClass(String simpleName, List<FunctionDefinition> partialLists) {
 		AstClassDeclaration cd = new AstClassDeclaration(reporter, AstToken.internal(simpleName), 
 				ImmutableList.of(),	//<TypeParameter> typeParameters,
 				ImmutableList.copyOf(partialLists), //ImmutableList<PartialList> functionDeclarations,
@@ -83,20 +84,22 @@ public class SymbolExportVisitorTest {
 	}
 
 	private AstPackageDeclaration newPackage(QName qname, 
-			List<PartialList> functionDeclarations, List<AstClassDeclaration> classDeclarations, 
+			List<FunctionDefinition> functionDeclarations, List<AstClassDeclaration> classDeclarations, 
 			List<AstInterfaceDeclaration> interfaceDeclarations, List<AstMemberValueDeclaration> valueDeclarations) {
 		return new AstPackageDeclaration(reporter, qname, 
 				functionDeclarations, classDeclarations, 
 				interfaceDeclarations, valueDeclarations);
 	}
 
-	private PartialList newPartialList(String nameStr) {
-		PartialList pl = new PartialList(List.of() , 
+	private FunctionDefinition newFunctionDefinition(String nameStr) {
+		FunctionDefinition pl = new FunctionDefinition(List.of() , 
 				AstType.noType,// returnType, 
 				false /*member*/,             
 //				new QName("dummy0", "dummy1"),// qName, 
-				AstToken.internal(nameStr), 
-				Optional.empty() );
+				AstToken.internal(nameStr)
+				, 
+				Optional.empty() 
+				);
 		return pl;
 	}
 	
@@ -106,8 +109,8 @@ public class SymbolExportVisitorTest {
 		
 		AstModuleDeclaration md = buildModule(new QName("ma", "mb"), Arrays.asList(
 			newPackage(new QName("a","b"), 
-					List.of(newPartialList("fct")), //<PartialList>, 
-					List.of(newClass("C", List.of(newPartialList("mfct")))), 
+					List.of(newFunctionDefinition("fct")), //<FunctionDefinition>, 
+					List.of(newClass("C", List.of(newFunctionDefinition("mfct")))), 
 					List.of(newInterface("I")), 	//Arrays.asList<AstInterfaceDeclaration>(),
 					List.of() 						//Arrays.asList<AstMemberValueDeclaration>() 
 					)

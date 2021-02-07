@@ -14,6 +14,8 @@ import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
+import org.sirius.frontend.ast.FunctionDeclaration;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.ast.Variance;
@@ -70,10 +72,16 @@ public class InterfaceDeclarationParser {
 			
 			// -- Member functions
 //			QName containerQName = new QName("TODO");	// TODO
-			FunctionDeclarationParser.FunctionDeclarationVisitor fctVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter /*, containerQName*/);
-			List<PartialList> methods = ctx.children.stream()
+			FunctionDeclarationParser.FunctionDeclarationVisitor fctVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter);
+			List<FunctionDeclaration> methods = ctx.children.stream()
 				.map(parseTree -> parseTree.accept(fctVisitor))
-				.filter(partialList -> partialList!=null)
+				.filter(fctDecl -> fctDecl!=null)
+				.collect(Collectors.toList());
+			
+			FunctionDeclarationParser.FunctionDefinitionVisitor fctdefVisitor = new FunctionDeclarationParser.FunctionDefinitionVisitor(reporter);
+			List<FunctionDefinition> methodDefinitions = ctx.children.stream()
+				.map(parseTree -> parseTree.accept(fctdefVisitor))
+				.filter(fctDef -> fctDef!=null)
 				.collect(Collectors.toList());
 			
 			MemberValueDeclarationParser.MemberValueVisitor memberValuesVisitor = new MemberValueDeclarationParser.MemberValueVisitor(reporter);
@@ -84,8 +92,9 @@ public class InterfaceDeclarationParser {
 				.collect(Collectors.toList());
 			
 			
-			AstInterfaceDeclaration interfaceDeclaration = new AstInterfaceDeclaration(reporter, name, //packageQName, 
+			AstInterfaceDeclaration interfaceDeclaration = new AstInterfaceDeclaration(reporter, name, 
 					ImmutableList.copyOf(methods), 
+					ImmutableList.copyOf(methodDefinitions), 
 					ImmutableList.copyOf(typeParameters),
 					ImmutableList.copyOf(intfList),
 					ImmutableList.copyOf(memberValues));

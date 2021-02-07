@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
+import org.sirius.frontend.ast.FunctionDeclaration;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.symbols.ExportedSymbol.ExportedClass;
 import org.sirius.frontend.symbols.ExportedSymbol.ExportedFunction;
@@ -31,8 +33,16 @@ public class ExportedSymbolTable {
 		map.put(qname, exportedInterface);
 		interfaceMap.put(qname, exportedInterface);
 	}
-	public void addFunction(PartialList classDeclaration) {
-		QName qname = classDeclaration.getqName();
+
+	public void addFunctionDeclaration(FunctionDeclaration functionDeclaration) {
+		QName qname = functionDeclaration.getqName();
+		ExportedSymbol.ExportedFunction exportedClass = new ExportedSymbol.ExportedFunction(qname);
+		map.put(qname, exportedClass);
+		functionMap.put(qname, exportedClass);
+	}
+	// TODO: remove, replace by #{addFunctionDeclaration}
+	public void addFunctionDefinition(FunctionDefinition functionDeclaration) {
+		QName qname = functionDeclaration.getqName();
 		ExportedSymbol.ExportedFunction exportedClass = new ExportedSymbol.ExportedFunction(qname);
 		map.put(qname, exportedClass);
 		functionMap.put(qname, exportedClass);

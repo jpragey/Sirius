@@ -35,7 +35,8 @@ newCompilationUnit :
 		;
 
 packageContent : 
-    	  functionDeclaration 	
+    	  functionDeclaration
+    	| functionDefinition 	
     	| classDeclaration 		
     	| interfaceDeclaration	
 	;
@@ -76,6 +77,7 @@ concreteModule
 packageElement
 	: packageDeclaration 		 
 	| functionDeclaration 		
+	| functionDefinition 		
 	| classDeclaration 			
 	| interfaceDeclaration		
 	; 
@@ -169,8 +171,6 @@ memberValueDeclaration
 // -------------------- FUNCION (top-level or member)
 
 functionDeclaration 
-@init {
-}
 	: annotationList
 	  (	  returnType=type	 
 	  	| 'void' 	
@@ -182,7 +182,23 @@ functionDeclaration
 	  '('
 		  functionParameterList
 	  ')' 
-	  ( functionBody )?
+//	  ( functionBody )?
+//	  ( functionBody )	// TODO: ??? should be optional
+	;
+// Function with a body and named arguments	
+functionDefinition 
+	: annotationList
+	  (	  returnType=type	 
+	  	| 'void' 	
+	  )
+	  name=LOWER_ID		
+	  (
+	  	typeParameterDeclarationList
+	  )?
+	  '('
+		  functionParameterList
+	  ')' 
+	  ( functionBody )
 //	  ( functionBody )	// TODO: ??? should be optional
 	;
 	
@@ -389,6 +405,7 @@ classDeclaration
 	  '{'
 		  (
 		  	  functionDeclaration		
+		  	| functionDefinition		
 		  	| memberValueDeclaration	
 		  )*
 	  '}'
@@ -406,6 +423,7 @@ interfaceDeclaration
 	  '{'
 	  (
 	  	  functionDeclaration		
+	  	| functionDefinition		
 	  	| memberValueDeclaration	
 	  )*
 	  '}'

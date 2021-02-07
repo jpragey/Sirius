@@ -19,6 +19,7 @@ import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstReturnStatement;
 import org.sirius.frontend.ast.AstStatement;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.PartialList;
 
@@ -74,7 +75,7 @@ public class ScopeTest {
 		assertThat(astPackage.getClassDeclarations().size(), equalTo(0));	// Not really useful
 
 		assertThat(astPackage.getFunctionDeclarations().size(), equalTo(1));
-		PartialList idPartials = astPackage.getFunctionDeclarations().get(0);
+		FunctionDefinition idPartials = astPackage.getFunctionDeclarations().get(0);
 		assertThat(idPartials.getNameString(), equalTo("id"));
 		
 		Partial id_0 = idPartials.byArgCount(0).get();
@@ -116,7 +117,7 @@ public class ScopeTest {
 		assertThat(astPackage.getClassDeclarations().size(), equalTo(0));	// Not really useful
 
 		assertThat(astPackage.getFunctionDeclarations().size(), equalTo(1));
-		PartialList idPartials = astPackage.getFunctionDeclarations().get(0);
+		FunctionDefinition idPartials = astPackage.getFunctionDeclarations().get(0);
 		assertThat(idPartials.getNameString(), equalTo("id"));
 		
 //		Partial id_0 = idPartials.byArgCount(0).get();

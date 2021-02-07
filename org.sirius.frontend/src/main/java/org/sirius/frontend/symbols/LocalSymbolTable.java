@@ -8,6 +8,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstToken;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.TypeParameter;
 
@@ -56,7 +57,7 @@ public class LocalSymbolTable implements SymbolTable {
 		addSymbol(simpleName, new Symbol(simpleName, classDeclaration));
 	}
 	
-	public void addFunction(AstToken simpleName, PartialList declaration) {
+	public void addFunction(AstToken simpleName, FunctionDefinition declaration) {
 		addSymbol(simpleName, new Symbol(simpleName, declaration));
 	}
 	

@@ -10,6 +10,7 @@ import org.sirius.frontend.ast.AstClassOrInterface;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
@@ -67,8 +68,8 @@ public class ClassDeclarationParser {
 			
 			// -- Member functions
 //			QName containerQName = new QName("TODO");	// TODO
-			FunctionDeclarationParser.FunctionDeclarationVisitor fctVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter/*, containerQName*/);
-			List<PartialList> methods = ctx.children.stream()
+			FunctionDeclarationParser.FunctionDefinitionVisitor fctVisitor = new FunctionDeclarationParser.FunctionDefinitionVisitor(reporter);
+			List<FunctionDefinition> methods = ctx.children.stream()
 				.map(parseTree -> parseTree.accept(fctVisitor))
 				.filter(partialList -> partialList!=null)
 				.collect(Collectors.toList());

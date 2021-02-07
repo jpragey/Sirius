@@ -14,6 +14,7 @@ import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.QNameRefType;
@@ -97,7 +98,7 @@ public class SdkToolsTest {
 	public void checkBasicTopLevelFunctionsFoundInPackageClass() {
 		
 		Symbol symbol = symbolTable.lookupByQName(new QName("sirius", "lang", "println")).get();
-		PartialList func = symbol.getFunctionDeclaration().get();
+		FunctionDefinition func = symbol.getFunctionDeclaration().get();
 		
 		assertEquals(func.getqName(), new QName("sirius", "lang", "println"));
 //		assertEquals(func.getFormalArguments().size(), 1);

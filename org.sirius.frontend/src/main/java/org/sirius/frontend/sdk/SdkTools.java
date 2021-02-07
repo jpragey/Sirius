@@ -22,6 +22,7 @@ import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.PartialList;
@@ -64,7 +65,7 @@ public class SdkTools {
 		List<Class<?>> sdkClasses = Sdk.sdkClasses();
 		
 		List<AstClassOrInterface> classOrInterfaces = new ArrayList<>();
-		List<PartialList> allPartialLists = new ArrayList<>();
+		List<FunctionDefinition> allPartialLists = new ArrayList<>();
 		for(Class<?> clss: sdkClasses) {
 			
 			TopLevelClass topLevelClassAnno = clss.getDeclaredAnnotation(TopLevelClass.class);	// can be null
@@ -75,7 +76,7 @@ public class SdkTools {
 				classOrInterfaces.add(classOrIntf);
 			}
 			if(topLevelmethodsAnno != null) {
-				List<PartialList> partialLists = parseTopLevel(clss, topLevelmethodsAnno, symbolTable);
+				List<FunctionDefinition> partialLists = parseTopLevel(clss, topLevelmethodsAnno, symbolTable);
 				allPartialLists.addAll(partialLists);
 //				System.out.println("- Top-level methods: " + clss + ", anno: " + topLevelmethodsAnno);
 			}
@@ -137,21 +138,21 @@ public class SdkTools {
 		return classOrIntf;
 	}
 	
-	private List<PartialList> parseTopLevel(Class<?> clss, TopLevelMethods topLevelMethods, DefaultSymbolTable symbolTable) {
+	private List<FunctionDefinition> parseTopLevel(Class<?> clss, TopLevelMethods topLevelMethods, DefaultSymbolTable symbolTable) {
 		
-		List<PartialList> partialLists = new ArrayList<>();
+		List<FunctionDefinition> functionDefinitions = new ArrayList<>();
 		for(Method method: clss.getDeclaredMethods()) {
 			
 			SiriusMethod m = method.getDeclaredAnnotation(SiriusMethod.class);
 			if(m != null ) {
-				PartialList partialList = parseTopLevelFunction(method, m, /*classPkgQName, */symbolTable);
-				partialLists.add(partialList);
+				FunctionDefinition functionDefinition = parseTopLevelFunction(method, m, /*classPkgQName, */symbolTable);
+				functionDefinitions.add(functionDefinition);
 			}
 		}
-		return partialLists;
+		return functionDefinitions;
 	}
 	
-	private PartialList parseTopLevelFunction(Method method, SiriusMethod m, /*QName classPkgQName, */DefaultSymbolTable symbolTable) {
+	private FunctionDefinition parseTopLevelFunction(Method method, SiriusMethod m, /*QName classPkgQName, */DefaultSymbolTable symbolTable) {
 		
 		String methodName = m.methodName();
 		if(methodName.isEmpty())
@@ -180,10 +181,10 @@ public class SdkTools {
 		
 		AnnotationList annotationList = new AnnotationList();	// TODO 
 		boolean member = !annotationList.contains("static");
-		PartialList partialList = new PartialList(args, returnType, member /* this*/, /*qName,*/ /*concrete,*/ AstToken.internal(methodName), 
+		FunctionDefinition partialfunctionDefinitionList = new FunctionDefinition(args, returnType, member /* this*/, /*qName,*/ /*concrete,*/ AstToken.internal(methodName), 
 				Optional.empty() /*statements*/); 
 
 		
-		return partialList;
+		return partialfunctionDefinitionList;
 	}
 }

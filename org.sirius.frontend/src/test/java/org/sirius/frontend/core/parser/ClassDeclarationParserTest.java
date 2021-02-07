@@ -96,7 +96,8 @@ public class ClassDeclarationParserTest {
 	public void classDeclarationsContainingMethods() {
 		AstClassDeclaration myInterface = parseClassDeclaration("class C() {void f(){} void g(){} }" /*, new QName ()*/);
 
-		assertEquals(myInterface.getFunctionDeclarations().size(), 2);
+		assertEquals(myInterface.getFunctionDeclarations().size(), 0);
+		assertEquals(myInterface.getFunctionDefinitions().size(), 2);
 	}
 	@Test
 	@DisplayName("Class with values")

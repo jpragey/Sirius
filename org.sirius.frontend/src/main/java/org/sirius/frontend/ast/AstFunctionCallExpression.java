@@ -98,7 +98,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		
 		Optional<Symbol> symbol = symbolTable.lookupBySimpleName(fctName);
 		if(symbol.isPresent()) {
-			Optional<PartialList> fct = symbol.get().getFunctionDeclaration();
+			Optional<FunctionDefinition> fct = symbol.get().getFunctionDeclaration();
 			if(fct.isPresent()) {
 				Partial decl = fct.get().getAllArgsPartial();
 				AstType returnType = decl.getReturnType();
@@ -201,9 +201,9 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		public Optional<AbstractFunction> getDeclaration() {
 			Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(name.getText());
 			if(optSymbol.isPresent()) {
-				Optional<PartialList> optFunc =  optSymbol.get().getFunctionDeclaration();
+				Optional<FunctionDefinition> optFunc =  optSymbol.get().getFunctionDeclaration();
 				if(optFunc.isPresent()) {
-					PartialList funcDecl = optFunc.get();
+					FunctionDefinition funcDecl = optFunc.get();
 //					Optional<TopLevelFunction> tlFunc = funcDecl.getTopLevelFunction();
 					
 					int actualArgCount = actualArguments.size();
@@ -239,9 +239,9 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	public FunctionCall getExpression() {
 		Optional<Symbol> symbol = symbolTable.lookupBySimpleName(name.getText());
 		if(symbol.isPresent()) {
-			Optional<PartialList> fd = symbol.get().getFunctionDeclaration();
+			Optional<FunctionDefinition> fd = symbol.get().getFunctionDeclaration();
 			if(fd.isPresent()) {
-				PartialList functionDeclaration = fd.get();
+				FunctionDefinition functionDeclaration = fd.get();
 				
 //				int expectedArgCount = functionDeclaration.getFormalArguments().size();
 				int expectedArgCount = functionDeclaration.getAllArgsPartial().getArgs().size();

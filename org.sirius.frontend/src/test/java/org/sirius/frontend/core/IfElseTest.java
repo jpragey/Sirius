@@ -12,6 +12,7 @@ import org.sirius.frontend.ast.AstIfElseStatement;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstReturnStatement;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.parser.Compiler;
 
@@ -32,7 +33,7 @@ public class IfElseTest {
 		AstModuleDeclaration md = moduleDeclarations.get(0);
 		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
 		assertEquals(pd.getFunctionDeclarations().size(), 1);
-		PartialList fd = pd.getFunctionDeclarations().get(0);
+		FunctionDefinition fd = pd.getFunctionDeclarations().get(0);
 		assertEquals(fd.getqName().dotSeparated(), "main");
 
 		AstIfElseStatement ifElse = (AstIfElseStatement) fd.getBody().get().get(0);

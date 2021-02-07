@@ -1,6 +1,7 @@
 package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	// Formal parameters
 	private ImmutableList<TypeParameter> typeParameters;
 	
-	private ImmutableList<PartialList> functionDeclarations;
+	private ImmutableList<FunctionDefinition> functionDeclarations;
 	
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	private List<AstFunctionParameter> anonConstructorArguments = new ArrayList<>(); 
@@ -51,7 +52,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	
 	public AstClassDeclaration(Reporter reporter, AstToken name, 
 			ImmutableList<TypeParameter> typeParameters,
-			ImmutableList<PartialList> functionDeclarations,
+			ImmutableList<FunctionDefinition> functionDeclarations,
 			List<AstMemberValueDeclaration> valueDeclarations,
 			List<AstFunctionParameter> anonConstructorArguments,
 			List<AncestorInfo> ancestorInfos) 
@@ -93,10 +94,10 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		return fd;
 	}
 
-	public AstClassDeclaration withFunctionDeclaration(PartialList fd) {
+	public AstClassDeclaration withFunctionDeclaration(FunctionDefinition fd) {
 		
-		ImmutableList.Builder<PartialList> builder = ImmutableList.builderWithExpectedSize(functionDeclarations.size() + 1);
-		ImmutableList<PartialList> newFunctions = builder.addAll(functionDeclarations).add(fd).build();
+		ImmutableList.Builder<FunctionDefinition> builder = ImmutableList.builderWithExpectedSize(functionDeclarations.size() + 1);
+		ImmutableList<FunctionDefinition> newFunctions = builder.addAll(functionDeclarations).add(fd).build();
 
 		AstClassDeclaration cd = new AstClassDeclaration(reporter, name, typeParameters, newFunctions, 
 				valueDeclarations, anonConstructorArguments, ancestors);
@@ -129,8 +130,8 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			
 		}
 		
-		for(PartialList partialList : this.functionDeclarations) {
-			scope.addFunction(partialList);
+		for(FunctionDefinition fd : this.functionDeclarations) {
+			scope.addFunction(fd);
 		}
 		for(AstMemberValueDeclaration memberValueDeclaration: this.valueDeclarations) {
 			scope.addMemberValue(memberValueDeclaration);
@@ -150,10 +151,13 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		return name;
 	}
 	@Override
-	public List<PartialList> getFunctionDeclarations() {
+	public List<FunctionDeclaration> getFunctionDeclarations() {
+		return Collections.emptyList();	// TODO
+	}
+	@Override
+	public List<FunctionDefinition> getFunctionDefinitions() {
 		return functionDeclarations;
 	}
-	
 	public void addValueDeclaration(AstMemberValueDeclaration valueDeclaration) {
 		this.valueDeclarations.add(valueDeclaration);
 		// TODO: add to symbol table
@@ -280,13 +284,13 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		@Override
 		public List<AbstractFunction> getFunctions() {
 			
-			MapOfList<QName, PartialList> allFctMap = getAllFunctions();
+			MapOfList<QName, FunctionDefinition> allFctMap = getAllFunctions();
 			
 			ArrayList<AbstractFunction> memberFunctions = new ArrayList<>();
 			
 			for(QName qn: allFctMap.keySet()) {
-				List<PartialList> functions = allFctMap.get(qn);
-				for(PartialList func: functions) {
+				List<FunctionDefinition> functions = allFctMap.get(qn);
+				for(FunctionDefinition func: functions) {
 					if(func.isConcrete()) {
 //						func.getMemberFunction().ifPresent((MemberFunction mf) -> {
 //							memberFunctions.add(mf);

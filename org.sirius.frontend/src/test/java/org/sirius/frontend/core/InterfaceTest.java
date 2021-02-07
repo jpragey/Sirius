@@ -44,6 +44,6 @@ public class InterfaceTest {
 		
 		AbstractFunction inheritedFunc = implClass.getFunctions().get(0);
 		assertEquals(inheritedFunc.getQName(), new QName("p", "k", "I", "f"));
+		
 	}
-	
 }

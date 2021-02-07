@@ -10,11 +10,14 @@ import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
+import org.sirius.frontend.ast.FunctionDeclaration;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.FunctionBodyContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
+import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionParameterContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionParameterListContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
@@ -151,17 +154,53 @@ public class FunctionDeclarationParser {
 //			return functionParameters;
 //		}
 	}
-	public static class FunctionDeclarationVisitor extends SiriusBaseVisitor<PartialList> {
+	public static class FunctionDeclarationVisitor extends SiriusBaseVisitor<FunctionDeclaration> {
 		private Reporter reporter;
 
-		public FunctionDeclarationVisitor(Reporter reporter/*, QName containerQName*/) {
+		public FunctionDeclarationVisitor(Reporter reporter) {
 			super();
 			this.reporter = reporter;
 		}
 
 		
 		@Override
-		public PartialList visitFunctionDeclaration(FunctionDeclarationContext ctx) {
+		public FunctionDeclaration visitFunctionDeclaration(FunctionDeclarationContext ctx) {
+			
+			AstToken name = new AstToken(ctx.name);
+			
+			// -- Function parameters
+			FunctionParameterListVisitor argListVisitor = new FunctionParameterListVisitor(reporter);
+			
+			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionParameterList());
+			
+			// -- Return type
+			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
+			
+			TypeContext returnContext = ctx.returnType;
+			AstType returnType =  (returnContext == null) ?
+				AstVoidType.instance :
+				typeVisitor.visit(returnContext);
+			
+			boolean member = false; 
+			
+			return new FunctionDeclaration(functionParams, returnType, member, name) ;
+		}
+	}
+	public static class FunctionDefinitionVisitor extends SiriusBaseVisitor<FunctionDefinition> {
+		private Reporter reporter;
+
+		public FunctionDefinitionVisitor(Reporter reporter) {
+			super();
+			this.reporter = reporter;
+		}
+
+		
+		@Override
+		public FunctionDefinition visitFunctionDefinition(FunctionDefinitionContext ctx) {
+//			// TODO Auto-generated method stub
+//			return super.visitFunctionDefinition(ctx);
+//		}
+//		public PartialList visitFunctionDefclaration(FunctionDeclarationContext ctx) {
 			
 			AstToken name = new AstToken(ctx.name);
 			
@@ -189,7 +228,7 @@ public class FunctionDeclarationParser {
 			
 			boolean member = false; 
 			
-			return new PartialList(functionParams, returnType, member, /* qName,*/ /*concrete, */name, body) ;
+			return new FunctionDefinition(functionParams, returnType, member, /* qName,*/ /*concrete, */name, body) ;
 		}
 	}
 
