@@ -190,13 +190,18 @@ functionDeclaration
 	  
 	    
 	  '('
-	  	(  functionFormalArgument		
-	  	  (  ',' functionFormalArgument	)*
-	    )?								{  }
+		  functionParameterList
 	  ')' 
 	  ( functionBody )?
 //	  ( functionBody )	// TODO: ??? should be optional
 	;
+	
+functionParameterList
+	:   ( functionParameter		
+	  	  (  ',' functionParameter	)*
+	    )?
+	;
+	
 	
 functionBody
 	:'{' 					
@@ -204,7 +209,7 @@ functionBody
 	 '}'
 	;
 
-functionFormalArgument 
+functionParameter
 :
 	type LOWER_ID
 ;
@@ -376,9 +381,7 @@ classDeclaration
 	: 'class' 		
 	  TYPE_ID		
 	  '('
-	  	(  functionFormalArgument		
-	  	  (  ',' functionFormalArgument	)*
-	    )?
+			functionParameterList
 	  ')'
 	  (
 	  	'<'

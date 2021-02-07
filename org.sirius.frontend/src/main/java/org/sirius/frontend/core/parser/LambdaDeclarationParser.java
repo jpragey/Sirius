@@ -7,17 +7,12 @@ import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstFunctionParameter;
-import org.sirius.frontend.ast.AstLambdaParameter;
 import org.sirius.frontend.ast.AstStatement;
-import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.LambdaDeclaration;
-import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.FunctionBodyContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionFormalArgumentContext;
 import org.sirius.frontend.parser.SiriusParser.LambdaDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
 

@@ -14,7 +14,8 @@ import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.FunctionBodyContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionFormalArgumentContext;
+import org.sirius.frontend.parser.SiriusParser.FunctionParameterContext;
+import org.sirius.frontend.parser.SiriusParser.FunctionParameterListContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
@@ -30,7 +31,6 @@ public class FunctionDeclarationParser {
 		this.reporter = reporter;
 	}
 
-	//AstFunctionParameter
 	public static class FunctionParameterVisitor extends SiriusBaseVisitor<AstFunctionParameter> {
 		private Reporter reporter;
 		
@@ -40,7 +40,7 @@ public class FunctionDeclarationParser {
 		}
 
 		@Override
-		public AstFunctionParameter visitFunctionFormalArgument(FunctionFormalArgumentContext ctx) {
+		public AstFunctionParameter visitFunctionParameter(FunctionParameterContext ctx) {
 			
 			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
 			
@@ -49,7 +49,6 @@ public class FunctionDeclarationParser {
 
 			return new AstFunctionParameter(type, name);
 		}
-		
 	}
 
 	public static class FunctionBodyVisitor extends SiriusBaseVisitor<List<AstStatement> > {
@@ -71,7 +70,32 @@ public class FunctionDeclarationParser {
 			return statements;
 		}
 	}
-	
+
+	public static class FunctionParameterListVisitor extends SiriusBaseVisitor< List<AstFunctionParameter> > {
+		private Reporter reporter;
+		
+		public FunctionParameterListVisitor(Reporter reporter) {
+			super();
+			this.reporter = reporter;
+		}
+		
+		@Override
+		public List<AstFunctionParameter> visitFunctionParameterList(FunctionParameterListContext ctx) {
+			FunctionParameterVisitor v = new FunctionParameterVisitor(reporter);
+			
+			List<AstFunctionParameter> functionParameters = 
+			ctx.functionParameter().stream()
+				.map(formalArgCtx -> v.visit(formalArgCtx))
+				.collect(Collectors.toList());
+			
+			int currentArgIndex = 0; // index in argument list
+			for(var fp: functionParameters) {
+				fp.setIndex(currentArgIndex++);
+			}
+
+			return functionParameters;
+		}
+	}
 	public static class FunctionDeclarationVisitor extends SiriusBaseVisitor<PartialList> {
 		private Reporter reporter;
 
@@ -85,17 +109,11 @@ public class FunctionDeclarationParser {
 		public PartialList visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 			
 			AstToken name = new AstToken(ctx.name);
-//			QName qName = containerQName.child(name.getText());
 			
 			// -- Function parameters
-			FunctionParameterVisitor paramVisitor = new FunctionParameterVisitor(reporter);
-			List<AstFunctionParameter> functionParams = ctx.functionFormalArgument().stream()
-					.map(funcParam -> paramVisitor.visitFunctionFormalArgument(funcParam))
-					.collect(Collectors.toList());
-			int currentArgIndex = 0; // index in argument list
-			for(var fp: functionParams) {
-				fp.setIndex(currentArgIndex++);
-			}
+			FunctionParameterListVisitor argListVisitor = new FunctionParameterListVisitor(reporter);
+			
+			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionParameterList());
 			
 			// -- Return type
 			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);

@@ -1,29 +1,18 @@
 package org.sirius.frontend.core.parser;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstClassOrInterface;
 import org.sirius.frontend.ast.AstFunctionParameter;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.PartialList;
 import org.sirius.frontend.ast.TypeParameter;
-import org.sirius.frontend.ast.Variance;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.ClassDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionFormalArgumentContext;
-import org.sirius.frontend.parser.SiriusParser.InterfaceDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.TypeContext;
-import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationContext;
 
 import com.google.common.collect.ImmutableList;
 
@@ -56,12 +45,8 @@ public class ClassDeclarationParser {
 			AstToken name = new AstToken(ctx.TYPE_ID(0).getSymbol());
 			
 			// -- Constructor arguments
-			FunctionDeclarationParser.FunctionParameterVisitor parameterVisitor = new FunctionDeclarationParser.FunctionParameterVisitor (reporter);
-			List<AstFunctionParameter> anonConstructorArguments = 
-			ctx.functionFormalArgument().stream()
-				.map(argCtxt -> argCtxt.accept(parameterVisitor))
-				.filter((AstFunctionParameter p) -> p!=null)
-				.collect(Collectors.toList());
+			FunctionDeclarationParser.FunctionParameterListVisitor parameterVisitor = new FunctionDeclarationParser.FunctionParameterListVisitor(reporter);
+			List<AstFunctionParameter> anonConstructorArguments = parameterVisitor.visitFunctionParameterList(ctx.functionParameterList());
 			
 			// -- Implemented interfaces
 			List<AstClassOrInterface.AncestorInfo> ancestors = ctx.TYPE_ID().stream()
