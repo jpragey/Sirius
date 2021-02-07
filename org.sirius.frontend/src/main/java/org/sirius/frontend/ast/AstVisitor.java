@@ -45,7 +45,7 @@ public interface AstVisitor {
 //	public default void endFunctionDeclaration (AstFunctionDeclarationBuilder functionDeclaration) {}
 //	
 //	
-	
+//	public default void startPartialList (PartialList partialList) {}
 	
 	public default void startPartialList (PartialList partialList) {}
 	public default void endPartialList   (PartialList partialList) {}
@@ -55,6 +55,9 @@ public interface AstVisitor {
 	
 	public default void startFunctionFormalArgument (AstFunctionParameter formalArgument) {}
 	public default void endFunctionFormalArgument   (AstFunctionParameter formalArgument) {}
+	
+	public default void startLambdaFormalArgument (AstLambdaParameter formalArgument) {}
+	public default void endLambdaFormalArgument   (AstLambdaParameter formalArgument) {}
 	
 	
 	

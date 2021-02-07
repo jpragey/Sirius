@@ -195,6 +195,7 @@ functionDeclaration
 	    )?								{  }
 	  ')' 
 	  ( functionBody )?
+//	  ( functionBody )	// TODO: ??? should be optional
 	;
 	
 functionBody
@@ -208,6 +209,54 @@ functionFormalArgument
 	type LOWER_ID
 ;
 
+// lamda declaration: parameter names are optional, return type is mandatory, no body
+lambdaDeclaration 
+@init {
+}
+	: 
+		// annotationList // ???
+	(	  returnType=type	 
+	  	| 'void' 	
+	)
+	  // ( '<' ( d=typeParameterDeclaration ( ',' d=typeParameterDeclaration )* )? '>')? // ???
+	'(' 
+	  	lambdaFormalArgumentList
+	')' 
+	;
+
+lambdaOptionalArgument 
+:
+	type LOWER_ID ?
+;
+lambdaFormalArgumentList 
+:
+  	(  lambdaOptionalArgument		
+  	  (  ',' lambdaOptionalArgument	)*
+    )?
+;
+
+
+lambdaDefinition 
+@init {
+}
+	: 
+		// annotationList // ???
+	  (	  returnType=type	 
+	  	| 'void' 	
+	  )
+	  // ( '<' ( d=typeParameterDeclaration ( ',' d=typeParameterDeclaration )* )? '>')? // ???
+	  '('
+	  	(  lambdaFormalArgument		
+	  	  (  ',' lambdaFormalArgument	)*
+	    )?								{  }
+	  ')' 
+	  functionBody
+	;
+
+lambdaFormalArgument 
+:
+	type LOWER_ID
+;
 
 // -------------------- STATEMENT
 
@@ -263,6 +312,8 @@ expression
 	// -- Function call
 	| 
 		functionCallExpression 		# isFunctionCallExpression
+//	|
+//		lambdaDeclaration			# isLambdaDeclaration 
 	| 
 	    thisExpr=expression '.' functionCallExpression 		# isMethodCallExpression
 	
