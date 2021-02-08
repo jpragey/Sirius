@@ -13,10 +13,21 @@ public class FunctionDeclaration implements Visitable {
 	
 	private QName qName = null;
 	private AstToken name;
-	private List<AstFunctionParameter> args;
-	private boolean member /* ie is an instance method*/;
-	private AstType returnType;
 	
+	private LambdaDeclaration lambdaDeclaration;
+	
+	private boolean member /* ie is an instance method*/;
+	
+	
+	public FunctionDeclaration(List<AstFunctionParameter> args, AstType returnType, 
+			boolean member /* ie is an instance method*/,             
+			AstToken name) 
+	{
+		super();
+		this.member = member;
+		this.name = name;
+		this.lambdaDeclaration = new LambdaDeclaration(args, returnType);
+	}
 	public void setContainerQName(QName containerQName) {
 		this.qName = containerQName.child(new QName(name.getText()));
 	}
@@ -25,19 +36,8 @@ public class FunctionDeclaration implements Visitable {
 	public String toString() {
 		return name.getText() + "(...)";
 	}
-	
-	public FunctionDeclaration(List<AstFunctionParameter> args, AstType returnType, 
-			boolean member /* ie is an instance method*/,             
-			AstToken name) 
-	{
-		super();
-		this.args = args;
-		this.returnType = returnType;
-		this.member = member;
-		this.name = name;
-		int argSize = args.size();
-	}
 
+	
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startFunctionDeclaration(this);
@@ -59,7 +59,7 @@ public class FunctionDeclaration implements Visitable {
 	}
 
 	public List<AstFunctionParameter> getArgs() {
-		return args;
+		return lambdaDeclaration.getArgs();
 	}
 
 	public boolean isMember() {
@@ -67,7 +67,7 @@ public class FunctionDeclaration implements Visitable {
 	}
 
 	public AstType getReturnType() {
-		return returnType;
+		return lambdaDeclaration.getReturnType();
 	}
 
 }

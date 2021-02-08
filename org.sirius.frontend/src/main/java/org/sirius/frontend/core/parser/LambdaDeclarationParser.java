@@ -128,7 +128,7 @@ public class LambdaDeclarationParser {
 			
 			// -- Body
 			
-			Optional<List<AstStatement>> body = Optional.empty();
+//			Optional<List<AstStatement>> body = Optional.empty();
 /***			
 			if(ctx.functionBody() != null) {
 				FunctionBodyVisitor bodyVisitor = new FunctionBodyVisitor(reporter);
@@ -138,7 +138,7 @@ public class LambdaDeclarationParser {
 			
 //			boolean member = false; 
 */
-			return new LambdaDeclaration(functionParams, returnType, body);
+			return new LambdaDeclaration(functionParams, returnType);
 
 //			return new PartialList(functionParams, returnType, member, /* qName,*/ /*concrete, */name, body) ;
 		}
