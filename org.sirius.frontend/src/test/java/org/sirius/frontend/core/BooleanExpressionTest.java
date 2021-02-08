@@ -22,13 +22,13 @@ import org.sirius.frontend.parser.Compiler;
 public class BooleanExpressionTest {
 
 	
-	<T> T getInList(int pos, List<T> l) {
-		if(pos >= l.size())
-			throw new AssertionError("position " + pos + " >= size of list (" + l.size() + ")");
-		
-		T result = l.get(pos);
-		return result;
-	}
+//	<T> T getInList(int pos, List<T> l) {
+//		if(pos >= l.size())
+//			throw new AssertionError("position " + pos + " >= size of list (" + l.size() + ")");
+//		
+//		T result = l.get(pos);
+//		return result;
+//	}
 	
 	@Test
 	public void functionLocalBooleanVariableExpression() {
@@ -40,9 +40,10 @@ public class BooleanExpressionTest {
 		AstPackageDeclaration pack = mod.getPackageDeclarations().get(0);
 		FunctionDefinition func = pack.getFunctionDeclarations().get(0);
 //		Partial partial = func.getAllArgsPartial();
-		assertEquals(func.getBody().size(), 1);
+		assertEquals(func.getBody().getStatementSize(), 1);
 		
-		AstLocalVariableStatement st = (AstLocalVariableStatement)getInList(0, func.getBody());
+		AstLocalVariableStatement st = (AstLocalVariableStatement)func.getBody().getStatement(0);
+//		AstLocalVariableStatement st = (AstLocalVariableStatement)getInList(0, func.getBody());
 		AstClassDeclaration type = (AstClassDeclaration)st.getType().resolve();
 		
 		assertEquals(type.getQName().dotSeparated(), "sirius.lang.Boolean");

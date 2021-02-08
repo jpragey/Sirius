@@ -23,8 +23,10 @@ public class FunctionDefinition implements Visitable {
 	private List<Partial> partials;
 	private Partial allArgsPartial;
 	
-	private List<AstStatement> body;
-
+//	private List<AstStatement> body;
+	private FunctionBody body;
+	
+	
 	private FunctionDeclaration functionDeclaration;
 	
 	private List<ClosureElement> closure;
@@ -46,7 +48,7 @@ public class FunctionDefinition implements Visitable {
 		super();
 		this.closure = closure;
 		this.partials = new ArrayList<>(args.size() + 1);
-		this.body = body;
+		this.body = new FunctionBody(body);
 		
 		this.functionDeclaration = new FunctionDeclaration(args, returnType, member, name); 
 		
@@ -148,7 +150,7 @@ public class FunctionDefinition implements Visitable {
 		return getName().getText();
 	}
 
-	public List<AstStatement> getBody() {
+	public FunctionBody getBody() {
 		return body;
 	}
 

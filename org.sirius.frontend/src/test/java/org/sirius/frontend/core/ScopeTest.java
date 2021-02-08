@@ -19,6 +19,7 @@ import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstReturnStatement;
 import org.sirius.frontend.ast.AstStatement;
+import org.sirius.frontend.ast.FunctionBody;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
 
@@ -122,8 +123,9 @@ public class ScopeTest {
 		assertTrue(id_2.getScope().getFunctionParameter("y").isPresent());
 //		assertTrue(idPartials.byArgCount(3).isEmpty());
 		
-		List<AstStatement> body = idPartials.getBody();
-		AstReturnStatement returnStmt = (AstReturnStatement)body.get(0);
+		FunctionBody body = idPartials.getBody();
+//		AstReturnStatement returnStmt = (AstReturnStatement)body.get(0);
+		AstReturnStatement returnStmt = (AstReturnStatement)body.getStatement(0);
 		ReturnStatement rs = returnStmt.toAPI();
 //		
 //		AstPackageDeclaration astPackage = astModule.getPackageDeclarations().get(0);

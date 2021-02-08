@@ -35,7 +35,7 @@ public class IfElseTest {
 		FunctionDefinition fd = pd.getFunctionDeclarations().get(0);
 		assertEquals(fd.getqName().dotSeparated(), "main");
 
-		AstIfElseStatement ifElse = (AstIfElseStatement) fd.getBody().get(0);
+		AstIfElseStatement ifElse = (AstIfElseStatement) fd.getBody().getStatement(0);
 		AstExpression ifExpr = ifElse.getIfExpression();
 		
 		assertEquals(ifExpr.getClass(), AstBooleanConstantExpression.class);

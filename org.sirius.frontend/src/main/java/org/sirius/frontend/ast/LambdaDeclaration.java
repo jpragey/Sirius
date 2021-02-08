@@ -7,7 +7,8 @@ public class LambdaDeclaration {
 
 	private AstType returnType; 
 	private List<AstFunctionParameter> args;
-	private Optional<List<AstStatement>> body;
+	private Optional<FunctionBody> body;
+	
 
 	public LambdaDeclaration(List<AstFunctionParameter> args, 
 			AstType returnType, 
@@ -15,8 +16,7 @@ public class LambdaDeclaration {
 	{
 		this.args = args;
 		this.returnType = returnType;
-		this.body = body;
-		
+		this.body = body.map(stmtList -> new FunctionBody(stmtList));
 	}
 
 	public AstType getReturnType() {
@@ -27,9 +27,8 @@ public class LambdaDeclaration {
 		return args;
 	}
 
-	public Optional<List<AstStatement>> getBody() {
+	public Optional<FunctionBody> getBody() {
 		return body;
 	}
-	
 	
 }
