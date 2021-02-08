@@ -1,8 +1,6 @@
 package org.sirius.frontend.core.parser;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
@@ -10,10 +8,12 @@ import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
-import org.sirius.frontend.ast.LambdaDeclaration;
+import org.sirius.frontend.ast.FunctionBody;
+import org.sirius.frontend.ast.LambdaDefinition;
+import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionParameterVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.FunctionBodyContext;
-import org.sirius.frontend.parser.SiriusParser.LambdaDeclarationContext;
+import org.sirius.frontend.parser.SiriusParser.LambdaDefinitionContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
@@ -84,7 +84,7 @@ public class LambdaDeclarationParser {
 		}
 	}
 
-	public static class LambdaDeclarationVisitor extends SiriusBaseVisitor<LambdaDeclaration> {
+	public static class LambdaDeclarationVisitor extends SiriusBaseVisitor<LambdaDefinition> {
 		private Reporter reporter;
 
 		public LambdaDeclarationVisitor(Reporter reporter/*, QName containerQName*/) {
@@ -93,30 +93,20 @@ public class LambdaDeclarationParser {
 		}
 
 		@Override
-		public LambdaDeclaration visitLambdaDeclaration(LambdaDeclarationContext ctx) {
-			// TODO Auto-generated method stub
-//			return super.visitLambdaDeclaration(ctx);
-//			return new LambdaDeclaration();
-//		}
-		
-//		//@Override
-//		public PartialList visitFunctionDeclaration_OLD(FunctionDeclarationContext ctx) {
-//			
-//			AstToken name = new AstToken(ctx.name);
-//			QName qName = containerQName.child(name.getText());
+		public LambdaDefinition visitLambdaDefinition(LambdaDefinitionContext ctx) {
 			
 			// -- Function parameters
-/**			
+			
 			FunctionParameterVisitor paramVisitor = new FunctionParameterVisitor(reporter);
-			List<AstFunctionParameter> functionParams = ctx.functionFormalArgument().stream()
-					.map(funcParam -> paramVisitor.visitFunctionFormalArgument(funcParam))
+			List<AstFunctionParameter> functionParams = ctx.lambdaFormalArgument().stream()
+					.map(funcParam -> paramVisitor.visitLambdaFormalArgument(funcParam))
 					.collect(Collectors.toList());
 			int currentArgIndex = 0; // index in argument list
 			for(var fp: functionParams) {
 				fp.setIndex(currentArgIndex++);
 			}
-*/			
-			List<AstFunctionParameter> functionParams = Collections.emptyList();// TODO: temp
+			
+//			List<AstFunctionParameter> functionParams = Collections.emptyList();// TODO: temp
 			
 			// -- Return type
 			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
@@ -127,20 +117,10 @@ public class LambdaDeclarationParser {
 				typeVisitor.visit(returnContext);
 			
 			// -- Body
+			FunctionBodyVisitor bodyVisitor = new FunctionBodyVisitor(reporter);
+			List<AstStatement> statements = ctx.functionBody().accept(bodyVisitor);
 			
-//			Optional<List<AstStatement>> body = Optional.empty();
-/***			
-			if(ctx.functionBody() != null) {
-				FunctionBodyVisitor bodyVisitor = new FunctionBodyVisitor(reporter);
-				List<AstStatement> statements = ctx.functionBody().accept(bodyVisitor);
-				body = Optional.of(statements);
-			}
-			
-//			boolean member = false; 
-*/
-			return new LambdaDeclaration(functionParams, returnType);
-
-//			return new PartialList(functionParams, returnType, member, /* qName,*/ /*concrete, */name, body) ;
+			return new LambdaDefinition(functionParams, returnType, new FunctionBody(statements));
 		}
 	}
 

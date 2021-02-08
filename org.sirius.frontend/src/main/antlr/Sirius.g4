@@ -229,19 +229,19 @@ functionParameter
 ;
 
 // lamda declaration: parameter names are optional, return type is mandatory, no body
-lambdaDeclaration 
-@init {
-}
-	: 
-		// annotationList // ???
-	(	  returnType=type	 
-	  	| 'void' 	
-	)
-	  // ( '<' ( d=typeParameterDeclaration ( ',' d=typeParameterDeclaration )* )? '>')? // ???
-	'(' 
-	  	lambdaFormalArgumentList
-	')' 
-	;
+//lambdaDeclaration 
+//@init {
+//}
+//	: 
+//		// annotationList // ???
+//	(	  returnType=type	 
+//	  	| 'void' 	
+//	)
+//	  // ( '<' ( d=typeParameterDeclaration ( ',' d=typeParameterDeclaration )* )? '>')? // ???
+//	'(' 
+//	  	lambdaFormalArgumentList
+//	')' 
+//	;
 
 lambdaOptionalArgument 
 :
@@ -332,7 +332,8 @@ expression
 	| 
 		functionCallExpression 		# isFunctionCallExpression
 //	|
-//		lambdaDeclaration			# isLambdaDeclaration 
+//		lambdaDeclaration			# isLambdaDeclaration
+	| lambdaDefinition 		# isLambdaDefinition
 	| 
 	    thisExpr=expression '.' functionCallExpression 		# isMethodCallExpression
 	
