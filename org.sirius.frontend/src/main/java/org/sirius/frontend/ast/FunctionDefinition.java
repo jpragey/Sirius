@@ -23,7 +23,7 @@ public class FunctionDefinition implements Visitable {
 	private List<Partial> partials;
 	private Partial allArgsPartial;
 	
-	private Optional<List<AstStatement>> body;
+	private List<AstStatement> body;
 
 	private FunctionDeclaration functionDeclaration;
 	
@@ -31,7 +31,7 @@ public class FunctionDefinition implements Visitable {
 	private Optional<FunctionDefinition> firstArgAppliedFuncDef;
 
 	public FunctionDefinition(List<AstFunctionParameter> args, AstType returnType, 
-			boolean member /* ie is an instance method*/, AstToken name, Optional<List<AstStatement>> body) {
+			boolean member /* ie is an instance method*/, AstToken name, List<AstStatement> body) {
 		this(List.of()/* closure*/, args, returnType, 
 			member /* ie is an instance method*/,             
 			name, 
@@ -41,7 +41,7 @@ public class FunctionDefinition implements Visitable {
 	public FunctionDefinition(List<ClosureElement> closure, List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/,             
 			AstToken name, 
-			Optional<List<AstStatement>> body) 
+			List<AstStatement> body) 
 	{
 		super();
 		this.closure = closure;
@@ -70,9 +70,8 @@ public class FunctionDefinition implements Visitable {
 	}
 	 
 	private static Optional<FunctionDefinition> applyOneArgToClosure(List<AstFunctionParameter> currentArgs, List<ClosureElement> closure, FunctionDeclaration functionDeclaration,
-			Optional<List<AstStatement>> body) {
+			List<AstStatement> body) {
 		
-//		List<AstFunctionParameter> currentArgs = this.functionDeclaration.getArgs();
 		if(currentArgs.isEmpty()) {
 			return Optional.empty();
 		}
@@ -149,10 +148,7 @@ public class FunctionDefinition implements Visitable {
 		return getName().getText();
 	}
 
-	public boolean isConcrete() {
-		return body.isPresent();
-	}
-	public Optional<List<AstStatement>> getBody() {
+	public List<AstStatement> getBody() {
 		return body;
 	}
 
@@ -166,6 +162,10 @@ public class FunctionDefinition implements Visitable {
 	
 	public List<AstFunctionParameter> getArgs() {
 		return functionDeclaration.getArgs();
+	}
+
+	public AstType getReturnType() {
+		return functionDeclaration.getReturnType();
 	}
 
 	/** Return the closed FunctionDefinition that has no argument (all args are in closure)  */

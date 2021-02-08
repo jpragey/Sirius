@@ -160,12 +160,19 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	}
 	
 	private class FunctionCallImpl implements FunctionCall {
-		private Partial functionDeclaration;
+//		private Partial functionDeclaration0;
+		private FunctionDefinition functionDefinition;
 		
-		public FunctionCallImpl(Partial functionDeclaration) {
+		
+		public FunctionCallImpl(FunctionDefinition functionDefinition) {
 			super();
-			this.functionDeclaration = functionDeclaration;
+			this.functionDefinition = functionDefinition;
 		}
+
+//		public FunctionCallImpl(Partial functionDeclaration) {
+//			super();
+//			this.functionDeclaration = functionDeclaration;
+//		}
 
 		@Override
 		public org.sirius.common.core.Token getFunctionName() {
@@ -179,7 +186,8 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		public List<Expression> getArguments() {
 //			List<AstFunctionFormalArgument> formalArgs = functionDeclaration.getFormalArguments();
 //			List<AstFunctionParameter> formalArgs = functionDeclaration.getPartials().get(0).getArgs();
-			List<AstFunctionParameter> formalArgs = functionDeclaration.getArgs();
+//			List<AstFunctionParameter> formalArgs = functionDeclaration.getArgs();
+			List<AstFunctionParameter> formalArgs = functionDefinition.getArgs();
 			Iterator<AstFunctionParameter> it = formalArgs.iterator();
 			
 			ArrayList<Expression> l = new ArrayList<>();
@@ -226,7 +234,8 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		}
 		@Override
 		public Type getType() {
-			return functionDeclaration.getReturnType().getApiType();
+			return functionDefinition.getReturnType().getApiType();
+//			return functionDeclaration.getReturnType().getApiType();
 		}
 		@Override
 		public String toString() {
@@ -244,12 +253,15 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 				FunctionDefinition functionDeclaration = fd.get();
 				
 //				int expectedArgCount = functionDeclaration.getFormalArguments().size();
-				int expectedArgCount = functionDeclaration.getAllArgsPartial().getArgs().size();
+//				Partial allArgsPartial = functionDeclaration.getAllArgsPartial();
+//				int expectedArgCount = allArgsPartial.getArgs().size();
+				int expectedArgCount = functionDeclaration.getArgs().size();
 				if(expectedArgCount != actualArguments.size()) {
 					reporter.error(name.getText() + " has a wrong number of arguments: " + expectedArgCount + " actual, " + actualArguments.size() + " expected.", name);
 				} else {
-					Partial partial = functionDeclaration.getAllArgsPartial();
-					return new FunctionCallImpl(partial);
+//					Partial partial = functionDeclaration.getAllArgsPartial();
+					return new FunctionCallImpl(functionDeclaration);
+//					return new FunctionCallImpl(allArgsPartial);
 				}
 				
 			} else {

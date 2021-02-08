@@ -47,10 +47,6 @@ public class FunctionDeclarationParserTest {
 		FunctionDeclarationParser.FunctionDeclarationVisitor fdeclVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter /*, containerQName*/);
 		FunctionDeclaration functionDecl = fdeclVisitor.visit(tree);
 		
-//		FunctionDeclarationParser.FunctionDefinitionVisitor fdefinitionVisitor = new FunctionDeclarationParser.FunctionDefinitionVisitor(reporter /*, containerQName*/);
-//		FunctionDefinition functionDef = fdefinitionVisitor.visit(tree);
-		
-//		functionDef.visit(new QNameSetterVisitor());
 		functionDecl.visit(new QNameSetterVisitor());
 		
 		return functionDecl;
@@ -59,16 +55,11 @@ public class FunctionDeclarationParserTest {
 	private FunctionDefinition parseTypeDefinition(String inputText) {
 		
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
-//		ParseTree tree = parser.functionDeclaration();
-				
-//		FunctionDeclarationParser.FunctionDeclarationVisitor fdeclVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter /*, containerQName*/);
-//		FunctionDeclaration functionDecl = fdeclVisitor.visit(tree);
 		
 		FunctionDeclarationParser.FunctionDefinitionVisitor fdefinitionVisitor = new FunctionDeclarationParser.FunctionDefinitionVisitor(reporter /*, containerQName*/);
 		FunctionDefinition functionDef = fdefinitionVisitor.visit(parser.functionDefinition());
 		
 		functionDef.visit(new QNameSetterVisitor());
-//		functionDecl.visit(new QNameSetterVisitor());
 		
 		return functionDef;
 	}
@@ -141,10 +132,9 @@ public class FunctionDeclarationParserTest {
 	@DisplayName("Function containing statements")
 	public void functionWithBodyStatements() {
 		FunctionDefinition fd = parseTypeDefinition("void f() {Integer i; return 42;}" /*, new QName()*/);
-		List<AstStatement> bodyStatements = fd.getAllArgsPartial().getBodyStatements().get();
+		List<AstStatement> bodyStatements = fd.getAllArgsPartial().getBodyStatements();
 		
 		assertThat(bodyStatements.size(), is(2));
-		assertThat(fd.isConcrete(), is(true));
 	}
 
 	@Test

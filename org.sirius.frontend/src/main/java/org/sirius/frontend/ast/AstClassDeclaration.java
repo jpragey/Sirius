@@ -287,21 +287,14 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			MapOfList<QName, FunctionDefinition> allFctMap = getAllFunctions();
 			
 			ArrayList<AbstractFunction> memberFunctions = new ArrayList<>();
-			
+
 			for(QName qn: allFctMap.keySet()) {
 				List<FunctionDefinition> functions = allFctMap.get(qn);
 				for(FunctionDefinition func: functions) {
-					if(func.isConcrete()) {
-//						func.getMemberFunction().ifPresent((MemberFunction mf) -> {
-//							memberFunctions.add(mf);
-//						} );
-						for(Partial partial: func.getPartials()) {
-							memberFunctions.add(partial.toAPI());
-						}
-//						memberFunctions.add(func.toAPI());
+					for(Partial partial: func.getPartials()) {
+						memberFunctions.add(partial.toAPI());
 					}
 				}
-				
 			}
 			return memberFunctions;
 		}

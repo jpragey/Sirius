@@ -101,19 +101,6 @@ public class FunctionDeclarationParser {
 		}
 	}
 	
-//	public static class TypeParameterVisitor extends SiriusBaseVisitor< TypeParameter> {
-//		private Reporter reporter;
-//		
-//		public TypeParameterVisitor(Reporter reporter) {
-//			super();
-//			this.reporter = reporter;
-//		}
-//		@Override
-//		public TypeParameter visitTypeParameterDeclaration(TypeParameterDeclarationContext ctx) {
-//			ctx.i
-//			return super.visitTypeParameterDeclaration(ctx);
-//		}
-//	}
 	public static class TypeParameterListVisitor extends SiriusBaseVisitor< List<TypeParameter> > {
 		private Reporter reporter;
 		
@@ -132,24 +119,8 @@ public class FunctionDeclarationParser {
 			
 			return typeParameters;
 		}
-		
-//		@Override
-//		public List<AstFunctionParameter> visitFunctionParameterList(FunctionParameterListContext ctx) {
-//			FunctionParameterVisitor v = new FunctionParameterVisitor(reporter);
-//			
-//			List<AstFunctionParameter> functionParameters = 
-//			ctx.functionParameter().stream()
-//				.map(formalArgCtx -> v.visit(formalArgCtx))
-//				.collect(Collectors.toList());
-//			
-//			int currentArgIndex = 0; // index in argument list
-//			for(var fp: functionParameters) {
-//				fp.setIndex(currentArgIndex++);
-//			}
-//
-//			return functionParameters;
-//		}
 	}
+	
 	public static class FunctionDeclarationVisitor extends SiriusBaseVisitor<FunctionDeclaration> {
 		private Reporter reporter;
 
@@ -193,11 +164,7 @@ public class FunctionDeclarationParser {
 		
 		@Override
 		public FunctionDefinition visitFunctionDefinition(FunctionDefinitionContext ctx) {
-//			// TODO Auto-generated method stub
-//			return super.visitFunctionDefinition(ctx);
-//		}
-//		public PartialList visitFunctionDefclaration(FunctionDeclarationContext ctx) {
-			
+		
 			AstToken name = new AstToken(ctx.name);
 			
 			// -- Function parameters
@@ -214,17 +181,13 @@ public class FunctionDeclarationParser {
 				typeVisitor.visit(returnContext);
 			
 			// -- Body
-			
-			Optional<List<AstStatement>> body = Optional.empty();
-			if(ctx.functionBody() != null) {
-				FunctionBodyVisitor bodyVisitor = new FunctionBodyVisitor(reporter);
-				List<AstStatement> statements = ctx.functionBody().accept(bodyVisitor);
-				body = Optional.of(statements);
-			}
+			assert((ctx.functionBody() != null));
+			FunctionBodyVisitor bodyVisitor = new FunctionBodyVisitor(reporter);
+			List<AstStatement> bodyStatements = ctx.functionBody().accept(bodyVisitor);
 			
 			boolean member = false; 
 			
-			return new FunctionDefinition(functionParams, returnType, member, /* qName,*/ /*concrete, */name, body) ;
+			return new FunctionDefinition(functionParams, returnType, member, name, bodyStatements) ;
 		}
 	}
 

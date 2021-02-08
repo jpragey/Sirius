@@ -94,10 +94,8 @@ public class SymbolExportVisitorTest {
 		FunctionDefinition pl = new FunctionDefinition(List.of() , 
 				AstType.noType,// returnType, 
 				false /*member*/,             
-//				new QName("dummy0", "dummy1"),// qName, 
-				AstToken.internal(nameStr)
-				, 
-				Optional.empty() 
+				AstToken.internal(nameStr), 
+				Collections.emptyList() // body
 				);
 		return pl;
 	}

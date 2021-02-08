@@ -116,22 +116,13 @@ public class ScopeTest {
 		FunctionDefinition idPartials = astPackage.getFunctionDeclarations().get(0);
 		assertThat(idPartials.getNameString(), equalTo("id"));
 		
-//		Partial id_0 = idPartials.byArgCount(0).get();
-//		assertEquals(id_0.getArgs().size(), 0);
-//		
-//		// Check partial scope(s) are Contain function arguments
-//		Partial id_1 = idPartials.byArgCount(1).get();
-//		assertEquals(id_1.getArgs().size(), 1);
-//		assertTrue(id_1.getScope().getFunctionParameter("x").isPresent());
-////		assertTrue(idPartials.byArgCount(2).isEmpty());
-		
 		Partial id_2 = idPartials.byArgCount(2).get();
 		assertEquals(id_2.getArgs().size(), 2);
 		assertTrue(id_2.getScope().getFunctionParameter("x").isPresent());
 		assertTrue(id_2.getScope().getFunctionParameter("y").isPresent());
 //		assertTrue(idPartials.byArgCount(3).isEmpty());
 		
-		List<AstStatement> body = idPartials.getBody().get();
+		List<AstStatement> body = idPartials.getBody();
 		AstReturnStatement returnStmt = (AstReturnStatement)body.get(0);
 		ReturnStatement rs = returnStmt.toAPI();
 //		

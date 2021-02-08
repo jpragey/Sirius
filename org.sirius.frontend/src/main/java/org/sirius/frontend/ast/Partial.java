@@ -25,7 +25,7 @@ public class Partial implements Visitable {
 	private boolean member = false;
 
 	private AstType returnType = AstVoidType.instance;
-	private Optional<List<AstStatement>> body/* = new ArrayList<>()*/; 
+	private List<AstStatement> body/* = new ArrayList<>()*/; 
 	
 	private DefaultSymbolTable symbolTable = null;
 	private Scope scope = null;
@@ -39,10 +39,10 @@ public class Partial implements Visitable {
 		boolean member;
 
 		public FunctionImpl(QName functionQName, ImmutableList<AstFunctionParameter> formalArguments, Type returnType, 
-				Optional<List<Statement>> bodyStatements, boolean member) {
+				List<Statement> bodyStatements, boolean member) {
 			this.functionQName = functionQName;
 			this.returnType = returnType;
-			this.bodyStatements = bodyStatements;
+			this.bodyStatements = Optional.of(bodyStatements);
 			this.member = member;
 
 			ArrayList<FunctionFormalArgument> implArgs = new ArrayList<>(formalArguments.size()); 
@@ -95,7 +95,7 @@ public class Partial implements Visitable {
 			List<AstFunctionParameter> args, 
 			boolean member,
 			AstType returnType,
-			Optional<List<AstStatement>> body) 
+			List<AstStatement> body) 
 	{
 		super();
 		this.name = name;
@@ -159,8 +159,9 @@ public class Partial implements Visitable {
 	public void visit(AstVisitor visitor) {
 		visitor.startPartial(this);
 		args.stream().forEach(formalArg -> formalArg.visit(visitor));
-		if(body.isPresent())
-			body.get().stream().forEach(st -> st.visit(visitor));
+//		if(body.isPresent())
+//			body.get().stream().forEach(st -> st.visit(visitor));
+		body.stream().forEach(st -> st.visit(visitor));
 		returnType.visit(visitor);
 		visitor.endPartial(this);
 	}
@@ -169,22 +170,16 @@ public class Partial implements Visitable {
 
 	public FunctionImpl toAPI() {
 		
-//		assert(body.isPresent());	// TODO: do something for function pure declaration
-		
 		if(functionImpl == null) {
-			
+
 			Optional<List<Statement>> apiBody = Optional.empty();
-			if(body.isPresent()) {	// TODO: ???
-				List<AstStatement> statements = body.get();
-				List<Statement> apiStatements = new ArrayList<>(statements.size());
-				for(AstStatement stmt: statements) {
-					Statement st = stmt.toAPI();
-					apiStatements.add(st);
-				}
-				apiBody = Optional.of(apiStatements);
+			List<Statement> apiStatements = new ArrayList<>(body.size());
+			for(AstStatement stmt: body /*statements*/) {
+				Statement st = stmt.toAPI();
+				apiStatements.add(st);
 			}
 
-			functionImpl = new FunctionImpl(qName, args, resolveReturnType(), apiBody, member);
+			functionImpl = new FunctionImpl(qName, args, resolveReturnType(), apiStatements, member);
 			assert(functionImpl.getArguments().size() == args.size());
 		}
 
@@ -196,7 +191,7 @@ public class Partial implements Visitable {
 		return returnType;
 	}
 
-	public Optional<List<AstStatement>> getBodyStatements() {
+	public List<AstStatement> getBodyStatements() {
 		return body;
 	}
 	
@@ -217,11 +212,9 @@ public class Partial implements Visitable {
 //		}
 		
 		
-		if(body.isPresent()) {
-			for(AstStatement stmt: body.get()) {
-				if(stmt instanceof AstLocalVariableStatement) {
-					scope.addLocalVariable((AstLocalVariableStatement)stmt);
-				}
+		for(AstStatement stmt: body) {
+			if(stmt instanceof AstLocalVariableStatement) {
+				scope.addLocalVariable((AstLocalVariableStatement)stmt);
 			}
 		}
 	}

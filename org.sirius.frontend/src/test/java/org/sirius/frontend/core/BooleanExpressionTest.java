@@ -40,9 +40,9 @@ public class BooleanExpressionTest {
 		AstPackageDeclaration pack = mod.getPackageDeclarations().get(0);
 		FunctionDefinition func = pack.getFunctionDeclarations().get(0);
 //		Partial partial = func.getAllArgsPartial();
-		assertEquals(func.getBody().get().size(), 1);
+		assertEquals(func.getBody().size(), 1);
 		
-		AstLocalVariableStatement st = (AstLocalVariableStatement)getInList(0, func.getBody().get());
+		AstLocalVariableStatement st = (AstLocalVariableStatement)getInList(0, func.getBody());
 		AstClassDeclaration type = (AstClassDeclaration)st.getType().resolve();
 		
 		assertEquals(type.getQName().dotSeparated(), "sirius.lang.Boolean");
@@ -60,7 +60,6 @@ public class BooleanExpressionTest {
 		
 		assertEquals(fd.getQName().getLast(), "f");
 		assertEquals(fd.getBodyStatements().get().size(), 1);
-//		Statement st = fd.getBodyStatements().get(0);
 		LocalVariableStatement localVarST = (LocalVariableStatement)fd.getBodyStatements().get().get(0); 
 //		assertEquals(localVarST.getName().getText(), "b");
 ////		assert(lvst.getType().toString(), "");
