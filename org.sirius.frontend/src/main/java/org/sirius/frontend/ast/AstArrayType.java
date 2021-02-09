@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.sirius.frontend.api.ArrayType;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.apiimpl.ArrayTypeImpl;
 import org.sirius.frontend.symbols.SymbolTable;
 
 /** java-like array
@@ -42,17 +43,7 @@ public class AstArrayType implements AstType{
 	
 	public Type getApiType() {
 		Type apiType = elementType.getApiType();
-		return new ArrayType() {
-			
-			@Override
-			public Type getElementType() {
-				return apiType;
-			}
-			@Override
-			public boolean isAncestorOrSame(Type type) {
-				throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-			}
-		};
+		return new ArrayTypeImpl(apiType);
 	}
 
 	@Override

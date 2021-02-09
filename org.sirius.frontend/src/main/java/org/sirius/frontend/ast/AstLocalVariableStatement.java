@@ -17,7 +17,9 @@ public class AstLocalVariableStatement implements AstStatement {
 	private Optional<AstExpression> initialValue = Optional.empty();
 	private DefaultSymbolTable symbolTable = null;
 	private AstType type;
-	
+
+	private LocalVariableStatementImpl impl = null;
+
 	public AstLocalVariableStatement(AnnotationList annotationList, AstType type, AstToken varName, Optional<AstExpression> initialValue) {
 		super();
 		this.type = type;
@@ -92,7 +94,6 @@ public class AstLocalVariableStatement implements AstStatement {
 		}
 
 	}
-	LocalVariableStatementImpl impl = null;
 	
 	@Override
 	public LocalVariableStatement toAPI() {
@@ -112,25 +113,8 @@ public class AstLocalVariableStatement implements AstStatement {
 			throw new UnsupportedOperationException("Local variable " + varName + " not found or processed, TODO");
 		
 		return impl;
-		
-//		return new LocalVariableStatement() {
-//
-//			@Override
-//			public Type getType() {
-//				return declaration.getType().getApiType();
-//			}
-//
-//			@Override
-//			public Token getName() {
-//				return declaration.getName();
-//			}
-//
-//			@Override
-//			public Optional<Expression> getInitialValue() {
-//				return declaration.getApiInitialValue();
-//			}
-//		};
 	}
+	
 	@Override
 	public String toString() {
 		return type + "" + varName;
@@ -138,8 +122,9 @@ public class AstLocalVariableStatement implements AstStatement {
 
 	@Override
 	public void verify(int featureFlags) {
-		verifyOptional(initialValue, "initialValue", featureFlags);
-		verifyNotNull(symbolTable, "SimpleType.symbolTable");
+		verifyOptional(initialValue, "AstLocalVariableStatement.initialValue", featureFlags);
+		verifyNotNull(symbolTable, "AstLocalVariableStatement.symbolTable");
+		verifyCachedObjectNotNull(impl, "AstLocalVariableStatement.LocalVariableStatementImpl impl",featureFlags);
 		type.verify(featureFlags);
 	}
 }

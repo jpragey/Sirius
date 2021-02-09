@@ -2,9 +2,8 @@ package org.sirius.frontend.ast;
 
 import java.util.Optional;
 
-import org.sirius.frontend.api.BooleanConstantExpression;
 import org.sirius.frontend.api.Expression;
-import org.sirius.frontend.api.Type;
+import org.sirius.frontend.apiimpl.BooleanConstantExpressionImpl;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 public class AstBooleanConstantExpression implements AstExpression {
@@ -39,28 +38,10 @@ public class AstBooleanConstantExpression implements AstExpression {
 		return null;
 	}
 
-
 	@Override
 	public Expression getExpression() {
-		
-		return new BooleanConstantExpression() {
-
-			@Override
-			public Type getType() {
-				return Type.booleanType;
-			}
-
-			@Override
-			public boolean getValue() {
-				return value;
-			}
-			@Override
-			public String toString() {
-				return Boolean.toString(value);
-			}
-		};
+		return new BooleanConstantExpressionImpl(value);
 	}
-
 
 	@Override
 	public String asString() {

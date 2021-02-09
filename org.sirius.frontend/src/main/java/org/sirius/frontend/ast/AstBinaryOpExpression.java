@@ -6,8 +6,7 @@ import java.util.Map;
 import org.antlr.v4.runtime.Token;
 import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.Expression;
-import org.sirius.frontend.api.Type;
-import org.sirius.frontend.api.Visitor;
+import org.sirius.frontend.apiimpl.BinaryOpExpressionImpl;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 public class AstBinaryOpExpression implements AstExpression {
@@ -92,57 +91,13 @@ public class AstBinaryOpExpression implements AstExpression {
 		visitor.endBinaryOpExpression(this);
 	}
 
-	class BinaryOpExpressionImpl implements BinaryOpExpression {
-
-		@Override
-		public Expression getLeft() {
-			return left.getExpression();
-		}
-
-		@Override
-		public Expression getRight() {
-			return right.getExpression();
-		}
-
-		private boolean isInteger(Type t) {
-			return true;
-		}
-		@Override
-		public Type getType() {
-			Type leftType = left.getExpression().getType();
-			Type rightType = right.getExpression().getType();
-			
-			if(leftType == Type.integerType && rightType == Type.integerType ) {
-				return Type.integerType;
-			}
-			
-			throw new UnsupportedOperationException("Partial support of getType() in AstBinaryOpExpression yet (only integer are supported)");
-		}
-
-		@Override
-		public void visitMe(Visitor visitor) {
-			visitor.start(this);
-			getLeft().visitMe(visitor);
-			getRight().visitMe(visitor);
-			visitor.end(this);
-		}
-		@Override
-		public String toString() {
-			return left.getExpression() + " " + operator + " " + right.getExpression();
-		}
-
-		@Override
-		public Operator getOperator() {
-			return operator;
-		}
-	};
 	private BinaryOpExpressionImpl impl = null;
 	
 	@Override
 	public Expression getExpression() {
 		
 		if(impl == null)
-			impl = new BinaryOpExpressionImpl();
+			impl = new BinaryOpExpressionImpl(left.getExpression(), right.getExpression(), operator);
 		return impl;
 	}
 
