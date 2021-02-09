@@ -42,5 +42,11 @@ public class AstBlock implements AstStatement {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void verify(int featureFlags) {
+		verifyList(statements, featureFlags);
+		
+	}
 	
 }

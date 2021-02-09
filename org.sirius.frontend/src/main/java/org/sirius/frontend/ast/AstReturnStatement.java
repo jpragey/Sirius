@@ -49,6 +49,12 @@ public class AstReturnStatement implements AstStatement {
 	public String toString() {
 		return expression.toString();
 	}
+
+	@Override
+	public void verify(int featureFlags) {
+		expression.verify(featureFlags);
+		verifyNotNull(impl, "AstReturnStatement.impl");
+	}
 }
 
 

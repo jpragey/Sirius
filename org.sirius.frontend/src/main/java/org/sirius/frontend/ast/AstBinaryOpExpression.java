@@ -162,4 +162,13 @@ public class AstBinaryOpExpression implements AstExpression {
 		return new AstBinaryOpExpression(newLeft, newRight, opToken, operator);
 	}
 
+	@Override
+	public void verify(int featureFlags) {
+		
+		left.verify(featureFlags);
+		right.verify(featureFlags);
+		
+		verifyCachedObjectNotNull(impl, "AstBinaryOpExpression.impl", featureFlags);
+	}
+
 }

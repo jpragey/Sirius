@@ -267,5 +267,11 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 		return symbolTable;
 	}
 
+	@Override
+	public void verify(int featureFlags) {
+		verifyNotNull(symbolTable, "SimpleReferenceExpression.symbolTable");
+		verifyNotNull(scope, "SimpleReferenceExpression.scope");
+	}
+
 
 }

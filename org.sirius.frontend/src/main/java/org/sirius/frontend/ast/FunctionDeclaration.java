@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.symbols.Scope;
 
-public class FunctionDeclaration implements Visitable {
+public class FunctionDeclaration implements Visitable, Verifiable {
 
 	
 	private QName qName = null;
@@ -68,6 +68,12 @@ public class FunctionDeclaration implements Visitable {
 
 	public AstType getReturnType() {
 		return lambdaDeclaration.getReturnType();
+	}
+	@Override
+	public void verify(int featureFlags) {
+		verifyNotNull(qName, "qName");
+		
+		lambdaDeclaration.verify(featureFlags);
 	}
 
 }

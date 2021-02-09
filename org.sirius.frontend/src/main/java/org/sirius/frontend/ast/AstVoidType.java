@@ -62,5 +62,8 @@ public class AstVoidType implements AstType {
 		return 0x32029453;	// arbitrary
 	}
 
-	
+	@Override
+	public void verify(int featureFlags) {
+		// TODO Nothing to do
+	}
 }

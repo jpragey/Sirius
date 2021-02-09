@@ -10,7 +10,7 @@ import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.TopLevelValue;
 import org.sirius.frontend.api.Type;
 
-public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable  {
+public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable, Verifiable {
 
 	private AstType type;
 	private AstToken name;
@@ -120,6 +120,13 @@ public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable  {
 	}
 	public void setContainerQName(QName containerQName) {
 		this.qname = containerQName.child(this.name.getText());
+	}
+	@Override
+	public void verify(int featureFlags) {
+		type.verify(featureFlags);
+		
+		verifyList(annotations, featureFlags);
+		verifyOptional(initialValue, "initialValue", featureFlags);
 	}
 	
 }

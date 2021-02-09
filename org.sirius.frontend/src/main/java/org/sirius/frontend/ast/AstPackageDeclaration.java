@@ -22,7 +22,7 @@ import org.sirius.frontend.symbols.SymbolTable;
  * @author jpragey
  *
  */
-public class AstPackageDeclaration implements Scoped, Visitable {
+public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 
 	private QName qname = new QName();
 	
@@ -36,7 +36,9 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	
 	private LocalSymbolTable symbolTable; 
-	
+
+	private PackageDeclaration packageDeclaration = null;
+
 	public AstPackageDeclaration(Reporter reporter, QName qname, 
 			List<FunctionDefinition> functionDeclarations, List<AstClassDeclaration> classDeclarations, 
 			List<AstInterfaceDeclaration> interfaceDeclarations, List<AstMemberValueDeclaration> valueDeclarations) {
@@ -49,6 +51,19 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		classDeclarations.forEach	 (cd  -> {this.classDeclarations.add(cd);		this.visitables.add(cd);});
 		interfaceDeclarations.forEach(id  -> {this.interfaceDeclarations.add(id);	this.visitables.add(id);});
 		valueDeclarations.forEach    (vd  -> {this.valueDeclarations.add(vd);		this.visitables.add(vd);});
+	}
+
+	@Override
+	public void verify(int featureFlags) {// TODO
+
+		verifyList(functionDeclarations, featureFlags);
+		verifyList(classDeclarations, featureFlags);
+		verifyList(interfaceDeclarations, featureFlags);
+		verifyList(valueDeclarations, featureFlags);
+		
+		//private LocalSymbolTable symbolTable; 
+
+		verifyCachedObjectNotNull(packageDeclaration, "AstPackageDeclaration.packageDeclaration (API) ", featureFlags);
 	}
 
 	public String getQnameString() {
@@ -87,7 +102,6 @@ public class AstPackageDeclaration implements Scoped, Visitable {
 		return "\"" + getQnameString() + "\"";
 	}
 	
-	private PackageDeclaration packageDeclaration = null;
 	
 	private class PackageDeclarationImpl implements PackageDeclaration {
 

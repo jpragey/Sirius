@@ -10,7 +10,7 @@ import org.sirius.frontend.symbols.Scope;
 
 import com.google.common.collect.ImmutableList;
 
-public class FunctionDefinition implements Visitable {
+public class FunctionDefinition implements Visitable, Verifiable {
 
 	/** Partial, sorted by 
 	 * For example, for f(x, y, z):
@@ -173,5 +173,19 @@ public class FunctionDefinition implements Visitable {
 	/** Return the closed FunctionDefinition that has no argument (all args are in closure)  */
 	public FunctionDefinition mostClosed() {
 		return firstArgAppliedFuncDef.map(fd -> fd.mostClosed()).orElse(this);
+	}
+
+	@Override
+	public void verify(int featureFlags) {
+		verifyList(partials, featureFlags);
+		allArgsPartial.verify(featureFlags);
+		
+		body.verify(featureFlags);
+		
+		
+		functionDeclaration.verify(featureFlags);
+		
+		verifyList(closure, featureFlags);
+		verifyOptional(firstArgAppliedFuncDef, "firstArgAppliedFuncDef", featureFlags);
 	}
 }

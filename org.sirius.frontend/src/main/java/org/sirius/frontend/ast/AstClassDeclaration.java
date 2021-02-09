@@ -23,7 +23,7 @@ import org.sirius.frontend.symbols.Symbol;
 
 import com.google.common.collect.ImmutableList;
 
-public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParametric<AstClassDeclaration>, AstClassOrInterface, Named {
+public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParametric<AstClassDeclaration>, AstClassOrInterface, Named, Verifiable {
 
 	private AstToken name;
 	private QName qName = new QName("<not_set>"); 
@@ -31,7 +31,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	// Formal parameters
 	private ImmutableList<TypeParameter> typeParameters;
 	
-	private ImmutableList<FunctionDefinition> functionDeclarations;
+	private ImmutableList<FunctionDefinition> functionDefinitions;
 	
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	private List<AstFunctionParameter> anonConstructorArguments = new ArrayList<>(); 
@@ -62,7 +62,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		this.name = name;
 		
 		this.typeParameters = typeParameters;
-		this.functionDeclarations = functionDeclarations;
+		this.functionDefinitions = functionDeclarations;
 		this.valueDeclarations = valueDeclarations;
 		this.anonConstructorArguments = anonConstructorArguments; 
 		this.ancestors = ancestorInfos;
@@ -89,15 +89,15 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 				name, 
 //				packageQName, 
 				newTypeParams,
-				functionDeclarations,
+				functionDefinitions,
 				valueDeclarations, anonConstructorArguments, ancestors);
 		return fd;
 	}
 
 	public AstClassDeclaration withFunctionDeclaration(FunctionDefinition fd) {
 		
-		ImmutableList.Builder<FunctionDefinition> builder = ImmutableList.builderWithExpectedSize(functionDeclarations.size() + 1);
-		ImmutableList<FunctionDefinition> newFunctions = builder.addAll(functionDeclarations).add(fd).build();
+		ImmutableList.Builder<FunctionDefinition> builder = ImmutableList.builderWithExpectedSize(functionDefinitions.size() + 1);
+		ImmutableList<FunctionDefinition> newFunctions = builder.addAll(functionDefinitions).add(fd).build();
 
 		AstClassDeclaration cd = new AstClassDeclaration(reporter, name, typeParameters, newFunctions, 
 				valueDeclarations, anonConstructorArguments, ancestors);
@@ -130,7 +130,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			
 		}
 		
-		for(FunctionDefinition fd : this.functionDeclarations) {
+		for(FunctionDefinition fd : this.functionDefinitions) {
 			scope.addFunction(fd);
 		}
 		for(AstMemberValueDeclaration memberValueDeclaration: this.valueDeclarations) {
@@ -156,7 +156,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	}
 	@Override
 	public List<FunctionDefinition> getFunctionDefinitions() {
-		return functionDeclarations;
+		return functionDefinitions;
 	}
 	public void addValueDeclaration(AstMemberValueDeclaration valueDeclaration) {
 		this.valueDeclarations.add(valueDeclaration);
@@ -181,7 +181,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 	public void visit(AstVisitor visitor) {
 		visitor.startClassDeclaration(this);
-		functionDeclarations.stream().forEach(fd -> fd.visit(visitor));
+		functionDefinitions.stream().forEach(fd -> fd.visit(visitor));
 		valueDeclarations.stream().forEach(fd -> fd.visit(visitor));
 		visitor.endClassDeclaration(this);
 	}
@@ -226,7 +226,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		
 		AstClassDeclaration cd = new AstClassDeclaration(reporter, /*interfaceType, */name, //packageQName,
 				typeParameters.subList(1, typeParameters.size()),
-				functionDeclarations,
+				functionDefinitions,
 				valueDeclarations,
 				anonConstructorArguments, ancestors
 				);
@@ -433,5 +433,27 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			h = 31 * h + formalParam.hashCode();
 
 		return h;
+	}
+
+	@Override
+	public void verify(int featureFlags) {
+		// TODO
+//		private QName qName = new QName("<not_set>"); 
+		
+		// Formal parameters
+		verifyList(typeParameters, featureFlags);
+		
+		verifyList(functionDefinitions, featureFlags);
+		
+		verifyList(valueDeclarations, featureFlags);
+		verifyList(anonConstructorArguments, featureFlags); 
+
+//		veprivate Scope scope = null;
+		
+		verifyList(ancestors, featureFlags);
+		
+		verifyList(interfaces, featureFlags);
+
+//		private DefaultSymbolTable symbolTable; 
 	}
 }

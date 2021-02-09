@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.Token;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 
-public class ModuleImport {
+public class ModuleImport implements Verifiable {
 //		private Reporter reporter; 
 	private boolean shared = false; 
 	private Optional<AstToken> origin;
@@ -51,6 +51,9 @@ public class ModuleImport {
 		}
 	}
 	
+	@Override
+	public void verify(int featureFlags) {// TODO
+	}
 	
 	public boolean isShared() {
 		return shared;

@@ -3,7 +3,7 @@ package org.sirius.frontend.ast;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.SymbolTable;
 
-public interface AstType {
+public interface AstType extends Verifiable {
 
 	AstNoType noType = new AstNoType();
 	

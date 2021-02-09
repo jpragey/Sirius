@@ -12,7 +12,7 @@ import org.sirius.frontend.symbols.DefaultSymbolTable;
  * @author jpragey
  *
  */
-public class AstFunctionParameter {
+public class AstFunctionParameter implements Verifiable {
 	
 	private AstType type;
 	private AstToken name;
@@ -101,5 +101,12 @@ public class AstFunctionParameter {
 	public String toString() {
 	
 		return "(" + type.toString() + " " + name + ")";
+	}
+
+
+	@Override
+	public void verify(int featureFlags) {
+		// Nothing to do yet
+		
 	}
 }

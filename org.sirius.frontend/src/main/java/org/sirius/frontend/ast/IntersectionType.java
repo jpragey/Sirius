@@ -58,4 +58,11 @@ public class IntersectionType implements AstType{
 		throw new UnsupportedOperationException("Class " + getClass() + " has no getApiType() method.");
 	}
 
+	@Override
+	public void verify(int featureFlags) {
+		first.verify(featureFlags);
+		second.verify(featureFlags);
+		verifyOptional(resolvedElementType, "resolvedElementType", featureFlags);
+	}
+
 }

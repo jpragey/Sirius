@@ -84,5 +84,12 @@ public class AstIfElseStatement implements AstStatement {
 		}
 		return ifElseStatementImpl;
 	}
+	@Override
+	public void verify(int featureFlags) {
+		ifExpression.verify(featureFlags);
+		ifBlock.verify(featureFlags);
+		verifyOptional(elseBlock, "elseBlock", featureFlags);
+		
+	}
 
 }

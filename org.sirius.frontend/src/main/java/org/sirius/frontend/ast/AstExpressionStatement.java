@@ -40,4 +40,9 @@ public class AstExpressionStatement implements AstStatement {
 		return apiImpl;
 	}
 
+	@Override
+	public void verify(int featureFlags) {
+		expression.verify(featureFlags);
+	}
+
 }

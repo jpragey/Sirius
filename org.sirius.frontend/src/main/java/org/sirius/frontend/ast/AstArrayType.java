@@ -95,4 +95,10 @@ public class AstArrayType implements AstType{
 		return h;
 	}
 
+	@Override
+	public void verify(int featureFlags) {
+		elementType.verify(featureFlags);
+		verifyOptional(resolvedElementType, "resolvedElementType", featureFlags); 
+	}
+
 }

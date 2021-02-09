@@ -2,7 +2,7 @@ package org.sirius.frontend.ast;
 
 import java.util.Optional;
 
-public class ClosureElement {
+public class ClosureElement implements Verifiable {
 	private AstType type;
 	private AstToken name;
 	/** exists if this closure element maps to a function argument */
@@ -25,6 +25,11 @@ public class ClosureElement {
 	}
 	public Optional<AstFunctionParameter> getFunctionArg() {
 		return functionArg;
+	}
+	@Override
+	public void verify(int featureFlags) {
+		type.verify(featureFlags);
+		verifyOptional(functionArg, "functionArg", featureFlags);
 	}
 	
 }

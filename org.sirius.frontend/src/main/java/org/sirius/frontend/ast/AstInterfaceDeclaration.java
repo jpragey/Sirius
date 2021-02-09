@@ -16,7 +16,7 @@ import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 import com.google.common.collect.ImmutableList;
 
-public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstParametric<AstInterfaceDeclaration>, AstClassOrInterface, Named {
+public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstParametric<AstInterfaceDeclaration>, AstClassOrInterface, Named, Verifiable {
 
 	private Reporter reporter;
 
@@ -313,5 +313,19 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		return valueDeclarations;
 	}
 
+	@Override
+	public void verify(int featureFlags) {
+		
+		verifyList(typeParameters, featureFlags);
+		
+		verifyList(functionDeclarations, featureFlags);
+		verifyList(functionDefinitions, featureFlags);
+		
+		verifyList(valueDeclarations, featureFlags);
+		
+		verifyList(ancestors, featureFlags);
+		
+//		verifyList(interfaces, featureFlags);
+	}
 	
 }

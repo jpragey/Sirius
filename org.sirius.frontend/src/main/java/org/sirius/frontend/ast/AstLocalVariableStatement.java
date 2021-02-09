@@ -135,6 +135,13 @@ public class AstLocalVariableStatement implements AstStatement {
 	public String toString() {
 		return type + "" + varName;
 	}
+
+	@Override
+	public void verify(int featureFlags) {
+		verifyOptional(initialValue, "initialValue", featureFlags);
+		verifyNotNull(symbolTable, "SimpleType.symbolTable");
+		type.verify(featureFlags);
+	}
 }
 
 

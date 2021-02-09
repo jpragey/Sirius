@@ -63,4 +63,10 @@ public class AstFloatConstantExpression implements AstExpression {
 	public double getValue() { // TODO: check syntax
 		return Double.parseDouble(content.getText());
 	}
+
+
+	@Override
+	public void verify(int featureFlags) {
+		// Nothing to do
+	}
 }

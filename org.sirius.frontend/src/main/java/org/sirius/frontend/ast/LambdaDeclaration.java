@@ -2,7 +2,7 @@ package org.sirius.frontend.ast;
 
 import java.util.List;
 
-public class LambdaDeclaration {
+public class LambdaDeclaration implements Verifiable {
 
 	private AstType returnType; 
 	private List<AstFunctionParameter> args;
@@ -19,6 +19,12 @@ public class LambdaDeclaration {
 
 	public List<AstFunctionParameter> getArgs() {
 		return args;
+	}
+
+	@Override
+	public void verify(int featureFlags) {
+		returnType.verify(featureFlags);
+		verifyList(args, featureFlags);
 	}
 	
 }

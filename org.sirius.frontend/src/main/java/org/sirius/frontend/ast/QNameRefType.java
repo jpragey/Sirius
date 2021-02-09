@@ -147,4 +147,11 @@ public final class QNameRefType implements AstType {
 		visitor.end(this);		
 	}
 
+	@Override
+	public void verify(int featureFlags) {
+		verifyList(appliedParameters, featureFlags);
+		
+		verifyNotNull(symbolTable, "SimpleType.symbolTable");
+	}
+
 }

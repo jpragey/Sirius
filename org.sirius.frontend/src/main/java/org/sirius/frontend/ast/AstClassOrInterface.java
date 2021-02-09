@@ -22,7 +22,7 @@ import org.sirius.frontend.symbols.SymbolTable;
 public interface AstClassOrInterface extends AstType {
 
 	/** directly implemented interfaces or extended classes */
-	public static class AncestorInfo {
+	public static class AncestorInfo implements Verifiable {
 		/** Name in declaration ( extends/implements NAME clause)*/
 		private AstToken simpleName;
 		private Optional<AstInterfaceDeclaration> astClassDecl = Optional.empty();
@@ -57,6 +57,11 @@ public interface AstClassOrInterface extends AstType {
 		@Override
 		public String toString() {
 			return simpleName.toString();
+		}
+		@Override
+		public void verify(int featureFlags) {
+			// TODO ???
+			
 		}
 	}
 

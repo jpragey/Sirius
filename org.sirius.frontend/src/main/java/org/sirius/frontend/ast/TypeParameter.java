@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.sirius.frontend.api.Type;
 
-public class TypeParameter implements AstType {
+public class TypeParameter implements AstType, Verifiable {
 
 	private Variance variance;
 	
@@ -72,6 +72,10 @@ public class TypeParameter implements AstType {
 	@Override
 	public Type getApiType() {
 		throw new UnsupportedOperationException("Class " + getClass() + " has no getApiType() method (yet).");
+	}
+	@Override
+	public void verify(int featureFlags) {
+		defaultType.ifPresent(astType -> astType.verify(featureFlags));
 	}
 
 }

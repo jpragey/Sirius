@@ -166,4 +166,12 @@ public final class SimpleType implements AstType {
 		visitor.start(this);
 		visitor.end(this);		
 	}
+	@Override
+	public void verify(int featureFlags) {
+		verifyList(typeParameters, featureFlags);
+		
+		verifyNotNull(symbolTable, "SimpleType.symbolTable");
+		
+		verifyOptional(resolvedElementType, "resolvedElementType", featureFlags);
+	}
 }

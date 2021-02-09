@@ -76,4 +76,10 @@ public class AstBooleanConstantExpression implements AstExpression {
 	public AstBooleanConstantExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
 		return this;
 	}
+
+
+	@Override
+	public void verify(int featureFlags) {
+		// Nothing to do
+	}
 }

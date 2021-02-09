@@ -333,5 +333,16 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		return newExpr;
 	}
 
+	@Override
+	public void verify(int featureFlags) {
+		verifyList(actualArguments, featureFlags);
+
+		verifyNotNull(symbolTable, "");
+		
+		// 
+		if(thisExpression.isPresent())
+			 verifyOptional(thisExpression, "thisExpression", featureFlags);
+	}
+
 }
 

@@ -15,7 +15,7 @@ import org.sirius.frontend.symbols.Scope;
 
 import com.google.common.collect.ImmutableList;
 
-public class Partial implements Visitable {
+public class Partial implements Visitable, Verifiable {
 	
 	private AstToken name;
 	private QName qName;
@@ -87,8 +87,10 @@ public class Partial implements Visitable {
 			return Optional.empty();
 		}
 	}
-	
-	private List<AstFunctionParameter> closure0;
+
+	private FunctionImpl functionImpl = null;
+
+//	private List<AstFunctionParameter> closure0;
 	
 	public Partial(AstToken name,
 //			List<AstFunctionParameter> closure, 
@@ -166,7 +168,6 @@ public class Partial implements Visitable {
 		visitor.endPartial(this);
 	}
 
-	private FunctionImpl functionImpl = null;
 
 	public FunctionImpl toAPI() {
 		
@@ -225,6 +226,17 @@ public class Partial implements Visitable {
 
 	public Scope getScope() {
 		return scope;
+	}
+
+	@Override
+	public void verify(int featureFlags) {
+		verifyList(args, featureFlags);
+
+		verifyList(body, featureFlags); 
+		
+		verifyCachedObjectNotNull(symbolTable, "Partial.symbolTable", featureFlags);
+		verifyNotNull(scope, "partial.scope");
+		verifyCachedObjectNotNull(functionImpl, "Partial.functionImpl", featureFlags);
 	}
 	
 }

@@ -14,7 +14,7 @@ import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.core.PhysicalPath;
 
-public class AstModuleDeclaration implements Visitable {
+public class AstModuleDeclaration implements Visitable, Verifiable {
 
 	private QName qName = new QName();
 	private AstToken version = new AstToken(0,0,0,0,"","");
@@ -60,6 +60,15 @@ public class AstModuleDeclaration implements Visitable {
 		return mod;
 	}
 
+	@Override
+	public void verify(int featureFlags) {
+		Verifiable.super.optionalIsPresent(modulePPath, "modulePPath");
+
+		equiv.verify(featureFlags);
+		verifyList(moduleImports, featureFlags);
+		verifyList(packageDeclarations, featureFlags);
+	}
+	
 	public ModuleImportEquivalents getEquivalents() {
 		return equiv;
 	}

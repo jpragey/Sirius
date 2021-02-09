@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.antlr.v4.runtime.Token;
 
-public class ModuleImportEquivalents {
+public class ModuleImportEquivalents implements Verifiable {
 
 	private class EquivalentInfo {
 		public AstToken token;
@@ -21,6 +21,10 @@ public class ModuleImportEquivalents {
 	}
 	private Map<String, EquivalentInfo> equivalentsMap = new HashMap<>();
 
+//	@Override
+//	public void verify() {
+//	}
+	
 	public Map<String, EquivalentInfo> getEquivalentsMap() {
 		return equivalentsMap;
 	}
@@ -46,6 +50,10 @@ public class ModuleImportEquivalents {
 	}
 	public void put(Token key, Token value) {
 		put(key.getText(), new AstToken(value));
+	}
+
+	@Override
+	public void verify(int featureFlags) {// Nothing to do
 	}
 	
 	

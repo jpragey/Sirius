@@ -153,4 +153,11 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 		return expr;
 	}
 
+	@Override
+	public void verify(int featureFlags) {
+		verifyList(actualArguments, featureFlags);
+		verifyNotNull(symbolTable, "symbolTable");
+		verifyNotNull(impl, "ConstructorCallExpression.impl");
+	}
+
 }

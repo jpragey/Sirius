@@ -91,4 +91,11 @@ public class AstStringConstantExpression implements AstExpression {
 	}
 
 
+	@Override
+	public void verify(int featureFlags) {
+		verifyNotNull(symbolTable, "symbolTable");
+		
+		stringType.verify(featureFlags);
+	}
+
 }

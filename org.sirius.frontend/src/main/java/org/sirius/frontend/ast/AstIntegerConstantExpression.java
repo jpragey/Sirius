@@ -96,4 +96,10 @@ public class AstIntegerConstantExpression implements AstExpression {
 	public AstIntegerConstantExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
 		return this;
 	}
+
+
+	@Override
+	public void verify(int featureFlags) {
+		// Nothing to do
+	}
 }

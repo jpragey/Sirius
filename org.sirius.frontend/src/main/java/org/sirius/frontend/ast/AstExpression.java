@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 
-public interface AstExpression {
+public interface AstExpression extends Verifiable {
 	
 	
 	AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable);

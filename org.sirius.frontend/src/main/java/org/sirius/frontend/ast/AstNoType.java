@@ -53,4 +53,9 @@ public class AstNoType implements AstType {
 		return 0x78029453;	// arbitrary
 	}
 
+	@Override
+	public void verify(int featureFlags) {
+		// Nothing to do
+	}
+
 }

@@ -160,5 +160,12 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 				new DefaultSymbolTable(parentSymbolTable, this.getClass().getSimpleName()));
 		return expr;
 	}
+
+	@Override
+	public void verify(int featureFlags) {
+		containerExpression.verify(featureFlags);
+		verifyNotNull(symbolTable, "AstMemberAccessExpression.symbolTable");
+		verifyNotNull(impl, "AstMemberAccessExpression.impl");
+	}
 	
 }
