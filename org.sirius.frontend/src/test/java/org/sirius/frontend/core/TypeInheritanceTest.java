@@ -4,6 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -81,6 +86,16 @@ public class TypeInheritanceTest {
 
 		AstInterfaceDeclaration astClassI = code.astInterfaces. get(0);
 		assertEquals(astClassI.getAncestors().size(), 0);
+		
+		// -- Check API 
+		ClassDeclaration apiC = astClassC.getClassDeclaration();
+		assertThat(apiC.getQName().dotSeparated(), is("p.a.C"));
+
+		InterfaceDeclaration apiI = astClassI.getInterfaceDeclaration();
+		assertThat(apiI.getQName().dotSeparated(), is("p.a.I"));
+		
+//		assertThat(apiC.getDirectInterfaces(), hasSize(1));
+//		assertThat(apiC.getDirectInterfaces().get(0).getQName().dotSeparated(), is("p.a.I"));
 	}
 
 	@Test

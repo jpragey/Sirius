@@ -6,12 +6,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.Token;
+import org.sirius.common.core.MapOfList;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.apiimpl.InterfaceDeclarationImpl;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 import com.google.common.collect.ImmutableList;
@@ -251,51 +252,37 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 				);
 	}
 
+	private InterfaceDeclarationImpl impl = null;
+	
 	public InterfaceDeclaration getInterfaceDeclaration() {
-//		QName containerQName = packageQName.get();
-		return new InterfaceDeclaration() {
-//			QName qName = containerQName.child(name.getText());
-			@Override
-			public List<MemberValue> getMemberValues() {
-				return valueDeclarations.stream()
-						.map(v->v.getMemberValue())
-						.collect(Collectors.toList());
-			}
+		if(impl == null) {
+//			private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
+			List<MemberValue> memberValues = valueDeclarations.stream()
+					.map(vd ->vd.getMemberValue())
+					.collect(Collectors.toList());
 
-			@Override
-			public List<AbstractFunction> getFunctions() {
-				List<AbstractFunction> functions = new ArrayList<>();
-				for(FunctionDefinition b: functionDefinitions) {
-					for(Partial partial : b.getPartials()) {
-						functions.add(partial.toAPI());
-					}
+//			public default MapOfList<QName, FunctionDefinition> getAllFunctions() {
+				MapOfList<QName, FunctionDefinition> allFctMap = new MapOfList<>();
+
+				// -- 
+				for(FunctionDefinition func : getFunctionDefinitions()) {
+					QName fqn = func.getqName();
+					allFctMap.put(fqn, func);
 				}
-				return functions;
-//				
-//				return functionDeclarations.stream()
-////						.map(AstFunctionDeclaration::getMemberFunction)
-//						.map(AstFunctionDeclarationBuilder::toAPI)
-////						.filter(fd -> fd.isPresent())
-////						.map(fd -> fd.get())
-//						.collect(Collectors.toList());
-			}
-			@Override
-			public QName getQName() {
-				return qName;
-			}
-			@Override
-			public boolean isAncestorOrSame(Type type) {
-				throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-			}
-			List<InterfaceDeclaration> interfaces = null;
-			@Override
-			public List<InterfaceDeclaration> getDirectInterfaces() {
-				if(interfaces == null) {
-					interfaces = createDirectInterfaces();
+				
+				for(AstInterfaceDeclaration acd: this.getInterfaces()) {
+					MapOfList<QName, FunctionDefinition> amap  = acd.getAllFunctions();
+					allFctMap.insert(amap);
 				}
-				return interfaces;
-			}
-		};
+				
+//				return map;
+//			}
+
+			impl = new InterfaceDeclarationImpl(qName, allFctMap,
+				memberValues);
+		}
+		return impl;
+		
 	}
 
 	@Override

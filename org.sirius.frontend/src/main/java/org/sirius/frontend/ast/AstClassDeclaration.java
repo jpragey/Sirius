@@ -7,15 +7,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.Token;
-import org.sirius.common.core.MapOfList;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassOrInterface;
-import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.MemberValue;
-import org.sirius.frontend.api.Type;
+import org.sirius.frontend.apiimpl.ClassDeclarationImpl;
 import org.sirius.frontend.ast.AstClassOrInterface.AncestorInfo;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Scope;
@@ -47,6 +44,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 	private DefaultSymbolTable symbolTable; 
 	
+	private ClassDeclarationImpl classDeclarationImpl = null;
 
 	private Reporter reporter;
 	
@@ -272,65 +270,13 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		return "class " + qName;
 	}
 
-	private class ClassDeclarationImpl implements ClassDeclaration {
-		
-		@Override
-		public List<MemberValue> getMemberValues() {
-			return valueDeclarations.stream()
-				.map(v->v.getMemberValue())
-				.collect(Collectors.toList());
-		}
-
-		@Override
-		public List<AbstractFunction> getFunctions() {
-			
-			MapOfList<QName, FunctionDefinition> allFctMap = getAllFunctions();
-			
-			ArrayList<AbstractFunction> memberFunctions = new ArrayList<>();
-
-			for(QName qn: allFctMap.keySet()) {
-				List<FunctionDefinition> functions = allFctMap.get(qn);
-				for(FunctionDefinition func: functions) {
-					for(Partial partial: func.getPartials()) {
-						memberFunctions.add(partial.toAPI());
-					}
-				}
-			}
-			return memberFunctions;
-		}
-
-		@Override
-		public QName getQName() {
-			assert(qName != null);
-			return qName;
-		}
-		@Override
-		public boolean isAncestorOrSame(Type type) {
-			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-		}
-
-		List<InterfaceDeclaration> interfaces = null;
-		@Override
-		public List<InterfaceDeclaration> getDirectInterfaces() {
-			if(interfaces == null) {
-				interfaces = createDirectInterfaces();
-			}
-			return interfaces;
-		}
-		@Override
-		public String toString() {
-			assert(qName != null);
-			return "API class " + qName;
-		}
-		
-	}
-	
-	private ClassDeclarationImpl classDeclarationImpl = null;
-	
 	public ClassDeclaration getClassDeclaration() {
-		if(classDeclarationImpl == null)
-			classDeclarationImpl =  new ClassDeclarationImpl() {
-		};
+		if(classDeclarationImpl == null) {
+			List<MemberValue> memberValues =  valueDeclarations.stream()
+					.map(v->v.getMemberValue())
+					.collect(Collectors.toList());
+			classDeclarationImpl =  new ClassDeclarationImpl(qName, getAllFunctions(), memberValues, ancestors);
+		}
 		return classDeclarationImpl;
 	}
 

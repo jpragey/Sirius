@@ -10,7 +10,7 @@ public interface ClassOrInterface extends ClassType {
 	List<AbstractFunction> getFunctions();
 	
 	// get implemented interfaces of first level  (no grandparent)
-	List<InterfaceDeclaration> getDirectInterfaces();
+//	List<InterfaceDeclaration> getDirectInterfaces();
 	
 	/** This class/interface qualified name */
 	QName getQName();
