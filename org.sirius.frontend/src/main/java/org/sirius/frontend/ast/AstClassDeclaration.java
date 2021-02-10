@@ -83,9 +83,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		ImmutableList<TypeParameter> newTypeParams = builder.addAll(typeParameters).add(param).build();
 
 		AstClassDeclaration fd = new AstClassDeclaration(reporter,
-//				interfaceType,
 				name, 
-//				packageQName, 
 				newTypeParams,
 				functionDefinitions,
 				valueDeclarations, anonConstructorArguments, ancestors);
@@ -101,11 +99,6 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 				valueDeclarations, anonConstructorArguments, ancestors);
 		return cd;
 	}
-
-//	public static AstClassDeclaration newClass(Reporter reporter, AstToken name) {
-//		return new AstClassDeclaration (reporter, name);
-//	}
-	
 	
 	public void setSymbolTable(DefaultSymbolTable symbolTable) {
 		if(symbolTable == null)
@@ -383,10 +376,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 	@Override
 	public void verify(int featureFlags) {
-		// TODO
-//		private QName qName = new QName("<not_set>"); 
 		
-		// Formal parameters
 		verifyList(typeParameters, featureFlags);
 		
 		verifyList(functionDefinitions, featureFlags);
@@ -394,12 +384,9 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		verifyList(valueDeclarations, featureFlags);
 		verifyList(anonConstructorArguments, featureFlags); 
 
-//		veprivate Scope scope = null;
-		
 		verifyList(ancestors, featureFlags);
 		
 		verifyList(interfaces, featureFlags);
 
-//		private DefaultSymbolTable symbolTable; 
 	}
 }

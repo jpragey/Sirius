@@ -23,7 +23,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 
 	private List<AncestorInfo> ancestors = new ArrayList<>();
 	
-	private DefaultSymbolTable symbolTable /*= new SymbolTable()*/; 
+	private DefaultSymbolTable symbolTable; 
 
 	private ImmutableList<TypeParameter> typeParameters;
 	private AstToken name;
@@ -33,7 +33,6 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 
-//	private Optional<QName> packageQName;
 	private QName qName = new QName("<not_set>"); 
 
 	public AstInterfaceDeclaration(Reporter reporter, AstToken name, //Optional<QName> packageQName,
@@ -56,7 +55,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		this.valueDeclarations = new ArrayList<>(valueDeclarations);
 	}
 
-	public AstInterfaceDeclaration(Reporter reporter, AstToken name /*, Optional<QName> packageQName*/) {
+	public AstInterfaceDeclaration(Reporter reporter, AstToken name) {
 		this(reporter, name,
 				ImmutableList.of() /*functionDeclarations*/,
 				ImmutableList.of() /*functionDefinitions*/,
@@ -235,17 +234,12 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 //		if(!fd.getAnnotationList().contains("static"))
 //			fd.setMember(true);
 
-		return new AstInterfaceDeclaration(reporter, name, //packageQName,
+		return new AstInterfaceDeclaration(reporter, name, 
 				functionDeclarations,
-//				ImmutableList.<FunctionDeclaration>builder()
-//					.addAll(functionDeclarations)
-//					.build(),
-					
 				ImmutableList.<FunctionDefinition>builder()
 					.addAll(functionDefinitions)
 					.add(fd)
 					.build(),
-					
 				typeParameters,
 				ImmutableList.copyOf(ancestors),
 				valueDeclarations
@@ -256,30 +250,24 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	
 	public InterfaceDeclaration getInterfaceDeclaration() {
 		if(impl == null) {
-//			private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 			List<MemberValue> memberValues = valueDeclarations.stream()
 					.map(vd ->vd.getMemberValue())
 					.collect(Collectors.toList());
 
-//			public default MapOfList<QName, FunctionDefinition> getAllFunctions() {
-				MapOfList<QName, FunctionDefinition> allFctMap = new MapOfList<>();
+			MapOfList<QName, FunctionDefinition> allFctMap = new MapOfList<>();
 
-				// -- 
-				for(FunctionDefinition func : getFunctionDefinitions()) {
-					QName fqn = func.getqName();
-					allFctMap.put(fqn, func);
-				}
-				
-				for(AstInterfaceDeclaration acd: this.getInterfaces()) {
-					MapOfList<QName, FunctionDefinition> amap  = acd.getAllFunctions();
-					allFctMap.insert(amap);
-				}
-				
-//				return map;
-//			}
+			// -- 
+			for(FunctionDefinition func : getFunctionDefinitions()) {
+				QName fqn = func.getqName();
+				allFctMap.put(fqn, func);
+			}
 
-			impl = new InterfaceDeclarationImpl(qName, allFctMap,
-				memberValues);
+			for(AstInterfaceDeclaration acd: this.getInterfaces()) {
+				MapOfList<QName, FunctionDefinition> amap  = acd.getAllFunctions();
+				allFctMap.insert(amap);
+			}
+
+			impl = new InterfaceDeclarationImpl(qName, allFctMap, memberValues);
 		}
 		return impl;
 		

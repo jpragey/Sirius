@@ -9,9 +9,6 @@ public interface ClassOrInterface extends ClassType {
 	List<MemberValue> getMemberValues();
 	List<AbstractFunction> getFunctions();
 	
-	// get implemented interfaces of first level  (no grandparent)
-//	List<InterfaceDeclaration> getDirectInterfaces();
-	
 	/** This class/interface qualified name */
 	QName getQName();
 
@@ -26,6 +23,5 @@ public interface ClassOrInterface extends ClassType {
 			fct.visitMe(visitor);
 		}
 	}
-
 	
 }

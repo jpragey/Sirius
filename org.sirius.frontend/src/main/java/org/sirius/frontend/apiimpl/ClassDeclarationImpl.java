@@ -22,7 +22,6 @@ public class ClassDeclarationImpl implements ClassDeclaration {
 	private MapOfList<QName, FunctionDefinition> allFctMap;
 	private List<MemberValue> valueDeclarations;
 	private List<AncestorInfo> ancestors;
-//	private List<InterfaceDeclaration> interfaces = null;
 
 	public ClassDeclarationImpl(QName qName, MapOfList<QName, FunctionDefinition> allFctMap, List<MemberValue> valueDeclarations, List<AncestorInfo> ancestors) {
 		this.qName = qName;
