@@ -43,9 +43,9 @@ public class InterfaceDeclarationParser {
 			
 			AstToken name = new AstToken(ctx.TYPE_ID(0).getSymbol());
 			
-			List<AstClassOrInterface.AncestorInfo> intfList = ctx.TYPE_ID().stream()
+			List<AstToken> intfList = ctx.TYPE_ID().stream()
 				.skip(1)
-				.map(terminalNode -> new AstClassOrInterface.AncestorInfo(new AstToken(terminalNode.getSymbol())))
+				.map(terminalNode -> new AstToken(terminalNode.getSymbol()))
 				.collect(Collectors.toList());
 			
 			// -- type parameters

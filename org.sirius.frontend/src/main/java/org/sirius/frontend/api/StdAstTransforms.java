@@ -32,7 +32,6 @@ public class StdAstTransforms {
 
 		AstVisitor interfaceCollectingVisitor = new AstVisitor() {
 			@Override public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
-//				System.out.println("Interface: " + interfaceDeclaration.getQName());
 				interfacesByName.put(interfaceDeclaration.getNameString(), interfaceDeclaration);
 			}
 		};
@@ -41,7 +40,10 @@ public class StdAstTransforms {
 		AstVisitor interfaceResolutionVisitor = new AstVisitor() {
 			@Override public void startClassDeclaration (AstClassDeclaration classDeclaration) {
 				classDeclaration.resolveAncestors(interfacesByName);
-//				System.out.println("Class: " + classDeclaration.getQName());
+			}
+			@Override
+			public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
+				interfaceDeclaration.resolveAncestors(interfacesByName);
 			}
 		};
 

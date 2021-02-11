@@ -1,6 +1,7 @@
 package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 
 	private Reporter reporter;
 
-	private List<AncestorInfo> ancestors = new ArrayList<>();
+	private List<AstToken> ancestors = new ArrayList<>();
 	
 	private DefaultSymbolTable symbolTable; 
 
@@ -39,7 +40,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 			ImmutableList<FunctionDeclaration> functionDeclarations,
 			ImmutableList<FunctionDefinition> functionDefinitions,
 			ImmutableList<TypeParameter> typeParameters,
-			ImmutableList<AncestorInfo> ancestorInfos,
+			ImmutableList<AstToken> ancestorInfos,
 			List<AstMemberValueDeclaration> valueDeclarations
 			) 
 	{
@@ -179,26 +180,14 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	}
 
 	@Override
-	public List<AncestorInfo> getAncestors() {
+	public List<AstToken> getAncestors() {
 		return ancestors;
 	}
 
-	private List<AstInterfaceDeclaration> cachedDirectInterfaces = null;
+	private List<AstInterfaceDeclaration> cachedDirectInterfaces = new ArrayList<>();
 	
 	@Override
 	public List<AstInterfaceDeclaration> getInterfaces() {
-		if(cachedDirectInterfaces != null)
-			return cachedDirectInterfaces;
-		
-		cachedDirectInterfaces = new ArrayList<>(ancestors.size());
-
-		for(AncestorInfo ai : ancestors) {
-			Optional<AstInterfaceDeclaration> opt = ai.getAstClassDecl(symbolTable, reporter);
-			if(opt.isPresent()) {
-				AstInterfaceDeclaration interf = opt.get();
-				cachedDirectInterfaces.add(interf);
-			}
-		}
 		return cachedDirectInterfaces;
 	}
 
@@ -213,14 +202,27 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 				valueDeclarations
 				);
 	}
-	
+
+	public void resolveAncestors(HashMap<String, AstInterfaceDeclaration> interfacesByName) {
+		for(AstToken ai: ancestors) {
+			String name = ai.getText();
+			AstInterfaceDeclaration intDecl = interfacesByName.get(name);
+			if(intDecl == null) {
+				reporter.error("Class " + getQName() + " implements an undefined interface: " + name, ai);
+			} else {
+				this.cachedDirectInterfaces.add(intDecl);
+			}
+		}
+	}
+
 	public void addAncestor(Token ancestor) {// TODO: remove
 		addAncestor(new AstToken(ancestor)) ;
 	}
 	
 	@Override 
 	public void addAncestor(AstToken ancestor) {	// TODO: remove
-		this.ancestors.add(new AncestorInfo(ancestor));	
+//		this.ancestors.add(new AncestorInfo(ancestor));	
+		this.ancestors.add(ancestor);	
 	}
 	
 	public void addValueDeclaration(AstMemberValueDeclaration valueDeclaration) {
@@ -297,10 +299,6 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		verifyList(functionDefinitions, featureFlags);
 		
 		verifyList(valueDeclarations, featureFlags);
-		
-		verifyList(ancestors, featureFlags);
-		
-//		verifyList(interfaces, featureFlags);
 	}
 	
 }

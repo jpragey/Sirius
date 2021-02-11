@@ -86,7 +86,7 @@ public class ClassDeclarationParserTest {
 		assertEquals(myClass.getAncestors().size(), 1);
 		
 		assertThat(myClass.getAncestors().stream()
-				.map(interf -> interf.getSimpleName().getText())
+				.map(interf -> interf.getText())
 				.toArray(), 
 				is(new String[]{"I0"}));
 	}

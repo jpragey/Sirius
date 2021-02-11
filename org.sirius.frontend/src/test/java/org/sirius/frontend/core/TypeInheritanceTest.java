@@ -84,7 +84,7 @@ public class TypeInheritanceTest {
 		AstClassDeclaration astClassC = code.astClasses. get(0);
 		assertEquals(astClassC.getAncestors().size(), 1);
 		
-		assertEquals(astClassC.getAncestors().get(0).getSimpleName().getText(), "I");
+		assertEquals(astClassC.getAncestors().get(0).getText(), "I");
 
 		AstInterfaceDeclaration astClassI = code.astInterfaces. get(0);
 		assertEquals(astClassI.getAncestors().size(), 0);
@@ -113,7 +113,7 @@ public class TypeInheritanceTest {
 		AstClassDeclaration astClassC = code.astClasses. get(0);
 		assertEquals(astClassC.getAncestors().size(), 1);
 		
-		assertEquals(astClassC.getAncestors().get(0).getSimpleName().getText(), "I");
+		assertEquals(astClassC.getAncestors().get(0).getText(), "I");
 
 		AstInterfaceDeclaration astClassI = code.astInterfaces. get(0);
 		assertEquals(astClassI.getAncestors().size(), 0);

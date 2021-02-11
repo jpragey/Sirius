@@ -62,24 +62,13 @@ public class SymbolResolutionVisitor implements AstVisitor {
 		
 //		compilationUnit.addImport(importDeclaration);ClassDeclaration(d);
 	}
-	@Override
-	public void endScriptCompilationUnit(ScriptCompilationUnit compilationUnit) {
-		// TODO Auto-generated method stub
-		AstVisitor.super.endScriptCompilationUnit(compilationUnit);
-	}
+//	@Override
+//	public void endScriptCompilationUnit(ScriptCompilationUnit compilationUnit) {
+//		// TODO Auto-generated method stub
+//		AstVisitor.super.endScriptCompilationUnit(compilationUnit);
+//	}
 
 
-	@Override
-	public void startClassDeclaration(AstClassDeclaration classDeclaration) {
-		classDeclaration.resolveAncestors();
-//		startScope(classDeclaration);
-	}
-	@Override
-	public void endClassDeclaration(AstClassDeclaration classDeclaration) {
-//		endScope(classDeclaration);
-	}
-	
-	
 	@Override
 	public void startFunctionFormalArgument(AstFunctionParameter formalArgument) {
 		formalArgument.resolve();

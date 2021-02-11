@@ -14,7 +14,6 @@ import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.apiimpl.ClassDeclarationImpl;
-import org.sirius.frontend.ast.AstClassOrInterface.AncestorInfo;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.Symbol;
@@ -39,7 +38,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	/** True for annotation classes (ConstrainedAnnotation subtypes, ie OptionalAnnotation or SequencedAnnotation) */
 	private boolean annotationType0 = false; 
 	
-	private List<AncestorInfo> ancestors = new ArrayList<>();
+	private List<AstToken> ancestors = new ArrayList<>();
 	
 	private List<AstInterfaceDeclaration> interfaces = new ArrayList<>();
 
@@ -54,7 +53,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			ImmutableList<FunctionDefinition> functionDeclarations,
 			List<AstMemberValueDeclaration> valueDeclarations,
 			List<AstFunctionParameter> anonConstructorArguments,
-			List<AncestorInfo> ancestorInfos) 
+			List<AstToken> ancestorInfos) 
 	{
 		super();
 		this.reporter = reporter;
@@ -75,7 +74,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			ImmutableList.of(), 						//<AstFunctionDeclaration>(), // functionDeclarations,
 			new ArrayList<AstMemberValueDeclaration>(), //List valueDeclarations,
 			new ArrayList<AstFunctionParameter>() 		//List anonConstructorArguments
-			, new ArrayList<AncestorInfo>()
+			, new ArrayList<AstToken>()
 		);
 	}
 	public AstClassDeclaration withFormalParameter(TypeParameter param) {
@@ -198,14 +197,16 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	public List<AstFunctionParameter> getAnonConstructorArguments() {
 		return anonConstructorArguments;
 	}
-	public List<AncestorInfo> getAncestors() {
+	public List<AstToken> getAncestors() {
 		return ancestors;
 	}
 	public void addAncestor(Token ancestor) {// TODO: remove
-		this.ancestors.add(new AncestorInfo(new AstToken(ancestor)));	
+//		this.ancestors.add(new AncestorInfo(new AstToken(ancestor)));	
+		this.ancestors.add(new AstToken(ancestor));	
 	}
 	public void addAncestor(AstToken ancestor) {// TODO: remove
-		this.ancestors.add(new AncestorInfo(ancestor));	
+//		this.ancestors.add(new AncestorInfo(ancestor));	
+		this.ancestors.add(ancestor);	
 	}
 
 	@Override
@@ -269,7 +270,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			List<MemberValue> memberValues =  valueDeclarations.stream()
 					.map(v->v.getMemberValue())
 					.collect(Collectors.toList());
-			classDeclarationImpl =  new ClassDeclarationImpl(qName, getAllFunctions(), memberValues, ancestors);
+			classDeclarationImpl =  new ClassDeclarationImpl(qName, getAllFunctions(), memberValues, interfaces);
 		}
 		return classDeclarationImpl;
 	}
@@ -287,8 +288,9 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		}
 		AstClassDeclaration descDecl = (AstClassDeclaration)descType;
 
-		for(AncestorInfo ai: descDecl.ancestors) {
-			AstToken ancTk = ai.getSimpleName();
+		for(AstToken ancTk: descDecl.ancestors) {
+//			for(AncestorInfo ai: descDecl.ancestors) {
+//			AstToken ancTk = ai.getSimpleName();
 			Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(ancTk.getText());
 			if(! optSymbol.isPresent())
 				continue;
@@ -320,15 +322,16 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	}
 
 	List<AstClassDeclaration> getAncestorClasses() {
-		return this.ancestors.stream()
-				.filter(ancestorInfo -> ancestorInfo.getAstClassDecl().isPresent())
-				.map(ancestorInfo -> symbolTable.lookupBySimpleName(ancestorInfo.getSimpleName().getText()))
-				.filter(optSymbol -> optSymbol.isPresent())
-				.map(optSymbol -> optSymbol.get())
-				.map(symbol -> symbol.getClassDeclaration())
-				.filter(optCD -> optCD.isPresent())
-				.map(optCD -> optCD.get())
-				.collect(Collectors.toList());
+		throw new UnsupportedOperationException("Temp. removed yet");
+//		return this.ancestors.stream()
+//				.filter(ancestorInfo -> ancestorInfo.getAstClassDecl().isPresent())
+//				.map(ancestorInfo -> symbolTable.lookupBySimpleName(ancestorInfo.getSimpleName().getText()))
+//				.filter(optSymbol -> optSymbol.isPresent())
+//				.map(optSymbol -> optSymbol.get())
+//				.map(symbol -> symbol.getClassDeclaration())
+//				.filter(optCD -> optCD.isPresent())
+//				.map(optCD -> optCD.get())
+//				.collect(Collectors.toList());
 
 	}
 	@Override
@@ -337,22 +340,12 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		return this; // TODO
 	}
 
-	
-	
-	public void resolveAncestors() {
-//		for(AncestorInfo ai: ancestors) {
-//			ai.getAstClassDecl(symbolTable, reporter).ifPresent((AstInterfaceDeclaration id) -> {
-//				this.interfaces.add(id);
-//			});
-//		}
-	}
-
 	public void resolveAncestors(HashMap<String, AstInterfaceDeclaration> interfacesByName) {
-		for(AncestorInfo ai: ancestors) {
-			String name = ai.getSimpleName().getText();
+		for(AstToken ancTk: ancestors) {
+			String name = ancTk.getText();
 			AstInterfaceDeclaration intDecl = interfacesByName.get(name);
 			if(intDecl == null) {
-				reporter.error("Class " + getQName() + " implements an undefined interface: " + name, ai.getSimpleName());
+				reporter.error("Class " + getQName() + " implements an undefined interface: " + name, ancTk);
 			} else {
 				this.interfaces.add(intDecl);
 			}
@@ -397,8 +390,6 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		verifyList(valueDeclarations, featureFlags);
 		verifyList(anonConstructorArguments, featureFlags); 
 
-		verifyList(ancestors, featureFlags);
-		
 		verifyList(interfaces, featureFlags);
 
 	}

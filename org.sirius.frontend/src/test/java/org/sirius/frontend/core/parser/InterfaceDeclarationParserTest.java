@@ -87,7 +87,7 @@ public class InterfaceDeclarationParserTest {
 		assertEquals(myInterface.getAncestors().size(), 1);
 		
 		assertThat(myInterface.getAncestors().stream()
-				.map(interf -> interf.getSimpleName().getText())
+				.map(interf -> interf.getText())
 				.toArray(), 
 				equalTo(new String[]{"I0"}));
 	}

@@ -51,9 +51,10 @@ public class ClassDeclarationParser {
 			List<AstFunctionParameter> anonConstructorArguments = parameterVisitor.visitFunctionParameterList(ctx.functionParameterList());
 			
 			// -- Implemented interfaces
-			List<AstClassOrInterface.AncestorInfo> ancestors = ctx.TYPE_ID().stream()
+			List<AstToken> ancestors = ctx.TYPE_ID().stream()
 				.skip(1)
-				.map(terminalNode -> new AstClassOrInterface.AncestorInfo(new AstToken(terminalNode.getSymbol())))
+//				.map(terminalNode -> new AstClassOrInterface.AncestorInfo(new AstToken(terminalNode.getSymbol())))
+				.map(terminalNode -> new AstToken(terminalNode.getSymbol()))
 				.collect(Collectors.toList());
 			
 			// -- type parameters
