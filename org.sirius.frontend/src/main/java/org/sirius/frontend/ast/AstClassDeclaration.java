@@ -2,6 +2,7 @@ package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -339,10 +340,22 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	
 	
 	public void resolveAncestors() {
+//		for(AncestorInfo ai: ancestors) {
+//			ai.getAstClassDecl(symbolTable, reporter).ifPresent((AstInterfaceDeclaration id) -> {
+//				this.interfaces.add(id);
+//			});
+//		}
+	}
+
+	public void resolveAncestors(HashMap<String, AstInterfaceDeclaration> interfacesByName) {
 		for(AncestorInfo ai: ancestors) {
-			ai.getAstClassDecl(symbolTable, reporter).ifPresent((AstInterfaceDeclaration id) -> {
-				this.interfaces.add(id);
-			});
+			String name = ai.getSimpleName().getText();
+			AstInterfaceDeclaration intDecl = interfacesByName.get(name);
+			if(intDecl == null) {
+				reporter.error("Class " + getQName() + " implements an undefined interface: " + name, ai.getSimpleName());
+			} else {
+				this.interfaces.add(intDecl);
+			}
 		}
 	}
 

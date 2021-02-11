@@ -2,6 +2,7 @@ package org.sirius.frontend.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,6 +21,7 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
+import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.parser.Compiler;
 
 
@@ -94,8 +96,9 @@ public class TypeInheritanceTest {
 		InterfaceDeclaration apiI = astClassI.getInterfaceDeclaration();
 		assertThat(apiI.getQName().dotSeparated(), is("p.a.I"));
 		
-//		assertThat(apiC.getDirectInterfaces(), hasSize(1));
-//		assertThat(apiC.getDirectInterfaces().get(0).getQName().dotSeparated(), is("p.a.I"));
+		assertThat(astClassC.getInterfaces(), hasSize(1));
+//		assertThat(apiC.getInterface(), hasSize(1));
+		assertThat(astClassC.getInterfaces().get(0).getQName().dotSeparated(), is("p.a.I"));
 	}
 
 	@Test

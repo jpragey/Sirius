@@ -1,19 +1,12 @@
 package org.sirius.frontend.api;
 
 import java.util.List;
-import java.util.Stack;
 
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.ast.AstModuleDeclaration;
-import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.core.AbstractCompilationUnit;
 import org.sirius.frontend.core.InputTextProvider;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
-import org.sirius.frontend.symbols.QNameSetterVisitor;
-import org.sirius.frontend.symbols.ScopeSetterVisitor;
-import org.sirius.frontend.symbols.SymbolResolutionVisitor;
-import org.sirius.frontend.symbols.SymbolTableFillingVisitor;
 
 public interface Session {
 	
@@ -34,47 +27,24 @@ public interface Session {
 			}
 		}
 	}
+	
 
 	default void stdTransform(Reporter reporter, InputTextProvider input, AbstractCompilationUnit compilationUnit, DefaultSymbolTable globalSymbolTable) {
-
-		
-		AstVisitor insertPackageInModulesVisitor = new AstVisitor() {
-			Stack<AstModuleDeclaration> moduleStack = new Stack<AstModuleDeclaration>();
-
-			@Override
-			public void startModuleDeclaration(AstModuleDeclaration declaration) {
-				moduleStack.push(declaration);
-			}
-
-			@Override
-			public void endModuleDeclaration(AstModuleDeclaration declaration) {
-				moduleStack.pop();
-			}
-
-			@Override
-			public void startPackageDeclaration(AstPackageDeclaration declaration) {
-				AstModuleDeclaration mod = moduleStack.peek();
-				assert(mod != null);
-//				mod.addPackageDeclaration(declaration);
-			}
-			
-		};
-		applyVisitors(reporter, compilationUnit, insertPackageInModulesVisitor);
-		
-		
+		StdAstTransforms.insertPackagesInModules(reporter, compilationUnit);
 		
 		// -- Set qualified names 
-		applyVisitors(reporter, compilationUnit, new QNameSetterVisitor());
+		StdAstTransforms.setQNames(compilationUnit);
 		
 		// -- Set scopes
-		applyVisitors(reporter, compilationUnit, new ScopeSetterVisitor());
+		StdAstTransforms.setScopes(compilationUnit);
 		
+		StdAstTransforms.linkClassesToInterfaces(reporter, compilationUnit);
+			
 		// -- Set symbol tables (thus create the ST tree), add symbols to tables
-		applyVisitors(reporter, compilationUnit, new SymbolTableFillingVisitor(globalSymbolTable));
+		StdAstTransforms.fillSymbolTables(compilationUnit, globalSymbolTable);
 
 		// -- Resolve symbols in expressions
-		applyVisitors(reporter, compilationUnit, new SymbolResolutionVisitor(reporter, globalSymbolTable));
-		
+		StdAstTransforms.resolveSymbols(reporter, compilationUnit, globalSymbolTable);
 	}
 	
 }

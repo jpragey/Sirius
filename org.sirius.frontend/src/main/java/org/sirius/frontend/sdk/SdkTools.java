@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.StdAstTransforms;
 import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstClassOrInterface;
@@ -21,11 +22,13 @@ import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
+import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.QNameRefType;
+import org.sirius.frontend.core.AbstractCompilationUnit;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.QNameSetterVisitor;
 import org.sirius.frontend.symbols.SymbolResolutionVisitor;
@@ -100,15 +103,33 @@ public class SdkTools {
 		List<ModuleImport> moduleImports = Collections.emptyList();
 		AstModuleDeclaration md = new AstModuleDeclaration(reporter, siriusLangQName, versionToken, equivalents, moduleImports, List.of(pd));
 		
-		QNameSetterVisitor qNameSetterVisitor = new QNameSetterVisitor();
-		md.visit(qNameSetterVisitor);
-		
-		SymbolTableFillingVisitor fillingVisitor = new SymbolTableFillingVisitor(symbolTable);
-		md.visit(fillingVisitor);
-		
-		SymbolResolutionVisitor resolutionVisitor = new SymbolResolutionVisitor(reporter, symbolTable);
-		md.visit(resolutionVisitor);
+		AbstractCompilationUnit compilationUnit = new AbstractCompilationUnit() {
+			List<AstModuleDeclaration> moduleDeclarations = List.of(md);
+			@Override
+			public void visit(AstVisitor visitor) {
+				md.visit(visitor);
+			}
 
+			@Override
+			public List<AstModuleDeclaration> getModuleDeclarations() {
+				return moduleDeclarations;
+			}
+			
+		};
+
+		// -- Transforms
+		StdAstTransforms.setQNames(compilationUnit);
+
+		// -- Set scopes
+		StdAstTransforms.setScopes(compilationUnit);
+
+		StdAstTransforms.linkClassesToInterfaces(reporter, compilationUnit);
+		
+		StdAstTransforms.fillSymbolTables(compilationUnit, symbolTable);
+
+		StdAstTransforms.resolveSymbols(reporter, compilationUnit, symbolTable);
+
+		
 		classDeclarations.forEach(cd -> {symbolTable.addClass(cd);});
 		interfaceDeclarations.forEach(id-> {symbolTable.addInterface(id);});
 		allPartialLists.forEach(pl ->  {symbolTable.addFunction(pl);});

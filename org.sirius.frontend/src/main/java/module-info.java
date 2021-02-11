@@ -4,7 +4,7 @@
  *
  */
 module org.sirius.frontend {
-	requires org.sirius.common;
+	requires transitive org.sirius.common;
 //	requires org.junit.jupiter.api;
 	
 	requires org.antlr.antlr4.runtime;
