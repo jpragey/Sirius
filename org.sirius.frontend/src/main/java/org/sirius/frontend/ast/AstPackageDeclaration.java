@@ -12,6 +12,7 @@ import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.api.TopLevelValue;
+import org.sirius.frontend.apiimpl.PackageDeclarationImpl;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.LocalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
@@ -103,59 +104,30 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 	}
 	
 	
-	private class PackageDeclarationImpl implements PackageDeclaration {
-
-		@Override
-		public List<ClassDeclaration> getClasses() {
-			return classDeclarations.stream()
+	public PackageDeclaration getPackageDeclaration() {
+		if(packageDeclaration == null) {
+			List<ClassDeclaration> apiClassDeclarations = classDeclarations.stream()
 					.map(cd -> cd.getClassDeclaration( /*qname*/ ))
 					.collect(Collectors.toList());
-		}
-
-		@Override
-		public List<InterfaceDeclaration> getInterfaces() {
-			return interfaceDeclarations.stream()
+			List<InterfaceDeclaration> apiInterfaceDeclarations = interfaceDeclarations.stream()
 					.map(cd -> cd.getInterfaceDeclaration())
 					.collect(Collectors.toList());
-		}
-
-		@Override
-		public List<TopLevelValue> getValues() {
-			return valueDeclarations.stream()
+			List<TopLevelValue> apiValues = valueDeclarations.stream()
 					.map(AstMemberValueDeclaration::getTopLevelValue)
 					.filter(v -> v.isPresent())
 					.map(v -> v.get())
 					.collect(Collectors.toList());
-		}
 
-		@Override
-		public List<AbstractFunction> getFunctions() {
-			List<AbstractFunction> funcs = new ArrayList<>();
-			
+			List<AbstractFunction> apiFunctions = new ArrayList<>();
 			for(FunctionDefinition fdBuilder: functionDeclarations) {
 				for(Partial partial: fdBuilder.getPartials()) {
 					AbstractFunction apiFunc = partial.toAPI();
-					funcs.add(apiFunc);
+					apiFunctions.add(apiFunc);
 				}
 			}
-			return funcs;
-		}
+			
+			packageDeclaration = new PackageDeclarationImpl(qname, apiClassDeclarations, apiInterfaceDeclarations, apiValues, apiFunctions);
 
-		@Override
-		public QName getQName() {
-			return qname;
-		}
-		@Override
-		public String toString() {
-			return "Pack: \"" + qname + "\"";
-		}
-
-	};
-		
-	
-	public PackageDeclaration getPackageDeclaration() {
-		if(packageDeclaration == null) {
-			packageDeclaration = new PackageDeclarationImpl();
 		}
 		return packageDeclaration;
 	}
