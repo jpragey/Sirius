@@ -6,6 +6,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.IfElseStatement;
 import org.sirius.frontend.api.Statement;
+import org.sirius.frontend.apiimpl.IfElseStatementImpl;
 
 public class AstIfElseStatement implements AstStatement {
 
@@ -14,6 +15,8 @@ public class AstIfElseStatement implements AstStatement {
 	private AstExpression ifExpression;
 	private AstStatement ifBlock;
 	private Optional<AstStatement> elseBlock;
+
+	private IfElseStatement ifElseStatementImpl = null;
 
 	public AstIfElseStatement(Reporter reporter, AstExpression ifExpression, AstStatement ifBlock, Optional<AstStatement> elseBlock) {
 		super();
@@ -53,7 +56,6 @@ public class AstIfElseStatement implements AstStatement {
 		visitor.endIfElseStatement(this);
 	}
 
-	private IfElseStatement ifElseStatementImpl = null;
 	
 	@Override
 	public IfElseStatement toAPI() {
@@ -61,26 +63,7 @@ public class AstIfElseStatement implements AstStatement {
 			Expression apiIfExpression = ifExpression.getExpression();
 			Statement apiIfStatement = ifBlock.toAPI();
 			Optional<Statement> apiElseStatement = elseBlock.map(astStmt -> astStmt.toAPI());
-			
-			
-			ifElseStatementImpl = new IfElseStatement() {
-
-				@Override
-				public Expression getExpression() {
-					return apiIfExpression;
-				}
-
-				@Override
-				public Statement getIfStatement() {
-					return apiIfStatement;
-				}
-
-				@Override
-				public Optional<Statement> getElseStatement() {
-					return apiElseStatement;
-				}
-				
-			};
+			ifElseStatementImpl = new IfElseStatementImpl(apiIfExpression, apiIfStatement, apiElseStatement);
 		}
 		return ifElseStatementImpl;
 	}

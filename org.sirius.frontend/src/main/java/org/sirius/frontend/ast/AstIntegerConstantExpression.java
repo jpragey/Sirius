@@ -58,6 +58,13 @@ public class AstIntegerConstantExpression implements AstExpression {
 	}
 
 	private class IntegerConstantExpressionImpl implements IntegerConstantExpression {
+		private int value;
+		
+		public IntegerConstantExpressionImpl(int value) {
+			super();
+			this.value = value;
+		}
+
 		@Override
 		public int getValue() {
 			return value;
@@ -80,7 +87,7 @@ public class AstIntegerConstantExpression implements AstExpression {
 	@Override
 	public Expression getExpression() {
 		if(impl == null)
-			impl = new IntegerConstantExpressionImpl();
+			impl = new IntegerConstantExpressionImpl(value);
 		return impl;
 	}
 	@Override

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.FunctionFormalArgument;
-import org.sirius.frontend.api.Type;
+import org.sirius.frontend.apiimpl.FunctionFormalArgumentImpl;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 /** Argument for function / method or class constructor declaration
@@ -66,34 +66,12 @@ public class AstFunctionParameter implements Verifiable {
 	public void resolve() {
 	}
 	
-	private class FunctionFormalArgumentImpl implements FunctionFormalArgument {
-		private QName argQName;
-		
-		public FunctionFormalArgumentImpl(QName argQName) {
-			super();
-			this.argQName = argQName;
-		}
-
-		@Override
-		public QName getQName() {
-			return argQName;
-		}
-
-		@Override
-		public Type getType() {
-			return type.getApiType();
-		}
-		@Override
-		public String toString() {
-			return "param. " + argQName.dotSeparated();
-		}
-	}
-	
 	private FunctionFormalArgumentImpl impl = null;
 	
 	public FunctionFormalArgument toAPI(QName functionQName) {
-		if(impl == null)
-			impl =new FunctionFormalArgumentImpl(functionQName.child(name.getText()));
+		if(impl == null) {
+			impl = new FunctionFormalArgumentImpl(functionQName.child(name.getText()), type.getApiType());
+		}
 		return impl;
 	}
 	
