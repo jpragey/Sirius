@@ -1,7 +1,6 @@
 package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -14,9 +13,9 @@ import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionCall;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
+import org.sirius.frontend.apiimpl.FunctionCallImpl;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
-import org.sirius.frontend.symbols.SymbolTable;
 
 public class AstFunctionCallExpression implements AstExpression, Scoped {
 	/** Function name */
@@ -158,90 +157,21 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		return Optional.empty();
 //		System.out.println("---");
 	}
-	
-	private class FunctionCallImpl implements FunctionCall {
-//		private Partial functionDeclaration0;
-		private FunctionDefinition functionDefinition;
-		
-		
-		public FunctionCallImpl(FunctionDefinition functionDefinition) {
-			super();
-			this.functionDefinition = functionDefinition;
-		}
 
-//		public FunctionCallImpl(Partial functionDeclaration) {
-//			super();
-//			this.functionDeclaration = functionDeclaration;
-//		}
-
-		@Override
-		public org.sirius.common.core.Token getFunctionName() {
-			return name.asToken();
-		}
-		@Override
-		public Optional<Expression> getThis() {
-			return thisExpression.map(expr -> expr.getExpression());
-		}
-		@Override
-		public List<Expression> getArguments() {
-//			List<AstFunctionFormalArgument> formalArgs = functionDeclaration.getFormalArguments();
-//			List<AstFunctionParameter> formalArgs = functionDeclaration.getPartials().get(0).getArgs();
-//			List<AstFunctionParameter> formalArgs = functionDeclaration.getArgs();
-			List<AstFunctionParameter> formalArgs = functionDefinition.getArgs();
-			Iterator<AstFunctionParameter> it = formalArgs.iterator();
-			
-			ArrayList<Expression> l = new ArrayList<>();
-			for(AstExpression arg: actualArguments) {
-				AstFunctionParameter formalArgument = it.next();
-				Optional<Expression> expr = mapArg(arg, formalArgument);
-				if(expr.isPresent()) {
-					l.add(expr.get());
-				} else {	// TODO ???
-				}
-//				Expression ex = arg.getExpression();
-//				l.add(ex);
-//				System.out.println(ex);
+	private List<Expression> mapArgList(FunctionDefinition functionDeclaration) {
+		List<AstFunctionParameter> formalArgs = functionDeclaration.getArgs();
+		Iterator<AstFunctionParameter> it = formalArgs.iterator();
+		
+		ArrayList<Expression> l = new ArrayList<>();
+		for(AstExpression arg: actualArguments) {
+			AstFunctionParameter formalArgument = it.next();
+			Optional<Expression> expr = mapArg(arg, formalArgument);
+			if(expr.isPresent()) {
+				l.add(expr.get());
+			} else {	// TODO ???
 			}
-			return l;
 		}
-
-		@Override
-		public Optional<AbstractFunction> getDeclaration() {
-			Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(name.getText());
-			if(optSymbol.isPresent()) {
-				Optional<FunctionDefinition> optFunc =  optSymbol.get().getFunctionDeclaration();
-				if(optFunc.isPresent()) {
-					FunctionDefinition funcDecl = optFunc.get();
-//					Optional<TopLevelFunction> tlFunc = funcDecl.getTopLevelFunction();
-					
-					int actualArgCount = actualArguments.size();
-					List<Partial> partials = funcDecl.getPartials();
-					if(actualArgCount > partials.size()) {
-						reporter.error("Too many (" + actualArgCount + "argument(s) provided to function call." , name);
-						return Optional.empty();
-					}
-					
-					Partial partial = partials.get(actualArgCount);
-					AbstractFunction result = partial.toAPI();
-					return Optional.of(result);
-//					
-//					AbstractFunction tlFunc = funcDecl.toAPI();
-//					return Optional.of(tlFunc);
-				}
-			}
-			
-			return Optional.empty();
-		}
-		@Override
-		public Type getType() {
-			return functionDefinition.getReturnType().getApiType();
-//			return functionDeclaration.getReturnType().getApiType();
-		}
-		@Override
-		public String toString() {
-			return "FunctionCallImpl (" + name.getText() + ")";
-		}
-		
+		return l;
 	}
 	
 	@Override
@@ -252,16 +182,18 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 			if(fd.isPresent()) {
 				FunctionDefinition functionDeclaration = fd.get();
 				
-//				int expectedArgCount = functionDeclaration.getFormalArguments().size();
-//				Partial allArgsPartial = functionDeclaration.getAllArgsPartial();
-//				int expectedArgCount = allArgsPartial.getArgs().size();
 				int expectedArgCount = functionDeclaration.getArgs().size();
 				if(expectedArgCount != actualArguments.size()) {
 					reporter.error(name.getText() + " has a wrong number of arguments: " + expectedArgCount + " actual, " + actualArguments.size() + " expected.", name);
 				} else {
-//					Partial partial = functionDeclaration.getAllArgsPartial();
-					return new FunctionCallImpl(functionDeclaration);
-//					return new FunctionCallImpl(allArgsPartial);
+					List<Expression> argExpressions = mapArgList(functionDeclaration);
+					Optional<Expression> optThisExpr = thisExpression.map(expr -> expr.getExpression());
+
+					FunctionCallImpl fctCallImpl = new FunctionCallImpl(reporter, functionDeclaration, name, 
+							argExpressions, 
+							optThisExpr, symbolTable);
+						
+					return fctCallImpl;
 				}
 				
 			} else {
@@ -321,7 +253,6 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	public AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
 
 		List<AstExpression> newArgs = actualArguments.stream().map(arg -> arg.linkToParentST(parentSymbolTable)).collect(Collectors.toList());  
-//		Optional<AstExpression> thisExpression, 
 
 		AstFunctionCallExpression newExpr = new AstFunctionCallExpression(
 				name, 

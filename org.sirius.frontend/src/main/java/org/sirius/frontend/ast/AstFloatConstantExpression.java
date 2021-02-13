@@ -1,13 +1,14 @@
 package org.sirius.frontend.ast;
 
 import org.sirius.frontend.api.Expression;
-import org.sirius.frontend.api.FloatConstantExpression;
-import org.sirius.frontend.api.Type;
+import org.sirius.frontend.apiimpl.FloatConstantExpressionImpl;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 
 public class AstFloatConstantExpression implements AstExpression {
 	
 	private AstToken content;
+
+	private FloatConstantExpressionImpl impl = null;
 
 	public AstFloatConstantExpression(AstToken content) {
 		super();
@@ -28,14 +29,6 @@ public class AstFloatConstantExpression implements AstExpression {
 	public AstType getType() {
 		throw new UnsupportedOperationException("TODO");
 	}
-
-	private class FloatConstantExpressionImpl implements FloatConstantExpression {
-		@Override
-		public Type getType() {
-			return Type.floatType;
-		}
-	}
-	private FloatConstantExpressionImpl impl = null;
 
 	@Override
 	public Expression getExpression() {

@@ -7,30 +7,9 @@ import org.sirius.common.core.QName;
 
 public interface AstClassOrInterface extends AstType {
 
-	/** directly implemented interfaces or extended classes */
-//	public static class AncestorInfo implements Verifiable {
-//		/** Name in declaration ( extends/implements NAME clause)*/
-//		private AstToken simpleName;
-//		public AncestorInfo(AstToken simpleName) {
-//			super();
-//			this.simpleName = simpleName;
-//		}
-//		public AstToken getSimpleName() {
-//			return simpleName;
-//		}
-//		@Override
-//		public String toString() {
-//			return simpleName.toString();
-//		}
-//		@Override
-//		public void verify(int featureFlags) {
-//		}
-//	}
-
 	public List<FunctionDeclaration> getFunctionDeclarations();
 	public List<FunctionDefinition> getFunctionDefinitions();
 
-//	public List<AncestorInfo> getAncestors();
 	public List<AstToken> getAncestors();
 	public List<AstInterfaceDeclaration> getInterfaces();
 
