@@ -3,11 +3,10 @@ package org.sirius.frontend.ast;
 import java.util.Optional;
 
 import org.sirius.common.core.QName;
-import org.sirius.common.core.Token;
-import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.apiimpl.LocalVariableStatementImpl;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
 
@@ -60,41 +59,6 @@ public class AstLocalVariableStatement implements AstStatement {
 		visitor.end(this);
 	}
 
-	private class LocalVariableStatementImpl implements LocalVariableStatement {
-		AstLocalVariableStatement stmt;
-		Type type;
-		public LocalVariableStatementImpl(AstLocalVariableStatement stmt) {
-			super();
-			this.stmt = stmt;
-//			AstLocalVariableStatement.this.type.resolve();
-			this.type = AstLocalVariableStatement.this.type.getApiType();
-		}
-
-		@Override
-		public Type getType() {
-			return type;
-		}
-
-		@Override
-		public Token getName() {
-			return varName;
-		}
-
-		@Override
-		public Optional<Expression> getInitialValue() {
-			if(initialValue.isPresent()) {
-				Expression exp = initialValue.get().getExpression();
-				return Optional.of(exp);
-			}
-			return Optional.empty();
-		}
-		@Override
-		public String toString() {
-			return stmt.toString();
-		}
-
-	}
-	
 	@Override
 	public LocalVariableStatement toAPI() {
 		if(impl == null) {
@@ -105,7 +69,8 @@ public class AstLocalVariableStatement implements AstStatement {
 				Optional<AstLocalVariableStatement> lvs = symbol.getLocalVariableStatement();
 				if(lvs.isPresent()) {
 					AstLocalVariableStatement stmt = lvs.get();
-					impl = new LocalVariableStatementImpl(stmt);
+					Type type = AstLocalVariableStatement.this.type.getApiType();
+					impl = new LocalVariableStatementImpl(stmt, varName, initialValue, type);
 				}
 			}
 		}
