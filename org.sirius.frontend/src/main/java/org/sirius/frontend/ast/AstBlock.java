@@ -2,6 +2,7 @@ package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
@@ -38,7 +39,7 @@ public class AstBlock implements AstStatement {
 	}
 
 	@Override
-	public Statement toAPI() {
+	public Optional<Statement> toAPI() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -176,7 +176,9 @@ public class Partial implements Visitable, Verifiable {
 			Optional<List<Statement>> apiBody = Optional.empty();
 			List<Statement> apiStatements = new ArrayList<>(body.size());
 			for(AstStatement stmt: body /*statements*/) {
-				Statement st = stmt.toAPI();
+				Optional<Statement> optSt = stmt.toAPI();
+				assert(optSt.isPresent());	// TODO
+				Statement st = optSt.get();
 				apiStatements.add(st);
 			}
 

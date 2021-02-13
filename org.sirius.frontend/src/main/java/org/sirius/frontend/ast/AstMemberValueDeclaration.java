@@ -108,7 +108,7 @@ public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable, V
 	}
 	
 	public Optional<Expression> getApiInitialValue() {
-		return initialValue.map(AstExpression::getExpression);
+		return initialValue.flatMap(AstExpression::getExpression);
 	}
 	public Optional<AstExpression> getInitialValue() {
 		return initialValue;

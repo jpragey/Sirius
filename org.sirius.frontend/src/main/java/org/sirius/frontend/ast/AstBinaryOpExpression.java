@@ -2,6 +2,7 @@ package org.sirius.frontend.ast;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.antlr.v4.runtime.Token;
 import org.sirius.frontend.api.BinaryOpExpression;
@@ -17,7 +18,9 @@ public class AstBinaryOpExpression implements AstExpression {
 	private AstExpression right;
 	
 	private AstToken opToken;
-	
+
+	private Optional<Expression> impl = null;
+
 	private static Map<String, BinaryOpExpression.Operator> opMap = new HashMap<>() {{
 		for(BinaryOpExpression.Operator op: BinaryOpExpression.Operator.values())
 			put(op.getSymbol(), op);
@@ -91,13 +94,20 @@ public class AstBinaryOpExpression implements AstExpression {
 		visitor.endBinaryOpExpression(this);
 	}
 
-	private BinaryOpExpressionImpl impl = null;
 	
 	@Override
-	public Expression getExpression() {
+	public Optional<Expression> getExpression() {
 		
-		if(impl == null)
-			impl = new BinaryOpExpressionImpl(left.getExpression(), right.getExpression(), operator);
+		if(impl == null) {
+			Optional<Expression> leftExpr = left.getExpression();
+			Optional<Expression> rightExpr = right.getExpression();
+			if(leftExpr.isEmpty() || rightExpr.isEmpty()) {
+				impl = Optional.empty();
+			} else {
+				Expression e = new BinaryOpExpressionImpl(leftExpr.get(), rightExpr.get(), operator);
+				impl = Optional.of(e);
+			}
+		}
 		return impl;
 	}
 

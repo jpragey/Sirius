@@ -25,7 +25,7 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 	private DefaultSymbolTable symbolTable = null;
 	private Scope scope = null;
 	
-	private Expression impl = null;
+	private Optional<Expression> impl = null;
 	
 	private SimpleReferenceExpression(Reporter reporter, AstToken referenceName, DefaultSymbolTable symbolTable) {
 		super();
@@ -127,21 +127,23 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 	}
 
 	@Override
-	public Expression getExpression() {
+	public Optional<Expression> getExpression() {
 		if(impl == null) {
 			String simpleName = referenceName.getText();
 
 			Optional<AstLocalVariableStatement> localVarDecl = scope.getLocalVariable(simpleName);
 			if(localVarDecl.isPresent()) {
 				AstLocalVariableStatement st = localVarDecl.get();
-				impl = new LocalVariableReferenceImpl(st);
+				LocalVariableReferenceImpl lvr = new LocalVariableReferenceImpl(st);
+				impl = Optional.of(lvr);
 				return impl;
 			}
 			
 			Optional<AstFunctionParameter> functionParamDecl = scope.getFunctionParameter(simpleName);
 			if(functionParamDecl.isPresent()) {
 				AstFunctionParameter st = functionParamDecl.get();
-				impl = new FunctionActualArgumentImpl(st);
+				FunctionActualArgumentImpl actualArg = new FunctionActualArgumentImpl(st);
+				impl = Optional.of(actualArg);
 				return impl;
 			}
 		}

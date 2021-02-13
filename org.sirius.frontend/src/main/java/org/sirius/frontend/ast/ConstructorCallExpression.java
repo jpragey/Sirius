@@ -117,7 +117,9 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 
 		@Override
 		public List<Expression> getArguments() {
-			List<Expression> args = actualArguments.stream().map(expr -> expr.getExpression()).collect(Collectors.toList());
+			List<Expression> args = actualArguments.stream()
+					.map(expr -> expr.getExpression().get())	// TODO: check for empty (invalid) getExpression()
+					.collect(Collectors.toList());
 			return args;
 		}
 		
@@ -127,12 +129,14 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 		}
 	}
 	
-	private ConstructorCallImpl impl = null;
+	private Optional<Expression> impl = null;
 	
 	@Override
-	public ConstructorCall getExpression() {
-		if(impl == null)
-			impl = new ConstructorCallImpl();
+	public Optional<Expression> getExpression() {
+		if(impl == null) {
+			ConstructorCallImpl cci = new ConstructorCallImpl();
+			impl = Optional.of(cci);
+		}
 		return impl;
 	}
 	@Override

@@ -124,12 +124,14 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		AstType argType = argExpression.getType();
 		AstType expectedType = formalArgument.getType();
 		if(argType.isExactlyA(expectedType)) {
-			return Optional.of(argExpression.getExpression());
+			return argExpression.getExpression();
 		}
 		
 		// -- 
 		if(expectedType.isAncestorOrSameAs(argType)) {
-			Expression expr = argExpression.getExpression();
+			Optional<Expression> optExpr = argExpression.getExpression();
+			assert(optExpr.isPresent());	// TODO: ???
+			Expression expr = optExpr.get();
 			TypeCastExpression castExpression = new TypeCastExpression() {
 
 				@Override
@@ -175,7 +177,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	}
 	
 	@Override
-	public FunctionCall getExpression() {
+	public Optional<Expression> getExpression() {
 		Optional<Symbol> symbol = symbolTable.lookupBySimpleName(name.getText());
 		if(symbol.isPresent()) {
 			Optional<FunctionDefinition> fd = symbol.get().getFunctionDeclaration();
@@ -187,13 +189,13 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 					reporter.error(name.getText() + " has a wrong number of arguments: " + expectedArgCount + " actual, " + actualArguments.size() + " expected.", name);
 				} else {
 					List<Expression> argExpressions = mapArgList(functionDeclaration);
-					Optional<Expression> optThisExpr = thisExpression.map(expr -> expr.getExpression());
+					Optional<Expression> optThisExpr = thisExpression.flatMap(expr -> expr.getExpression());
 
 					FunctionCallImpl fctCallImpl = new FunctionCallImpl(reporter, functionDeclaration, name, 
 							argExpressions, 
 							optThisExpr, symbolTable);
 						
-					return fctCallImpl;
+					return Optional.of(fctCallImpl);
 				}
 				
 			} else {
@@ -204,10 +206,11 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		}
 		
 		// -- If function call expression couldn't be created, return a descent fake
-		return new FunctionCall() {
-			List<Expression> apiArguments = actualArguments.stream()
-					.map(astExpr -> astExpr.getExpression())
-					.collect(Collectors.toList());
+		Expression fakeExpression = new FunctionCall() {
+//			List<Expression> apiArguments = actualArguments.stream()
+//					.map(astExpr -> astExpr.getExpression())
+//					.collect(Collectors.toList());
+			private List<Expression> apiArguments = List.of();
 
 			@Override
 			public String toString() {
@@ -238,6 +241,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 				return Optional.empty();
 			}
 		};
+		return Optional.of(fakeExpression);
 	}
 	
 	@Override

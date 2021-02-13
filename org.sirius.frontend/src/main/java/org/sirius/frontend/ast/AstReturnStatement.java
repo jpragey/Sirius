@@ -1,5 +1,8 @@
 package org.sirius.frontend.ast;
 
+import java.util.Optional;
+
+import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.apiimpl.ReturnStatementImpl;
@@ -24,12 +27,15 @@ public class AstReturnStatement implements AstStatement {
 		visitor.endReturnStatement(this);
 	}
 
-	private ReturnStatementImpl impl = null;
+	private Optional<Statement> impl = null;
 	
 	@Override
-	public ReturnStatement toAPI() {
-		if(impl == null)
-			impl = new ReturnStatementImpl(expression);
+	public Optional<Statement> toAPI() {
+		if(impl == null) {
+			Optional<Expression> apiExpr = expression.getExpression();
+//			ReturnStatementImpl rstmt = new ReturnStatementImpl(expression);
+			impl = apiExpr.map(e -> new ReturnStatementImpl(e));
+		}
 		return impl;
 	}
 

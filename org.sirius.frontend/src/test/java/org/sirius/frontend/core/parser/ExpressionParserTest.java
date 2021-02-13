@@ -156,8 +156,8 @@ public class ExpressionParserTest {
 		assertThat(expression, instanceOf(AstBinaryOpExpression.class) );
 		AstBinaryOpExpression e = ((AstBinaryOpExpression)expression);
 
-		assertEquals(e.getRight().getExpression().toString(), expectedRight);
-		assertEquals(e.getLeft() .getExpression().toString(), expectedLeft);
+		assertEquals(e.getRight().getExpression().get().toString(), expectedRight);
+		assertEquals(e.getLeft() .getExpression().get().toString(), expectedLeft);
 		assertEquals(e.getOperator(), expectedOp);
 	}
 

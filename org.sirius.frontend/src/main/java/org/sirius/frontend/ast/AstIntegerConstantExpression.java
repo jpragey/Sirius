@@ -82,12 +82,12 @@ public class AstIntegerConstantExpression implements AstExpression {
 		}
 	}
 	
-	private IntegerConstantExpressionImpl impl = null;
+	private Optional<Expression> impl = null;
 	
 	@Override
-	public Expression getExpression() {
+	public Optional<Expression> getExpression() {
 		if(impl == null)
-			impl = new IntegerConstantExpressionImpl(value);
+			impl = Optional.of(new IntegerConstantExpressionImpl(value));
 		return impl;
 	}
 	@Override

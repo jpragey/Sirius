@@ -9,9 +9,9 @@ public class ReturnStatementImpl implements ReturnStatement {
 	public ReturnStatementImpl(Expression expression) {
 		this.apiExpr = expression;
 	}
-	public ReturnStatementImpl(AstExpression expression) {
-		this(expression.getExpression());
-	}
+//	public ReturnStatementImpl(AstExpression expression) {
+//		this(expression.getExpression());
+//	}
 	@Override
 	public Expression getExpression() {
 		return apiExpr;

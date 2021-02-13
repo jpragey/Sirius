@@ -37,8 +37,8 @@ public class LocalVariableStatementImpl implements LocalVariableStatement {
 	@Override
 	public Optional<Expression> getInitialValue() {
 		if(initialValue.isPresent()) {
-			Expression exp = initialValue.get().getExpression();
-			return Optional.of(exp);
+			Optional<Expression> exp = initialValue.flatMap(e -> e.getExpression());
+			return exp;
 		}
 		return Optional.empty();
 	}

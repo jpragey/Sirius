@@ -126,7 +126,7 @@ public class ScopeTest {
 		FunctionBody body = idPartials.getBody();
 //		AstReturnStatement returnStmt = (AstReturnStatement)body.get(0);
 		AstReturnStatement returnStmt = (AstReturnStatement)body.getStatement(0);
-		ReturnStatement rs = returnStmt.toAPI();
+		ReturnStatement rs = (ReturnStatement)returnStmt.toAPI().get();
 //		
 //		AstPackageDeclaration astPackage = astModule.getPackageDeclarations().get(0);
 //		assertThat(astPackage.getQnameString(), equalTo(""));

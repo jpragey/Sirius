@@ -16,7 +16,7 @@ public class AstIfElseStatement implements AstStatement {
 	private AstStatement ifBlock;
 	private Optional<AstStatement> elseBlock;
 
-	private IfElseStatement ifElseStatementImpl = null;
+	private Optional<Statement> ifElseStatementImpl = null;
 
 	public AstIfElseStatement(Reporter reporter, AstExpression ifExpression, AstStatement ifBlock, Optional<AstStatement> elseBlock) {
 		super();
@@ -58,12 +58,30 @@ public class AstIfElseStatement implements AstStatement {
 
 	
 	@Override
-	public IfElseStatement toAPI() {
+	public Optional<Statement> toAPI() {
 		if(ifElseStatementImpl == null) {
-			Expression apiIfExpression = ifExpression.getExpression();
-			Statement apiIfStatement = ifBlock.toAPI();
-			Optional<Statement> apiElseStatement = elseBlock.map(astStmt -> astStmt.toAPI());
-			ifElseStatementImpl = new IfElseStatementImpl(apiIfExpression, apiIfStatement, apiElseStatement);
+			// -- if-expression (mandatory)
+			Optional<Expression> optIfExpression = ifExpression.getExpression();
+			if(optIfExpression.isEmpty()) {
+				ifElseStatementImpl = Optional.empty();
+				return Optional.empty();
+			}
+			Expression apiIfExpression = optIfExpression.get();
+			
+			
+			Optional<Statement> optIfStatement = ifBlock.toAPI();
+			if(optIfStatement.isEmpty()) {
+				ifElseStatementImpl = Optional.empty();
+				return Optional.empty();
+			}
+			Statement apiIfStatement = optIfStatement.get();
+			
+			
+//			Optional<Statement> apiElseStatement = elseBlock.map(astStmt -> astStmt.toAPI());
+			Optional<Statement> apiElseStatement = elseBlock.flatMap(astStmt -> astStmt.toAPI());
+			
+			Statement st = new IfElseStatementImpl(apiIfExpression, apiIfStatement, apiElseStatement);
+			ifElseStatementImpl = Optional.of(st);
 		}
 		return ifElseStatementImpl;
 	}

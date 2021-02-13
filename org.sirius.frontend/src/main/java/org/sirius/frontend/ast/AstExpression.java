@@ -21,7 +21,7 @@ public interface AstExpression extends Verifiable {
 	 * 
 	 * @return the API expression, empty if it can't be defined (eg syntax error)
 	 */
-	Expression getExpression();
+	Optional<Expression> getExpression();
 
 //	DefaultSymbolTable getSymbolTable();
 	

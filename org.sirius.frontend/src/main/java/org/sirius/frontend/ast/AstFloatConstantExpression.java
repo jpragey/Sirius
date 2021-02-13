@@ -1,5 +1,7 @@
 package org.sirius.frontend.ast;
 
+import java.util.Optional;
+
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.apiimpl.FloatConstantExpressionImpl;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
@@ -8,7 +10,7 @@ public class AstFloatConstantExpression implements AstExpression {
 	
 	private AstToken content;
 
-	private FloatConstantExpressionImpl impl = null;
+	private Optional<Expression> impl = null;
 
 	public AstFloatConstantExpression(AstToken content) {
 		super();
@@ -31,9 +33,9 @@ public class AstFloatConstantExpression implements AstExpression {
 	}
 
 	@Override
-	public Expression getExpression() {
+	public Optional<Expression> getExpression() {
 		if(impl == null)
-			impl = new FloatConstantExpressionImpl();
+			impl = Optional.of(new FloatConstantExpressionImpl());
 
 		return impl;
 	}

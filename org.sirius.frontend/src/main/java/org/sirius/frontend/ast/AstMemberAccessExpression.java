@@ -2,14 +2,12 @@ package org.sirius.frontend.ast;
 
 import java.util.Optional;
 
-import org.sirius.common.core.Token;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.MemberValue;
-import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.MemberValueAccessExpression;
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
-import org.sirius.frontend.symbols.SymbolTable;
 
 public class AstMemberAccessExpression implements AstExpression, Scoped {
 
@@ -93,27 +91,33 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 		visitor.endFieldAccess(this);
 	}
 
-	private class MemberValueAccessExpressionImpl implements MemberValueAccessExpression {
+	private static class MemberValueAccessExpressionImpl implements MemberValueAccessExpression {
 //		Optional<AstType> optType = containerExpression.getType();
 
-		MemberValue memberValue;
-		public MemberValueAccessExpressionImpl(MemberValue memberValue) {
+		private MemberValue memberValue;
+		private Expression containerExpression;
+		private Type type;
+		
+		public MemberValueAccessExpressionImpl(MemberValue memberValue, Expression containerExpression, Type type) {
 			super();
 			this.memberValue = memberValue;
+			this.containerExpression = containerExpression;
+			this.type = type;
 		}
 
 
 		@Override
 		public Type getType() {
-			AstType astType = AstMemberAccessExpression.this.getType();
-			Type type = astType.getApiType();
+//			AstType astType = AstMemberAccessExpression.getType();
+//			Type type = astType.getApiType();
 			return type;
 		}
 
 		@Override
 		public Expression getContainerExpression() {
-			Expression ex = containerExpression.getExpression();
-			return ex;
+			return containerExpression;
+//			Expression ex = containerExpression.getExpression();
+//			return ex;
 		}
 
 		@Override
@@ -123,22 +127,31 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 		
 	}
 	
-	private Expression impl = null;
+	private Optional<Expression> impl = null;
 	
 	@Override
-	public Expression getExpression() {
+	public Optional<Expression> getExpression() {
 		if(impl == null) {
 			AstType contType = containerExpression.getType().resolve();
 			assert(contType instanceof AstClassDeclaration);	// TODO
 			AstClassDeclaration contClassDef = (AstClassDeclaration)contType;
+
+			Optional<Expression> optContainerExpr = containerExpression.getExpression();
+			assert(optContainerExpr.isPresent());	// TODO
 			
+			AstType astMemberType = getType();
+			Type memberType = astMemberType.getApiType();
+
 			for(AstMemberValueDeclaration vd: contClassDef.getValueDeclarations()) { // TODO should be a map vdName -> VD
 				String vdName = vd.getName().getText();
 				if(vdName.equals(valueName.getText())) {
 //					Optional<MemberValue> optVd = vd.getMemberValue();
 //					assert(optVd.isPresent());	// TODO : ok for now, we have only member values (no top level)
 					MemberValue mv = vd.getMemberValue();
-					impl = new MemberValueAccessExpressionImpl(mv);
+			
+					MemberValueAccessExpressionImpl mvaExpr = new MemberValueAccessExpressionImpl(mv, optContainerExpr.get(), memberType);
+					impl = Optional.of(mvaExpr);
+//					impl = Optional.of(new MemberValueAccessExpressionImpl(mv));
 					return impl;
 				}
 			}

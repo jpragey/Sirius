@@ -10,6 +10,7 @@ public class AstBooleanConstantExpression implements AstExpression {
 	
 	private AstToken content;
 	private boolean value;
+	private Optional<Expression> impl = null;
 
 	public AstBooleanConstantExpression(AstToken content) {
 		super();
@@ -39,8 +40,11 @@ public class AstBooleanConstantExpression implements AstExpression {
 	}
 
 	@Override
-	public Expression getExpression() {
-		return new BooleanConstantExpressionImpl(value);
+	public Optional<Expression> getExpression() {
+		if(impl == null) {
+			impl = Optional.of(new BooleanConstantExpressionImpl(value));
+		}
+		return impl;
 	}
 
 	@Override
