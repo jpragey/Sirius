@@ -9,6 +9,7 @@ import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.TopLevelValue;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.apiimpl.TopLevelValueImpl;
 
 public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable, Verifiable {
 
@@ -49,7 +50,6 @@ public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable, V
 	public void visit(AstVisitor visitor) {
 		visitor.startValueDeclaration(this);
 		type.visit(visitor);	// TODO: ok for SimpleType, but ClassDeclaration soon done
-//		initialValue.ifPresent(expr -> expr.visit(visitor));
 		visitor.endValueDeclaration(this);
 	}
 
@@ -58,29 +58,14 @@ public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable, V
 		return getType() + " " + getName().getText();
 	}
 
-	public Optional<TopLevelValue> getTopLevelValue() {
-		return Optional.of(new TopLevelValue() {
-
-			@Override
-			public Type getType() {
-				return type.getApiType();
-			}
-
-			@Override
-			public Token getName() {
-				return name.asToken();
-			}
-
-			@Override
-			public Optional<Expression> getInitialValue() {
-				return AstMemberValueDeclaration.this.getApiInitialValue();
-			}
-			@Override
-			public String toString() {
-				return "TopLevelValue: " + getType() + " " + getName().getText();
-			}
-			
-		});
+	private Optional<TopLevelValue> impl = null;
+	
+	public Optional<TopLevelValue> getTopLevelValue() {	// TODO: not Optional ???
+		if(this.impl == null) {
+			TopLevelValueImpl tlv = new TopLevelValueImpl(type.getApiType(), name.asToken(), AstMemberValueDeclaration.this.getApiInitialValue());
+			this.impl = Optional.of(tlv);
+		}
+		return this.impl; 
 	}
 	
 	public MemberValue getMemberValue() {
