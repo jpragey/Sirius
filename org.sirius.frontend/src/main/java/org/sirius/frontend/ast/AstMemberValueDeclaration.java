@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.sirius.common.core.QName;
-import org.sirius.common.core.Token;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.TopLevelValue;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.apiimpl.MemberValueImpl;
 import org.sirius.frontend.apiimpl.TopLevelValueImpl;
 
 public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable, Verifiable {
@@ -18,7 +18,11 @@ public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable, V
 	private List<Annotation> annotations;
 	private Optional<AstExpression> initialValue;
 	private QName qname = null;
-		
+
+	private MemberValueImpl memberValueImpl = null;
+
+	private Optional<TopLevelValue> impl = null;
+
 	public AstMemberValueDeclaration(AnnotationList annotations, AstType type, AstToken name, Optional<AstExpression> initialValue) {
 		super();
 		this.annotations = annotations.getAnnotations();
@@ -58,7 +62,6 @@ public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable, V
 		return getType() + " " + getName().getText();
 	}
 
-	private Optional<TopLevelValue> impl = null;
 	
 	public Optional<TopLevelValue> getTopLevelValue() {	// TODO: not Optional ???
 		if(this.impl == null) {
@@ -67,29 +70,37 @@ public class AstMemberValueDeclaration implements /*Type, Scoped, */Visitable, V
 		}
 		return this.impl; 
 	}
-	
+
 	public MemberValue getMemberValue() {
-		return new MemberValue() {
-
-			@Override
-			public Type getType() {
-				return type.getApiType();
-			}
-
-			@Override
-			public Token getName() {
-				return name.asToken();
-			}
-
-			@Override
-			public Optional<Expression> getInitialValue() {
-				return AstMemberValueDeclaration.this.getApiInitialValue();
-			}
-			@Override
-			public String toString() {
-				return "MemberValue: " + getType() + " " + getName().getText();
-			}
-		};
+		if(memberValueImpl == null) {
+			Type apiType = type.getApiType();
+			Optional<Expression> initialValue = AstMemberValueDeclaration.this.getApiInitialValue();
+			memberValueImpl = new MemberValueImpl(apiType, name.asToken(), initialValue);
+		}
+		return memberValueImpl; 
+//
+//		
+//		return new MemberValue() {
+//
+//			@Override
+//			public Type getType() {
+//				return type.getApiType();
+//			}
+//
+//			@Override
+//			public Token getName() {
+//				return name.asToken();
+//			}
+//
+//			@Override
+//			public Optional<Expression> getInitialValue() {
+//				return AstMemberValueDeclaration.this.getApiInitialValue();
+//			}
+//			@Override
+//			public String toString() {
+//				return "MemberValue: " + getType() + " " + getName().getText();
+//			}
+//		};
 	}
 	
 	public Optional<Expression> getApiInitialValue() {
