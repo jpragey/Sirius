@@ -12,6 +12,7 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
+import org.sirius.frontend.apiimpl.ModuleDeclarationImpl;
 import org.sirius.frontend.core.PhysicalPath;
 
 public class AstModuleDeclaration implements Visitable, Verifiable {
@@ -126,39 +127,6 @@ public class AstModuleDeclaration implements Visitable, Verifiable {
 	
 	
  
-	private class ModuleDeclarationImpl implements ModuleDeclaration {
-		private QName moduleQName = qName/*.toQName()*/;
-
-		private List<PackageDeclaration> packageDeclarationList;
-		
-		public ModuleDeclarationImpl(QName moduleQName) {
-			super();
-			this.moduleQName = moduleQName;
-			this.packageDeclarationList = AstModuleDeclaration.this.packageDeclarations.stream()
-					.map(AstPackageDeclaration::getPackageDeclaration)
-					.collect(Collectors.toList());
-		}
-
-		@Override
-		public List<PackageDeclaration> getPackages() {
-			return packageDeclarationList;
-		}
-
-		@Override
-		public QName getQName() {
-			return moduleQName;
-		}
-
-		@Override
-		public PhysicalPath getPhysicalPath() {
-			return modulePPath.get();	// TODO: check ???
-		}
-		@Override
-		public String toString() {
-			return "\"" + getQName().toString() + "\"";
-		}
-	}
-	
 	public void addPackageDeclaration(AstPackageDeclaration pd) {
 		this.packageDeclarations.add(pd);
 	}
@@ -167,7 +135,14 @@ public class AstModuleDeclaration implements Visitable, Verifiable {
 	public ModuleDeclaration getModuleDeclaration() {
 		
 		if(cachedModuleDeclaration == null) {
-			cachedModuleDeclaration = new ModuleDeclarationImpl(qName);		}
+			List<PackageDeclaration> packageDeclarationList = AstModuleDeclaration.this.packageDeclarations.stream()
+					.map(AstPackageDeclaration::getPackageDeclaration)
+					.collect(Collectors.toList());
+			
+			cachedModuleDeclaration = new ModuleDeclarationImpl(qName, 
+					modulePPath.get(),	// TODO: check ???
+					packageDeclarationList);
+			}
 		return cachedModuleDeclaration;
 	}
 	
