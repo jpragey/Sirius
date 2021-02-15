@@ -2,7 +2,6 @@ package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
@@ -11,9 +10,7 @@ import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
-import org.sirius.frontend.api.TopLevelValue;
 import org.sirius.frontend.apiimpl.PackageDeclarationImpl;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.LocalSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
@@ -112,11 +109,6 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 			List<InterfaceDeclaration> apiInterfaceDeclarations = interfaceDeclarations.stream()
 					.map(cd -> cd.getInterfaceDeclaration())
 					.collect(Collectors.toList());
-			List<TopLevelValue> apiValues = valueDeclarations.stream()
-					.map(AstMemberValueDeclaration::getTopLevelValue)
-					.filter(v -> v.isPresent())
-					.map(v -> v.get())
-					.collect(Collectors.toList());
 
 			List<AbstractFunction> apiFunctions = new ArrayList<>();
 			for(FunctionDefinition fdBuilder: functionDeclarations) {
@@ -126,7 +118,7 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 				}
 			}
 			
-			packageDeclaration = new PackageDeclarationImpl(qname, apiClassDeclarations, apiInterfaceDeclarations, apiValues, apiFunctions);
+			packageDeclaration = new PackageDeclarationImpl(qname, apiClassDeclarations, apiInterfaceDeclarations, apiFunctions);
 
 		}
 		return packageDeclaration;

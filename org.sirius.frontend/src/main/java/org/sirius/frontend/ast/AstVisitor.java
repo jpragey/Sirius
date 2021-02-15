@@ -69,10 +69,7 @@ public interface AstVisitor {
 	
 	public default void startValueDeclaration (AstMemberValueDeclaration valueDeclaration) {}
 	public default void endValueDeclaration (AstMemberValueDeclaration valueDeclaration) {}
-	
-//	public default void startSimpleType (SimpleType simpleType) {}
-//	public default void endSimpleType (SimpleType simpleType) {}
-	
+
 	// -- Expressions
 	public default void startExpression (AstExpression expression) {}
 	public default void endExpression (AstExpression expression) {}

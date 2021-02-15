@@ -88,7 +88,7 @@ public interface Visitor {
 	
 	
 	
-	public default void start(TopLevelValue declaration) {}
-	public default void end(TopLevelValue declaration) {}
+//	public default void start(TopLevelValue declaration) {}
+//	public default void end(TopLevelValue declaration) {}
 	
 }

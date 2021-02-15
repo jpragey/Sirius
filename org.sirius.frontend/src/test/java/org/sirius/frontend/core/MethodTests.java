@@ -42,6 +42,30 @@ import org.sirius.frontend.symbols.Symbol;
 
 public class MethodTests {
 
+	@Test
+	@DisplayName("A class can contain a field of its own type - class C(){C s;}") 
+	@Disabled("Recursive declaration/use of C causes StackOverflow - TODO")
+	public void aClassCanContainAMembervarOfItsOwnType() {
+		ScriptSession session = Compiler.compileScript("#!\n package p.k; class C(){C s;}");
+		
+		ModuleDeclaration md = session.getModuleDeclarations().get(0);
+		
+		PackageDeclaration pack = md.getPackages().get(0);
+		
+		ClassDeclaration cd = pack.getClasses().get(0);
+		assertEquals(cd.getQName(), new QName("p", "k", "C"));
+
+		assertEquals(cd.getMemberValues().size(), 1);
+		MemberValue lvs = cd.getMemberValues().get(0);
+
+		assertEquals(lvs.getName().getText(), "s");
+
+		Type type = lvs.getType();
+		assert(type instanceof ClassDeclaration);
+		assertEquals( ((ClassDeclaration)type).getQName(), new QName("p", "k", "C"));
+
+	}
+	
 	@Test 
 	@Disabled("Recursive declaration/use of C causes StackOverflow - TODO")
 	public void checkLocalVariableParsing() {
