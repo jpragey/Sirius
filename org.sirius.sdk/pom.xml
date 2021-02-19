@@ -12,11 +12,11 @@
 
   <dependencies>
   
-    <dependency>
+<!--     <dependency>
       <groupId>org.sirius</groupId>
       <artifactId>org.sirius.common</artifactId>
     </dependency>
-
+ -->
 <!--
   	<dependency>
 	    <groupId>org.sirius</groupId>

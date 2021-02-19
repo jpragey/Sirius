@@ -28,16 +28,20 @@
     <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
     <junit-jupiter.version>5.6.2</junit-jupiter.version>
     
+    <additionalparam>-Xdoclint:none</additionalparam>
+    
   </properties>
 
   <modules>
     <module>org.sirius.common</module>
+    
     <module>org.sirius.sdk</module>
     <module>org.sirius.runtime</module>
     <module>org.sirius.frontend</module>
     <module>org.sirius.compiler</module>
     <module>org.sirius.backend.core</module>
     <module>org.sirius.backend.jvm</module>
+    
   </modules>
 
   <dependencyManagement>
@@ -91,15 +95,6 @@
 			<version>${sirius.version}</version>
 		</dependency>
 
-  
-
-<!-- 		<dependency>
-		    <groupId>org.testng</groupId>
-		    <artifactId>testng</artifactId>
-		    <version>7.1.0</version>
-		    <scope>test</scope>
-		</dependency>
- -->
 		<dependency>
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>guava</artifactId>
@@ -148,21 +143,6 @@
 			<scope>test</scope>
 		</dependency>
 	    
-    
-<!-- 		<dependency>
-			<groupId>com.github.testng-team</groupId>
-			<artifactId>testng-junit5</artifactId>
-			<version>0.0.1</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit.platform</groupId>
-					<artifactId>junit-platform-engine</artifactId>
-				</exclusion>
-			</exclusions>
-	    </dependency>
- -->	    
-	    
 	</dependencies>
   </dependencyManagement>
   
@@ -199,12 +179,14 @@
               <artifactId>maven-site-plugin</artifactId>
               <version>3.9.1</version>
               <configuration>
-		        <asciidoc>
+              
+<!-- 		        <asciidoc>
 		            <templateDirs>
 		                <dir>src/site/asciidoc/templates</dir>
 		            </templateDirs>
 		        </asciidoc>
-		      </configuration>
+ -->
+ 		      </configuration>
               <dependencies>
               
                  <dependency>
@@ -241,7 +223,6 @@
 				<compilerArgs>
 					<arg>-parameters</arg>
 				</compilerArgs>
-				<!--<release>11</release> -->
 
 			</configuration>
 		</plugin>
@@ -250,22 +231,10 @@
 		 	<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-surefire-plugin</artifactId>
 			<version>${maven-surefire-plugin.version}</version>
-			<!-- <version>2.12.4</version> -->
 	
 			<configuration>
 				<argLine>-Xmx1024m</argLine>
 			</configuration>
-			<!-- 
-			<dependencies>
-				<dependency>
-					<groupId>org.apache.maven.surefire</groupId>
-					<artifactId>surefire-testng</artifactId>
-					<version>${maven-surefire-plugin.version}</version>
-				</dependency>
-                
-			</dependencies>
-			 -->
-
 		</plugin>
 
   		<plugin>

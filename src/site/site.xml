@@ -4,9 +4,7 @@
     <menu ref="modules" />
     
     <menu name="Overview">
-      <item name="Index a (asciidoc)" href="mydocs/index.html" />
-      
-       
+      <item name="Compiler docs" href="mydocs/index.html" />
       
       
       <item name="FAQ" href="faq.html" />

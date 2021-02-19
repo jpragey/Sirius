@@ -1,35 +1,9 @@
 
-Asciidoc file
-=============
+== Sirius doc
 
-Refer to link:draft_standardSession.html[] for standard file organisation
-
-
-Some code...
-[source, java]
-----
-for(int i=0; i<10; i++)
-	s.o.println("Hello");
-----
+The compiler overall organization is described link:compiler_components.html[] .
 
 
-Some diagram...
-
-[ditaa, "myDiagram"]
-----
-              +-------------+
-              | asciidoctor |-----------+
-              |  diagram    |           |
-              +-------------+           | image
-                    ^                   |
-                    | diagram source    |
-                    |                   v
- +--------+   +-----+-------+    /---------------\
- |  adoc  |-->+ asciidoctor +    | HTML + image  |
- +--------+   +-------------+    \---------------/
-----
-
-End of ascii doc.
 
 
 

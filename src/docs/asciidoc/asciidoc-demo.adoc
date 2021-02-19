@@ -1,0 +1,65 @@
+
+== Asciidoc demos (not to be delivered)
+
+
+=== Some code (with source highlighting)
+[source, java]
+----
+for(int i=0; i<10; i++)
+	s.o.println("Hello");
+----
+
+=== Some tree (plantuml)
+[plantuml, "myTree", format=svg]
+----
+skinparam Legend {
+	BackgroundColor transparent
+	BorderColor transparent
+	FontSize 16
+}
+legend
+** Standard file directory layout ** 
+<Project Root>
+|_ **org**
+  |_ **foo**
+    |_ **mymodule1**
+      |_ module.sirius
+      |_ package.sirius
+      |_ a.sirius
+      |_ b.sirius
+    |_ **mymodule2**
+      |_ module.sirius		module descriptor
+      |_ package.sirius		package descriptor - defines package org.foo.mymodule2
+      |_ a.sirius			part of org.foo.mymodule2
+      |_ b.sirius			another part of org.foo.mymodule2
+      |_ **backend**		// Simple package in org.foo.mymodule2
+        |_ package.sirius		package descriptor - defines package org.foo.mymodule2.backend
+        |_ bar.sirius				part of org.foo.mymodule2.backend
+      |_ **frontend**		// Simple package in org.foo.mymodule2
+        |_ package.sirius		package descriptor - defines package org.foo.mymodule2.frontend
+        |_ baz.sirius				part of org.foo.mymodule2.frontend
+end legend
+----
+
+=== Some diagram (ditaa)
+
+[ditaa, "myDiagram"]
+----
+              +-------------+
+              | asciidoctor |-----------+
+              |  diagram    |           |
+              +-------------+           | image
+                    ^                   |
+                    | diagram source    |
+                    |                   v
+ +--------+   +-----+-------+    /---------------\
+ |  adoc  |-->+ asciidoctor +    | HTML + image  |
+ +--------+   +-------------+    \---------------/
+----
+
+End of ascii doc...
+
+
+
+
+

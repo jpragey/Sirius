@@ -1,0 +1,45 @@
+Compiler overview
+=================
+
+
+
+[plantuml, "modules"]
+----
+component common  {
+}
+
+component sdk  { 
+}
+
+component runtime  { 
+}
+runtime --> common 
+runtime --> sdk
+
+component frontend  {
+}
+frontend --> common 
+frontend --> sdk
+
+component backend.core  { 
+}
+backend.core --> common
+backend.core --> frontend
+
+component backend.jvm  { 
+}
+backend.jvm --> common 
+backend.jvm --> frontend 
+backend.jvm --> backend.core 
+backend.jvm --> sdk
+
+component compiler  {
+}
+
+compiler --> common 
+compiler --> frontend
+compiler --> backend.core
+compiler --> backend.jvm
+compiler --> runtime
+
+----

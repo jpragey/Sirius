@@ -30,7 +30,7 @@ java -jar modulesDir/unnamed.jar
 ```
 To create the site (and doc):
 ```bash
-mvn site site:stage
+mvn package site site:stage
 ```
 
 And you get the result in `target/staging/`.
