@@ -86,7 +86,8 @@ public class TopLevelFunctionCall {
 		
 		String script = "#!\n "
 //				+ "String getVal() {return \"Hello\";}"
-				+ "Integer add(Integer x, Integer y) {return x;}"
+//+ "Integer add(Integer x, Integer y) {return x;}"
++ "Integer add(Integer x, Integer y) {return y+y;}"
 				//				+ "void main() {println(getVal());}"
 //				+ "Integer main() {Integer r = add(); return r;}"
 //				+ "Integer main() {Integer r = 42; return 43;}"
@@ -121,7 +122,7 @@ public class TopLevelFunctionCall {
 		
 		sirius.lang.Integer result = (sirius.lang.Integer)main.invoke(null, new Object[] {}/*args*/);
 		System.out.println("Result: " + result.getValue());
-		assertThat(result.getValue(), is(43));
+		assertThat(result.getValue(), is(82));
 		
 	}
 

@@ -2,11 +2,13 @@ package org.sirius.backend.jvm.integration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -86,7 +88,6 @@ public class ImplicitTypeCast {
 	}
 	
 	@Test
-	@Disabled("temp.")
 	public void returnIntSum() throws Exception {
 		String script = "#!\n Integer main() {return 42 + 43;}";
 		Object sirResult = compileRunAndReturn(script);
@@ -97,7 +98,6 @@ public class ImplicitTypeCast {
 	}
 	
 	@Test
-	@Disabled("temp.")
 	public void returnIntSubstraction() throws Exception {
 		String script = "#!\n Integer main() {return 42 - 43;}";
 		Object sirResult = compileRunAndReturn(script);
@@ -108,7 +108,6 @@ public class ImplicitTypeCast {
 	}
 	
 	@Test
-	@Disabled("temp.")
 	public void returnIntMult() throws Exception {
 		String script = "#!\n Integer main() {return 10 * 11;}";
 		Object sirResult = compileRunAndReturn(script);
@@ -119,7 +118,6 @@ public class ImplicitTypeCast {
 	}
 	
 	@Test
-	@Disabled("temp.")
 	public void returnIntDiv() throws Exception {
 		String script = "#!\n Integer main() {return 100 / 3;}";
 		Object sirResult = compileRunAndReturn(script);
@@ -130,7 +128,6 @@ public class ImplicitTypeCast {
 	}
 	
 	@Test
-	@Disabled("temp.")
 	public void returnConstantString() throws Exception {
 
 		String script = "#!\n "
@@ -138,6 +135,6 @@ public class ImplicitTypeCast {
 				+ "void main() {println(\"42\");}";
 		Object result = compileRunAndReturn(script);
 
-		assertThat(result, is(null));
+		assertThat(result, nullValue());
 	}
 }

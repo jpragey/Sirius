@@ -73,7 +73,8 @@ public class AstIntegerConstantExpression implements AstExpression {
 		@Override
 		public Type getType() {
 //			return Type.integerType;
-			return AstIntegerConstantExpression.this.getType().getApiType();
+//			return AstIntegerConstantExpression.this.getType().getApiType();
+			return Type.integerType;
 		}
 
 		@Override
