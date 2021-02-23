@@ -4,7 +4,13 @@ Currently it reaches the 'Hello world' level (and can't do much more yet).
 Licence is [Apache v2](https://www.apache.org/licenses/LICENSE-2.0.html).
 
 ## Compilation
-To compile it, you need java 11, maven 3.6.0+ and some recent git.
+To compile it, you need java 11+, maven 3.6.0+ and some recent git.
+To install the full JDK (the JRE alone is not enough):
+
+```bash
+sudo apt install openjdk-11-jdk
+```
+Then get Sirius source and compile it:
 
 ```bash
 git clone https://github.com/jpragey/sirius
