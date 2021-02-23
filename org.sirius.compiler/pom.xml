@@ -79,7 +79,7 @@
             <artifactItem>
               <groupId>org.antlr</groupId>
               <artifactId>antlr4-runtime</artifactId>
-              <version>4.8-1</version>
+              <version>${libs.antlr4.version}</version>
               <type>jar</type>
               <overWrite>false</overWrite>
               <outputDirectory>${dist.lib}</outputDirectory>

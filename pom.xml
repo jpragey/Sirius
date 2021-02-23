@@ -30,6 +30,8 @@
     
     <additionalparam>-Xdoclint:none</additionalparam>
     
+    <libs.antlr4.version>4.9.1</libs.antlr4.version>
+    
   </properties>
 
   <modules>
@@ -313,7 +315,9 @@
           <reportSet>
             <id>default</id>
             <reports>
+            <!-- Temp
               <report>javadoc</report>
+               -->
             </reports>
           </reportSet>
         </reportSets>

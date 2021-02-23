@@ -63,7 +63,7 @@
      <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
-      <version>4.9.1</version>
+      <version>${libs.antlr4.version}</version>
     </dependency>
     <dependency>
       <groupId>org.yaml</groupId>

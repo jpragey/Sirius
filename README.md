@@ -25,14 +25,14 @@ void main(String[] args) {
 EOF
 ) > hello.sirius
 
-java -cp ../dist/lib/ -jar ../dist/lib/org.sirius.compiler-0.0.1-SNAPSHOT.jar compile --module modulesDir hello.sirius
+java -cp "/home/jpragey/eclipse-workspace/Sirius/dist/lib/*" org.sirius.compiler.core.Main compile --module modulesDir hello.sirius
 java -jar modulesDir/unnamed.jar 
 ```
 To create the site (and doc):
-```bash
-mvn package site site:stage
-```
 
+```bash
+mvn site site:stage
+```
 And you get the result in `target/staging/`.
 
 
