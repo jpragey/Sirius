@@ -90,9 +90,9 @@ public class ModuleDeclarationParser {
 	}	
 	
 	public static class PackageElementVisitor extends SiriusBaseVisitor<Void> {
-		Reporter reporter; 
-		List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
-		PackageElements packageElements;
+		private Reporter reporter; 
+		private List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
+		private PackageElements packageElements;
 		
 		public PackageElementVisitor(Reporter reporter,
 				List<AstPackageDeclaration> packageDeclarations,
@@ -112,7 +112,6 @@ public class ModuleDeclarationParser {
 		}
 		@Override
 		public Void visitFunctionDeclaration(FunctionDeclarationContext ctx) {
-//			FunctionDeclarationParser.FunctionDeclarationVisitor v = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter);
 			FunctionDefinitionVisitor v = new FunctionDefinitionVisitor(reporter);
 			
 			FunctionDefinition functionDefinition = ctx.accept(v);
@@ -170,9 +169,9 @@ public class ModuleDeclarationParser {
 			
 			// -- package content
 			LinkedList<AstPackageDeclaration> packageDeclarations = new LinkedList<>();
-			PackageElementVisitor moduleContentVisitor = new PackageElementVisitor(reporter, packageDeclarations, packageElements);
+			PackageElementVisitor packageElementVisitor = new PackageElementVisitor(reporter, packageDeclarations, packageElements);
 			
-			ctx.packageElement().forEach(mcContext -> mcContext.accept(moduleContentVisitor));
+			ctx.packageElement().forEach(peContext -> peContext.accept(packageElementVisitor));
 			
 			
 			// -- Module declaration
@@ -180,9 +179,12 @@ public class ModuleDeclarationParser {
 			ModuleDeclarationContext moduleDeclarationContext = ctx.moduleDeclaration();
 			if(moduleDeclarationContext != null) {	// Explicit module
 				
-				AstPackageDeclaration pd = new AstPackageDeclaration(reporter, QName.empty, packageElements.functiondefinitions, packageElements.classDeclarations, 
-						packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/);
-				ModuleDeclarationVisitor mdVisitor = new ModuleDeclarationVisitor(reporter, List.of(pd)/*packageElements*/);
+				List<AstPackageDeclaration> pds = packageDeclarations.isEmpty() ? 
+						List.of(new AstPackageDeclaration(reporter, QName.empty, packageElements.functiondefinitions, packageElements.classDeclarations, 
+								packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/)) : 
+						packageDeclarations ;
+				
+				ModuleDeclarationVisitor mdVisitor = new ModuleDeclarationVisitor(reporter, pds);
 				result = moduleDeclarationContext.accept(mdVisitor);
 			} else {								// Unnamed module
 				ModuleImportEquivalents equiv = new ModuleImportEquivalents();

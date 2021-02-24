@@ -29,6 +29,8 @@ public class AstModuleDeclaration implements Visitable, Verifiable {
 	private List<ModuleImport> moduleImports = new ArrayList<>(); 
 	
 	private List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
+	private Map<QName, AstPackageDeclaration> packageDeclarationByQName = new HashMap<>();
+	
 	
 	private String versionString;
 
@@ -47,7 +49,8 @@ public class AstModuleDeclaration implements Visitable, Verifiable {
 		
 		this.equiv = equiv;
 		this.moduleImports = moduleImports;
-		this.packageDeclarations.addAll(packageDeclarations);
+		for(AstPackageDeclaration pd: packageDeclarations)
+			addPackageDeclaration(pd);
 		
 		String vs = version.getText();
 		assert(vs.length() >=2);	// contains start/end double quotes
@@ -129,6 +132,13 @@ public class AstModuleDeclaration implements Visitable, Verifiable {
  
 	public void addPackageDeclaration(AstPackageDeclaration pd) {
 		this.packageDeclarations.add(pd);
+		this.packageDeclarationByQName.put(pd.getQname(), pd);
+	}
+	
+	public AstPackageDeclaration getPackage(QName qname) {
+		AstPackageDeclaration pd = this.packageDeclarationByQName.get(qname);
+		assert(pd != null);
+		return pd;
 	}
 
 	

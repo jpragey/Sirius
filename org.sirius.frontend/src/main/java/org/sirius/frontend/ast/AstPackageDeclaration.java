@@ -131,4 +131,14 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 	public List<AstInterfaceDeclaration> getInterfaceDeclarations() {
 		return interfaceDeclarations;
 	}
+	
+	public boolean isEmpty() {
+		boolean empty = 
+				functionDeclarations.isEmpty() &&
+				classDeclarations.isEmpty() &&
+				interfaceDeclarations.isEmpty() &&
+				valueDeclarations.isEmpty();
+		return empty;
+	}
+	
 }
