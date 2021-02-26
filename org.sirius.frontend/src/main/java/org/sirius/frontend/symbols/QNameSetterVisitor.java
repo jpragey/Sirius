@@ -34,7 +34,8 @@ public class QNameSetterVisitor implements AstVisitor {
 	@Override
 	public void startPackageDeclaration(AstPackageDeclaration declaration) {
 		QName moduleQName = qnameStack.peek();
-		QName pkgQName = moduleQName.child(declaration.getQname());
+//		QName pkgQName = moduleQName.child(declaration.getQname());
+		QName pkgQName = declaration.getQname();
 		qnameStack.push(pkgQName);
 	}
 	@Override

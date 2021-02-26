@@ -2,6 +2,7 @@ package org.sirius.frontend.sdk;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -52,6 +53,20 @@ public class SdkToolsTest {
 	public void sdkParsingMustCreateBasicClasses() {
 		assertEquals(reporter.getErrorCount(), 0);
 		
+		SdkContent sdkContent = sdkTools.getSdkContent();
+		
+		AstClassDeclaration slIntegerClassDecl = sdkContent.getSiriusLangIntegerASTCD();
+		assertThat(slIntegerClassDecl.getQName(), is(new QName("sirius", "lang", "Integer")));
+
+		AstClassDeclaration slBooleanClassDecl = sdkContent.getSiriusLangBooleanASTCD();
+		assertThat(slBooleanClassDecl.getQName(), is(new QName("sirius", "lang", "Boolean")));
+		
+		AstClassDeclaration slFloatClassDecl = sdkContent.getSiriusLangFloatASTCD();
+		assertThat(slFloatClassDecl.getQName(), is(new QName("sirius", "lang", "Float")));
+
+		AstClassDeclaration slStringClassDecl = sdkContent.getSiriusLangStringASTCD();
+		assertThat(slStringClassDecl.getQName(), is(new QName("sirius", "lang", "String")));
+
 		checkSymbolTableContainsInterface(symbolTable, new QName("sirius", "lang", "Stringifiable"));
 		checkSymbolTableContainsClass    (symbolTable, new QName("sirius", "lang", "String"));
 		checkSymbolTableContainsInterface(symbolTable, new QName("sirius", "lang", "Addable"));

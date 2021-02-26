@@ -1,7 +1,10 @@
 package org.sirius.frontend.ast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
@@ -30,6 +33,8 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 
 	private List<FunctionDefinition> functionDeclarations = new ArrayList<>();
 	private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
+	private Map<QName, AstClassDeclaration> classDeclarationByQname = new HashMap<>();
+	
 	private List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	
@@ -46,7 +51,12 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 		this.symbolTable = new LocalSymbolTable(reporter);
 		
 		functionDeclarations.forEach (fct -> {this.functionDeclarations.add(fct);	this.visitables.add(fct);});
-		classDeclarations.forEach	 (cd  -> {this.classDeclarations.add(cd);		this.visitables.add(cd);});
+		classDeclarations.forEach	 (cd  -> {
+			cd.setPackageQName(qname);
+			this.classDeclarations.add(cd);		
+			classDeclarationByQname.put(cd.getQName(), cd); 
+			this.visitables.add(cd);
+			});
 		interfaceDeclarations.forEach(id  -> {this.interfaceDeclarations.add(id);	this.visitables.add(id);});
 		valueDeclarations.forEach    (vd  -> {this.valueDeclarations.add(vd);		this.visitables.add(vd);});
 	}
@@ -126,6 +136,10 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 
 	public List<AstClassDeclaration> getClassDeclarations() {
 		return classDeclarations;
+	}
+	public Optional<AstClassDeclaration> getClassDeclaration(QName classQNname) {
+		AstClassDeclaration cd = classDeclarationByQname.get(classQNname);
+		return Optional.ofNullable(cd);
 	}
 	
 	public List<AstInterfaceDeclaration> getInterfaceDeclarations() {

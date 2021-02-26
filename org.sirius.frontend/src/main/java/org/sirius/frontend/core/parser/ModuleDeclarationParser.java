@@ -178,14 +178,23 @@ public class ModuleDeclarationParser {
 			AstModuleDeclaration result;
 			ModuleDeclarationContext moduleDeclarationContext = ctx.moduleDeclaration();
 			if(moduleDeclarationContext != null) {	// Explicit module
+				ModuleDeclarationVisitor mdVisitor = new ModuleDeclarationVisitor(reporter /*, pds*/);
+				AstModuleDeclarationBuilder mdBuilder = moduleDeclarationContext.accept(mdVisitor);
+
 				
-				List<AstPackageDeclaration> pds = packageDeclarations.isEmpty() ? 
-						List.of(new AstPackageDeclaration(reporter, QName.empty, packageElements.functiondefinitions, packageElements.classDeclarations, 
-								packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/)) : 
-						packageDeclarations ;
+				List<AstPackageDeclaration> pds;
+				AstPackageDeclaration defaultPackageDeclaration = null;
+				if(packageDeclarations.isEmpty()) {
+					// -- Create default package
+					QName pkgQName = mdBuilder.getQualifiedName();	// use module qname as package qname
+					defaultPackageDeclaration = new AstPackageDeclaration(reporter, pkgQName, packageElements.functiondefinitions, packageElements.classDeclarations, 
+									packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/);
+					pds = List.of(defaultPackageDeclaration);
+				} else {
+					pds = packageDeclarations;
+				}
 				
-				ModuleDeclarationVisitor mdVisitor = new ModuleDeclarationVisitor(reporter, pds);
-				result = moduleDeclarationContext.accept(mdVisitor);
+				result = mdBuilder.build(pds);
 			} else {								// Unnamed module
 				ModuleImportEquivalents equiv = new ModuleImportEquivalents();
 				List<ModuleImport> moduleImports = List.of();
@@ -203,18 +212,41 @@ public class ModuleDeclarationParser {
 			return result;
 		}
 	}
-	public static class ModuleDeclarationVisitor extends SiriusBaseVisitor<AstModuleDeclaration> {
+	
+	public static class AstModuleDeclarationBuilder {
+		private QName qualifiedName;
 		private Reporter reporter;
-		private List<AstPackageDeclaration> packageDeclarations;
+		private AstToken version;
+		private ModuleImportEquivalents equivalents; 
+		private List<ModuleImport> moduleImports;
 
-		public ModuleDeclarationVisitor(Reporter reporter, /*PackageElements packageElements*/List<AstPackageDeclaration> packageDeclarations) {
+		public AstModuleDeclarationBuilder(Reporter reporter, QName qualifiedName, AstToken version,
+				ModuleImportEquivalents equivalents, List<ModuleImport> moduleImports) {
+			super();
+			this.qualifiedName = qualifiedName;
+			this.reporter = reporter;
+			this.version = version;
+			this.equivalents = equivalents;
+			this.moduleImports = moduleImports;
+		}
+		public QName getQualifiedName() {
+			return qualifiedName;
+		}
+		public AstModuleDeclaration build(List<AstPackageDeclaration> packageDeclarations) {
+			return new AstModuleDeclaration(reporter, qualifiedName, version, equivalents, moduleImports, packageDeclarations);
+		}
+	}
+	
+	public static class ModuleDeclarationVisitor extends SiriusBaseVisitor<AstModuleDeclarationBuilder> {
+		private Reporter reporter;
+
+		public ModuleDeclarationVisitor(Reporter reporter) {
 			super();
 			this.reporter = reporter;
-			this.packageDeclarations  =packageDeclarations;
 		}
 
 		@Override
-		public AstModuleDeclaration visitModuleDeclaration(ModuleDeclarationContext ctx) {
+		public AstModuleDeclarationBuilder visitModuleDeclaration(ModuleDeclarationContext ctx) {
 			
 			// -- name
 			PackageDeclarationParser.QNameVisitor nameVisitor = new PackageDeclarationParser.QNameVisitor();
@@ -235,7 +267,7 @@ public class ModuleDeclarationParser {
 				.filter(modImport -> modImport!=null)
 				.collect(Collectors.toList());
 			
-			return new AstModuleDeclaration(reporter, qualifiedName, version, equivalents, moduleImports, packageDeclarations);
+			return new AstModuleDeclarationBuilder(reporter, qualifiedName, version, equivalents, moduleImports/*, packageDeclarations*/);
 		}
 	}
 }

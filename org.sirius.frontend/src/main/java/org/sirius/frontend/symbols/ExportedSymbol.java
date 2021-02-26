@@ -14,6 +14,10 @@ public interface ExportedSymbol {
 		public QName getQname() {
 			return qname;
 		}
+		@Override
+		public String toString() {
+			return qname.toString();
+		}
 	}
 	public static class ExportedInterface implements ExportedSymbol {
 		private QName qname;
@@ -25,6 +29,10 @@ public interface ExportedSymbol {
 		public QName getQname() {
 			return qname;
 		}
+		@Override
+		public String toString() {
+			return qname.toString();
+		}
 	}
 	public static class ExportedFunction implements ExportedSymbol {
 		private QName qname;
@@ -34,6 +42,10 @@ public interface ExportedSymbol {
 		}	
 		public QName getQname() {
 			return qname;
+		}
+		@Override
+		public String toString() {
+			return qname.toString();
 		}
 	}
 }

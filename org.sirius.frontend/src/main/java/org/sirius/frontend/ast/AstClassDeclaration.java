@@ -23,7 +23,8 @@ import com.google.common.collect.ImmutableList;
 public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParametric<AstClassDeclaration>, AstClassOrInterface, Named, Verifiable {
 
 	private AstToken name;
-	private QName qName = new QName("<not_set>"); 
+	public static final String undefQName = "<not_set>";
+	private QName qName = new QName(undefQName); 
 	
 	// Formal parameters
 	private ImmutableList<TypeParameter> typeParameters;

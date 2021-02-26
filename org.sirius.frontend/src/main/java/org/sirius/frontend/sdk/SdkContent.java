@@ -31,12 +31,12 @@ public class SdkContent {
 //		AstPackageDeclaration pd =  optPd.get();
 //		AstPackageDeclaration pd =  sdkModule.getPackageDeclaration(siriusLangQName);
 //
-//		
-//		this.siriusLangIntegerASTCD = pd.getClassDeclaration(siriusLangIntegerQName);
-//		this.siriusLangBooleanASTCD = pd.getClassDeclaration(siriusLangBooleanQName);
-//		this.siriusLangFloatASTCD = pd.getClassDeclaration(siriusLangFloatQName);
-//
-//		this.siriusLangStringASTCD = pd.getClassDeclaration(siriusLangStringQName);
+		AstPackageDeclaration pd = sdkModule.getPackage(siriusLangQName); 
+		
+		this.siriusLangIntegerASTCD = pd.getClassDeclaration(siriusLangIntegerQName).get();	// TODO: check Optional
+		this.siriusLangBooleanASTCD = pd.getClassDeclaration(siriusLangBooleanQName).get();	// TODO: check Optional
+		this.siriusLangFloatASTCD = pd.getClassDeclaration(siriusLangFloatQName).get();	// TODO: check Optional
+		this.siriusLangStringASTCD = pd.getClassDeclaration(siriusLangStringQName).get();	// TODO: check Optional
 	}
 
 	public AstClassDeclaration getSiriusLangIntegerASTCD() {

@@ -24,9 +24,8 @@ public class ModuleDescriptorCompilatioUnitParser {
 		@Override
 		public AstModuleDeclaration visitModuleDescriptorCompilationUnit(ModuleDescriptorCompilationUnitContext ctx) {
 			
-			ModuleDeclarationParser.ModuleDeclarationVisitor visitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter, 
-					List.of() /*packageElements*/);
-			AstModuleDeclaration moduleDeclaration = ctx.moduleDeclaration().accept(visitor);
+			ModuleDeclarationParser.ModuleDeclarationVisitor visitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter);
+			AstModuleDeclaration moduleDeclaration = ctx.moduleDeclaration().accept(visitor).build(List.of() /*AstPackageDeclaration*/ );
 			
 			return moduleDeclaration;
 		}

@@ -49,6 +49,7 @@ public class SdkTools {
 	private final static AstToken versionToken = new AstToken(0,0,0,0,"1.0","");
 
 	private AstModuleDeclaration sdkModule;
+	private SdkContent sdkContent;
 
 	public SdkTools(Reporter reporter, DefaultSymbolTable symbolTable) {
 		super();
@@ -60,14 +61,15 @@ public class SdkTools {
 			QName pkgQName = pkg.getQname();
 			packagesMap.put(pkgQName, pkg);
 		});
+		this.sdkContent = new SdkContent(this.sdkModule);
 	}
 
-	AstModuleDeclaration parseSdk(DefaultSymbolTable symbolTable) {
+	private AstModuleDeclaration parseSdk(DefaultSymbolTable symbolTable) {
 		
 		List<Class<?>> sdkClasses = Sdk.sdkClasses();
 		
 		List<AstClassOrInterface> classOrInterfaces = new ArrayList<>();
-		List<FunctionDefinition> allPartialLists = new ArrayList<>();
+		List<FunctionDefinition> allFunctionDefs = new ArrayList<>();
 		for(Class<?> clss: sdkClasses) {
 			
 			TopLevelClass topLevelClassAnno = clss.getDeclaredAnnotation(TopLevelClass.class);	// can be null
@@ -79,7 +81,7 @@ public class SdkTools {
 			}
 			if(topLevelmethodsAnno != null) {
 				List<FunctionDefinition> partialLists = parseTopLevel(clss, topLevelmethodsAnno, symbolTable);
-				allPartialLists.addAll(partialLists);
+				allFunctionDefs.addAll(partialLists);
 //				System.out.println("- Top-level methods: " + clss + ", anno: " + topLevelmethodsAnno);
 			}
 		}
@@ -92,8 +94,8 @@ public class SdkTools {
 				.map(cl -> (AstInterfaceDeclaration)cl)
 				.collect(Collectors.toList());
 		
-		AstPackageDeclaration pd = new AstPackageDeclaration(reporter, QName.empty, 
-				allPartialLists,		//functionDeclarations, 
+		AstPackageDeclaration pd = new AstPackageDeclaration(reporter, siriusLangQName /* QName.empty*/, 
+				allFunctionDefs,		//functionDeclarations, 
 				classDeclarations, 
 				interfaceDeclarations, 
 				List.of()	//valueDeclarations
@@ -132,7 +134,7 @@ public class SdkTools {
 		
 		classDeclarations.forEach(cd -> {symbolTable.addClass(cd);});
 		interfaceDeclarations.forEach(id-> {symbolTable.addInterface(id);});
-		allPartialLists.forEach(pl ->  {symbolTable.addFunction(pl);});
+		allFunctionDefs.forEach(pl ->  {symbolTable.addFunction(pl);});
 		
 		return md;
 	}
@@ -209,4 +211,9 @@ public class SdkTools {
 		
 		return partialfunctionDefinitionList;
 	}
+
+	public SdkContent getSdkContent() {
+		return sdkContent;
+	}
+	
 }

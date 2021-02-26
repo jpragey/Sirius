@@ -123,10 +123,10 @@ public class ModuleDeclarationParserTest {
 		ParseTree tree = parser.moduleDeclaration();
 				
 		ModuleDeclarationParser.ModuleDeclarationVisitor visitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter
-				, List.of() 
+//				, List.of() 
 //				new ModuleDeclarationParser.PackageElements()
 				);
-		AstModuleDeclaration moduleDeclaration = visitor.visit(tree);
+		AstModuleDeclaration moduleDeclaration = visitor.visit(tree).build(List.of() /*No package*/);
 		return moduleDeclaration;
 	}
 	

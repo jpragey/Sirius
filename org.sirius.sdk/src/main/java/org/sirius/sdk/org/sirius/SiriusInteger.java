@@ -5,7 +5,7 @@ import org.sirius.sdk.tooling.Inherits;
 import org.sirius.sdk.tooling.SiriusMethod;
 import org.sirius.sdk.tooling.TopLevelClass;
 
-@TopLevelClass(packageQName = "sirius.lang", name = "Integer")
+@TopLevelClass(packageQName = "" /*"sirius.lang"*/, name = "Integer")
 @Inherit(packageQName = "sirius.lang", name = "Addable")
 @Inherit(packageQName = "sirius.lang", name = "Stringifiable")
 

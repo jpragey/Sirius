@@ -120,10 +120,10 @@ public class SymbolExportVisitorTest {
 		SymbolExportVisitor v = new SymbolExportVisitor(xsTable);
 		md.visit(v);
 		
-		assertThat(xsTable.getExportedClass    (new QName("ma", "mb", "a", "b", "C")).isPresent(), equalTo(true));
-		assertThat(xsTable.getExportedFunction (new QName("ma", "mb", "a", "b", "fct")).isPresent(), equalTo(true));
-		assertThat(xsTable.getExportedFunction (new QName("ma", "mb", "a", "b", "C", "mfct")).isPresent(), equalTo(true));
-		assertThat(xsTable.getExportedInterface(new QName("ma", "mb", "a", "b", "I")).isPresent(), equalTo(true));
+		assertThat(xsTable.getExportedClass    (new QName(/*"ma", "mb", */"a", "b", "C")).isPresent(), equalTo(true));
+		assertThat(xsTable.getExportedFunction (new QName(/*"ma", "mb", */"a", "b", "fct")).isPresent(), equalTo(true));
+		assertThat(xsTable.getExportedFunction (new QName(/*"ma", "mb", */"a", "b", "C", "mfct")).isPresent(), equalTo(true));
+		assertThat(xsTable.getExportedInterface(new QName(/*"ma", "mb", */"a", "b", "I")).isPresent(), equalTo(true));
 	}
 
 }

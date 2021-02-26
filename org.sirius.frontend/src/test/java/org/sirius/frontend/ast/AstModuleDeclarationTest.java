@@ -29,16 +29,16 @@ public class AstModuleDeclarationTest {
 
 	@Test
 	public void findUnnamedPackageByQNameInNamedModuleTest() {
+		QName moduleQName = new QName("org", "sirius", "demo");
 		ScriptSession session = Compiler.compileScript("#!\n module org.sirius.demo \"1.0.0\" {} void f(){}");
-//		QName pkgQName = new QName("org", "sirius", "demo", "p", "k");
 		
 		AstModuleDeclaration md = session.getAstModules().get(0);
-		assertThat(md.getqName(), is(new QName("org", "sirius", "demo")));
+		assertThat(md.getqName(), is(moduleQName));
 		
 		AstPackageDeclaration pd0 = md.getPackageDeclarations().get(0);
-		assertThat(pd0.getQname(), is(QName.empty));
+		assertThat(pd0.getQname(), is(moduleQName /*QName.empty*/));
 
-		assertThat(md.getPackage(QName.empty), is(notNullValue()));
-		assertThat(md.getPackage(QName.empty).getFunctionDeclarations(), hasSize(1));
+		assertThat(md.getPackage(moduleQName /*QName.empty*/), is(notNullValue()));
+		assertThat(md.getPackage(moduleQName /*QName.empty*/).getFunctionDeclarations(), hasSize(1));
 	}
 }
