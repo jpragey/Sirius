@@ -20,6 +20,7 @@ import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionActualArgument;
 import org.sirius.frontend.api.FunctionCall;
 import org.sirius.frontend.api.IntegerConstantExpression;
+import org.sirius.frontend.api.IntegerType;
 import org.sirius.frontend.api.LocalVariableReference;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.MemberValueAccessExpression;
@@ -109,6 +110,7 @@ public class JvmExpression {
 		    mv.visitLdcInsn(expessionVal);
 		} else {	// use sirius.lang.Integer
 
+//			mv.visitIntInsn(Opcodes.BIPUSH, expessionVal);
 			
 			String internalName = "sirius/lang/Integer";
 
@@ -118,6 +120,7 @@ public class JvmExpression {
 			mv.visitIntInsn(Opcodes.BIPUSH, expessionVal);
 			String initDescriptor = "(I)V";		// "()V" for void constructor
 			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, internalName, "<init>", initDescriptor, false);
+			
 		}
 	}
 	private void processBooleanConstant(MethodVisitor mv, BooleanConstantExpression expression) {
@@ -162,13 +165,24 @@ public class JvmExpression {
 	public void processConstructorCall(MethodVisitor mv, ConstructorCall expression) {
 
 		Type type = expression.getType();
-		assert(type instanceof ClassDeclaration);
-		String internalName = Util.classInternalName((ClassDeclaration)type);
+		if(type instanceof IntegerType) {
+			String internalName = "sirius/lang/Integer";
 
-		mv.visitTypeInsn(NEW, internalName);
+			mv.visitTypeInsn(NEW, internalName);
 
-		mv.visitInsn(Opcodes.DUP);
-		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, internalName, "<init>", "()V", false);
+			mv.visitInsn(Opcodes.DUP);
+			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, internalName, "<init>", "()V", false);
+			
+		} else {
+
+			assert(type instanceof ClassDeclaration);
+			String internalName = Util.classInternalName((ClassDeclaration)type);
+
+			mv.visitTypeInsn(NEW, internalName);
+
+			mv.visitInsn(Opcodes.DUP);
+			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, internalName, "<init>", "()V", false);
+		}
 	}
 
 	public void processValueAccessExpression(MethodVisitor mv, MemberValueAccessExpression expression, JvmScope scope) {
@@ -201,7 +215,9 @@ public class JvmExpression {
 		
 		int varIndex = h.get().getIndex();
 
-		if(type instanceof ClassOrInterface) {
+		if(type instanceof IntegerType) {
+			mv.visitVarInsn(Opcodes.ALOAD, varIndex);
+		} else  if(type instanceof ClassOrInterface) {
 			mv.visitVarInsn(Opcodes.ALOAD, varIndex);
 		} else {
 			mv.visitVarInsn(Opcodes.ILOAD, varIndex);

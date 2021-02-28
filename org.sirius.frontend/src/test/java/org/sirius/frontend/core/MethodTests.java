@@ -16,10 +16,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
+import org.sirius.frontend.api.BooleanType;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionActualArgument;
 import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.IntegerType;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.MemberValueAccessExpression;
@@ -191,10 +193,11 @@ public class MethodTests {
 		assertTrue(funcLvs.getInitialValue().isPresent());
 
 		Type funcLvstype = funcLvs.getType();
-		assert(funcLvstype instanceof ClassDeclaration);
-		
-		
-		assertEquals( ((ClassDeclaration)funcLvstype).getQName(), new QName("sirius", "lang", "Integer"));
+		assertThat(funcLvstype, instanceOf(IntegerType.class));
+//		assert(funcLvstype instanceof ClassDeclaration);
+//		
+//		
+//		assertEquals( ((ClassDeclaration)funcLvstype).getQName(), new QName("sirius", "lang", "Integer"));
 
 		
 		// -- class member
@@ -206,18 +209,20 @@ public class MethodTests {
 		assertTrue(lvs.getInitialValue().isPresent());
 
 		Type type = lvs.getType();
-		assert(type instanceof ClassDeclaration);
-		assertEquals( ((ClassDeclaration)type).getQName(), new QName("sirius", "lang", "Integer"));
+		assertThat(type, instanceOf(IntegerType.class));
+//		assert(type instanceof ClassDeclaration);
+//		assertEquals( ((ClassDeclaration)type).getQName(), new QName("sirius", "lang", "Integer"));
 
 	}
 	
 	void assertIsFctArgInteger(int argIndex, String expectedName,  AbstractFunction apiFunc) {
 		FunctionFormalArgument arg1 = apiFunc.getArguments().get(argIndex);
 		assertEquals(arg1.getQName().getLast(), expectedName);
-		assert(arg1.getType() instanceof ClassDeclaration);
+//		assert(arg1.getType() instanceof ClassDeclaration);
+		assertThat(arg1.getType(), instanceOf(IntegerType.class));
 		
-		ClassDeclaration arg1Type = (ClassDeclaration)arg1.getType();
-		assertEquals(arg1Type.getQName(), new QName("sirius", "lang", "Integer"));
+//		IntegerType arg1Type = (IntegerType)arg1.getType();
+//		assertEquals(arg1Type.getQName(), new QName("sirius", "lang", "Integer"));
 		
 	}
 
@@ -316,9 +321,9 @@ public class MethodTests {
 		
 		assertEquals(refToXExpress.getName().getText(), "x");
 		Type xArgType = refToXExpress.getType();
-		assert(xArgType instanceof ClassDeclaration);
-		ClassDeclaration xClassDecl = (ClassDeclaration)xArgType;
-		assertEquals(xClassDecl.getQName().dotSeparated(), "sirius.lang.Integer");
+		assert(xArgType instanceof IntegerType);
+//		ClassDeclaration xClassDecl = (ClassDeclaration)xArgType;
+//		assertEquals(xClassDecl.getQName().dotSeparated(), "sirius.lang.Integer");
 
 	}
 	

@@ -5,8 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+
 import org.junit.jupiter.api.Test;
 import org.sirius.frontend.api.AbstractFunction;
+import org.sirius.frontend.api.BooleanType;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.ModuleDeclaration;
@@ -65,7 +71,10 @@ public class BooleanExpressionTest {
 //		assertEquals(localVarST.getName().getText(), "b");
 ////		assert(lvst.getType().toString(), "");
 		Type t = localVarST.getType();
-		assert(t instanceof ClassDeclaration);
+//		assertThat(t,  instanceOf(ClassDeclaration.class));
+		assertThat(t,  instanceOf(BooleanType.class));
+		
+//		assert(t instanceof ClassDeclaration);
 		
 //		assertEquals( ((AstClassDeclaration)t).getQName().dotSeparated(), "sirius.lang.Boolean");
 //		assertEquals(lvst.getName().getText(), "b");

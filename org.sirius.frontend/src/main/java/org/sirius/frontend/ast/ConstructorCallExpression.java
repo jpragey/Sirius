@@ -12,6 +12,7 @@ import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.IntegerType;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
@@ -96,13 +97,16 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 	private class ConstructorCallImpl implements ConstructorCall {
 
 		@Override
-		public ClassDeclaration getType() {
+		public Type getType() {
 			String simpleName = name.getText();
 			Optional<Symbol> s = symbolTable.lookupBySimpleName(simpleName);
 			if(s.isPresent()) {
 				Optional<AstClassDeclaration> cd = s.get().getClassDeclaration();
 				if(cd.isPresent()) {
-					ClassOrInterface d = cd.get().getApiType();
+					Type d = cd.get().getApiType();
+					if(d instanceof IntegerType) {
+						return (IntegerType)d;
+					}
 					assert(d instanceof ClassDeclaration);	// TODO
 					return (ClassDeclaration)d;
 				} else {

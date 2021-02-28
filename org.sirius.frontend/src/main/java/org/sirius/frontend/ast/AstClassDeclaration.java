@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,7 +14,9 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.MemberValue;
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.ClassDeclarationImpl;
+import org.sirius.frontend.sdk.SdkContent;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.Symbol;
@@ -155,9 +158,18 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		// TODO: add to symbol table
 	}
 	
+	private Optional<Type> sdkType = Optional.empty();
+	private static Map<QName, Type> sdkTypeByQName = new HashMap<>() {{
+		put(SdkContent.siriusLangIntegerQName, Type.integerType);
+		put(SdkContent.siriusLangBooleanQName, Type.booleanType);
+		put(SdkContent.siriusLangFloatQName, Type.floatType);
+	}};
+	
 	public void setPackageQName(QName packageQName) {
-//		this.packageQName = packageQName;
+		
 		this.qName = packageQName.child(this.name.getText());
+		
+		this.sdkType = Optional.ofNullable(sdkTypeByQName.get(this.qName));
 	}
 	
 	@Override
@@ -278,10 +290,11 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 	@Override
 	public boolean isAncestorOrSameAs(AstType descType) {
+		descType = descType.resolve();	// TODO: it's for SimpleType ref -> refactor ???
+
 		if(isExactlyA(descType))
 			return true;
 		
-		descType = descType.resolve();	// TODO: it's for SimpleType ref -> refactor ???
 		
 		// Check descendant is a class
 		if(! (descType instanceof AstClassDeclaration)) {
@@ -338,7 +351,8 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	@Override
 	public AstType resolve() {
 //		reporter.error("Symbol \"" + name.getText() + "\" not found.", name);
-		return this; // TODO
+		return this; 
+		// TODO
 	}
 
 	public void resolveAncestors(HashMap<String, AstInterfaceDeclaration> interfacesByName) {
@@ -353,12 +367,19 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		}
 	}
 
-	private ClassOrInterface type = null;
+	private Type type = null;
 	
 	@Override
-	public ClassOrInterface getApiType() {
+	public Type getApiType() {
 		if(type == null) {
-			type = getClassDeclaration();
+			type = this.sdkType.orElse(getClassDeclaration());
+//			if(this.sdkType.isPresent()) {
+//				type = this.sdkType.get();
+//				
+//			} else {
+//				type = getClassDeclaration();
+//				
+//			}
 		}
 		
 		return type;

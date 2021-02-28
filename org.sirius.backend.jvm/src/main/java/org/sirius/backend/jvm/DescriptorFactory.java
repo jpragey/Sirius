@@ -67,7 +67,8 @@ public class DescriptorFactory {
 			ArrayType arrayType = (ArrayType)type;
 			return "[" + fieldDescriptor(arrayType.getElementType());
 		} else if(type instanceof IntegerType) {
-			return "I";
+			return "Lsirius/lang/Integer;";
+//			return "I";
 		} else {
 			reporter.error("JVM backend: internal error creating fieldDescriptor, type " + type + ":" + type.getClass() + " has no mapping to JVM type descriptor.");
 			return "";

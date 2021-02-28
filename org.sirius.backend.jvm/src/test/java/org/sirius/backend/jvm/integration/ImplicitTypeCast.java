@@ -80,6 +80,7 @@ public class ImplicitTypeCast {
 		String script = "#!\n "
 				+ "import a.b {}"
 				+ "Integer main() {return 42;}";
+//		+ "Integer main() {return 42;}";
 		Object sirResult = compileRunAndReturn(script);
 		assert(sirResult instanceof sirius.lang.Integer);
 		int result = ((sirius.lang.Integer)sirResult).getValue();

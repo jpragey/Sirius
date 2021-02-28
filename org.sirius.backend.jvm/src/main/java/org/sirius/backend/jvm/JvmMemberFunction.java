@@ -3,6 +3,7 @@ package org.sirius.backend.jvm;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_STATIC;
 import static org.objectweb.asm.Opcodes.ARETURN;
+import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.util.ArrayList;
@@ -97,7 +98,7 @@ public class JvmMemberFunction {
 
 		if(type instanceof IntegerType) {
 			mv.visitInsn(ARETURN);	// TODO ???
-			//			    mv.visitInsn(IRETURN);
+//						    mv.visitInsn(IRETURN);
 		} else if(type instanceof ClassType) {
 			mv.visitInsn(ARETURN);
 		} else {
@@ -178,8 +179,9 @@ public class JvmMemberFunction {
 			int locvarIndex = h.getIndex();
 			Optional<Expression> optInitExp = h.getInitExp();
 			if(optInitExp.isPresent()) {
-				Expression expr = optInitExp.get();
-				new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, expr, scope);
+				Expression initExpr = optInitExp.get();
+				JvmExpression jvmExpr = new JvmExpression(reporter, descriptorFactory);
+				jvmExpr.writeExpressionBytecode(mv, initExpr, scope);
 
 				mv.visitVarInsn(Opcodes.ASTORE, locvarIndex);
 
