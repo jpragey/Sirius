@@ -25,7 +25,7 @@ mkdir demo
 cd demo
 (cat - <<EOF
 #!/bin/sh
-void main(String[] args) {
+void main() {
     println("Hello world!");
 }
 EOF
