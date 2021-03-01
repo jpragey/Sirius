@@ -50,6 +50,7 @@ public class JvmBackend implements Backend {
 		processSDK();
 		printIfVerbose("JVM: starting session, nb of modules: " + session.getModuleDeclarations().size());
 		session.getModuleDeclarations().stream().forEach(this::processModule);
+		
 	}
 	
 	private void processSDK() {
@@ -60,6 +61,7 @@ public class JvmBackend implements Backend {
 		printIfVerbose("Jvm: processing module " + declaration);
 
 		listeners.forEach(l ->  l.start(declaration) );
+
 
 		CodeTreeBuilder codeTreeBuilder = new CodeTreeBuilder(reporter);
 		declaration.visitMe(codeTreeBuilder);

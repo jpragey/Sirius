@@ -10,8 +10,14 @@ public class PlatformBridgeImpl implements PlatformBridge {
 		
 		@Override
 		public void println(SiriusString text) {
-			System.out.println(text.toString());
+			System.out.println("*******************************************************************************************************" + text.toString());
 		}
+
+		@Override
+		public void println0() {
+			System.out.println("*******************************************************************************************************0");
+		}
+		
 	};
 	@Override
 	public Println getPrintln() {

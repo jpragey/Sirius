@@ -9,9 +9,14 @@ component common  {
 }
 
 component sdk  { 
+[SDK declarations]
+[SDK implementation for backend-independant stuff]
 }
 
 component runtime  { 
+[launcher]
+[backend-dependant SDK stuff]
+[bridge to backend-independant SDK]
 }
 runtime --> common 
 runtime --> sdk
@@ -43,3 +48,28 @@ compiler --> backend.jvm
 compiler --> runtime
 
 ----
+
+
+== component common
+Common stuff
+
+== SDK
+
+The Sirius SDK is independant of the backend. Thus it can not be used directly - use runtime instead.
+
+It contains:
+
+- SDK declarations (abstract for backend-dependant stuff)
+- SDK implementation for backend-independant stuff.
+
+
+== Runtime (JVM)
+
+The runtime is backend-dependant code. It contains:
+
+- the launcher(s);
+- the backend-dependant SDK stuff,
+- bridge to backend-independant SDK]
+}
+It depends on common  and SDK.
+

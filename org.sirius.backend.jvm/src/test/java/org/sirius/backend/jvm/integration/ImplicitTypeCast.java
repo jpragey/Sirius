@@ -134,6 +134,7 @@ public class ImplicitTypeCast {
 		String script = "#!\n "
 				+ "import a.b {}"
 				+ "void main() {println(\"42\");}";
+//				+ "void main() {println0();}";
 		Object result = compileRunAndReturn(script);
 
 		assertThat(result, nullValue());

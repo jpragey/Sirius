@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.FunctionFormalArgumentImpl;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 
@@ -70,7 +71,9 @@ public class AstFunctionParameter implements Verifiable {
 	
 	public FunctionFormalArgument toAPI(QName functionQName) {
 		if(impl == null) {
-			impl = new FunctionFormalArgumentImpl(functionQName.child(name.getText()), type.getApiType());
+			Type paramType = type.getApiType();
+			QName paramQName = functionQName.child(name.getText());
+			impl = new FunctionFormalArgumentImpl(paramQName, paramType);
 		}
 		return impl;
 	}

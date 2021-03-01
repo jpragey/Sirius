@@ -41,7 +41,9 @@ public class TopLevelFunctionCall {
 		
 		String script = "#!\n "
 				+ "String getVal() {return \"Hello\";}"
-				+ "void main() {println(getVal());}"
+//				+ "void main() {println(getVal());}"
+//+ "void main() {println(\"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\");}"
++ "void main() {println(\"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\");}"
 				;
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
@@ -81,13 +83,13 @@ public class TopLevelFunctionCall {
 	}
 
 	@Test
-	@Disabled("temp.")
+//	@Disabled("temp.")
 	public void callUserDefinedFunctionTest() throws Exception {
 		
 		String script = "#!\n "
 //				+ "String getVal() {return \"Hello\";}"
 //+ "Integer add(Integer x, Integer y) {return x;}"
-+ "Integer add(Integer x, Integer y) {return y+y;}"
++ "Integer add(Integer x, Integer y) {return x+y;}"
 				//				+ "void main() {println(getVal());}"
 //				+ "Integer main() {Integer r = add(); return r;}"
 //				+ "Integer main() {Integer r = 42; return 43;}"
@@ -122,7 +124,7 @@ public class TopLevelFunctionCall {
 		
 		sirius.lang.Integer result = (sirius.lang.Integer)main.invoke(null, new Object[] {}/*args*/);
 		System.out.println("Result: " + result.getValue());
-		assertThat(result.getValue(), is(82));
+		assertThat(result.getValue(), is(81));
 		
 	}
 

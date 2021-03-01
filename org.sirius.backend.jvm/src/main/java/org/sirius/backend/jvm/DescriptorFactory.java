@@ -10,6 +10,7 @@ import org.sirius.frontend.api.ArrayType;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.IntegerType;
+import org.sirius.frontend.api.StringType;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.VoidType;
 
@@ -32,8 +33,8 @@ public class DescriptorFactory {
 	private String tempMapClassInternalName(String siriusName) {
 		
 		switch(siriusName) {
-		case "String": return "java/lang/String";
-		case "sirius/lang/String": return "java/lang/String";
+//		case "String": return "java/lang/String";
+//		case "sirius/lang/String": return "java/lang/String";
 		default: return siriusName;
 		}
 	}
@@ -66,6 +67,8 @@ public class DescriptorFactory {
 		} else if(type instanceof ArrayType) {
 			ArrayType arrayType = (ArrayType)type;
 			return "[" + fieldDescriptor(arrayType.getElementType());
+		} else if(type instanceof StringType) {
+			return "Lsirius/lang/String;";
 		} else if(type instanceof IntegerType) {
 			return "Lsirius/lang/Integer;";
 //			return "I";

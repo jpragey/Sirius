@@ -28,4 +28,12 @@ public class TopLevel {
 		this.bridge.getPrintln().println(text);
 	}
 
+	@SiriusMethod
+	public void println0(
+			) 
+	{
+		//System.out.println(text.string());
+		this.bridge.getPrintln().println0();
+	}
+
 }

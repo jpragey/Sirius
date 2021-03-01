@@ -6,15 +6,18 @@ import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.NEW;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.BooleanConstantExpression;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassOrInterface;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionActualArgument;
@@ -87,7 +90,16 @@ public class JvmExpression {
 	}
 
 	private void processStringConstant(MethodVisitor mv, StringConstantExpression expression) {
-	    mv.visitLdcInsn(expression.getText());
+//	    mv.visitLdcInsn(expression.getText());
+		String expessionVal = expression.getText();
+		String internalName = "sirius/lang/String";
+
+		mv.visitTypeInsn(NEW, internalName);
+
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitLdcInsn(expessionVal);
+		String initDescriptor = "(Ljava/lang/String;)V";		// "()V" for void constructor
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, internalName, "<init>", initDescriptor, false);
 	}
 	
 	private void processTypeCast(MethodVisitor mv, TypeCastExpression expression, JvmScope scope) {
@@ -96,11 +108,20 @@ public class JvmExpression {
 		Expression sourceExpr = expression.expression();
 		
 		// TODO Implement it
-//		if(sourceType.equals(targetType)) {
+		if(sourceType instanceof ClassType && targetType instanceof ClassType) {
+			QName srcQName = ((ClassType)sourceType).getQName();
+			QName targetQName = ((ClassType)targetType).getQName();
+			if(srcQName .equals(targetQName)) {
+				new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, sourceExpr, scope);
+				return;
+			}
+		}
+		
+		if(sourceType.equals(targetType)) {
 			new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, sourceExpr, scope);
-//		} else {
+		} else {
 			reporter.warning("??? TypeCast (TODO)" + sourceType + " into " + targetType );
-//		}
+		}
 	}
 	
 	private void processIntegerConstant(MethodVisitor mv, IntegerConstantExpression expression) {
@@ -228,15 +249,15 @@ public class JvmExpression {
 	private void processFunctionCall(MethodVisitor mv, FunctionCall call, JvmScope scope) {
 		String funcName = call.getFunctionName().getText();
 		
-		if(funcName.equals("println")) {
-			mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-
-			for(Expression argExpr:call.getArguments()) {
-				writeExpressionBytecode(mv, argExpr, scope);
-			}
-
-			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false /*isInterface*/);
-		} else {
+//		if(funcName.equals("println")) {
+//			mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+//
+//			for(Expression argExpr:call.getArguments()) {
+//				writeExpressionBytecode(mv, argExpr, scope);
+//			}
+//
+//			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false /*isInterface*/);
+//		} else {
 			
 			AbstractFunction func = call.getDeclaration().get();	// TODO: check for absence
 			if(func.getClassOrInterfaceContainerQName().isPresent()) {
@@ -249,15 +270,31 @@ public class JvmExpression {
 			}
 			
 			for(Expression expr: call.getArguments()) {
+//System.out.println("-------------------");
 				writeExpressionBytecode(mv, expr, scope);
+//System.out.println("-------------------");
 			}
 
 			Optional<AbstractFunction> topLevelFunc = call.getDeclaration();
 			if(topLevelFunc.isPresent()) {
 				String methodDescriptor = descriptorFactory.methodDescriptor(topLevelFunc.get());
+//				String owner = "$package$";		// owner "java/io/PrintStream",;
+				Optional<QName> optContainerQName = func.getClassOrInterfaceContainerQName();
+				
+				String owner = optContainerQName.isPresent() ?
+						optContainerQName.get().getStringElements().stream().collect(Collectors.joining("/")) :
+							"$package$";
+				
+				if(owner.equals("sirius/lang") && invokeOpcode == INVOKESTATIC) {
+					owner = "org/sirius/backend/jvm/bridge/TopLevel";
+				}
+//				org.sirius.backend.jvm.bridge
+				
+//				String owner = func.getClassOrInterfaceContainerQName().flatMap(qname -> "");
+//						..get "$package$";		// owner "java/io/PrintStream",;
 				mv.visitMethodInsn(
 						invokeOpcode,		// opcode 
-						"$package$",		// owner "java/io/PrintStream", 
+						owner,		// owner "java/io/PrintStream", 
 						call.getFunctionName().getText(), //"println", 
 						methodDescriptor,			// "(Ljava/lang/String;)V",	// method descriptor 
 						false 				// isInterface
@@ -266,6 +303,6 @@ public class JvmExpression {
 				reporter.error("Backend: top-level function not defined: " + funcName);
 			}
 		}
-	}
+//	}
 	
 }

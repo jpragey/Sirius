@@ -17,6 +17,7 @@ public interface StringConstantExpression extends Expression {
 			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
 		}
 	};
+//	static Type type = Type.
 	
 	/** Get content as given in source code, eg with starting and terminating quotes. */
 	Token getContent();

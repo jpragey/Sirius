@@ -43,16 +43,11 @@ public class ClassBasicTest {
 		ClassLoader classLoader = l.getClassLoader();
 		
 		String mainClassQName = "$package$"; 
-//		String mainClassQName = "A"; 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 
 		Object helloObj = cls.getDeclaredConstructor().newInstance();
 		Method[] methods = helloObj.getClass().getDeclaredMethods();
-//
-//		for(Method m: methods)
-//			System.out.println("Method: " + m);
-		
 		
 		Method main = cls.getMethod("main", new Class[] { /* String[].class */});
 		Object[] argTypes = new Object[] {};
@@ -65,7 +60,7 @@ public class ClassBasicTest {
 	
 	@Test
 	@DisplayName("Create a class instance from SDK (sirius.lang.Integer) (in a return expression)")
-	public void classFromSDKTest() throws Exception {
+	public void integerClassFromSDKTest() throws Exception {
 		String script = "#!\n "
 				+ "Integer main() {return Integer();}";
 		
@@ -95,6 +90,38 @@ public class ClassBasicTest {
 
 	}
 	
+	@Test
+	@DisplayName("Create a s.l.String class instance from SDK (sirius.lang.Integer) (in a return expression)")
+	public void stringClassFromSDKTest() throws Exception {
+		String script = "#!\n "
+				+ "String main() {return String();}";
+		
+		
+		ScriptSession session = CompileTools.compileScript(script, reporter);
+		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/);
+		InMemoryClassWriterListener l = backend.addInMemoryOutput();
+		
+		backend.process(session);
+		
+		ClassLoader classLoader = l.getClassLoader();
+		
+		String mainClassQName = "$package$"; 
+//		String mainClassQName = "A"; 
+		
+		Class<?> cls = classLoader.loadClass(mainClassQName);
+
+		Object helloObj = cls.getDeclaredConstructor().newInstance();
+		
+		
+		Method main = cls.getMethod("main", new Class[] { /* String[].class */});
+		Object[] argTypes = new Object[] {};
+		
+		Object result = main.invoke(null, argTypes /*, args*/);
+		
+		assertEquals(result.getClass().getName(), "sirius.lang.String");
+
+	}
+	
 	
 	@Test
 	@DisplayName("access to a member value")
@@ -114,11 +141,6 @@ public class ClassBasicTest {
 
 		backend.process(session);
 		
-//		HashMap<String, Bytecode> map = l.getByteCodesMap();
-//		System.out.println(map.keySet());
-//		session.getGlobalSymbolTable().dump();
-
-		
 		ClassLoader classLoader = l.getClassLoader();
 		
 		String mainClassQName = "$package$"; 
@@ -126,14 +148,6 @@ public class ClassBasicTest {
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 
-//		System.out.println("Constructors:");
-//		for(Constructor<?> c: cls.getConstructors())
-//			System.out.println("  "+c);
-//		
-//		System.out.println("Fields:");
-//		for(Field f: cls.getDeclaredFields())
-//			System.out.println("  "+f);
-		
 		Object helloObj = cls.getDeclaredConstructor().newInstance();
 		Method[] methods = helloObj.getClass().getDeclaredMethods();
 //
@@ -156,14 +170,11 @@ public class ClassBasicTest {
 	}
 	
 	@Test
-	@DisplayName("TODO")
+	@DisplayName("Check a function can return an Integer local variable")
 	public void localVariableTest() throws Exception {
 		String script = "#!\n "
 		+ "class A(){}\n"
-//		+ "void main() {Integer a = 10;}";	// OK
-//		+ "Integer main() {return 10;}";
 		+ "Integer main() {Integer a = 10; return a;}";
-		
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
 		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/);
@@ -177,7 +188,6 @@ public class ClassBasicTest {
 		ClassLoader classLoader = l.getClassLoader();
 		
 		String mainClassQName = "$package$"; 
-//		String mainClassQName = "A"; 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 

@@ -32,8 +32,10 @@ EOF
 ) > hello.sirius
 
 java -cp "../dist/lib/*" org.sirius.compiler.core.Main compile --module modulesDir hello.sirius
-java -jar modulesDir/unnamed.jar 
+java -cp "../dist/lib/*:modulesDir/unnamed.jar" org.sirius.backend.jvm.launcher.Main unused
 ```
+(unused : temporary fake value, will be removed soon)
+
 To create the site (and doc):
 
 ```bash

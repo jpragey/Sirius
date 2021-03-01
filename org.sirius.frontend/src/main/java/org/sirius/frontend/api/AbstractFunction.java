@@ -33,8 +33,13 @@ public interface AbstractFunction {
 		getArguments().forEach(arg -> arg.visitMe(visitor));
 		
 		getBodyStatements().ifPresent(
-				stmtList -> stmtList.forEach(arg -> arg.visitMe(visitor))
+				stmtList -> stmtList.forEach(arg -> {
+					arg.visitMe(visitor);
+					})
 				);
+//		getBodyStatements().ifPresent(
+//				stmtList -> stmtList.forEach(arg -> arg.visitMe(visitor))
+//				);
 		
 //		for(Statement stmt: getBodyStatements()) {
 //			stmt.visitMe(visitor);

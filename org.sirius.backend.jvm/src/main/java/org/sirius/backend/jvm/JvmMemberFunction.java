@@ -23,6 +23,7 @@ import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.ExpressionStatement;
 import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.IfElseStatement;
 import org.sirius.frontend.api.IntegerType;
@@ -154,6 +155,12 @@ public class JvmMemberFunction {
 		}
 	}
 
+	public void writeExpressionStatementBytecode(ClassWriter classWriter, MethodVisitor mv, ExpressionStatement statement, JvmScope scope) {
+		JvmExpression jvmExpression = new JvmExpression(reporter, descriptorFactory);
+		Expression expression = statement.getExpression();
+		jvmExpression.writeExpressionBytecode(mv, expression, scope);
+	}
+
 	/** simulate "return ;"
 	 *  
 	 * @param classWriter
@@ -208,9 +215,15 @@ public class JvmMemberFunction {
 			for(Statement st: statements ) {
 				if(st instanceof ReturnStatement) {
 					writeReturnStatementBytecode(classWriter, mv, (ReturnStatement)st, scope);
-				}
-				else if(st instanceof IfElseStatement) {
+				} else if(st instanceof IfElseStatement) {
 					writeIfElseStatementBytecode(classWriter, mv, (IfElseStatement)st, scope);
+				} else if(st instanceof ExpressionStatement) {
+					writeExpressionStatementBytecode(classWriter, mv, (ExpressionStatement)st, scope);
+//					writeIfElseStatementBytecode(classWriter, mv, (IfElseStatement)st, scope);
+				} else if(st instanceof LocalVariableStatement) { 
+					// Ignore
+				} else {
+					throw new UnsupportedOperationException("No bytecode to write for statement " + st.getClass().getCanonicalName());
 				}
 			}
 
