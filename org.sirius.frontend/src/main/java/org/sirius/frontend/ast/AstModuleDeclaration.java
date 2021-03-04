@@ -150,6 +150,7 @@ public class AstModuleDeclaration implements Visitable, Verifiable {
 					.collect(Collectors.toList());
 			
 			cachedModuleDeclaration = new ModuleDeclarationImpl(qName, 
+					versionString,
 					modulePPath.get(),	// TODO: check ???
 					packageDeclarationList);
 			}

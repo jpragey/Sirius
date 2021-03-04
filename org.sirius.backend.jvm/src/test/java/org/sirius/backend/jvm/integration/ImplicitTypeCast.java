@@ -7,12 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.sirius.backend.jvm.BackendOptions;
 import org.sirius.backend.jvm.Bytecode;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
 import org.sirius.backend.jvm.JvmBackend;
@@ -40,7 +42,7 @@ public class ImplicitTypeCast {
 	public Object compileRunAndReturn(String script) throws Exception {
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
-		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/);
+		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
 		InMemoryClassWriterListener l = backend.addInMemoryOutput();
 		
 		backend.process(session);

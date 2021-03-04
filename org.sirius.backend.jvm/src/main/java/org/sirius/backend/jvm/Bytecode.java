@@ -15,6 +15,8 @@ public class Bytecode {
 
 	private byte[] bytes;
 
+	public final static int VERSION = 55; // Java SE 11
+
 	public Bytecode(byte[] bytes, QName classQName) {
 		super();
 		this.bytes = bytes;
@@ -62,7 +64,7 @@ public class Bytecode {
 			reporter.error("File not found: " + classFile.toString() + ": " + e.getMessage(), e);
 		} catch (IOException e) {
 			reporter.error("I/O error while writing " + classFile.toString() + ": " + e.getMessage(), e);
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 	}
 

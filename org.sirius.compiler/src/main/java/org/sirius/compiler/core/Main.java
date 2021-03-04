@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.sirius.backend.jvm.BackendOptions;
 import org.sirius.backend.jvm.JvmBackend;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
@@ -90,9 +91,11 @@ public class Main {
 	private void runCompileTool(CompileOptionsValues compileOptions) {
 		
 		FrontEnd frontEnd = new FrontEnd(reporter);
+		BackendOptions options = new BackendOptions(reporter, compileOptions.getJvmMain());
 		JvmBackend backend = new JvmBackend(reporter, 
 //				compileOptions.getClassDir(), 
-				compileOptions.isVerboseAst());
+				compileOptions.isVerboseAst(),
+				options);
 		
 		compileOptions.getModuleDir().ifPresent(moduleDir -> backend.addFileOutput(moduleDir, compileOptions.getClassDir()));
 		

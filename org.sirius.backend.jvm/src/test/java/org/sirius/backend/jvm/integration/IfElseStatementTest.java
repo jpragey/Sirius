@@ -5,11 +5,13 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.sirius.backend.jvm.BackendOptions;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
 import org.sirius.backend.jvm.JvmBackend;
 import org.sirius.common.error.AccumulatingReporter;
@@ -36,7 +38,7 @@ public class IfElseStatementTest {
 				+ "Integer main() {" + ifThenExpr + " return 100;}";
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
-		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/);
+		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
 		InMemoryClassWriterListener l = backend.addInMemoryOutput();
 		
 		backend.process(session);

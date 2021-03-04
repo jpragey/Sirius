@@ -19,6 +19,10 @@ public class AccumulatingReporter implements Reporter {
 		super();
 		this.delegate = delegate;
 	}
+	public AccumulatingReporter() {
+		super();
+		this.delegate = new SilentReporter();
+	}
 
 	@Override
 	public void message(Severity severity, String message, Optional<Token> token, Optional<Exception> exception) {

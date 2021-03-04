@@ -3,6 +3,8 @@ package org.sirius.backend.jvm;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_STATIC;
 import static org.objectweb.asm.Opcodes.ARETURN;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.RETURN;
 
@@ -11,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -37,6 +40,7 @@ public class JvmMemberFunction {
 	private boolean isStatic;
 	private DescriptorFactory descriptorFactory;
 	private Reporter reporter;
+	private BackendOptions backendOptions;
 
 	
 	private static class ScopeManager {
@@ -77,9 +81,10 @@ public class JvmMemberFunction {
 	
 	private ScopeManager scopeManager;
 
-	public JvmMemberFunction(Reporter reporter, DescriptorFactory descriptorFactory, AbstractFunction memberFunction, boolean isStatic) {
+	public JvmMemberFunction(Reporter reporter, BackendOptions backendOptions, DescriptorFactory descriptorFactory, AbstractFunction memberFunction, boolean isStatic) {
 		super();
 		this.reporter = reporter;
+		this.backendOptions = backendOptions;
 		this.descriptorFactory = descriptorFactory;
 		this.memberFunction = memberFunction;
 		this.isStatic = isStatic;
@@ -260,6 +265,54 @@ public class JvmMemberFunction {
 		scopeManager.leaveScope();
 	}
 
+	/** write a java-callable "void main(String[] args) { functionName();}"
+	 * 
+	 * @param classWriter
+	 * @param functionName
+	 */
+	private void writeJvmMainBytecode(ClassWriter classWriter, String functionName) {
+		System.out.println("Writing JVM main() bytecode for function: " + functionName);
+
+		String functionDescriptor = "([Ljava/lang/String;)V";	// eg (Ljava/lang/String;)V
+		int access = ACC_PUBLIC | ACC_STATIC;
+
+		MethodVisitor mv = classWriter.visitMethod(access, "main" /*functionName*/, functionDescriptor,
+				null /* String signature */,
+				null /* String[] exceptions */);
+		// -- call function (no arguments)
+		if(memberFunction.getArguments().isEmpty()) {
+			
+			int invokeOpcode = INVOKESTATIC;
+			String methodDescriptor = "()V";
+			
+			Optional<QName> parentQName = memberFunction
+					.getQName()
+					.parent();
+			assert(parentQName.isPresent());
+			String owner = parentQName.get()
+					.child("$package$")
+					.getStringElements().stream()
+					
+					.collect(Collectors.joining("/", "",""));
+			mv.visitMethodInsn(
+					invokeOpcode,		// opcode 
+					owner,		// owner "java/io/PrintStream", 
+					functionName, //"println", 
+					methodDescriptor,			// "(Ljava/lang/String;)V",	// method descriptor 
+					false 				// isInterface
+					);
+
+		} else {
+			reporter.error("Error creating JVM main(){}: the function " + memberFunction.getQName().dotSeparated() + " has arguments (not supported yet).");
+		}
+		
+		
+		// -- 'main' return
+		mv.visitInsn(RETURN);
+//		mv.visitMaxs(1, 1);
+		mv.visitEnd();
+
+	}
 
 	/** Write bytecode for the whole function
 	 * 
@@ -267,7 +320,9 @@ public class JvmMemberFunction {
 	 */
 	public void writeBytecode(ClassWriter classWriter) {
 
-		String functionName = memberFunction.getQName().getLast();
+		QName functionQName = memberFunction.getQName();
+		
+		String functionName = functionQName.getLast();
 		Optional<List<Statement>> optBody = memberFunction.getBodyStatements();
 		if(optBody.isEmpty()) {
 			reporter.error("Can't generate bytecode for function " + memberFunction.getQName().dotSeparated() + ", body is missing."); // TODO add function location to message
@@ -293,6 +348,17 @@ public class JvmMemberFunction {
 
 		mv.visitMaxs(-1, -1);
 		mv.visitEnd();
+
+		// -- Opt. create a 'void main(java.lang.String[]' method
+//		System.out.println("Trying to create JVM entry point at " + functionQName);
+//		System.out.println(" From options: " + backendOptions.getJvmMainFunctionQName());
+		backendOptions.getJvmMainFunctionQName().ifPresent(qname -> {
+			if(functionQName.equals(qname)) {
+				writeJvmMainBytecode(classWriter, qname.getLast());
+				String jvmMainName = backendOptions.getJvmMainOption().get(); // function name, as defined in options
+				backendOptions.markJvmMainAsWritten(jvmMainName);
+			}
+		});
 	}
 	
 	@Override

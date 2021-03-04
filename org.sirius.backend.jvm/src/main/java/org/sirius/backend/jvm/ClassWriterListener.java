@@ -6,7 +6,7 @@ import org.sirius.frontend.api.ModuleDeclaration;
 interface ClassWriterListener {
 
 	public void start(ModuleDeclaration moduleDeclaration);
-	public void addByteCode(Bytecode bytecode, QName classQName);
+	public void addByteCode(Bytecode bytecode, QName classQName); // TODO: remove classQName (soon contained in bytecode)
 	public void end();
 
 }

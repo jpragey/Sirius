@@ -9,12 +9,15 @@ import org.sirius.frontend.core.PhysicalPath;
 
 public class ModuleDeclarationImpl implements ModuleDeclaration {
 	private QName moduleQName;
+	private String version;
 	private PhysicalPath physicalPath;
 	private List<PackageDeclaration> packageDeclarationList;
+	
 
-	public ModuleDeclarationImpl(QName moduleQName, PhysicalPath physicalPath, List<PackageDeclaration> packageDeclarationList) {
+	public ModuleDeclarationImpl(QName moduleQName, String version, PhysicalPath physicalPath, List<PackageDeclaration> packageDeclarationList) {
 		super();
 		this.moduleQName = moduleQName;
+		this.version = version;
 		this.physicalPath = physicalPath;
 		this.packageDeclarationList = packageDeclarationList;
 	}
@@ -36,5 +39,10 @@ public class ModuleDeclarationImpl implements ModuleDeclaration {
 	@Override
 	public String toString() {
 		return "\"" + getQName().toString() + "\"";
+	}
+
+	@Override
+	public String getVersion() {
+		return version;
 	}
 }

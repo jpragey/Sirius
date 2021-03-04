@@ -20,6 +20,7 @@ public class CompileOptionsValues {
 
 	private Optional<String> moduleDir = Optional.empty();
 
+	private Optional<String> jvmMain = Optional.empty();
 
 	private ArrayList<String> sources = new ArrayList<String>();
 	
@@ -54,7 +55,16 @@ public class CompileOptionsValues {
 	public void setSources(List<String> sources) {
 		this.sources.addAll(sources);
 	}
-	
+
+	public void setJvmMain(String jvmMain) {
+		this.jvmMain = Optional.of(jvmMain);
+	}
+	public Optional<String> getJvmMain() {
+		return jvmMain;
+	}
+
+
+
 	private boolean verboseAst = false;
 
 	private void setAllVerboseoptions() {

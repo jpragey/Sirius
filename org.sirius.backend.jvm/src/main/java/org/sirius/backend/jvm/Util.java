@@ -19,5 +19,5 @@ public class Util {
 		 */
 		return classInternalName(classDeclaration.getQName());
 	}
-
+	public static boolean debugMainClass = false;
 }

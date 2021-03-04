@@ -3,6 +3,8 @@ package org.sirius.backend.jvm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,7 +68,7 @@ public class ExpressionStatementTest {
 		ExpressionStatement statement = (ExpressionStatement)func.getBodyStatements().get().get(0);
 		
 		JvmBackend backend = new JvmBackend(reporter /*, Optional.empty()*//* classDir*/ /*, Optional.empty()*/ /* module*/, false /*verboseAst*/
-				);
+				, new BackendOptions(reporter, Optional.empty() /* jvmMain */));
 		backend.process(session);
 		
 	}

@@ -17,6 +17,8 @@ public interface ModuleDeclaration {
 	
 	QName getQName();
 	
+	String getVersion();
+	
 	default String getQNameString() {
 		return getQName().dotSeparated();
 	}

@@ -1,9 +1,11 @@
 package org.sirius.backend.jvm;
 
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.ACC_STATIC;
 import static org.objectweb.asm.Opcodes.ACC_SUPER;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ import org.sirius.frontend.api.PackageDeclaration;
 
 public class JvmClass {
 	
-	private final static int VERSION = 52; // Java SE 8
+//	private final static int VERSION = 55; // Java SE 11
 	private Reporter reporter;
 	private QName qName;
 
@@ -34,32 +36,28 @@ public class JvmClass {
 	private ArrayList<JvmMemberFunction> memberFunctions = new ArrayList<>();
 	
 	private ArrayList<JvmMemberValue> memberValues = new ArrayList<>();
+	private BackendOptions backendOptions;
 	
-	public JvmClass(Reporter reporter, QName qName) {
+	public JvmClass(Reporter reporter, QName qName, BackendOptions backendOptions) {
 		super();
 		this.reporter = reporter;
 		this.qName = qName;
+		this.backendOptions = backendOptions;
 	}
 	
-	public JvmClass(Reporter reporter, ClassDeclaration cd) {
-		super();
-		this.reporter = reporter;
-		this.qName = cd.getQName();
+	public JvmClass(Reporter reporter, ClassDeclaration cd, BackendOptions backendOptions) {
+		this(reporter, cd.getQName(), backendOptions);
 		addMemberFunctions(cd);
 		addMemberValues(cd);
 	}
-	public JvmClass(Reporter reporter, InterfaceDeclaration cd) {
-		super();
-		this.reporter = reporter;
-		this.qName = cd.getQName();
+	public JvmClass(Reporter reporter, InterfaceDeclaration cd, BackendOptions backendOptions) {
+		this(reporter, cd.getQName(), backendOptions);
 		addMemberFunctions(cd);
 		addMemberValues(cd);
 	}
 	// For Package class
-	public JvmClass(Reporter reporter, PackageDeclaration pd) {
-		super();
-		this.reporter = reporter;
-		this.qName = pd.getQName().child("$package$");	// TODO
+	public JvmClass(Reporter reporter, PackageDeclaration pd, BackendOptions backendOptions) {
+		this(reporter, pd.getQName().child("$package$"), backendOptions);
 	}
 
 	private void addMemberValues(ClassOrInterface cd) {
@@ -72,11 +70,11 @@ public class JvmClass {
 	
 	private void addMemberFunctions(ClassOrInterface cd) {
 		for(AbstractFunction mf: cd.getFunctions())
-			memberFunctions.add(new JvmMemberFunction(reporter, descriptorFactory, mf, false /*isStatic*/));
+			memberFunctions.add(new JvmMemberFunction(reporter, backendOptions,  descriptorFactory, mf, false /*isStatic*/));
 	}
 	
 	public void addTopLevelFunction(AbstractFunction func) {
-		memberFunctions.add(new JvmMemberFunction(reporter, descriptorFactory, func, true /*isStatic*/));
+		memberFunctions.add(new JvmMemberFunction(reporter, backendOptions, descriptorFactory, func, true /*isStatic*/));
 		
 	}
 	
@@ -84,8 +82,108 @@ public class JvmClass {
 	public String toString() {
 		return qName.toString();
 	}
+	
+	private void debugWriteCompanionMainBytecode(List<ClassWriterListener> listeners) {
+		QName qName = new QName("org", "jpr", "MainCompanion");
+		
+		String clssQname = qName.dotSeparated();
+		this.definedClasses.add(clssQname);
 
-	public Bytecode toBytecode(List<ClassWriterListener> listeners) {
+		ClassWriter classWriter = new ClassWriter(
+				ClassWriter.COMPUTE_FRAMES | // No need to 
+				ClassWriter.COMPUTE_MAXS // You must still call visitMaxs(), but its args are ignored 
+				/*0*/ /*flags*/
+				);
+
+		String fileName = qName.getLast() + ".java";
+		classWriter.visitSource(fileName, null /*debug*/);
+
+		// -------- startClass(classWriter);
+		int access = ACC_SUPER | ACC_PUBLIC ; // Always use ACC_SUPER ! 
+		String classInternalName = Util.classInternalName(qName);
+		classWriter.visit(Bytecode.VERSION, access, classInternalName/*"Hello"*/, null /*signature*/, "java/lang/Object"/*superName*/, null /*interfaces*/);
+
+		
+		// -------- <init>() : writeInitMethod(classWriter);
+		MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
+		JvmScope scope = new JvmScope(descriptorFactory, Optional.empty(), "<init(...) root>");
+		
+		mv.visitVarInsn(ALOAD, 0);
+		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false /*isInterface*/);
+
+//		for(JvmMemberValue mf: this.memberValues) {
+//			mf.writeInitBytecode(classWriter, mv, scope, qName);
+//		}
+		
+		mv.visitInsn(RETURN);
+		mv.visitMaxs(1, 1);
+		mv.visitEnd();
+
+		
+		// ---- main() method
+//		AbstractFunction mainAbsFunc = new AbstractFunction() {};
+//		JvmMemberFunction mainMF = new JvmMemberFunction(reporter, backendOptions, descriptorFactory, AbstractFunction memberFunction, true /* isStatic*/);
+//		mainMF.writeBytecode(classWriter);
+
+////		System.out.println("Writing JVM main() bytecode for function: " + functionName);
+
+		String functionDescriptor = "([Ljava/lang/String;)V";	// eg (Ljava/lang/String;)V
+//		int access = ACC_PUBLIC | ACC_STATIC;
+
+		MethodVisitor mainMv = classWriter.visitMethod(ACC_PUBLIC | ACC_STATIC, "main" /*functionName*/, functionDescriptor,
+				null /* String signature */,
+				null /* String[] exceptions */);
+
+//		int invokeOpcode = INVOKESTATIC;
+//		String methodDescriptor = "()V";
+		
+//		Optional<QName> parentQName = memberFunction
+//				.getQName()
+//				.parent();
+//		assert(parentQName.isPresent());
+//		String owner = parentQName.get()
+//				.child("$package$")
+//				.getStringElements().stream()
+//				
+//				.collect(Collectors.joining("/", "",""));
+//		mv.visitMethodInsn(
+//				invokeOpcode,		// opcode 
+//				owner,		// owner "java/io/PrintStream", 
+//				functionName, //"println", 
+//				methodDescriptor,			// "(Ljava/lang/String;)V",	// method descriptor 
+//				false 				// isInterface
+//				);
+
+		// -- 'main' return
+		mainMv.visitInsn(RETURN);
+//		mv.visitMaxs(1, 1);
+		mainMv.visitEnd();
+
+//		
+//
+//		// -- Member functions
+//		for(JvmMemberFunction mf: this.memberFunctions) {
+//			mf.writeBytecode(classWriter);
+//		}
+//		
+//		for(JvmMemberValue mf: this.memberValues) {
+//			mf.writeBytecode(classWriter);
+//		}
+
+		// -- Terminate class
+		classWriter.visitEnd();
+
+		byte[] bytes = classWriter.toByteArray();
+		Bytecode bytecode = new Bytecode(bytes, qName);
+		
+		for(ClassWriterListener l: listeners)
+			l.addByteCode(bytecode, qName);
+		
+	}
+
+	public void /*Bytecode*/ toBytecode(List<ClassWriterListener> listeners) {
+		if(Util.debugMainClass)
+			debugWriteCompanionMainBytecode(listeners);
 
 		//			System.out.println(" -- Starting ClassDeclaration " + classDeclaration.getQName());
 
@@ -123,7 +221,7 @@ public class JvmClass {
 		for(ClassWriterListener l: listeners)
 			l.addByteCode(bytecode, qName);
 		
-		return bytecode;
+//		return bytecode;
 	}
 	
 	private void startClass(ClassWriter classWriter) {
@@ -154,7 +252,7 @@ public class JvmClass {
 //		 */
 		String classInternalName = Util.classInternalName(qName);
 
-		classWriter.visit(VERSION, access, classInternalName/*"Hello"*/, null /*signature*/, "java/lang/Object"/*superName*/, null /*interfaces*/);
+		classWriter.visit(Bytecode.VERSION, access, classInternalName/*"Hello"*/, null /*signature*/, "java/lang/Object"/*superName*/, null /*interfaces*/);
 	}
 
 	/** 
