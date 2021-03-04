@@ -17,6 +17,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
@@ -172,6 +173,7 @@ public class ModuleTest {
 	}
 	
 	@Test 
+	@Disabled("Temp, to remove")
 	public void dumpExistingModuleInfo() throws IOException {
 		byte[] bytes = Files.readAllBytes(Paths.get("/tmp/siriusDist/module-info.class"));
 		dumpModuleInfo(bytes);
