@@ -20,4 +20,8 @@ public class Util {
 		return classInternalName(classDeclaration.getQName());
 	}
 	public static boolean debugMainClass = false;
+	
+	// TODO: move
+	public static final String jvmPackageClassName = "JvmPackage";	// TODO: should be "$package$"
+	public static final String jvmModuleVersion = "0.0.1-SNAPSHOT";
 }

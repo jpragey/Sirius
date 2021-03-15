@@ -290,7 +290,7 @@ public class JvmMemberFunction {
 					.parent();
 			assert(parentQName.isPresent());
 			String owner = parentQName.get()
-					.child("$package$")
+					.child(Util.jvmPackageClassName /* "$package$"*/)
 					.getStringElements().stream()
 					
 					.collect(Collectors.joining("/", "",""));

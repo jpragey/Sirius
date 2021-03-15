@@ -15,6 +15,7 @@ import org.sirius.backend.jvm.BackendOptions;
 import org.sirius.backend.jvm.Bytecode;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
 import org.sirius.backend.jvm.JvmBackend;
+import org.sirius.backend.jvm.Util;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
@@ -48,7 +49,7 @@ public class FunctionTest {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = "$package$"; 
+		String mainClassQName = Util.jvmPackageClassName /* "$package$"*/; 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 		Object helloObj = cls.getDeclaredConstructor().newInstance();

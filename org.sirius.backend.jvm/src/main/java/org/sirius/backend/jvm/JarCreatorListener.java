@@ -90,7 +90,7 @@ public class JarCreatorListener implements ClassWriterListener {
 			File jarFile = jarPath.toFile();
 			this.jarPathString = jarPath.toAbsolutePath().toString();
 
-			QName manifestMainClassQName = moduleQName.child("$package$");
+			QName manifestMainClassQName = moduleQName.child(Util.jvmPackageClassName);
 			try {
 				File parentDir = jarFile.getParentFile();
 				if(parentDir!= null) {

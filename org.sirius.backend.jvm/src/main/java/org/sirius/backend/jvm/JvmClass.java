@@ -57,7 +57,7 @@ public class JvmClass {
 	}
 	// For Package class
 	public JvmClass(Reporter reporter, PackageDeclaration pd, BackendOptions backendOptions) {
-		this(reporter, pd.getQName().child("$package$"), backendOptions);
+		this(reporter, pd.getQName().child(Util.jvmPackageClassName /* "$package$"*/), backendOptions);
 	}
 
 	private void addMemberValues(ClassOrInterface cd) {

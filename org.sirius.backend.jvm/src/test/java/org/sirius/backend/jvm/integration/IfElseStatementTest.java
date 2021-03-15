@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.BackendOptions;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
 import org.sirius.backend.jvm.JvmBackend;
+import org.sirius.backend.jvm.Util;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
@@ -45,7 +46,7 @@ public class IfElseStatementTest {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = "$package$"; 
+		String mainClassQName = Util.jvmPackageClassName; 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 

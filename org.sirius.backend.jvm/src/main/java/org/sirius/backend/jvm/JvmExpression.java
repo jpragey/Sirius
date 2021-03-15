@@ -283,7 +283,7 @@ public class JvmExpression {
 				
 				String owner = optContainerQName.isPresent() ?
 						optContainerQName.get().getStringElements().stream().collect(Collectors.joining("/")) :
-							"$package$";
+							Util.jvmPackageClassName /*"$package$"*/;
 				
 				if(owner.equals("sirius/lang") && invokeOpcode == INVOKESTATIC) {
 					owner = "org/sirius/backend/jvm/bridge/TopLevel";

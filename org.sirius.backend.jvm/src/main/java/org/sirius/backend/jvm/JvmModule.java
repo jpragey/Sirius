@@ -21,6 +21,28 @@ public class JvmModule {
 	private ArrayList<JvmPackage> jvmPackages = new ArrayList<JvmPackage>();
 	private BackendOptions backendOptions;
 	
+	private class JvmModuleExport {
+		QName packageQName;
+		List<QName> toClause;
+		public JvmModuleExport(QName packageQName, List<QName> toClause) {
+			super();
+			this.packageQName = packageQName;
+			this.toClause = toClause;
+		}
+		public JvmModuleExport(QName packageQName) {
+			this(packageQName, List.of());
+		}
+		public QName getPackageQName() {
+			return packageQName;
+		}
+		public List<QName> getToClause() {
+			return toClause;
+		}
+		
+		
+		
+	}
+	
 	public JvmModule(Reporter reporter, ModuleDeclaration moduleDeclaration, BackendOptions backendOptions) {
 		super();
 		this.reporter = reporter;
@@ -33,7 +55,8 @@ public class JvmModule {
 	}
 	
 	private void addModuleDeclaration(List<ClassWriterListener> listeners) {
-		QName classQname = moduleDeclaration.getQName().child("module-info");
+//		QName classQname = moduleDeclaration.getQName().child("module-info");
+		QName classQname = new QName("module-info");
 		String moduleQname = moduleDeclaration.getQName().dotSeparated();
 		
 		ClassWriter classWriter = new ClassWriter(
@@ -45,7 +68,6 @@ public class JvmModule {
 		classWriter.visitSource("module-info.jar", null /*debug*/);
 		
 //		String moduleFQName = classQname.dotSeparated();
-		System.out.println("Module qname: " + moduleQname);
 		
 //		String classInternalName = Util.classInternalName(classQname);
 		int access0 = ACC_MODULE; // Always use ACC_SUPER ! 
@@ -59,15 +81,33 @@ public class JvmModule {
 //		int access = ACC_OPEN | ACC_SYNTHETIC | ACC_MANDATED;
 		int moduleAccess =  ACC_PUBLIC;
 		String moduleVersion = moduleDeclaration.getVersion();
-		moduleVersion = "0.0.1-SNAPSHOT";
+		//moduleVersion = Util.jvmModuleVersion;
+		System.out.println("Module qname: '" + moduleQname + "', version: '" + moduleVersion + "'.");
+
+//		moduleVersion = null;
 //		String moduleVersion = moduleDeclaration.g;
 		
 		ModuleVisitor mv = classWriter.visitModule(moduleQname, moduleAccess, moduleVersion);
 ////		mv.visitMainClass("$package$"/*Main class*/);
 //		mv.visitMainClass("MyMainClass"/*Main class*/);
+		mv.visitRequire("java.base", ACC_MANDATED, null);
 		mv.visitRequire("sirius.lang", ACC_TRANSITIVE, "0.0.1-SNAPSHOT");
 		mv.visitRequire("org.sirius.sdk", ACC_TRANSITIVE, "0.0.1-SNAPSHOT");
 		
+		// -- exports
+		List<JvmModuleExport> jvmModuleExports = List.of(
+//				new JvmModuleExport(new QName("a", "b")),
+				new JvmModuleExport(moduleDeclaration.getQName())
+				
+				);
+		for(JvmModuleExport me: jvmModuleExports) {
+			int flags = ACC_MANDATED;// valid values are among ACC_SYNTHETIC and ACC_MANDATED.
+//			String packaze = me.getPackageQName().dotSeparated();
+			String packaze = Util.classInternalName(me.getPackageQName());
+			
+			String[] toClause = me.getToClause().stream().map(qn -> qn.dotSeparated()).toArray(String[]::new);
+			mv.visitExport(packaze, flags, toClause /*, null modules */);
+		}
 		
 //		mv.visitExport("myPackage", 0 /*ACC_SYNTHETIC, ACC_MANDATED*/, "a.b.module0", "a.b.module1", "a.b.module2");
 		
@@ -93,5 +133,10 @@ public class JvmModule {
 		}
 
 		listeners.forEach(l -> l.end());
+	}
+	
+	@Override
+	public String toString() {
+		return this.moduleDeclaration.toString();
 	}
 }

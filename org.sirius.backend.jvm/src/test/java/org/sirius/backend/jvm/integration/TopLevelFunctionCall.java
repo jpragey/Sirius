@@ -13,6 +13,7 @@ import org.sirius.backend.jvm.BackendOptions;
 import org.sirius.backend.jvm.Bytecode;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
 import org.sirius.backend.jvm.JvmBackend;
+import org.sirius.backend.jvm.Util;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.FailFastReporter;
 import org.sirius.common.error.Reporter;
@@ -59,7 +60,7 @@ public class TopLevelFunctionCall {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = "$package$"; 
+		String mainClassQName = Util.jvmPackageClassName; 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 		Object helloObj = cls.getDeclaredConstructor().newInstance();
@@ -112,7 +113,7 @@ public class TopLevelFunctionCall {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = "$package$"; 
+		String mainClassQName = Util.jvmPackageClassName; 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 		Object helloObj = cls.getDeclaredConstructor().newInstance();
