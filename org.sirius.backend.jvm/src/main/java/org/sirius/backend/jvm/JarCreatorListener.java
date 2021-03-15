@@ -27,8 +27,8 @@ public class JarCreatorListener implements ClassWriterListener {
 	private Reporter reporter;
 
 	private static interface JvmOutputWriter {
-		public void addToJar(Bytecode bytecode, QName classQName);
-		public void writeClassFile(Bytecode bytecode, QName classDeclarationQName);
+		public void addToJar(Bytecode bytecode);
+		public void writeClassFile(Bytecode bytecode);
 		public String getJarPathString();
 		public void open(QName moduleQName);
 		public void close();
@@ -47,7 +47,8 @@ public class JarCreatorListener implements ClassWriterListener {
 			this.classDir = classDir;
 		}
 		@Override
-		public void addToJar(Bytecode bytecode, QName classQName) {
+		public void addToJar(Bytecode bytecode) {
+			QName classQName = bytecode.getClassQName(); 
 			this.jarOutputStream.ifPresent(jarOS -> {
 				ZipEntry ze = new ZipEntry(classQName.slashSeparated() + ".class");
 				try {
@@ -61,8 +62,9 @@ public class JarCreatorListener implements ClassWriterListener {
 			});
 		}
 		@Override
-		public void writeClassFile(Bytecode bytecode, QName classDeclarationQName ) {
-			classDir.ifPresent(cdir -> bytecode.createClassFiles(reporter, cdir, classDeclarationQName));
+		public void writeClassFile(Bytecode bytecode) {
+			QName classQName = bytecode.getClassQName();
+			classDir.ifPresent(cdir -> bytecode.createClassFiles(reporter, cdir, classQName));
 		}
 		@Override
 		public String getJarPathString() {
@@ -128,8 +130,9 @@ public class JarCreatorListener implements ClassWriterListener {
 		}
 
 		@Override
-		public void writeClassFile(Bytecode bytecode, QName classDeclarationQName) {
-			bytecodeMap.put(classDeclarationQName, bytecode);
+		public void writeClassFile(Bytecode bytecode) {
+			QName classQName = bytecode.getClassQName();
+			bytecodeMap.put(classQName, bytecode);
 		}
 
 		@Override
@@ -146,7 +149,7 @@ public class JarCreatorListener implements ClassWriterListener {
 		}
 
 		@Override
-		public void addToJar(Bytecode bytecode, QName classQName) {
+		public void addToJar(Bytecode bytecode) {
 			// Nothing to do
 		}
 	}
@@ -181,9 +184,9 @@ public class JarCreatorListener implements ClassWriterListener {
 	}
 
 	@Override
-	public void addByteCode(Bytecode bytecode, QName classQName) {
-		outputWriter.addToJar(bytecode, classQName);
-		outputWriter.writeClassFile(bytecode, classQName);
+	public void addByteCode(Bytecode bytecode) {
+		outputWriter.addToJar(bytecode);
+		outputWriter.writeClassFile(bytecode);
 	}
 	
 	@Override

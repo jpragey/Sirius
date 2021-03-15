@@ -132,26 +132,6 @@ public class JvmClass {
 				null /* String signature */,
 				null /* String[] exceptions */);
 
-//		int invokeOpcode = INVOKESTATIC;
-//		String methodDescriptor = "()V";
-		
-//		Optional<QName> parentQName = memberFunction
-//				.getQName()
-//				.parent();
-//		assert(parentQName.isPresent());
-//		String owner = parentQName.get()
-//				.child("$package$")
-//				.getStringElements().stream()
-//				
-//				.collect(Collectors.joining("/", "",""));
-//		mv.visitMethodInsn(
-//				invokeOpcode,		// opcode 
-//				owner,		// owner "java/io/PrintStream", 
-//				functionName, //"println", 
-//				methodDescriptor,			// "(Ljava/lang/String;)V",	// method descriptor 
-//				false 				// isInterface
-//				);
-
 		// -- 'main' return
 		mainMv.visitInsn(RETURN);
 //		mv.visitMaxs(1, 1);
@@ -175,7 +155,7 @@ public class JvmClass {
 		Bytecode bytecode = new Bytecode(bytes, qName);
 		
 		for(ClassWriterListener l: listeners)
-			l.addByteCode(bytecode, qName);
+			l.addByteCode(bytecode);
 		
 	}
 
@@ -217,7 +197,7 @@ public class JvmClass {
 		Bytecode bytecode = new Bytecode(bytes, qName);
 		
 		for(ClassWriterListener l: listeners)
-			l.addByteCode(bytecode, qName);
+			l.addByteCode(bytecode);
 		
 //		return bytecode;
 	}

@@ -14,12 +14,14 @@ import org.sirius.common.error.Reporter;
 public class Bytecode {
 
 	private byte[] bytes;
+	private QName classQName;
 
 	public final static int VERSION = 55; // Java SE 11
 
 	public Bytecode(byte[] bytes, QName classQName) {
 		super();
 		this.bytes = bytes;
+		this.classQName = classQName;
 	}
 
 	public byte[] getBytes() {
@@ -35,6 +37,11 @@ public class Bytecode {
 		return bytes.toString();
 	}
 	
+	
+	public QName getClassQName() {
+		return classQName;
+	}
+
 	/** */
 	public void createClassFiles(Reporter reporter, String classDir, QName classQName) {
 

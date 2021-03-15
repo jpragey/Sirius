@@ -105,7 +105,7 @@ public class JvmModule {
 		byte[] bytes = classWriter.toByteArray();
 		Bytecode bytecode = new Bytecode(bytes, classQname);
 		
-		listeners.forEach(l -> l.addByteCode(bytecode, classQname));
+		listeners.forEach(l -> l.addByteCode(bytecode));
 		
 	}
 	

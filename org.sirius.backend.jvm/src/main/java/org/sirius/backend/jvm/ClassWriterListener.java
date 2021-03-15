@@ -1,12 +1,11 @@
 package org.sirius.backend.jvm;
 
-import org.sirius.common.core.QName;
 import org.sirius.frontend.api.ModuleDeclaration;
 
 interface ClassWriterListener {
 
 	public void start(ModuleDeclaration moduleDeclaration);
-	public void addByteCode(Bytecode bytecode, QName classQName); // TODO: remove classQName (soon contained in bytecode)
+	public void addByteCode(Bytecode bytecode);
 	public void end();
 
 }

@@ -40,19 +40,17 @@ public class InMemoryClassWriterListener implements ClassWriterListener {
 
 	@Override
 	public void start(ModuleDeclaration moduleDeclaration) {
-		// TODO Auto-generated method stub
-
+		// Nothing to do
 	}
 
 	@Override
-	public void addByteCode(Bytecode bytecode, QName classQName) {
-		byteCodesMap.put(classQName.dotSeparated(), bytecode);
+	public void addByteCode(Bytecode bytecode) {
+		byteCodesMap.put(bytecode.getClassQName().dotSeparated(), bytecode);
 	}
 
 	@Override
 	public void end() {
-		// TODO Auto-generated method stub
-
+		// Nothing to do
 	}
 	public HashMap<String, Bytecode> getByteCodesMap() {
 		return byteCodesMap;
