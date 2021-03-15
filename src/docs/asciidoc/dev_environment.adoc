@@ -1,0 +1,53 @@
+
+== Installing a development environment
+
+=== Linux
+
+I'm currently using Linux Mint 20.1 ( https://linuxmint.com/edition.php?id=284 - UI shouldn't matter).
+
+=== Configuring Eclipse
+
+I'm using Eclipse IDE 2020‑12 from:
+   https://www.eclipse.org/downloads/
+   
+Unpack it in some directory (tools/eclipse for me).
+Run eclipse-ins (from UI or shell)
+
+Select "Eclipse IDE for Java Developers" (well other versions should work, as long as they have a good Java support).
+
+Select a java version 11 or more, eg:
+    /usr/lib/jvm/java-11-openjdk-amd64
+Customize the install directory if you like.
+Install, accept licences, etc.
+From the installer, click on "Launch"
+By default, the workspace is "$HOME>eclipse-workspace"; customize if you like.
+
+
+
+Clone Sirius sources from git:
+
+cd ~/eclipse-workspace/
+git clone https://github.com/jpragey/Sirius
+
+Import as maven project : "Import" / "Existing Maven projects"; In root directory, select the "eclipse-workspace/Sirius" directory that was created with git clone; the "Open". Check all the pom.xml are checked and "Finish".
+A few Maven plugin connectors may be missing (missing asciidoctor is harmless - used to create doc). Click "Finish".
+
+"Mark goal process-asciidoc as ignored in eclipse preferences"
+
+=== Eclipse plugins
+From marketplace:
+	"ANTLR 4 IDE 0.3.6"
+
+By default the antlr plugin uses antlr 4.4; We need to update it to 9.2. Download it to some permanent directory at:
+	https://www.antlr.org/download/antlr-4.9.2-complete.jar
+	Window/Preferences/ANTLR4/Tool, "Add", select antlr-4.9.2-complete.jar , check it + "Apply and close".
+	
+As source folders, add "./target/generated-sources/antlr4".
+	
+	
+	
+	
+	
+
+
+
