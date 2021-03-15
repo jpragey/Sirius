@@ -25,16 +25,21 @@ mkdir demo
 cd demo
 (cat - <<EOF
 #!/bin/sh
-void main() {
-    println("Hello world!");
+module org.foo "1.0" {}
+void myMain() {
+	println("Hello from Sirius!");
 }
 EOF
 ) > hello.sirius
 
-java -cp "../dist/lib/*" org.sirius.compiler.core.Main compile --module modulesDir hello.sirius
-java -cp "../dist/lib/*:modulesDir/unnamed.jar" org.sirius.backend.jvm.launcher.Main unused
+# Compile it
+java -cp "../dist/lib/*" org.sirius.compiler.core.Main compile --module modulesDir --main org.foo.myMain hello.sirius
+
+# Run it as a usual java 9 module
+java --module-path ../dist/lib/org.sirius.sdk-0.0.1-SNAPSHOT.jar:../dist/lib/org.sirius.runtime-0.0.1-SNAPSHOT.jar:modulesDir/org/foo.jar \
+  --module org.foo/org.foo.JvmPackage
 ```
-(unused : temporary fake value, will be removed soon)
+NB: JvmPackage is a fake class that holds top-level functions - name to be changed at some point.
 
 To create the site (and doc):
 

@@ -25,13 +25,9 @@ import org.sirius.frontend.api.ModuleDeclaration;
 public class JarCreatorListener implements ClassWriterListener {
 
 	private Reporter reporter;
-//	private Optional<String> classDir;
-//	private Path jarPath;
-	
 
 	private static interface JvmOutputWriter {
 		public void addToJar(Bytecode bytecode, QName classQName);
-//		public Optional<OutputStream> getOutputStream();
 		public void writeClassFile(Bytecode bytecode, QName classDeclarationQName);
 		public String getJarPathString();
 		public void open(QName moduleQName);
@@ -39,19 +35,16 @@ public class JarCreatorListener implements ClassWriterListener {
 	}
 	private static class JvmFileOutputWriter implements JvmOutputWriter {
 		private Reporter reporter;
-//		private Optional<OutputStream> outputStream = Optional.empty();
 		private Optional<JarOutputStream> jarOutputStream = Optional.empty();
 		private Optional<String> classDir;
 		private String modulePath;
 		private String jarPathString = "<not set>";
-//		private Optional<QName> manifestMainClassQName;
 
 		public JvmFileOutputWriter(Reporter reporter, String modulePath, Optional<String> classDir) {
 			super();
 			this.reporter = reporter;
 			this.modulePath = modulePath;
 			this.classDir = classDir;
-//			this.manifestMainClassQName = manifestMainClassQName;
 		}
 		@Override
 		public void addToJar(Bytecode bytecode, QName classQName) {
@@ -67,10 +60,6 @@ public class JarCreatorListener implements ClassWriterListener {
 				}
 			});
 		}
-//		@Override
-//		public Optional<OutputStream> getOutputStream() {
-//			return outputStream;
-//		}
 		@Override
 		public void writeClassFile(Bytecode bytecode, QName classDeclarationQName ) {
 			classDir.ifPresent(cdir -> bytecode.createClassFiles(reporter, cdir, classDeclarationQName));
@@ -110,13 +99,9 @@ public class JarCreatorListener implements ClassWriterListener {
 				JarOutputStream os = new JarOutputStream(out, manifest);
 				this.jarOutputStream = Optional.of(os);
 				
-//				this.outputStream = Optional.of(out);
-//				return Optional.of(out);
 			} catch (IOException e) {
 				reporter.error("Can't open to jar file " + jarFile.getAbsolutePath(), e);
 			}
-//			return Optional.empty();
-//			OutputStream out = new BufferedOutputStream(new FileOutputStream(jarFile));
 			
 		}
 		@Override
@@ -128,11 +113,6 @@ public class JarCreatorListener implements ClassWriterListener {
 					reporter.error("Can't close JAR file for module " + jarPathString, e);
 				}	
 			});
-//			outputStream.ifPresent(os -> {try {
-//				os.close();
-//			} catch (IOException e) {
-//				reporter.error("Can't close JAR file for module " + jarPathString, e);
-//			}});
 		}
 
 		
@@ -140,21 +120,12 @@ public class JarCreatorListener implements ClassWriterListener {
 	public static class JvmByteOutputStreamWriter implements JvmOutputWriter {
 		private Reporter reporter;
 		private HashMap<QName /*class QName */, Bytecode> bytecodeMap;
-//		private ByteArrayOutputStream byteArrayOutputStream; 
-//		private Optional<OutputStream> optOutStream;
 
 		public JvmByteOutputStreamWriter(Reporter reporter, HashMap<QName /*class QName */, Bytecode> bytecodeMap) {
 			super();
 			this.reporter = reporter;
 			this.bytecodeMap = bytecodeMap;
-//			this.byteArrayOutputStream = byteArrayOutputStream;
-//			this.optOutStream = Optional.of(byteArrayOutputStream);
 		}
-
-//		@Override
-//		public Optional<OutputStream> getOutputStream() {
-//			return Optional.empty();
-//		}
 
 		@Override
 		public void writeClassFile(Bytecode bytecode, QName classDeclarationQName) {
@@ -180,57 +151,12 @@ public class JarCreatorListener implements ClassWriterListener {
 		}
 	}
 	
-//	private Optional<JarOutputStream> outputStream = Optional.empty();
-//	private Function<QName, Optional<OutputStream>> outputStreamBuilder;
 	private JvmOutputWriter outputWriter;
 	
-	
-	private JarCreatorListener(Reporter reporter, JvmOutputWriter outputWriter /* Function<QName, Optional<OutputStream>> outputStreamBuilder*/) {
-//		this.outputStreamBuilder = outputStreamBuilder;
+	private JarCreatorListener(Reporter reporter, JvmOutputWriter outputWriter) {
 		this.reporter = reporter;
 		this.outputWriter = outputWriter;
 	}
-//	/**
-//	 * 
-//	 * @param reporter
-//	 * @param modulePath   module directory path, as given by '--module' option
-//	 * @param moduleQName
-//	 */
-//	private JarCreatorListener(Reporter reporter, String modulePath, Optional<String> classDir) {
-//		super();
-//		this.reporter = reporter;
-//		this.classDir = classDir;
-//		this.outputWriter = new JvmFileOutputWriter(modulePath);
-////		
-////		this.outputStreamBuilder = (QName moduleQName) -> {
-////
-////			QName effectiveQName = moduleQName.isEmpty() ?
-////					new QName("unnamed.jar") :
-////					moduleQName.parent().get().child(moduleQName.getLast() + ".jar");
-////				
-////			this.jarPath = Paths.get(modulePath, effectiveQName.toArray());
-////			
-////			File jarFile = jarPath.toFile();
-////
-////			JarOutputStream os;
-////			try {
-////				File parentDir = jarFile.getParentFile();
-////				if(parentDir!= null) {
-////					parentDir.mkdirs();
-////				}
-////				if(jarFile.isFile()) {
-////					jarFile.delete();
-////				}
-////				OutputStream out = new BufferedOutputStream(new FileOutputStream(jarFile));
-////
-//////				os = new JarOutputStream(out);
-////				return Optional.of(out);
-////			} catch (IOException e) {
-////				reporter.error("Can't open to jar file " + jarFile.getAbsolutePath(), e);
-////			}
-////			return Optional.empty();
-////		};
-//	}
 
 	/**
 	 * 
@@ -252,76 +178,17 @@ public class JarCreatorListener implements ClassWriterListener {
 //		System.out.println(" ++ Start module creation in " + modulePath + " for module '" + moduleQName + "'");
 		QName moduleQName = moduleDeclaration.getQName();
 		outputWriter.open(moduleQName);
-//		
-//		
-////		Optional<OutputStream> os = this.outputStreamBuilder.apply(moduleQName);
-//		try {
-//			
-//			Manifest manifest = new Manifest();
-//			Attributes attributes = manifest.getMainAttributes();
-//			attributes.put(Attributes.Name.MANIFEST_VERSION, "1.0");
-//			attributes.put(Attributes.Name.MAIN_CLASS, "$package$");
-////			attributes.put(Attributes.Name.MAIN_CLASS, "org.jpr.MainCompanion");
-//			
-//			this.outputWriter.getOutputStream().ifPresent(os -> {
-//				
-//				try {
-//					this.outputStream = Optional.of(new JarOutputStream(os, manifest));
-//				} catch (IOException e) {
-//					reporter.error("Can't open JAR output file for module " + moduleQName, e);
-//					e.printStackTrace();
-//				}
-//			});
-////			if(os.isPresent()) {
-////				this.outputStream = Optional.of(new JarOutputStream(os.get(), manifest));
-////			}
-//		} catch (Exception e) {
-//			reporter.error("Can't open output jar file ", e);
-//		}
 	}
 
 	@Override
 	public void addByteCode(Bytecode bytecode, QName classQName) {
-//		System.out.println(" ++ Adding bytecode to module " + modulePath + " : " + bytecode.size() + " bytes, to class: " + qName);
-		
-//		addToJar(bytecode, classQName);
 		outputWriter.addToJar(bytecode, classQName);
 		outputWriter.writeClassFile(bytecode, classQName);
-//		writeClassFile(bytecode, classQName);
 	}
 	
-//	private void addToJar(Bytecode bytecode, QName classQName) {
-//		outputWriter.addToJar(bytecode, classQName);
-////		this.outputStream.ifPresent(jarOS -> {
-////			ZipEntry ze = new ZipEntry(classQName.slashSeparated() + ".class");
-////			try {
-////				jarOS.putNextEntry(ze);
-////				jarOS.write(bytecode.getBytes());
-////				jarOS.closeEntry();
-////			} catch (IOException e) {
-////				reporter.error("Can't write entry " + classQName + " to jar file " + this.outputWriter.getJarPathString() /* jarPath.toAbsolutePath()*/
-////					+ ": " + e.getMessage(), e);
-////			}
-////		});
-//	}
-	
-//	private void writeClassFile(Bytecode bytecode, QName classDeclarationQName ) {
-//		outputWriter.writeClassFile(bytecode, classDeclarationQName);
-////		classDir.ifPresent(cdir -> bytecode.createClassFiles(reporter, cdir, classDeclarationQName));
-//	}
-	
-
 	@Override
 	public void end() {
 		outputWriter.close();
-//		outputStream.ifPresent(os -> {
-//			try {
-//				os.close();
-//			} catch (IOException e) {
-//				reporter.error("Can't close to jar file " + jarPath.toAbsolutePath(), e);
-//			}
-//		});
-
 	}
 
 }

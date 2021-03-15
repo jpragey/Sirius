@@ -271,7 +271,7 @@ public class JvmMemberFunction {
 	 * @param functionName
 	 */
 	private void writeJvmMainBytecode(ClassWriter classWriter, String functionName) {
-		System.out.println("Writing JVM main() bytecode for function: " + functionName);
+//		System.out.println("Writing JVM main() bytecode for function: " + functionName);
 
 		String functionDescriptor = "([Ljava/lang/String;)V";	// eg (Ljava/lang/String;)V
 		int access = ACC_PUBLIC | ACC_STATIC;

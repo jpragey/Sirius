@@ -70,7 +70,7 @@ public class ModuleTest {
 		assertThat(moduleInfoBc, notNullValue());
 		byte [] bytes = moduleInfoBc.getBytes();
 		
-		ModuleInfo mi = dumpModuleInfo(bytes);
+		ModuleInfo mi = parseModuleBytecode(bytes);
 
 		// -- 
 		assertThat(mi.module.name, is("a.b.c"));
@@ -152,7 +152,7 @@ public class ModuleTest {
 		public ArrayList<Export> exports = new ArrayList<>();
 	}
 	
-	public ModuleInfo dumpModuleInfo(byte [] bytes) {
+	private ModuleInfo parseModuleBytecode(byte [] bytes) {
 		ModuleInfo moduleInfo = new ModuleInfo();
 		ClassReader cr = new ClassReader(bytes);
 		ClassVisitor cv = new ClassVisitor(Opcodes.ASM9) {
@@ -164,34 +164,35 @@ public class ModuleTest {
 
 					@Override
 					public void visitMainClass(String mainClass) {
-						System.out.println("Module: Main class : " + mainClass);
+//						System.out.println("Module: Main class : " + mainClass);
 						moduleInfo.mainClass = mainClass;
 					}
 
 					@Override
 					public void visitRequire(String module, int access, String version) {
-						System.out.println("Module: Require : " + module + ",  access=" + access + ", version: " + version);
+//						System.out.println("Module: Require : " + module + ",  access=" + access + ", version: " + version);
 						moduleInfo.requires.add(new ModuleInfo.Require(module, access, version));
 					}
 
 					@Override
 					public void visitExport(String packaze, int access, String... modules) {
-						System.out.println("Module: export package : " + packaze + ",  access=" + access 
-								+ ", modules: " + (modules == null ? "<null>" : Stream.of(modules).collect(Collectors.joining(","))));
+//						System.out.println("Module: export package : " + packaze + ",  access=" + access 
+//								+ ", modules: " + (modules == null ? "<null>" : Stream.of(modules).collect(Collectors.joining(","))));
 						moduleInfo.exports.add(new ModuleInfo.Export(packaze, access, modules));
 					}
 
 					@Override
 					public void visitProvide(String service, String... providers) {
-						System.out.println("Module: Provide, service :" + service  
-								+ ", providers: " + Stream.of(providers).collect(Collectors.joining(",")));					}
+//						System.out.println("Module: Provide, service :" + service  
+//								+ ", providers: " + Stream.of(providers).collect(Collectors.joining(",")));					
+					}
 					
 				};
 			}
 
 			@Override
 			public void visitSource(String source, String debug) {
-				System.out.println("Visiting source " + source + ", debug " + debug);
+//				System.out.println("Visiting source " + source + ", debug " + debug);
 			}
 			
 		};
@@ -204,7 +205,7 @@ public class ModuleTest {
 	@Disabled("Temp, to remove")
 	public void dumpExistingModuleInfo() throws IOException {
 		byte[] bytes = Files.readAllBytes(Paths.get("/tmp/siriusDist/module-info.class"));
-		dumpModuleInfo(bytes);
+		parseModuleBytecode(bytes);
 	}
 	
 }

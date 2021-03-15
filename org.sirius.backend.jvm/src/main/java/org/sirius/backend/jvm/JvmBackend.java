@@ -1,6 +1,5 @@
 package org.sirius.backend.jvm;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,22 +26,16 @@ public class JvmBackend implements Backend {
 		super();
 		this.reporter = reporter;
 		this.verboseAst = verboseAst;
-//		this.jvmMainOption = jvmMainOption;
 		this.backendOptions = backendOptions;
 	}
-//	public JvmBackend(Reporter reporter, boolean verboseAst) {
-//		this(reporter, verboseAst, new BackendOptions(reporter, Optional.empty()/*jvmMainOption*/));
-//	}
 
 	public JarCreatorListener addFileOutput(String moduleDir, Optional<String> classDir) {
-//		JarCreatorListener listener = new JarCreatorListener(reporter, moduleDir, classDir);
 		JarCreatorListener listener = JarCreatorListener.createAsFile(reporter, moduleDir, classDir);
 		listeners.add(listener);
 		return listener;
 	}
 
 	public JarCreatorListener addInMemoryMapOutput(HashMap<QName /*class QName */, Bytecode> bytecodeMap) {
-//		JarCreatorListener listener = new JarCreatorListener(reporter, moduleDir, classDir);
 		JarCreatorListener listener = JarCreatorListener.createInMemoryMap(reporter, bytecodeMap);
 		listeners.add(listener);
 		return listener;
@@ -74,10 +67,6 @@ public class JvmBackend implements Backend {
 		backendOptions.checkAllJvmMainBytecodeWritten();
 	}
 	
-//	private void processSDK() {
-//		
-//	}
-//	
 	private void processModule(ModuleDeclaration declaration) {
 		printIfVerbose("Jvm: processing module " + declaration);
 

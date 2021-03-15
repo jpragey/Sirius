@@ -55,7 +55,6 @@ public class JvmModule {
 	}
 	
 	private void addModuleDeclaration(List<ClassWriterListener> listeners) {
-//		QName classQname = moduleDeclaration.getQName().child("module-info");
 		QName classQname = new QName("module-info");
 		String moduleQname = moduleDeclaration.getQName().dotSeparated();
 		
@@ -67,12 +66,9 @@ public class JvmModule {
 
 		classWriter.visitSource("module-info.jar", null /*debug*/);
 		
-//		String moduleFQName = classQname.dotSeparated();
-		
-//		String classInternalName = Util.classInternalName(classQname);
 		int access0 = ACC_MODULE; // Always use ACC_SUPER ! 
 //		classWriter.visitSource();
-		classWriter.visit(Bytecode.VERSION, access0, "module-info" /*classInternalName*//*"Hello"*/, null /*signature*/, null /*"java/lang/Object"*//*superName*/, null /*interfaces*/);
+		classWriter.visit(Bytecode.VERSION, access0, "module-info" /*classInternalName*/, null /*signature*/, null /*"java/lang/Object"*//*superName*/, null /*interfaces*/);
 //		String classInternalName = Util.classInternalName(classQname);
 //		int access = ACC_SUPER; // Always use ACC_SUPER ! 
 //		////		if(classDeclaration.getVisibility() == Visibility.PUBLIC)
@@ -81,38 +77,28 @@ public class JvmModule {
 //		int access = ACC_OPEN | ACC_SYNTHETIC | ACC_MANDATED;
 		int moduleAccess =  ACC_PUBLIC;
 		String moduleVersion = moduleDeclaration.getVersion();
-		//moduleVersion = Util.jvmModuleVersion;
-		System.out.println("Module qname: '" + moduleQname + "', version: '" + moduleVersion + "'.");
+//		System.out.println("Module qname: '" + moduleQname + "', version: '" + moduleVersion + "'.");
 
-//		moduleVersion = null;
-//		String moduleVersion = moduleDeclaration.g;
-		
 		ModuleVisitor mv = classWriter.visitModule(moduleQname, moduleAccess, moduleVersion);
 ////		mv.visitMainClass("$package$"/*Main class*/);
-//		mv.visitMainClass("MyMainClass"/*Main class*/);
 		mv.visitRequire("java.base", ACC_MANDATED, null);
-		mv.visitRequire("sirius.lang", ACC_TRANSITIVE, "0.0.1-SNAPSHOT");
+//		mv.visitRequire("sirius.lang", ACC_TRANSITIVE, "0.0.1-SNAPSHOT");
+		mv.visitRequire("org.sirius.runtime", ACC_TRANSITIVE, "0.0.1-SNAPSHOT");
 		mv.visitRequire("org.sirius.sdk", ACC_TRANSITIVE, "0.0.1-SNAPSHOT");
 		
 		// -- exports
 		List<JvmModuleExport> jvmModuleExports = List.of(
-//				new JvmModuleExport(new QName("a", "b")),
 				new JvmModuleExport(moduleDeclaration.getQName())
-				
 				);
 		for(JvmModuleExport me: jvmModuleExports) {
 			int flags = ACC_MANDATED;// valid values are among ACC_SYNTHETIC and ACC_MANDATED.
-//			String packaze = me.getPackageQName().dotSeparated();
 			String packaze = Util.classInternalName(me.getPackageQName());
 			
 			String[] toClause = me.getToClause().stream().map(qn -> qn.dotSeparated()).toArray(String[]::new);
 			mv.visitExport(packaze, flags, toClause /*, null modules */);
 		}
 		
-//		mv.visitExport("myPackage", 0 /*ACC_SYNTHETIC, ACC_MANDATED*/, "a.b.module0", "a.b.module1", "a.b.module2");
-		
 		mv.visitEnd();
-//		classWriter.visit(Bytecode.VERSION, access, classInternalName/*"Hello"*/, null /*signature*/, "java/lang/Object"/*superName*/, null /*interfaces*/);
 
 		classWriter.visitEnd();
 

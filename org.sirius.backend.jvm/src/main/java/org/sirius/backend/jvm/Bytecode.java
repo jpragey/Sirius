@@ -22,10 +22,6 @@ public class Bytecode {
 		this.bytes = bytes;
 	}
 
-//	public Bytecode(ClassWriter classWriter, QName classQName) {
-//		this(classWriter.toByteArray(), classQName);
-//	}
-	
 	public byte[] getBytes() {
 		return bytes;
 	}
@@ -52,19 +48,15 @@ public class Bytecode {
 			classDirPath.toFile().mkdirs();
 		}
 		
-		
 		File classFile = classDirPath.resolve(Paths.get(classFilePath.getFileName().toString() + ".class")).toFile();
 
 		try(FileOutputStream writer = new FileOutputStream(classFile)) {
-//reporter.info("Writing bytecode of " + classQName + " to: " + classFile.getAbsolutePath());
-			
 			writer.write(bytes);
 			
 		} catch (FileNotFoundException e) {
 			reporter.error("File not found: " + classFile.toString() + ": " + e.getMessage(), e);
 		} catch (IOException e) {
 			reporter.error("I/O error while writing " + classFile.toString() + ": " + e.getMessage(), e);
-//			e.printStackTrace();
 		}
 	}
 

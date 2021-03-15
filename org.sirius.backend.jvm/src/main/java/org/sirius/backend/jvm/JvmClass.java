@@ -26,7 +26,6 @@ import org.sirius.frontend.api.PackageDeclaration;
 
 public class JvmClass {
 	
-//	private final static int VERSION = 55; // Java SE 11
 	private Reporter reporter;
 	private QName qName;
 
@@ -57,12 +56,11 @@ public class JvmClass {
 	}
 	// For Package class
 	public JvmClass(Reporter reporter, PackageDeclaration pd, BackendOptions backendOptions) {
-		this(reporter, pd.getQName().child(Util.jvmPackageClassName /* "$package$"*/), backendOptions);
+		this(reporter, pd.getQName().child(Util.jvmPackageClassName), backendOptions);
 	}
 
 	private void addMemberValues(ClassOrInterface cd) {
 		for(MemberValue mv: cd.getMemberValues()) {
-//			System.out.println(" MemberValue: " + mv);
 			JvmMemberValue jvmMv = new JvmMemberValue(mv, descriptorFactory, reporter);
 			this.memberValues.add(jvmMv);
 		}

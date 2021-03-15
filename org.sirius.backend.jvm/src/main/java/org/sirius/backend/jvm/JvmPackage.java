@@ -20,36 +20,6 @@ public class JvmPackage {
 	private ArrayList<JvmClass> jvmClasses = new ArrayList<JvmClass>();
 	private JvmClass packageClass;
 	private BackendOptions backendOptions;
-
-//	private static JvmClass debugJvmMainClass(Reporter reporter, BackendOptions backendOptions) {
-//		QName classQName = new QName("org", "jpr", "debug", "MyClass");
-//		AbstractFunction mainFunction = new AbstractF
-//		ClassDeclaration cd = new ClassDeclaration() {
-//
-//			@Override
-//			public List<MemberValue> getMemberValues() {
-//				return List.of();
-//			}
-//
-//			@Override
-//			public List<AbstractFunction> getFunctions() {
-//				// TODO Auto-generated method stub
-//				return null;
-//			}
-//
-//			@Override
-//			public QName getQName() {
-//				return classQName;
-//			}
-//
-//			@Override
-//			public boolean isAncestorOrSame(Type type) {
-//				return false;
-//			}
-//			
-//		};
-//		return new JvmClass(reporter, cd, backendOptions);
-//	}
 	
 	public JvmPackage(Reporter reporter, PackageDeclaration packageDeclaration, BackendOptions backendOptions) {
 		super();
