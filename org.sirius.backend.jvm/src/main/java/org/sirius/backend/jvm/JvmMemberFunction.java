@@ -4,15 +4,12 @@ import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_STATIC;
 import static org.objectweb.asm.Opcodes.ARETURN;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
-import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.objectweb.asm.ClassWriter;
@@ -23,7 +20,6 @@ import org.sirius.backend.jvm.JvmScope.LocalVarHolder;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.ExpressionStatement;
@@ -33,7 +29,6 @@ import org.sirius.frontend.api.IntegerType;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
-import org.sirius.frontend.api.Type;
 
 public class JvmMemberFunction {
 	private AbstractFunction memberFunction;

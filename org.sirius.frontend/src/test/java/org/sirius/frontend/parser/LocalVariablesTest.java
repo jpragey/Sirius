@@ -1,6 +1,6 @@
 package org.sirius.frontend.parser;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.ModuleDeclaration;
@@ -30,7 +30,7 @@ public class LocalVariablesTest {
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		
-		ClassDeclaration cd = pack.getClasses().get(0);
+		ClassType cd = pack.getClasses().get(0);
 		assertEquals(cd.getQName(), new QName("p", "k", "C"));
 		
 		assertEquals(cd.getMemberValues().size(), 1);
@@ -39,8 +39,8 @@ public class LocalVariablesTest {
 		assertEquals(lvs.getName().getText(), "s");
 		
 		Type type = lvs.getType();
-		assert(type instanceof ClassDeclaration);
-		assertEquals( ((ClassDeclaration)type).getQName(), new QName("p", "k", "C"));
+		assert(type instanceof ClassType);
+		assertEquals( ((ClassType)type).getQName(), new QName("p", "k", "C"));
 
 	}
 	
@@ -54,7 +54,7 @@ public class LocalVariablesTest {
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		
-		ClassDeclaration cd = pack.getClasses().get(0);
+		ClassType cd = pack.getClasses().get(0);
 		assertEquals(cd.getQName(), new QName("p", "k", "C"));
 
 		assertEquals(cd.getFunctions().size(), 1);
@@ -66,7 +66,7 @@ public class LocalVariablesTest {
 		assertEquals(lvs.getName().getText(), "s");
 
 		Type type = lvs.getType();
-		assert(type instanceof ClassDeclaration);
-		assertEquals( ((ClassDeclaration)type).getQName(), new QName("p", "k", "C"));
+		assert(type instanceof ClassType);
+		assertEquals( ((ClassType)type).getQName(), new QName("p", "k", "C"));
 	}
 }

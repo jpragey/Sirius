@@ -15,9 +15,7 @@ import org.objectweb.asm.Opcodes;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassType;
-import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.PackageDeclaration;
 
@@ -41,16 +39,16 @@ public class JvmClass {
 		this.backendOptions = backendOptions;
 	}
 	
-	public JvmClass(Reporter reporter, ClassDeclaration cd, BackendOptions backendOptions) {
+	public JvmClass(Reporter reporter, ClassType cd, BackendOptions backendOptions) {
 		this(reporter, cd.getQName(), backendOptions);
 		addMemberFunctions(cd);
 		addMemberValues(cd);
 	}
-	public JvmClass(Reporter reporter, InterfaceDeclaration cd, BackendOptions backendOptions) {
-		this(reporter, cd.getQName(), backendOptions);
-		addMemberFunctions(cd);
-		addMemberValues(cd);
-	}
+//	public JvmClass(Reporter reporter, InterfaceDeclaration cd, BackendOptions backendOptions) {
+//		this(reporter, cd.getQName(), backendOptions);
+//		addMemberFunctions(cd);
+//		addMemberValues(cd);
+//	}
 	// For Package class
 	public JvmClass(Reporter reporter, PackageDeclaration pd, BackendOptions backendOptions) {
 		this(reporter, pd.getQName().child(Util.jvmPackageClassName), backendOptions);

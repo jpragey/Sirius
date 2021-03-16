@@ -6,14 +6,14 @@ import java.util.List;
 import org.sirius.common.core.MapOfList;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
 
-public class ClassDeclarationImpl implements ClassDeclaration {
+public class ClassDeclarationImpl implements ClassType {
 	private QName qName;
 	private MapOfList<QName, FunctionDefinition> allFctMap;
 	private List<MemberValue> valueDeclarations;

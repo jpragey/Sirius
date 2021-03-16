@@ -1,16 +1,17 @@
 package org.sirius.frontend.core;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.matchers.InstanceOf;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ArrayType;
-import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.ExpressionStatement;
@@ -23,13 +24,9 @@ import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.StringConstantExpression;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
-import org.sirius.frontend.api.VoidType;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.parser.Compiler;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TopLevelFunctionTest {
 
@@ -221,8 +218,8 @@ public class TopLevelFunctionTest {
 		AbstractFunction fd = pd.getFunctions().get(0);
 		Type type = fd.getReturnType();
 		
-		assert(type instanceof ClassDeclaration);
-		ClassDeclaration classDeclaration = (ClassDeclaration)type;
+		assert(type instanceof ClassType);
+		ClassType classDeclaration = (ClassType)type;
 		assertEquals(classDeclaration.getQName().dotSeparated(), "sirius.lang.String");
 	}
 	
@@ -243,7 +240,7 @@ public class TopLevelFunctionTest {
 		assertEquals(args.size(), 1);
 		FunctionFormalArgument arg = args.get(0);
 		
-		ClassDeclaration argType = (ClassDeclaration)arg.getType();
+		ClassType argType = (ClassType)arg.getType();
 		assertEquals(argType.getQName().dotSeparated(), "sirius.lang.String");
 	}
 	

@@ -13,7 +13,7 @@ import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ExpressionStatement;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
@@ -58,7 +58,7 @@ public class ExpressionStatementTest {
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		
-		ClassDeclaration cd = pack.getClasses().get(0);
+		ClassType cd = pack.getClasses().get(0);
 		assertEquals(cd.getQName(), new QName("p", "k", "C"));
 		
 		AbstractFunction func = cd.getFunctions().get(0);

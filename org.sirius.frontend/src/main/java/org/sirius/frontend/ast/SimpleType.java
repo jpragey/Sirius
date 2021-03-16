@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.Symbol;
@@ -88,7 +88,7 @@ public final class SimpleType implements AstType {
 	}
 
 	private boolean isExactlyAClassDeclaration(AstClassDeclaration thisClassDeclaration, AstType otherType) {
-		if(otherType instanceof ClassDeclaration) {
+		if(otherType instanceof ClassType) {
 			return thisClassDeclaration.isExactlyA(otherType);
 		}
 		return false;

@@ -5,14 +5,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.TreeMap;
 
-import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.ClassDeclaration;
-import org.sirius.frontend.api.InterfaceDeclaration;
-import org.sirius.frontend.api.MemberValue;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.PackageDeclaration;
-import org.sirius.frontend.api.Type;
 
 public class JvmPackage {
 	private Reporter reporter;
@@ -29,13 +25,13 @@ public class JvmPackage {
 		this.backendOptions = backendOptions;
 
 		jvmClasses.add(this.packageClass);
-		for(ClassDeclaration cd: packageDeclaration.getClasses()) {
+		for(ClassType cd: packageDeclaration.getClasses()) {
 			jvmClasses.add(new JvmClass(reporter, cd, backendOptions));
 
 //			if(Util.debugMainClass)
 //				jvmClasses.add(debugJvmMainClass(reporter, backendOptions));
 		}
-		for(InterfaceDeclaration id: packageDeclaration.getInterfaces()) {
+		for(ClassType id: packageDeclaration.getInterfaces()) {
 			jvmClasses.add(new JvmClass(reporter, id, backendOptions));
 		}
 

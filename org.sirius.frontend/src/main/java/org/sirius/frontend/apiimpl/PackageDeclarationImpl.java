@@ -4,18 +4,17 @@ import java.util.List;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.ClassDeclaration;
-import org.sirius.frontend.api.InterfaceDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.PackageDeclaration;
 
 public class PackageDeclarationImpl implements PackageDeclaration {
 	private QName qName;
-	private List<ClassDeclaration> classDeclarations;
-	private List<InterfaceDeclaration> interfaceDeclarations;
+	private List<ClassType> classDeclarations;
+	private List<ClassType> interfaceDeclarations;
 	private List<AbstractFunction> functions;
 	
-	public PackageDeclarationImpl(QName qName, List<ClassDeclaration> classDeclarations,
-			List<InterfaceDeclaration> interfaceDeclarations, 
+	public PackageDeclarationImpl(QName qName, List<ClassType> classDeclarations,
+			List<ClassType> interfaceDeclarations, 
 			List<AbstractFunction> functions) {
 		super();
 		this.qName = qName;
@@ -25,12 +24,12 @@ public class PackageDeclarationImpl implements PackageDeclaration {
 	}
 
 	@Override
-	public List<ClassDeclaration> getClasses() {
+	public List<ClassType> getClasses() {
 		return classDeclarations;
 	}
 
 	@Override
-	public List<InterfaceDeclaration> getInterfaces() {
+	public List<ClassType> getInterfaces() {
 		return interfaceDeclarations;
 	}
 

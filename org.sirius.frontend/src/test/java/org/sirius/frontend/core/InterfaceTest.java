@@ -1,13 +1,12 @@
 package org.sirius.frontend.core;
 
 
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Disabled;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.ClassDeclaration;
-import org.sirius.frontend.api.InterfaceDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.parser.Compiler;
@@ -32,14 +31,14 @@ public class InterfaceTest {
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		// -- check interface
-		InterfaceDeclaration cd = pack.getInterfaces().get(0);
+		ClassType cd = pack.getInterfaces().get(0);
 		assertEquals(cd.getQName(), new QName("p", "k", "I"));
 		
 		AbstractFunction func = cd.getFunctions().get(0);
 		assertEquals(func.getQName(), new QName("p", "k", "I", "f"));
 		
 		// -- check implementation
-		ClassDeclaration implClass = pack.getClasses().get(0);
+		ClassType implClass = pack.getClasses().get(0);
 		assertEquals(implClass.getQName(), new QName("p", "k", "C"));
 		
 		AbstractFunction inheritedFunc = implClass.getFunctions().get(0);

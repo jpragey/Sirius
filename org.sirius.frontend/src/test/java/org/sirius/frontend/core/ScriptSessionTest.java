@@ -1,15 +1,14 @@
 package org.sirius.frontend.core;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.parser.Compiler;
@@ -55,7 +54,7 @@ public class ScriptSessionTest {
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		
-		ClassDeclaration cd = pack.getClasses().get(0);
+		ClassType cd = pack.getClasses().get(0);
 		assertEquals(cd.getQName(), new QName("p", "k", "C"));
 		
 		AbstractFunction func = cd.getFunctions().get(0);

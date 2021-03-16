@@ -11,7 +11,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;

@@ -14,7 +14,6 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.BooleanConstantExpression;
-import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;
@@ -194,8 +193,8 @@ public class JvmExpression {
 			
 		} else {
 
-			assert(type instanceof ClassDeclaration);
-			String internalName = Util.classInternalName((ClassDeclaration)type);
+			assert(type instanceof ClassType /*ClassDeclaration*/);
+			String internalName = Util.classInternalName((ClassType)type);
 
 			mv.visitTypeInsn(NEW, internalName);
 
@@ -211,7 +210,7 @@ public class JvmExpression {
 		Type containerType = containerExpr.getType();
 		MemberValue memberValue = expression.getMemberValue();
 		
-		String owner = Util.classInternalName((ClassDeclaration)containerType); // internal name x/y/A
+		String owner = Util.classInternalName((ClassType)containerType); // internal name x/y/A
 
 		
 		String name = memberValue.getName().getText();

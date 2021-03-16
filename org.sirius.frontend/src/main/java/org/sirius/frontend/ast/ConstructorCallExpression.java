@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.IntegerType;
@@ -103,8 +103,8 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 					if(d instanceof IntegerType) {
 						return (IntegerType)d;
 					}
-					assert(d instanceof ClassDeclaration);	// TODO
-					return (ClassDeclaration)d;
+					assert(d instanceof ClassType);	// TODO
+					return (ClassType)d;
 				} else {
 					reporter.error("Symbol is not a class or interface declaration: ", name);
 				}

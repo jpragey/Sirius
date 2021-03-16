@@ -16,8 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.BooleanType;
-import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionActualArgument;
 import org.sirius.frontend.api.FunctionFormalArgument;
@@ -54,7 +53,7 @@ public class MethodTests {
 		
 		PackageDeclaration pack = md.getPackages().get(0);
 		
-		ClassDeclaration cd = pack.getClasses().get(0);
+		ClassType cd = pack.getClasses().get(0);
 		assertEquals(cd.getQName(), new QName("p", "k", "C"));
 
 		assertEquals(cd.getMemberValues().size(), 1);
@@ -63,8 +62,8 @@ public class MethodTests {
 		assertEquals(lvs.getName().getText(), "s");
 
 		Type type = lvs.getType();
-		assert(type instanceof ClassDeclaration);
-		assertEquals( ((ClassDeclaration)type).getQName(), new QName("p", "k", "C"));
+		assert(type instanceof ClassType);
+		assertEquals( ((ClassType)type).getQName(), new QName("p", "k", "C"));
 
 	}
 	
@@ -80,7 +79,7 @@ public class MethodTests {
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		
-		ClassDeclaration cd = pack.getClasses().get(0);
+		ClassType cd = pack.getClasses().get(0);
 		assertEquals(cd.getQName(), new QName("p", "k", "C"));
 		
 		AbstractFunction func = cd.getFunctions().get(0);
@@ -95,8 +94,8 @@ public class MethodTests {
 		assertEquals(lvs.getName().getText(), "s");
 
 		Type type = lvs.getType();
-		assert(type instanceof ClassDeclaration);
-		assertEquals( ((ClassDeclaration)type).getQName(), new QName("p", "k", "C"));
+		assert(type instanceof ClassType);
+		assertEquals( ((ClassType)type).getQName(), new QName("p", "k", "C"));
 
 	}
 	
@@ -116,8 +115,8 @@ public class MethodTests {
 		PackageDeclaration pack = packages.get(0);
 		assertEquals(pack.getQName().dotSeparated(), "");
 		
-		List<ClassDeclaration> classes = pack.getClasses();
-		ClassDeclaration cd = classes.get(0);
+		List<ClassType> classes = pack.getClasses();
+		ClassType cd = classes.get(0);
 		assertEquals(cd.getQName(), new QName("A"));
 		
 //		ClassDeclaration packCd = pack.getClasses().get(1);
@@ -131,8 +130,8 @@ public class MethodTests {
 		
 		LocalVariableStatement locVarStmt = (LocalVariableStatement)body.get(0);
 		Type locVarType = locVarStmt.getType();
-		assert(locVarType instanceof ClassDeclaration);
-		ClassDeclaration locVarCD = (ClassDeclaration)locVarType;
+		assert(locVarType instanceof ClassType);
+		ClassType locVarCD = (ClassType)locVarType;
 		List<MemberValue> members = locVarCD.getMemberValues();
 		MemberValue member0 = members.get(0);
 		
@@ -179,7 +178,7 @@ public class MethodTests {
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		
-		ClassDeclaration cd = pack.getClasses().get(0);
+		ClassType cd = pack.getClasses().get(0);
 		assertEquals(cd.getQName(), new QName("p", "k", "C"));
 		
 		// -- function local value

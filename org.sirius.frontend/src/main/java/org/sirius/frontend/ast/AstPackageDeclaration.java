@@ -10,8 +10,7 @@ import java.util.stream.Collectors;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.ClassDeclaration;
-import org.sirius.frontend.api.InterfaceDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.apiimpl.PackageDeclarationImpl;
 import org.sirius.frontend.symbols.LocalSymbolTable;
@@ -113,10 +112,10 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 	
 	public PackageDeclaration getPackageDeclaration() {
 		if(packageDeclaration == null) {
-			List<ClassDeclaration> apiClassDeclarations = classDeclarations.stream()
+			List<ClassType> apiClassDeclarations = classDeclarations.stream()
 					.map(cd -> cd.getClassDeclaration( /*qname*/ ))
 					.collect(Collectors.toList());
-			List<InterfaceDeclaration> apiInterfaceDeclarations = interfaceDeclarations.stream()
+			List<ClassType> apiInterfaceDeclarations = interfaceDeclarations.stream()
 					.map(cd -> cd.getInterfaceDeclaration())
 					.collect(Collectors.toList());
 

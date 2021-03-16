@@ -1,19 +1,15 @@
 package org.sirius.frontend.core;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.HashMap;
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Disabled;
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.sirius.frontend.api.ClassDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
@@ -21,7 +17,6 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
-import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.parser.Compiler;
 
 
@@ -46,16 +41,16 @@ public class TypeInheritanceTest {
 			ModuleDeclaration md = session.getModuleDeclarations().get(0);
 			PackageDeclaration pd = md.getPackages().get(0);
 			
-			List<ClassDeclaration> classes = pd.getClasses();
+			List<ClassType> classes = pd.getClasses();
 			assertEquals(classes.size(), 1);
-			ClassDeclaration classD = classes.get(0);
+			ClassType classD = classes.get(0);
 			assertEquals(classD.getQName().dotSeparated(), "p.a.C");
 //			assertEquals(classA.isInterface(), true);
 			
-			List<InterfaceDeclaration> interfaces = pd.getInterfaces();
+			List<ClassType> interfaces = pd.getInterfaces();
 			assertEquals(interfaces.size(), 1);
 
-			InterfaceDeclaration classA = interfaces.get(0);
+			ClassType classA = interfaces.get(0);
 			assertEquals(classA.getQName().dotSeparated(), "p.a.I");
 			
 			////assertTrue(classA.isAncestorOrSame(classD));
@@ -90,7 +85,7 @@ public class TypeInheritanceTest {
 		assertEquals(astClassI.getAncestors().size(), 0);
 		
 		// -- Check API 
-		ClassDeclaration apiC = astClassC.getClassDeclaration();
+		ClassType apiC = astClassC.getClassDeclaration();
 		assertThat(apiC.getQName().dotSeparated(), is("p.a.C"));
 
 		InterfaceDeclaration apiI = astClassI.getInterfaceDeclaration();

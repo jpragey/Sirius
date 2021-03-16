@@ -8,8 +8,8 @@ public interface PackageDeclaration {
 
 	QName getQName(); 
 
-	List<ClassDeclaration> getClasses();
-	List<InterfaceDeclaration> getInterfaces();
+	List<ClassType> getClasses();
+	List<ClassType> getInterfaces();
 	List<AbstractFunction> getFunctions();
 
 	default void visitMe(Visitor visitor) {

@@ -1,19 +1,15 @@
 package org.sirius.frontend.core;
 
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-
 import org.junit.jupiter.api.Test;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.BooleanType;
-import org.sirius.frontend.api.ClassDeclaration;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;

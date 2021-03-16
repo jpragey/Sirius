@@ -26,4 +26,11 @@ public interface ClassType extends Type {
 		}
 	}
 
+	default void visitMe(Visitor visitor) {
+		visitor.startClassType(this);
+		visitContent(visitor);
+		visitor.endClassType(this);
+	}
+
+
 }

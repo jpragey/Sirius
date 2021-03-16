@@ -2,11 +2,14 @@ package org.sirius.frontend.api;
 
 public interface Visitor {
 
-	public default void start(ClassDeclaration declaration) {}
-	public default void end(ClassDeclaration declaration) {}
+	public default void startClassType(ClassType declaration) {}
+	public default void endClassType(ClassType declaration) {}
 
-	public default void start(InterfaceDeclaration declaration) {}
-	public default void end(InterfaceDeclaration declaration) {}
+//	public default void startClassDeclaration(ClassDeclaration declaration) {}
+//	public default void endClassDeclaration(ClassDeclaration declaration) {}
+//
+//	public default void startInterfaceDeclaration(InterfaceDeclaration declaration) {}
+//	public default void endInterfaceDeclaration(InterfaceDeclaration declaration) {}
 	
 	public default void start(ConstructorDeclaration declaration) {}
 	public default void end(ConstructorDeclaration declaration) {}
