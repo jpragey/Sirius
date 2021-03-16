@@ -2,22 +2,21 @@ package org.sirius.frontend.api;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.core.Token;
+import org.sirius.frontend.sdk.SdkContent;
 
 public interface StringConstantExpression extends Expression {
 
-	static QName typeClassName = new QName("sirius", "lang", "String");
-	static StringType type = new StringType() {
+	static Type type = new ClassType() {
 		
 		@Override
 		public QName getQName() {
-			return typeClassName;
+			return SdkContent.siriusLangStringQName;
 		}
 		@Override
 		public boolean isAncestorOrSame(Type type) {
 			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
 		}
 	};
-//	static Type type = Type.
 	
 	/** Get content as given in source code, eg with starting and terminating quotes. */
 	Token getContent();
@@ -26,7 +25,7 @@ public interface StringConstantExpression extends Expression {
 	String getText();
 
 	@Override
-	default StringType getType() {
+	default Type getType() {
 		return type;
 	}
 	

@@ -85,7 +85,8 @@ public class ModuleTest {
 
 		assertThat(mi.requires.size(), is(3));
 		assertThat(mi.requires.get(0).module, is("java.base"));
-		assertThat(mi.requires.get(0).module, is("java.base"));
+		assertThat(mi.requires.get(1).module, is("org.sirius.runtime"));
+		assertThat(mi.requires.get(2).module, is("org.sirius.sdk"));
 
 //		ClassLoader classLoader = l.getClassLoader();
 //		
@@ -158,7 +159,7 @@ public class ModuleTest {
 		ClassVisitor cv = new ClassVisitor(Opcodes.ASM9) {
 			@Override
 			public ModuleVisitor visitModule(String name, int access, String version) {
-				System.out.println("Visiting module " + name + ", version " + version);
+//				System.out.println("Visiting module " + name + ", version " + version);
 				moduleInfo.module = new ModuleInfo.Module(name, access, version);
 				return new ModuleVisitor(Opcodes.ASM9) {
 

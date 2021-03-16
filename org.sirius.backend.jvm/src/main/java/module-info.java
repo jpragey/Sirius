@@ -5,6 +5,7 @@ module org.sirius.backend.jvm {
 	
 	requires transitive org.objectweb.asm;
 	requires org.sirius.sdk;
+	requires org.sirius.runtime;
 
 	exports org.sirius.backend.jvm;
 }

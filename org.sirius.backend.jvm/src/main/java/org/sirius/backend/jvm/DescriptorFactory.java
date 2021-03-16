@@ -1,16 +1,12 @@
 package org.sirius.backend.jvm;
 
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
-import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ArrayType;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.FunctionFormalArgument;
-import org.sirius.frontend.api.IntegerType;
-import org.sirius.frontend.api.StringType;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.VoidType;
 
@@ -26,40 +22,12 @@ public class DescriptorFactory {
 		super();
 		this.reporter = reporter;
 	}
-	 // TODO: remove
-	/** Map some sirius-related class name to java class names. To remove when we have a decent SDK. 
-	 * 
-	 */
-	private String tempMapClassInternalName(String siriusName) {
-		
-		switch(siriusName) {
-//		case "String": return "java/lang/String";
-//		case "sirius/lang/String": return "java/lang/String";
-		default: return siriusName;
-		}
-	}
-	
-	private static HashMap<QName, String> siriusToJvmTypeMap = new HashMap<QName, String>() {{
-////		put(new QName("sirius", "lang", "Integer"), "I");
-	}};
 			
-	private String mapStandardSiriusType(ClassType classType) {
-		QName n = classType.getQName();
-		String internalName = siriusToJvmTypeMap.get(n);
-		if(internalName != null) {
-			return internalName;
-		}
-		
-		String classIName = classType.getQName().getStringElements().stream().collect(Collectors.joining("/"));
-		classIName = tempMapClassInternalName(classIName);
-		return "L" + classIName + ";";
-	}
-	
 	
 	public String fieldDescriptor(Type type) {
 		if(type instanceof ClassType) {
 			ClassType classType = (ClassType)type;
-			String descriptor = mapStandardSiriusType(classType);
+			String descriptor = classType.getQName().getStringElements().stream().collect(Collectors.joining("/", "L", ";"));
 			return descriptor;
 			
 		} else if(type instanceof VoidType) {
@@ -67,18 +35,13 @@ public class DescriptorFactory {
 		} else if(type instanceof ArrayType) {
 			ArrayType arrayType = (ArrayType)type;
 			return "[" + fieldDescriptor(arrayType.getElementType());
-		} else if(type instanceof StringType) {
-			return "Lsirius/lang/String;";
-		} else if(type instanceof IntegerType) {
-			return "Lsirius/lang/Integer;";
-//			return "I";
 		} else {
 			reporter.error("JVM backend: internal error creating fieldDescriptor, type " + type + ":" + type.getClass() + " has no mapping to JVM type descriptor.");
 			return "";
 		}
 	}
 	
-	String methodDescriptor(AbstractFunction function  ) {
+	public String methodDescriptor(AbstractFunction function  ) {
 		Type returnType = function .getReturnType();
 		String descr = function.getArguments().stream()
 			.map((FunctionFormalArgument arg) -> fieldDescriptor(arg.getType()) )

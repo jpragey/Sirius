@@ -1,5 +1,6 @@
 package org.sirius.backend.jvm;
 
+import org.objectweb.asm.Opcodes;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_STATIC;
 import static org.objectweb.asm.Opcodes.ACC_SUPER;
@@ -80,88 +81,44 @@ public class JvmClass {
 	public String toString() {
 		return qName.toString();
 	}
-	
-	private void debugWriteCompanionMainBytecode(List<ClassWriterListener> listeners) {
-		QName qName = new QName("org", "jpr", "MainCompanion");
-		
-		String clssQname = qName.dotSeparated();
-		this.definedClasses.add(clssQname);
 
-		ClassWriter classWriter = new ClassWriter(
-				ClassWriter.COMPUTE_FRAMES | // No need to 
-				ClassWriter.COMPUTE_MAXS // You must still call visitMaxs(), but its args are ignored 
-				/*0*/ /*flags*/
-				);
+	/* Flags for class/interface:
+	 * @See https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.1
+	 * Used at least for classWriter.visit()
+	 * 
+	 *  Flag Name 		Interpretation
+	 *  
+	ACC_PUBLIC 		Declared public; may be accessed from outside its package.
+	ACC_FINAL 		Declared final; no subclasses allowed.
+	ACC_SUPER 		Treat superclass methods specially when invoked by the invokespecial instruction.
+	ACC_INTERFACE 	Is an interface, not a class.
+	ACC_ABSTRACT 	Declared abstract; must not be instantiated.
+	ACC_SYNTHETIC 	Declared synthetic; not present in the source code.
+	ACC_ANNOTATION 	Declared as an annotation type.
+	ACC_ENUM 		Declared as an enum type.
+	ACC_MODULE		Is a module, not a class or interface.
+	 */
 
-		String fileName = qName.getLast() + ".java";
-		classWriter.visitSource(fileName, null /*debug*/);
+	public enum AsmClassFlags {
+		PUBLIC(Opcodes.ACC_PUBLIC), // 		Declared public; may be accessed from outside its package.
+		FINAL(Opcodes.ACC_FINAL), // 		Declared final; no subclasses allowed.
+		SUPER(Opcodes.ACC_SUPER), // 		Treat superclass methods specially when invoked by the invokespecial instruction.
+		INTERFACE(Opcodes.ACC_INTERFACE), // 	Is an interface, not a class.
+		ABSTRACT(Opcodes.ACC_ABSTRACT), // 	Declared abstract; must not be instantiated.
+		SYNTHETIC(Opcodes.ACC_SYNTHETIC), // 	Declared synthetic; not present in the source code.
+		ANNOTATION(Opcodes.ACC_ANNOTATION), // 	Declared as an annotation type.
+		ENUM(Opcodes.ACC_ENUM), // 		Declared as an enum type.
+		MODULE(Opcodes.ACC_MODULE) //		Is a module, not a class or interface.
+		;
+		public int asmFlag; // ACC_XXX value
 
-		// -------- startClass(classWriter);
-		int access = ACC_SUPER | ACC_PUBLIC ; // Always use ACC_SUPER ! 
-		String classInternalName = Util.classInternalName(qName);
-		classWriter.visit(Bytecode.VERSION, access, classInternalName/*"Hello"*/, null /*signature*/, "java/lang/Object"/*superName*/, null /*interfaces*/);
-
-		
-		// -------- <init>() : writeInitMethod(classWriter);
-		MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
-		JvmScope scope = new JvmScope(descriptorFactory, Optional.empty(), "<init(...) root>");
-		
-		mv.visitVarInsn(ALOAD, 0);
-		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false /*isInterface*/);
-
-//		for(JvmMemberValue mf: this.memberValues) {
-//			mf.writeInitBytecode(classWriter, mv, scope, qName);
-//		}
-		
-		mv.visitInsn(RETURN);
-		mv.visitMaxs(1, 1);
-		mv.visitEnd();
-
-		
-		// ---- main() method
-//		AbstractFunction mainAbsFunc = new AbstractFunction() {};
-//		JvmMemberFunction mainMF = new JvmMemberFunction(reporter, backendOptions, descriptorFactory, AbstractFunction memberFunction, true /* isStatic*/);
-//		mainMF.writeBytecode(classWriter);
-
-////		System.out.println("Writing JVM main() bytecode for function: " + functionName);
-
-		String functionDescriptor = "([Ljava/lang/String;)V";	// eg (Ljava/lang/String;)V
-//		int access = ACC_PUBLIC | ACC_STATIC;
-
-		MethodVisitor mainMv = classWriter.visitMethod(ACC_PUBLIC | ACC_STATIC, "main" /*functionName*/, functionDescriptor,
-				null /* String signature */,
-				null /* String[] exceptions */);
-
-		// -- 'main' return
-		mainMv.visitInsn(RETURN);
-//		mv.visitMaxs(1, 1);
-		mainMv.visitEnd();
-
-//		
-//
-//		// -- Member functions
-//		for(JvmMemberFunction mf: this.memberFunctions) {
-//			mf.writeBytecode(classWriter);
-//		}
-//		
-//		for(JvmMemberValue mf: this.memberValues) {
-//			mf.writeBytecode(classWriter);
-//		}
-
-		// -- Terminate class
-		classWriter.visitEnd();
-
-		byte[] bytes = classWriter.toByteArray();
-		Bytecode bytecode = new Bytecode(bytes, qName);
-		
-		for(ClassWriterListener l: listeners)
-			l.addByteCode(bytecode);
+		private AsmClassFlags(int asmFlag) {
+			this.asmFlag = asmFlag;
+		}
 		
 	}
-
+	
 	public void /*Bytecode*/ toBytecode(List<ClassWriterListener> listeners) {
-		if(Util.debugMainClass)
-			debugWriteCompanionMainBytecode(listeners);
 
 		//			System.out.println(" -- Starting ClassDeclaration " + classDeclaration.getQName());
 
@@ -219,10 +176,14 @@ public class JvmClass {
 		ACC_ENUM 		Declared as an enum type.
 		ACC_MODULE		Is a module, not a class or interface.
 		 */
-		int access = ACC_SUPER; // Always use ACC_SUPER ! 
-		////		if(classDeclaration.getVisibility() == Visibility.PUBLIC)
-		access |= ACC_PUBLIC;
+//		int access = ACC_SUPER; // Always use ACC_SUPER ! 
+//		////		if(classDeclaration.getVisibility() == Visibility.PUBLIC)
+//		access |= ACC_PUBLIC;
 
+		int access = AsmClassFlags.SUPER.asmFlag;
+//		if(classd)
+		access |= AsmClassFlags.PUBLIC.asmFlag;
+		
 //		String classInternalName = JvmClassWriter.classInternalName(classDeclaration);
 //		/* From doc:
 //		 * The internal name of a class is its fully qualified name (as returned by Class.getName(), where '.' are replaced by '/'). 
