@@ -1,8 +1,7 @@
 package org.sirius.backend.jvm;
 
-import static org.objectweb.asm.Opcodes.GETSTATIC;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 import static org.objectweb.asm.Opcodes.NEW;
 
 import java.util.Optional;
@@ -16,7 +15,6 @@ import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.BooleanConstantExpression;
 import org.sirius.frontend.api.ClassDeclaration;
-import org.sirius.frontend.api.ClassOrInterface;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;
@@ -238,7 +236,7 @@ public class JvmExpression {
 
 		if(type instanceof IntegerType) {
 			mv.visitVarInsn(Opcodes.ALOAD, varIndex);
-		} else  if(type instanceof ClassOrInterface) {
+		} else  if(type instanceof ClassType) {
 			mv.visitVarInsn(Opcodes.ALOAD, varIndex);
 		} else {
 			mv.visitVarInsn(Opcodes.ILOAD, varIndex);

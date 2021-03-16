@@ -1,26 +1,22 @@
 package org.sirius.backend.jvm;
 
-import org.objectweb.asm.Opcodes;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static org.objectweb.asm.Opcodes.ACC_STATIC;
-import static org.objectweb.asm.Opcodes.ACC_SUPER;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassDeclaration;
-import org.sirius.frontend.api.ClassOrInterface;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.PackageDeclaration;
@@ -60,14 +56,14 @@ public class JvmClass {
 		this(reporter, pd.getQName().child(Util.jvmPackageClassName), backendOptions);
 	}
 
-	private void addMemberValues(ClassOrInterface cd) {
+	private void addMemberValues(ClassType cd) {
 		for(MemberValue mv: cd.getMemberValues()) {
 			JvmMemberValue jvmMv = new JvmMemberValue(mv, descriptorFactory, reporter);
 			this.memberValues.add(jvmMv);
 		}
 	}
 	
-	private void addMemberFunctions(ClassOrInterface cd) {
+	private void addMemberFunctions(ClassType cd) {
 		for(AbstractFunction mf: cd.getFunctions())
 			memberFunctions.add(new JvmMemberFunction(reporter, backendOptions,  descriptorFactory, mf, false /*isStatic*/));
 	}

@@ -3,10 +3,10 @@ package org.sirius.frontend.api;
 public interface Type {
 
 	public static IntegerType integerType = new IntegerType() {
-		@Override
-		public boolean isAncestorOrSame(Type type) {
-			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-		}
+//		@Override
+//		public boolean isAncestorOrSame(Type type) {
+//			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
+//		}
 		@Override
 		public String toString() {
 			return "Type.integerType";

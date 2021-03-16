@@ -1,5 +1,7 @@
 package org.sirius.frontend.api;
 
+import java.util.List;
+
 import org.sirius.common.core.QName;
 import org.sirius.common.core.Token;
 import org.sirius.frontend.sdk.SdkContent;
@@ -16,6 +18,18 @@ public interface StringConstantExpression extends Expression {
 		public boolean isAncestorOrSame(Type type) {
 			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
 		}
+		// TODO: check ???
+		@Override
+		public List<MemberValue> getMemberValues() {
+			return List.of();
+		}
+
+		// TODO: check ???
+		@Override
+		public List<AbstractFunction> getFunctions() {
+			return List.of();
+		}
+
 	};
 	
 	/** Get content as given in source code, eg with starting and terminating quotes. */
