@@ -6,13 +6,13 @@ import java.util.List;
 import org.sirius.common.core.MapOfList;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.InterfaceDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
 
-public class InterfaceDeclarationImpl implements InterfaceDeclaration {
+public class InterfaceDeclarationImpl implements ClassType {
 	private QName qName;
 	private MapOfList<QName, FunctionDefinition> allFctMap;
 	private List<MemberValue> memberValues; 

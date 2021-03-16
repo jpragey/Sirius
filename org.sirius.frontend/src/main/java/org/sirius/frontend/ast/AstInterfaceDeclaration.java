@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.Token;
 import org.sirius.common.core.MapOfList;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.api.InterfaceDeclaration;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.InterfaceDeclarationImpl;
@@ -250,7 +250,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 
 	private InterfaceDeclarationImpl impl = null;
 	
-	public InterfaceDeclaration getInterfaceDeclaration() {
+	public ClassType getInterfaceDeclaration() {
 		if(impl == null) {
 			List<MemberValue> memberValues = valueDeclarations.stream()
 					.map(vd ->vd.getMemberValue())

@@ -10,7 +10,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.frontend.api.ClassType;
-import org.sirius.frontend.api.InterfaceDeclaration;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.ast.AstClassDeclaration;
@@ -88,7 +87,7 @@ public class TypeInheritanceTest {
 		ClassType apiC = astClassC.getClassDeclaration();
 		assertThat(apiC.getQName().dotSeparated(), is("p.a.C"));
 
-		InterfaceDeclaration apiI = astClassI.getInterfaceDeclaration();
+		ClassType apiI = astClassI.getInterfaceDeclaration();
 		assertThat(apiI.getQName().dotSeparated(), is("p.a.I"));
 		
 		assertThat(astClassC.getInterfaces(), hasSize(1));
