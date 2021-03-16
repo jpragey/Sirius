@@ -2,21 +2,58 @@ package org.sirius.backend.jvm;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.mocktypes.MockAbstractFunction;
-import org.sirius.backend.jvm.mocktypes.MockClassType;
 import org.sirius.backend.jvm.mocktypes.MockFunctionFormalArgument;
 import org.sirius.backend.jvm.mocktypes.MockVoidType;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
+import org.sirius.frontend.api.AbstractFunction;
+import org.sirius.frontend.api.ClassType;
+import org.sirius.frontend.api.MemberValue;
 
 public class DescriptorsFactoryTest {
 
 	private Reporter reporter;
 	private DescriptorFactory factory;
+
+	
+	private class MockClassType implements ClassType {
+
+		private QName qname;
+		
+		public MockClassType(QName qname) {
+			super();
+			this.qname = qname;
+		}
+
+		@Override
+		public QName getQName() {
+			return qname;
+		}
+//		@Override
+//		public boolean isAncestorOrSame(Type type) {
+//			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
+//		}
+
+		@Override
+		public List<MemberValue> getMemberValues() {
+			return List.of();
+		}
+
+		@Override
+		public List<AbstractFunction> getFunctions() {
+			return List.of();
+		}
+
+	}
+
+	
 	
 	@BeforeEach
 	public void setup() {
