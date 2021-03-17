@@ -23,7 +23,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	
 	private List<AstExpression> actualArguments = new ArrayList<>();
 
-	private DefaultSymbolTable symbolTable = null;
+	private DefaultSymbolTable symbolTable = null;	// TODO: remove
 	
 	private Reporter reporter;
 	
@@ -263,7 +263,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 				newArgs, 
 				reporter,
 				thisExpression,	// TODO: linkToParentST ???  
-				new DefaultSymbolTable(parentSymbolTable, AstFunctionCallExpression.class.getSimpleName()));
+				new DefaultSymbolTable(Optional.of(parentSymbolTable), AstFunctionCallExpression.class.getSimpleName()));
 		
 		return newExpr;
 	}

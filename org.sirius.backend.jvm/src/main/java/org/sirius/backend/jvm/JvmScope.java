@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.LocalVariableStatement;
@@ -119,6 +117,7 @@ public class JvmScope {
 		public LocalVarHolder(LocalVariableStatement statement) {
 			this(statement.getType(), statement.getName().getText(), statement.getInitialValue());
 		}
+		
 		public LocalVarHolder(FunctionFormalArgument statement) {
 			this(statement.getType(), statement.getQName().getLast(), Optional.empty() /* TODO */);
 		}

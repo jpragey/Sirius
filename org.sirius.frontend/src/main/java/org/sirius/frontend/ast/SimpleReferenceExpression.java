@@ -154,7 +154,7 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 	@Override
 	public AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
 		SimpleReferenceExpression expr = new SimpleReferenceExpression(reporter, referenceName, 
-				new DefaultSymbolTable(parentSymbolTable, this.getClass().getSimpleName()));
+				new DefaultSymbolTable(Optional.of(parentSymbolTable), this.getClass().getSimpleName()));
 		return expr;
 	}
 

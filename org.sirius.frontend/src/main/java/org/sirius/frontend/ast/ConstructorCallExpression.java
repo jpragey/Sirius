@@ -153,7 +153,7 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 		AstExpression expr = new ConstructorCallExpression(reporter, 
 				name, 
 				actualArguments.stream().map(exp -> exp.linkToParentST(parentSymbolTable)).collect(Collectors.toList()),
-				new DefaultSymbolTable(parentSymbolTable, ConstructorCallExpression.class.getSimpleName()));
+				new DefaultSymbolTable(Optional.of(parentSymbolTable), ConstructorCallExpression.class.getSimpleName()));
 		return expr;
 	}
 

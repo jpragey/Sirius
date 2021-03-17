@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.Scope;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.DefaultSymbolTable;
 
@@ -87,7 +88,7 @@ public class AstLambdaParameter {
 		}
 
 		@Override
-		public Type getType() {
+		public Type getType(/*Scope scope*/) {
 			return type.getApiType();
 		}
 		@Override

@@ -2,6 +2,7 @@ package org.sirius.frontend.apiimpl;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.Scope;
 import org.sirius.frontend.api.Type;
 
 public class FunctionFormalArgumentImpl implements FunctionFormalArgument {

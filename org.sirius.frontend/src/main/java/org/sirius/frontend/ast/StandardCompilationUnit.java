@@ -26,7 +26,7 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 	public StandardCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
 		super();
 		this.reporter = reporter;
-		this.symbolTable = new DefaultSymbolTable(globalSymbolTable, this.getClass().getSimpleName());
+		this.symbolTable = new DefaultSymbolTable(Optional.of(globalSymbolTable), this.getClass().getSimpleName());
 	}
 
 

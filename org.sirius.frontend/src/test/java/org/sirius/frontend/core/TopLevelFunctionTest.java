@@ -24,6 +24,7 @@ import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.StringConstantExpression;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
+import org.sirius.frontend.apiimpl.ScopeImpl;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.parser.Compiler;

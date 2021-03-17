@@ -41,9 +41,9 @@ public class DefaultSymbolTable implements SymbolTable {
 	/** Name of the container (debug only) */
 	private String dbgName;
 	
-	public DefaultSymbolTable(DefaultSymbolTable parent, String dbgName) {
+	public DefaultSymbolTable(Optional<DefaultSymbolTable> parent, String dbgName) {
 		super();
-		this.parent = Optional.ofNullable(parent);
+		this.parent = parent;
 		this.dbgName = dbgName;
 	}
 	public DefaultSymbolTable(String dbgName) {
@@ -61,6 +61,11 @@ public class DefaultSymbolTable implements SymbolTable {
 //	}
 	public void addSymbol(QName symbolQName, Symbol symbol) {
 		assert(symbolQName != null);
+		
+//		reporter.error("Symbol " + simpleName.getText() + " soon defined ");
+
+		
+		
 		symbols.put(symbolQName, symbol);
 		symbolsBySimpleName.put(symbolQName.getLast(), symbol);
 	}

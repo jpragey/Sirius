@@ -1,6 +1,7 @@
 package org.sirius.frontend.symbols;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
 
 import org.sirius.frontend.ast.AstClassDeclaration;
@@ -73,7 +74,7 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 	public void startClassDeclaration(AstClassDeclaration classDeclaration) {
 		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
 		
-		DefaultSymbolTable symbolTable = new DefaultSymbolTable(parentSymbolTable, classDeclaration.getName().getText());
+		DefaultSymbolTable symbolTable = new DefaultSymbolTable(Optional.of(parentSymbolTable), classDeclaration.getName().getText());
 		symbolTableStack.push(symbolTable);
 		classDeclaration.setSymbolTable(symbolTable);
 
@@ -90,7 +91,7 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 	public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
 		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
 		
-		DefaultSymbolTable symbolTable = new DefaultSymbolTable(parentSymbolTable, interfaceDeclaration.getName().getText());
+		DefaultSymbolTable symbolTable = new DefaultSymbolTable(Optional.of(parentSymbolTable), interfaceDeclaration.getName().getText());
 		symbolTableStack.push(symbolTable);
 		interfaceDeclaration.setSymbolTable(symbolTable);
 
@@ -141,7 +142,7 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 //				"[" + partial.getCaptures().size() + "]" +
 				"(" + partial.getArgs().size() + ")";
 				
-		DefaultSymbolTable functionSymbolTable = new DefaultSymbolTable(parentSymbolTable, stName);
+		DefaultSymbolTable functionSymbolTable = new DefaultSymbolTable(Optional.of(parentSymbolTable), stName);
 		
 		partial.assignSymbolTable(functionSymbolTable);
 		symbolTableStack.push(functionSymbolTable);

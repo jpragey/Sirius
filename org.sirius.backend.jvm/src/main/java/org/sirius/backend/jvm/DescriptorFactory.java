@@ -7,6 +7,7 @@ import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ArrayType;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.Scope;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.VoidType;
 
@@ -41,7 +42,7 @@ public class DescriptorFactory {
 		}
 	}
 	
-	public String methodDescriptor(AbstractFunction function  ) {
+	public String methodDescriptor(AbstractFunction function/*, Scope scope*/) {
 		Type returnType = function .getReturnType();
 		String descr = function.getArguments().stream()
 			.map((FunctionFormalArgument arg) -> fieldDescriptor(arg.getType()) )

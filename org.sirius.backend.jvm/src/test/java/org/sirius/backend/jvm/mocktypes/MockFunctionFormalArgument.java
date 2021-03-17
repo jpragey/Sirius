@@ -2,6 +2,7 @@ package org.sirius.backend.jvm.mocktypes;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.Scope;
 import org.sirius.frontend.api.Type;
 
 public class MockFunctionFormalArgument implements FunctionFormalArgument {

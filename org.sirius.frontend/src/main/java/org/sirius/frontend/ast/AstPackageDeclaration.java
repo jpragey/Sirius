@@ -13,7 +13,7 @@ import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.apiimpl.PackageDeclarationImpl;
-import org.sirius.frontend.symbols.LocalSymbolTable;
+import org.sirius.frontend.symbols.DefaultSymbolTable;
 import org.sirius.frontend.symbols.SymbolTable;
 
 /** Package declaration, eg as written in package descriptor.
@@ -37,7 +37,7 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 	private List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	
-	private LocalSymbolTable symbolTable; 
+	private SymbolTable symbolTable; 
 
 	private PackageDeclaration packageDeclaration = null;
 
@@ -47,7 +47,8 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 		super();
 		this.reporter = reporter;
 		this.qname = qname;
-		this.symbolTable = new LocalSymbolTable(reporter);
+//		this.symbolTable = new LocalSymbolTable(reporter);
+		this.symbolTable = new DefaultSymbolTable("<TODO>" /*TODO*/);
 		
 		functionDeclarations.forEach (fct -> {this.functionDeclarations.add(fct);	this.visitables.add(fct);});
 		classDeclarations.forEach	 (cd  -> {

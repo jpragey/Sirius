@@ -4,7 +4,7 @@ import org.sirius.common.core.QName;
 
 public interface FunctionFormalArgument {
 
-	Type getType();
+	Type getType(/*Scope scope*/);
 	
 	QName getQName();
 	
