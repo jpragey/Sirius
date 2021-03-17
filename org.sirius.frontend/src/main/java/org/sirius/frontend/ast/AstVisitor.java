@@ -20,9 +20,6 @@ public interface AstVisitor {
 	public default void startImportDeclaration	(ImportDeclaration importDeclaration) {}
 	public default void endImportDeclaration	(ImportDeclaration importDeclaration) {}
 
-
-	
-	
 	
 	public default void startShebangDeclaration (ShebangDeclaration declaration) {}
 	public default void endShebangDeclaration (ShebangDeclaration declaration) {}
@@ -38,14 +35,6 @@ public interface AstVisitor {
 	public default void endInterfaceDeclaration (AstInterfaceDeclaration interfaceDeclaration) {}
 	
 	
-	
-	
-	
-//	public default void startFunctionDeclaration (AstFunctionDeclarationBuilder functionDeclaration) {}
-//	public default void endFunctionDeclaration (AstFunctionDeclarationBuilder functionDeclaration) {}
-//	
-//	
-//	public default void startPartialList (PartialList partialList) {}
 
 	public default void startFunctionDefinition (FunctionDefinition functionDefinition) {}
 	public default void endFunctionDefinition   (FunctionDefinition functionDefinition) {}
@@ -53,18 +42,11 @@ public interface AstVisitor {
 	public default void startFunctionDeclaration (FunctionDeclaration functionDeclaration) {}
 	public default void endFunctionDeclaration   (FunctionDeclaration functionDeclaration) {}
 
-//	public default void startPartialList (PartialList partialList) {}
-//	public default void endPartialList   (PartialList partialList) {}
-
 	public default void startPartial (Partial partialFunctionDeclaration) {}
 	public default void endPartial   (Partial partialFunctionDeclaration) {}
 	
 	public default void startFunctionFormalArgument (AstFunctionParameter formalArgument) {}
 	public default void endFunctionFormalArgument   (AstFunctionParameter formalArgument) {}
-	
-	public default void startLambdaFormalArgument (AstLambdaParameter formalArgument) {}
-	public default void endLambdaFormalArgument   (AstLambdaParameter formalArgument) {}
-	
 	
 	
 	public default void startValueDeclaration (AstMemberValueDeclaration valueDeclaration) {}

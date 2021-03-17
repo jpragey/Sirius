@@ -15,8 +15,9 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 	private Reporter reporter; 
 	private AstExpression containerExpression;
 	private AstToken valueName;
-	private SymbolTable symbolTable = null;
+	private SymbolTable symbolTable;
 
+	private Optional<Expression> impl;
 	
 	private AstMemberAccessExpression(Reporter reporter, AstExpression containerExpression, AstToken valueName,
 			SymbolTable symbolTable) {
@@ -25,13 +26,15 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 		this.containerExpression = containerExpression;
 		this.valueName = valueName;
 		this.symbolTable = symbolTable;
+		this.impl = null;
 	}
 
 	public AstMemberAccessExpression(Reporter reporter, AstExpression containerExpression, AstToken valueName) {
-		super();
-		this.reporter = reporter;
-		this.containerExpression = containerExpression;
-		this.valueName = valueName;
+		this(reporter, containerExpression, valueName, null /*symbolTable*/);
+//		super();
+//		this.reporter = reporter;
+//		this.containerExpression = containerExpression;
+//		this.valueName = valueName;
 	}
 
 	
@@ -50,7 +53,7 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 
 	@Override
 	public String toString() {
-		String cs = containerExpression.toString();
+//		String cs = containerExpression.toString();
 		return "AstMemberAccessExpression: <container>." + valueName.getText();
 //		return "AstMemberAccessExpression: " + containerExpression.toString() + "." + valueName.getText();
 	}
@@ -66,7 +69,6 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 		if(containerType instanceof AstNoType) {
 			return AstType.noType; // Error message has soon been reported
 		}
-//		AstType containerType = optType.get();
 		
 		if(containerType instanceof AstClassDeclaration) {
 			AstClassDeclaration cd = (AstClassDeclaration)containerType;
@@ -109,8 +111,6 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 
 		@Override
 		public Type getType() {
-//			AstType astType = AstMemberAccessExpression.getType();
-//			Type type = astType.getApiType();
 			return type;
 		}
 
@@ -128,7 +128,6 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 		
 	}
 	
-	private Optional<Expression> impl = null;
 	
 	@Override
 	public Optional<Expression> getExpression() {

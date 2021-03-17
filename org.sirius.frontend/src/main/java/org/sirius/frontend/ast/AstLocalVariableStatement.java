@@ -17,14 +17,14 @@ public class AstLocalVariableStatement implements AstStatement {
 	private SymbolTableImpl symbolTable = null;
 	private AstType type;
 
-//	private LocalVariableStatementImpl impl = null;
-	private Optional<Statement> impl = null;
+	private Optional<Statement> impl;
 
 	public AstLocalVariableStatement(AnnotationList annotationList, AstType type, AstToken varName, Optional<AstExpression> initialValue) {
 		super();
 		this.type = type;
 		this.varName = varName;
 		this.initialValue = initialValue;
+		this.impl = null;
 	}
 
 	public AstLocalVariableStatement(AnnotationList annotationList, AstType type, AstToken varName) {

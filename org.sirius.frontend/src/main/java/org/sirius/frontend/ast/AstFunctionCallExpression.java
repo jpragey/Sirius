@@ -206,43 +206,8 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 			reporter.error("Function " + name.getText() + " not found.", name);
 		}
 		
-		// -- If function call expression couldn't be created, return a descent fake
-		Expression fakeExpression = new FunctionCall() {
-//			List<Expression> apiArguments = actualArguments.stream()
-//					.map(astExpr -> astExpr.getExpression())
-//					.collect(Collectors.toList());
-			private List<Expression> apiArguments = List.of();
-
-			@Override
-			public String toString() {
-				return "Fake FunctionCall (couldn't be generated))";
-			}
-			@Override
-			public org.sirius.common.core.Token getFunctionName() {
-				return name;
-			}
-			
-			@Override
-			public List<Expression> getArguments() {
-				return apiArguments;
-			}
-
-			@Override
-			public Optional<AbstractFunction> getDeclaration() {
-				return Optional.empty();
-			}
-
-			@Override
-			public Type getType() {
-				return Type.voidType;
-			}
-
-			@Override
-			public Optional<Expression> getThis() {
-				return Optional.empty();
-			}
-		};
-		return Optional.of(fakeExpression);
+		// -- If function call expression couldn't be created, return an empty optional
+		return Optional.empty();
 	}
 	
 	@Override

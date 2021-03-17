@@ -7,6 +7,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.sdk.SdkContent;
 import org.sirius.frontend.symbols.SymbolTable;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 
@@ -18,7 +19,7 @@ public class AstIntegerConstantExpression implements AstExpression {
 	// TODO: should be static
 	private AstClassDeclaration intType;
 	
-	private SymbolTableImpl symbolTable; // TODO: optional (???)
+	private SymbolTable symbolTable; // TODO: optional (???)
 	
 	public AstIntegerConstantExpression(AstToken content, Reporter reporter) {
 		super();
@@ -37,11 +38,14 @@ public class AstIntegerConstantExpression implements AstExpression {
 		return content;
 	}
 	
-	public void setSymbolTable(SymbolTableImpl symbolTable) {
+	public void setSymbolTable(SymbolTable symbolTable) {
 		this.symbolTable = symbolTable;
 		
-		// TODO: Maybe we should check ??? 
-		this.intType = symbolTable.lookupByQName(new QName("sirius", "lang", "Integer") ).get().getClassDeclaration().get();
+		this.intType = symbolTable
+				.lookupByQName(SdkContent.siriusLangIntegerQName) // new QName("sirius", "lang", "Integer") )
+				.get()
+				.getClassDeclaration()
+				.get();	// NoSuchElementException if not found
 	}
 	
 	@Override
@@ -73,8 +77,6 @@ public class AstIntegerConstantExpression implements AstExpression {
 
 		@Override
 		public Type getType() {
-//			return Type.integerType;
-//			return AstIntegerConstantExpression.this.getType().getApiType();
 			return Type.integerType;
 		}
 
