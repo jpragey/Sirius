@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.Token;
 import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.apiimpl.BinaryOpExpressionImpl;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTable;
 
 public class AstBinaryOpExpression implements AstExpression {
 	
@@ -121,7 +121,7 @@ public class AstBinaryOpExpression implements AstExpression {
 	}
 
 	@Override
-	public AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+	public AstExpression linkToParentST(SymbolTable parentSymbolTable) {
 		AstExpression newLeft = left.linkToParentST(parentSymbolTable);
 		AstExpression newRight = right.linkToParentST(parentSymbolTable);
 		return new AstBinaryOpExpression(newLeft, newRight, opToken, operator);

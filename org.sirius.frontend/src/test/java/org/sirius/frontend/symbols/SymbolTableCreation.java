@@ -20,7 +20,7 @@ public class SymbolTableCreation {
 				+ "module a.b \"1.0\" {} "
 				+ "void f(){println(\"Hello World\");}");
 		
-		DefaultSymbolTable st = session.getGlobalSymbolTable();
+		SymbolTableImpl st = session.getGlobalSymbolTable();
 //		st.dump();
 		
 		

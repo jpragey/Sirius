@@ -20,7 +20,7 @@ import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.parser.SiriusParser;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 
 public class ScriptCompilationUnitTest {
@@ -41,7 +41,7 @@ public class ScriptCompilationUnitTest {
 		ParseTree tree = parser.scriptCompilationUnit();
 				
 		ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor visitor = new ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor(
-				reporter, new DefaultSymbolTable(""));
+				reporter, new SymbolTableImpl(""));
 		ScriptCompilationUnit packageCU = visitor.visit(tree);
 		return packageCU;
 		

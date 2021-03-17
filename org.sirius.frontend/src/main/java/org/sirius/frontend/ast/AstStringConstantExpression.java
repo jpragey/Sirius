@@ -6,13 +6,14 @@ import org.sirius.common.core.QName;
 import org.sirius.common.core.Token;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.StringConstantExpression;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.sdk.SdkContent;
+import org.sirius.frontend.symbols.SymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class AstStringConstantExpression implements AstExpression {
 	
 	private AstToken contentToken;
 	private String contentString;
-	private DefaultSymbolTable symbolTable = null;
 	
 	// TODO: should be static
 	private AstClassDeclaration stringType;
@@ -34,17 +35,11 @@ public class AstStringConstantExpression implements AstExpression {
 	}
 
 	
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
-		this.symbolTable = symbolTable;
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		
 		// TODO: Maybe we should check ??? 
-		this.stringType = symbolTable.lookupByQName(new QName("sirius", "lang", "String") ).get().getClassDeclaration().get();
+		this.stringType = symbolTable.lookupByQName(SdkContent.siriusLangStringQName).get().getClassDeclaration().get();
 	}
-
-//	@Override
-//	public DefaultSymbolTable getSymbolTable() {
-//		return symbolTable;
-//	}
 
 	@Override
 	public void visit(AstVisitor visitor) {
@@ -99,20 +94,13 @@ public class AstStringConstantExpression implements AstExpression {
 	}
 
 	@Override
-	public AstStringConstantExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
-//		this.symbolTable = symbolTable;
-//		
-//		// TODO: Maybe we should check ??? 
-//		this.stringType = symbolTable.lookup(new QName("sirius", "lang", "String") ).get().getClassDeclaration().get();
-
+	public AstStringConstantExpression linkToParentST(SymbolTable unused) {
 		return this;
 	}
 
 
 	@Override
 	public void verify(int featureFlags) {
-		verifyNotNull(symbolTable, "symbolTable");
-		
 		stringType.verify(featureFlags);
 	}
 

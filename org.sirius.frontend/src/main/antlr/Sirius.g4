@@ -10,12 +10,6 @@ grammar Sirius;
 @parser::header {
 	package org.sirius.frontend.parser;
 	import org.sirius.frontend.ast.*;
-	import org.sirius.common.core.QName;
-	import org.sirius.frontend.symbols.DefaultSymbolTable;
-	
-	import java.util.Optional;
-	import java.util.HashMap;
-	
 }
 
 @members {

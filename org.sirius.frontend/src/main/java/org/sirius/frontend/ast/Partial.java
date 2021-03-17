@@ -9,7 +9,7 @@ import org.sirius.common.core.QName;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.FunctionImpl;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Scope;
 
 import com.google.common.collect.ImmutableList;
@@ -26,7 +26,7 @@ public class Partial implements Visitable, Verifiable {
 	private AstType returnType = AstVoidType.instance;
 	private List<AstStatement> body/* = new ArrayList<>()*/; 
 	
-	private DefaultSymbolTable symbolTable = null;
+	private SymbolTableImpl symbolTable = null;
 	private Scope scope = null;
 
 	private FunctionImpl functionImpl = null;
@@ -53,7 +53,7 @@ public class Partial implements Visitable, Verifiable {
 		this.body = body;
 	}
 
-	public void assignSymbolTable(DefaultSymbolTable symbolTable) {
+	public void assignSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
 		for(AstFunctionParameter arg: args) {
 			this.symbolTable.addFunctionArgument(arg);
@@ -84,7 +84,7 @@ public class Partial implements Visitable, Verifiable {
 		return args.get(argIndex);
 	}
 
-	public DefaultSymbolTable getSymbolTable() {
+	public SymbolTableImpl getSymbolTable() {
 		assert(symbolTable != null);
 		return symbolTable;
 	}

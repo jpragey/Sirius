@@ -23,7 +23,7 @@ import org.sirius.frontend.parser.SiriusParser.PackageDescriptorCompilationUnitC
 import org.sirius.frontend.parser.SiriusParser.QnameContext;
 import org.sirius.frontend.parser.SiriusParser.ScriptCompilationUnitContext;
 import org.sirius.frontend.parser.SiriusParser.StandardCompilationUnitContext;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 /** Visitor-based parser for the 'scriptCompilationUnit' rule.
  * 
@@ -42,7 +42,7 @@ public class StandardCompilatioUnitParser {
 
 		@Override
 		public StandardCompilationUnit visitStandardCompilationUnit(StandardCompilationUnitContext ctx) {
-			DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable("");
+			SymbolTableImpl globalSymbolTable = new SymbolTableImpl("");
 			StandardCompilationUnit unit = new StandardCompilationUnit(reporter, globalSymbolTable);
 			return unit;
 		}

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTable;
 
@@ -25,7 +25,7 @@ public final class SimpleType implements AstType {
 
 	private List<AstType> typeParameters;
 	
-	private DefaultSymbolTable symbolTable;
+	private SymbolTableImpl symbolTable;
 	
 	private Optional<AstType> resolvedElementType = Optional.empty();
 
@@ -46,11 +46,11 @@ public final class SimpleType implements AstType {
 		return name.getText();
 	}
 	
-	public DefaultSymbolTable getSymbolTable() {
+	public SymbolTableImpl getSymbolTable() {
 		return symbolTable;
 	}
 
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
 	}
 

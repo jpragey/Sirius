@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Symbol;
 
 /** most simple (class or interface) type 
@@ -20,7 +20,7 @@ public final class QNameRefType implements AstType {
 
 	private List<AstType> appliedParameters = new ArrayList<>();
 	
-	private DefaultSymbolTable symbolTable = null;
+	private SymbolTableImpl symbolTable = null;
 	
 	public QNameRefType(QName name) {
 		super();
@@ -36,11 +36,11 @@ public final class QNameRefType implements AstType {
 		return qName;
 	}
 
-	public DefaultSymbolTable getSymbolTable() {
+	public SymbolTableImpl getSymbolTable() {
 		return symbolTable;
 	}
 
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
 	}
 

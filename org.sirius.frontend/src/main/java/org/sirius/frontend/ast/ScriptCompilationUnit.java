@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.AbstractCompilationUnit;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.SymbolTable;
 
 public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable, Scoped {
@@ -20,9 +20,9 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	
 	private Reporter reporter; 
 	
-	private DefaultSymbolTable symbolTable; 
+	private SymbolTableImpl symbolTable; 
 
-	public ScriptCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable,
+	public ScriptCompilationUnit(Reporter reporter, SymbolTableImpl globalSymbolTable,
 			Optional<ShebangDeclaration> shebangDeclaration,
 			List<ImportDeclaration> importDeclarations,
 			List<AstModuleDeclaration> modules) {
@@ -85,7 +85,7 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	}
 
 	@Override
-	public DefaultSymbolTable getSymbolTable() {
+	public SymbolTableImpl getSymbolTable() {
 		return symbolTable;
 	}
 }

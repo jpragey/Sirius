@@ -7,14 +7,14 @@ import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.LocalVariableStatementImpl;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Symbol;
 
 public class AstLocalVariableStatement implements AstStatement {
 
 	private AstToken varName;
 	private Optional<AstExpression> initialValue = Optional.empty();
-	private DefaultSymbolTable symbolTable = null;
+	private SymbolTableImpl symbolTable = null;
 	private AstType type;
 
 //	private LocalVariableStatementImpl impl = null;
@@ -35,7 +35,7 @@ public class AstLocalVariableStatement implements AstStatement {
 		this.initialValue = Optional.of(initialValue);
 	}
 	
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
 	}
 	

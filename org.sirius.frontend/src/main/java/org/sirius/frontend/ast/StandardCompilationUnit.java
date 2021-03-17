@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.AbstractCompilationUnit;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class StandardCompilationUnit implements AbstractCompilationUnit, Visitable, Scoped {
 
@@ -20,13 +20,13 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 
 	private Reporter reporter; 
 	
-	private DefaultSymbolTable symbolTable; 
+	private SymbolTableImpl symbolTable; 
 	
 	
-	public StandardCompilationUnit(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
+	public StandardCompilationUnit(Reporter reporter, SymbolTableImpl globalSymbolTable) {
 		super();
 		this.reporter = reporter;
-		this.symbolTable = new DefaultSymbolTable(Optional.of(globalSymbolTable), this.getClass().getSimpleName());
+		this.symbolTable = new SymbolTableImpl(Optional.of(globalSymbolTable), this.getClass().getSimpleName());
 	}
 
 
@@ -85,7 +85,7 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 	}
 
 	@Override
-	public DefaultSymbolTable getSymbolTable() {
+	public SymbolTableImpl getSymbolTable() {
 		return symbolTable;
 	}
 

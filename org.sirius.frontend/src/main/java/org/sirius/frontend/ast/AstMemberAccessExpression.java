@@ -7,18 +7,19 @@ import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.MemberValueAccessExpression;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class AstMemberAccessExpression implements AstExpression, Scoped {
 
 	private Reporter reporter; 
 	private AstExpression containerExpression;
 	private AstToken valueName;
-	private DefaultSymbolTable symbolTable = null;
+	private SymbolTable symbolTable = null;
 
 	
 	private AstMemberAccessExpression(Reporter reporter, AstExpression containerExpression, AstToken valueName,
-			DefaultSymbolTable symbolTable) {
+			SymbolTable symbolTable) {
 		super();
 		this.reporter = reporter;
 		this.containerExpression = containerExpression;
@@ -39,11 +40,11 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 	}
 
 	@Override
-	public DefaultSymbolTable getSymbolTable() {
+	public SymbolTable getSymbolTable() {
 		return symbolTable;
 	}
 
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
 	}
 
@@ -164,13 +165,13 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 	}
 
 	@Override
-	public AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+	public AstExpression linkToParentST(SymbolTable parentSymbolTable) {
 		
 		AstMemberAccessExpression expr = new AstMemberAccessExpression(
 				reporter, 
 				containerExpression.linkToParentST(parentSymbolTable),
 				valueName,
-				new DefaultSymbolTable(Optional.of(parentSymbolTable), this.getClass().getSimpleName()));
+				new SymbolTableImpl(Optional.of(parentSymbolTable), this.getClass().getSimpleName()));
 		return expr;
 	}
 

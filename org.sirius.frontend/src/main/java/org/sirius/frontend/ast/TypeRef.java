@@ -2,7 +2,7 @@ package org.sirius.frontend.ast;
 
 import java.util.Optional;
 
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Symbol;
 
 /** most simple (class or interface) type 
@@ -31,7 +31,7 @@ public final class TypeRef  {
 		return effectiveType;
 	}
 
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		this.effectiveType = getClassDeclaration(symbolTable);
 	}
 	
@@ -40,7 +40,7 @@ public final class TypeRef  {
 		return name.getText();
 	}
 	
-	private Optional<AstClassDeclaration> getClassDeclaration(DefaultSymbolTable symbolTable) {
+	private Optional<AstClassDeclaration> getClassDeclaration(SymbolTableImpl symbolTable) {
 		Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(name.getText());
 		if(optSymbol.isPresent()) {
 			Symbol symbol = optSymbol.get();

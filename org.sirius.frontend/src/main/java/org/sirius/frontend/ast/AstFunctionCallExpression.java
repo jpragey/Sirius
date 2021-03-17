@@ -14,8 +14,9 @@ import org.sirius.frontend.api.FunctionCall;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.apiimpl.FunctionCallImpl;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Symbol;
+import org.sirius.frontend.symbols.SymbolTable;
 
 public class AstFunctionCallExpression implements AstExpression, Scoped {
 	/** Function name */
@@ -23,7 +24,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	
 	private List<AstExpression> actualArguments = new ArrayList<>();
 
-	private DefaultSymbolTable symbolTable = null;	// TODO: remove
+	private SymbolTable symbolTable;	// TODO: remove ???
 	
 	private Reporter reporter;
 	
@@ -33,7 +34,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 
 	// TODO: clean
 	private AstFunctionCallExpression(AstToken name, List<AstExpression> actualArguments, Reporter reporter,
-			Optional<AstExpression> thisExpression, DefaultSymbolTable symbolTable) {
+			Optional<AstExpression> thisExpression, SymbolTable symbolTable) {
 		super();
 		this.name = name;
 		this.actualArguments = actualArguments;
@@ -45,7 +46,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	public AstFunctionCallExpression(Reporter reporter, AstToken name, List<AstExpression> actualArguments, 
 			Optional<AstExpression> thisExpression) 
 	{
-		this(name, actualArguments, reporter, thisExpression, new DefaultSymbolTable(""));
+		this(name, actualArguments, reporter, thisExpression, new SymbolTableImpl(""));
 
 	}
 	public AstFunctionCallExpression(Reporter reporter, AstToken name) {
@@ -59,11 +60,11 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	}
 
 	@Override
-	public DefaultSymbolTable getSymbolTable() {
+	public SymbolTable getSymbolTable() {
 		return symbolTable;
 	}
 
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
 	}
 
@@ -254,7 +255,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	}
 
 	@Override
-	public AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+	public AstExpression linkToParentST(SymbolTable parentSymbolTable) {
 
 		List<AstExpression> newArgs = actualArguments.stream().map(arg -> arg.linkToParentST(parentSymbolTable)).collect(Collectors.toList());  
 
@@ -263,7 +264,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 				newArgs, 
 				reporter,
 				thisExpression,	// TODO: linkToParentST ???  
-				new DefaultSymbolTable(Optional.of(parentSymbolTable), AstFunctionCallExpression.class.getSimpleName()));
+				new SymbolTableImpl(Optional.of(parentSymbolTable), AstFunctionCallExpression.class.getSimpleName()));
 		
 		return newExpr;
 	}

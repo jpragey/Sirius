@@ -16,7 +16,7 @@ import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.ClassDeclarationImpl;
 import org.sirius.frontend.sdk.SdkContent;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.Symbol;
 
@@ -45,7 +45,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	
 	private List<AstInterfaceDeclaration> interfaces = new ArrayList<>();
 
-	private DefaultSymbolTable symbolTable; 
+	private SymbolTableImpl symbolTable; 
 	
 	private ClassDeclarationImpl classDeclarationImpl = null;
 
@@ -103,7 +103,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		return cd;
 	}
 	
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		if(symbolTable == null)
 			throw new NullPointerException();
 		
@@ -190,7 +190,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	}
 	
 	@Override
-	public DefaultSymbolTable getSymbolTable() {
+	public SymbolTableImpl getSymbolTable() {
 		return symbolTable;
 	}
 	@Override

@@ -39,7 +39,7 @@ import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.parser.Compiler;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Symbol;
 
 public class MethodTests {
@@ -277,7 +277,7 @@ public class MethodTests {
 		assertSame(allArgsPartial, func.getAllArgsPartial());
 		assertEquals(allArgsPartial.getArgs().size(), 2);
 		
-		DefaultSymbolTable partialSymbolTable = allArgsPartial.getSymbolTable();
+		SymbolTableImpl partialSymbolTable = allArgsPartial.getSymbolTable();
 		Optional<AstFunctionParameter> optArg = partialSymbolTable.lookupFunctionArgument("x");
 		assert(optArg.isPresent());
 		Optional<AstFunctionParameter> opt1Arg = partialSymbolTable.lookupFunctionArgument("y");
@@ -287,7 +287,7 @@ public class MethodTests {
 		
 		assert(returnStatement.getExpression() instanceof SimpleReferenceExpression);
 		SimpleReferenceExpression returnExpr = (SimpleReferenceExpression)returnStatement.getExpression();
-		DefaultSymbolTable st = returnExpr.getSymbolTable();
+		SymbolTableImpl st = returnExpr.getSymbolTable();
 //		st.dump();
 		Optional<Symbol> xOptSymbol = st.lookupBySimpleName("x");
 		

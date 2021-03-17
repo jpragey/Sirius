@@ -5,24 +5,24 @@ import java.util.List;
 import java.util.Optional;
 
 import org.sirius.frontend.api.Statement;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class AstBlock implements AstStatement {
 
-	private DefaultSymbolTable symbolTable; 
+	private SymbolTableImpl symbolTable; 
 	private List<AstStatement> statements;
 	
-	public AstBlock(DefaultSymbolTable symbolTable, List<AstStatement> statements) {
+	public AstBlock(SymbolTableImpl symbolTable, List<AstStatement> statements) {
 		super();
 		this.symbolTable = symbolTable;
 		this.statements = statements;
 	}
 	
 	public AstBlock() {
-		this(new DefaultSymbolTable("AstBlock"), new ArrayList<>());
+		this(new SymbolTableImpl("AstBlock"), new ArrayList<>());
 	}
 
-	public DefaultSymbolTable getSymbolTable() {
+	public SymbolTableImpl getSymbolTable() {
 		return symbolTable;
 	}
 	public List<AstStatement> getStatements() {

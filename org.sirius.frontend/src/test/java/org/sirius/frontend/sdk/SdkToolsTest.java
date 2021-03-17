@@ -20,19 +20,19 @@ import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.QNameRefType;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Symbol;
 
 
 public class SdkToolsTest {
 	private Reporter reporter;
-	private DefaultSymbolTable symbolTable ;
+	private SymbolTableImpl symbolTable ;
 	private SdkTools sdkTools;
 	
 	@BeforeEach
 	public void setup() throws Exception {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
-		symbolTable = new DefaultSymbolTable("SdkToolsTest");
+		symbolTable = new SymbolTableImpl("SdkToolsTest");
 		this.sdkTools = new SdkTools(reporter, symbolTable);
 //		sdkTools.parseSdk(symbolTable);
 		
@@ -75,7 +75,7 @@ public class SdkToolsTest {
 		
 	}
 	
-	private void checkSymbolTableContainsClass(DefaultSymbolTable symbolTable, QName symbolQName) {
+	private void checkSymbolTableContainsClass(SymbolTableImpl symbolTable, QName symbolQName) {
 		
 		Symbol symbol = symbolTable.lookupByQName(symbolQName).get();
 		
@@ -83,7 +83,7 @@ public class SdkToolsTest {
 		AstClassDeclaration stringCD = symbol.getClassDeclaration().get();
 	}
 	
-	private void checkSymbolTableContainsInterface(DefaultSymbolTable symbolTable, QName symbolQName) {
+	private void checkSymbolTableContainsInterface(SymbolTableImpl symbolTable, QName symbolQName) {
 		
 		Symbol symbol = symbolTable.lookupByQName(symbolQName).get();
 		

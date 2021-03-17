@@ -30,26 +30,24 @@ import org.sirius.frontend.ast.TypeParameter;
  * @author jpragey
  *
  */
-public class DefaultSymbolTable implements SymbolTable {
+public class SymbolTableImpl implements SymbolTable {
 
 	private HashMap<QName, Symbol> symbols = new HashMap<>();
 	
 	private HashMap<String, Symbol> symbolsBySimpleName = new HashMap<>();
 	
-	private Optional<DefaultSymbolTable> parent;
+	private Optional<SymbolTable> parent;
 	
 	/** Name of the container (debug only) */
 	private String dbgName;
 	
-	public DefaultSymbolTable(Optional<DefaultSymbolTable> parent, String dbgName) {
+	public SymbolTableImpl(Optional<SymbolTable> parent, String dbgName) {
 		super();
 		this.parent = parent;
 		this.dbgName = dbgName;
 	}
-	public DefaultSymbolTable(String dbgName) {
-		super();
-		this.parent = Optional.empty();
-		this.dbgName = "<unnamed>";
+	public SymbolTableImpl(String dbgName) {
+		this(Optional.empty(), dbgName);
 	}
 
 	
@@ -61,14 +59,10 @@ public class DefaultSymbolTable implements SymbolTable {
 //	}
 	public void addSymbol(QName symbolQName, Symbol symbol) {
 		assert(symbolQName != null);
-		
-//		reporter.error("Symbol " + simpleName.getText() + " soon defined ");
-
-		
-		
 		symbols.put(symbolQName, symbol);
 		symbolsBySimpleName.put(symbolQName.getLast(), symbol);
 	}
+	
 	
 	public void addClass(AstClassDeclaration classDeclaration) {
 		AstToken simpleName = classDeclaration.getName();
@@ -112,7 +106,6 @@ public class DefaultSymbolTable implements SymbolTable {
 		// TODO: add symbol in qname-based 'symbols' map 
 		symbolsBySimpleName.put(simpleName.getText(), new Symbol(simpleName, localVariableDeclaration));
 		
-//		addSymbol(packageQName, simpleName, new Symbol(simpleName, valueDeclaration));
 	}
 
 //	private Optional<AstFunctionFormalArgument> functionArgument = Optional.empty();
@@ -126,7 +119,6 @@ public class DefaultSymbolTable implements SymbolTable {
 	}
 	
 	
-//	public Optional<Symbol> lookup(QName packageQName, String simpleName) {
 	public Optional<Symbol> lookupByQName(QName symbolQName) {
 		Symbol symbol = symbols.get(symbolQName);
 		

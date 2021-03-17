@@ -6,7 +6,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.core.AbstractCompilationUnit;
 import org.sirius.frontend.core.InputTextProvider;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public interface Session {
 	
@@ -29,7 +29,7 @@ public interface Session {
 	}
 	
 
-	default void stdTransform(Reporter reporter, InputTextProvider input, AbstractCompilationUnit compilationUnit, DefaultSymbolTable globalSymbolTable) {
+	default void stdTransform(Reporter reporter, InputTextProvider input, AbstractCompilationUnit compilationUnit, SymbolTableImpl globalSymbolTable) {
 		StdAstTransforms.insertPackagesInModules(reporter, compilationUnit);
 		
 		// -- Set qualified names 

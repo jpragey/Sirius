@@ -21,7 +21,7 @@ import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.PackageDescriptorCompilationUnitContext;
 import org.sirius.frontend.parser.SiriusParser.QnameContext;
 import org.sirius.frontend.parser.SiriusParser.ScriptCompilationUnitContext;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 /** Visitor-based parser for the 'scriptCompilationUnit' rule.
  * 
@@ -32,9 +32,9 @@ public class ScriptCompilatioUnitParser {
 
 	public static class ScriptCompilationUnitVisitor extends SiriusBaseVisitor<ScriptCompilationUnit> {
 		private Reporter reporter;
-		private DefaultSymbolTable globalSymbolTable;
+		private SymbolTableImpl globalSymbolTable;
 
-		public ScriptCompilationUnitVisitor(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
+		public ScriptCompilationUnitVisitor(Reporter reporter, SymbolTableImpl globalSymbolTable) {
 			super();
 			this.reporter = reporter;
 			this.globalSymbolTable = globalSymbolTable;

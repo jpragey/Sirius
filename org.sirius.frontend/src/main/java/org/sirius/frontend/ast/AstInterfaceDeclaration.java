@@ -14,7 +14,7 @@ import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.InterfaceDeclarationImpl;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 import com.google.common.collect.ImmutableList;
 
@@ -24,7 +24,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 
 	private List<AstToken> ancestors = new ArrayList<>();
 	
-	private DefaultSymbolTable symbolTable; 
+	private SymbolTableImpl symbolTable; 
 
 	private ImmutableList<TypeParameter> typeParameters;
 	private AstToken name;
@@ -83,7 +83,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		return this.qName;
 	}
 
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		if(symbolTable == null)
 			throw new NullPointerException();
 		
@@ -104,7 +104,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	}
 
 	@Override
-	public DefaultSymbolTable getSymbolTable() {
+	public SymbolTableImpl getSymbolTable() {
 		return symbolTable;
 	}
 

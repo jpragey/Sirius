@@ -11,7 +11,7 @@ import org.sirius.frontend.ast.FunctionDefinition;
 public class Scope {
 	private Optional<Scope> parentScope;
 
-	private DefaultSymbolTable symbolTable = new DefaultSymbolTable("");
+	private SymbolTableImpl symbolTable = new SymbolTableImpl("");
 	
 	public Scope(Optional<Scope> parentScope) {
 		super();

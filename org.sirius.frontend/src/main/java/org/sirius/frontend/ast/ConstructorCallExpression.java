@@ -11,8 +11,9 @@ import org.sirius.frontend.api.ConstructorCall;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.IntegerType;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Symbol;
+import org.sirius.frontend.symbols.SymbolTable;
 
 public class ConstructorCallExpression implements AstExpression, Scoped {
 
@@ -22,12 +23,12 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 	
 	private List<AstExpression> actualArguments = new ArrayList<>();
 
-	private DefaultSymbolTable symbolTable = null;
+	private SymbolTableImpl symbolTable = null;
 
 	
 	
 	private ConstructorCallExpression(Reporter reporter, AstToken name, List<AstExpression> actualArguments,
-			DefaultSymbolTable symbolTable) {
+			SymbolTableImpl symbolTable) {
 		super();
 		this.reporter = reporter;
 		this.name = name;
@@ -36,7 +37,7 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 	}
 
 	public ConstructorCallExpression(Reporter reporter, AstToken name, List<AstExpression> actualArguments) {
-		this(reporter,name, actualArguments, new DefaultSymbolTable(name.getText()));
+		this(reporter,name, actualArguments, new SymbolTableImpl(name.getText()));
 	}
 
 	public ConstructorCallExpression(Reporter reporter, AstToken name) {
@@ -45,11 +46,11 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 		this.name = name;
 	}
 
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
 	}
 	@Override
-	public DefaultSymbolTable getSymbolTable() {
+	public SymbolTableImpl getSymbolTable() {
 		return symbolTable;
 	}
 
@@ -149,11 +150,11 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 	}
 
 	@Override
-	public AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+	public AstExpression linkToParentST(SymbolTable parentSymbolTable) {
 		AstExpression expr = new ConstructorCallExpression(reporter, 
 				name, 
 				actualArguments.stream().map(exp -> exp.linkToParentST(parentSymbolTable)).collect(Collectors.toList()),
-				new DefaultSymbolTable(Optional.of(parentSymbolTable), ConstructorCallExpression.class.getSimpleName()));
+				new SymbolTableImpl(Optional.of(parentSymbolTable), ConstructorCallExpression.class.getSimpleName()));
 		return expr;
 	}
 

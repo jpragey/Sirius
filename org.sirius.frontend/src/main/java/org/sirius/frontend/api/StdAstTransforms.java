@@ -10,7 +10,7 @@ import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.core.AbstractCompilationUnit;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.QNameSetterVisitor;
 import org.sirius.frontend.symbols.ScopeSetterVisitor;
 import org.sirius.frontend.symbols.SymbolResolutionVisitor;
@@ -86,11 +86,11 @@ public class StdAstTransforms {
 		compilationUnit.visit(visitor);
 	}
 	
-	public static void fillSymbolTables(AbstractCompilationUnit compilationUnit, DefaultSymbolTable symbolTable) {
+	public static void fillSymbolTables(AbstractCompilationUnit compilationUnit, SymbolTableImpl symbolTable) {
 		SymbolTableFillingVisitor fillingVisitor = new SymbolTableFillingVisitor(symbolTable);
 		compilationUnit.visit(fillingVisitor);
 	}
-	public static void resolveSymbols(Reporter reporter, AbstractCompilationUnit compilationUnit, DefaultSymbolTable symbolTable) {
+	public static void resolveSymbols(Reporter reporter, AbstractCompilationUnit compilationUnit, SymbolTableImpl symbolTable) {
 		SymbolResolutionVisitor resolutionVisitor = new SymbolResolutionVisitor(reporter, symbolTable);
 		compilationUnit.visit(resolutionVisitor);
 	}

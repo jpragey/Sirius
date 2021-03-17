@@ -17,7 +17,7 @@ import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class AstClassDeclarationTest {
 
@@ -37,7 +37,7 @@ public class AstClassDeclarationTest {
 	@Test
 	public void inheritsTest() {
 		
-		DefaultSymbolTable symbolTable = new DefaultSymbolTable("AstClassDeclarationTest");
+		SymbolTableImpl symbolTable = new SymbolTableImpl("AstClassDeclarationTest");
 		
 		AstClassDeclaration ancestor = new AstClassDeclaration(reporter, AstToken.internal("ancestor"));
 		

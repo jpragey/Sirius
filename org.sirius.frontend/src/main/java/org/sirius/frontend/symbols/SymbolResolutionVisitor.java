@@ -27,10 +27,10 @@ public class SymbolResolutionVisitor implements AstVisitor {
 
 	private Stack<SymbolTable> stack = new Stack<>();
 	
-	private DefaultSymbolTable globalSymbolTable;
+	private SymbolTableImpl globalSymbolTable;
 	private Reporter reporter;
 	
-	public SymbolResolutionVisitor(Reporter reporter, DefaultSymbolTable globalSymbolTable) {
+	public SymbolResolutionVisitor(Reporter reporter, SymbolTableImpl globalSymbolTable) {
 		super();
 //		this.packageQName = packageQName;
 		this.globalSymbolTable = globalSymbolTable;

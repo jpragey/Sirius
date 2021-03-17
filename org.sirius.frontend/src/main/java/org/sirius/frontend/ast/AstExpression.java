@@ -3,12 +3,13 @@ package org.sirius.frontend.ast;
 import java.util.Optional;
 
 import org.sirius.frontend.api.Expression;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public interface AstExpression extends Verifiable {
 	
 	
-	AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable);
+	AstExpression linkToParentST(SymbolTable parentSymbolTable);
 	
 	/** Expression type. Note that it may be absent at parsing type (returns null), at least for function call expression,
 	 *  

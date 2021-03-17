@@ -4,7 +4,8 @@ import java.util.Optional;
 
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.apiimpl.FloatConstantExpressionImpl;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class AstFloatConstantExpression implements AstExpression {
 	
@@ -50,7 +51,7 @@ public class AstFloatConstantExpression implements AstExpression {
 	}
 	
 	@Override
-	public AstFloatConstantExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+	public AstFloatConstantExpression linkToParentST(SymbolTable parentSymbolTable) {
 		return this;
 	}
 

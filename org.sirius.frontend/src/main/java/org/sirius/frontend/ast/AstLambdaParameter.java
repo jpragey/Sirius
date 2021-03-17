@@ -7,7 +7,7 @@ import org.sirius.common.core.QName;
 import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.Scope;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 /** Argument for function / method or class constructor declaration
  * 
@@ -18,7 +18,7 @@ public class AstLambdaParameter {
 	
 	private AstType type;
 	private Optional<AstToken> name;
-	private DefaultSymbolTable symbolTable;
+	private SymbolTableImpl symbolTable;
 	/** index in arg list (set *after* construction */
 	private int index;
 
@@ -67,7 +67,7 @@ public class AstLambdaParameter {
 		return name.map(AstToken::getText).orElse("");
 	}
 	
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
 	}
 	

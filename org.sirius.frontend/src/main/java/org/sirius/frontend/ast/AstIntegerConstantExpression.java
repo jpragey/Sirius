@@ -7,7 +7,8 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class AstIntegerConstantExpression implements AstExpression {
 	
@@ -17,7 +18,7 @@ public class AstIntegerConstantExpression implements AstExpression {
 	// TODO: should be static
 	private AstClassDeclaration intType;
 	
-	private DefaultSymbolTable symbolTable; // TODO: optional (???)
+	private SymbolTableImpl symbolTable; // TODO: optional (???)
 	
 	public AstIntegerConstantExpression(AstToken content, Reporter reporter) {
 		super();
@@ -36,7 +37,7 @@ public class AstIntegerConstantExpression implements AstExpression {
 		return content;
 	}
 	
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
 		
 		// TODO: Maybe we should check ??? 
@@ -101,7 +102,7 @@ public class AstIntegerConstantExpression implements AstExpression {
 	}
 
 	@Override
-	public AstIntegerConstantExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+	public AstIntegerConstantExpression linkToParentST(SymbolTable parentSymbolTable) {
 		return this;
 	}
 

@@ -32,15 +32,15 @@ import org.sirius.frontend.ast.TypeParameter;
  */
 public class SymbolTableFillingVisitor implements AstVisitor {
 
-	private Stack<DefaultSymbolTable> symbolTableStack = new Stack<>();
+	private Stack<SymbolTableImpl> symbolTableStack = new Stack<>();
 	
 
-	public SymbolTableFillingVisitor(DefaultSymbolTable globalSymbolTable) {
+	public SymbolTableFillingVisitor(SymbolTableImpl globalSymbolTable) {
 		super();
 		this.symbolTableStack.push(globalSymbolTable);
 	}
 
-	private void processImports(DefaultSymbolTable st, List<ImportDeclaration> imports) {
+	private void processImports(SymbolTableImpl st, List<ImportDeclaration> imports) {
 		assert(st != null);
 		symbolTableStack.push(st);
 		
@@ -72,9 +72,9 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 	
 	@Override
 	public void startClassDeclaration(AstClassDeclaration classDeclaration) {
-		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
+		SymbolTableImpl parentSymbolTable = symbolTableStack.lastElement();
 		
-		DefaultSymbolTable symbolTable = new DefaultSymbolTable(Optional.of(parentSymbolTable), classDeclaration.getName().getText());
+		SymbolTableImpl symbolTable = new SymbolTableImpl(Optional.of(parentSymbolTable), classDeclaration.getName().getText());
 		symbolTableStack.push(symbolTable);
 		classDeclaration.setSymbolTable(symbolTable);
 
@@ -89,9 +89,9 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 
 	@Override
 	public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
-		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
+		SymbolTableImpl parentSymbolTable = symbolTableStack.lastElement();
 		
-		DefaultSymbolTable symbolTable = new DefaultSymbolTable(Optional.of(parentSymbolTable), interfaceDeclaration.getName().getText());
+		SymbolTableImpl symbolTable = new SymbolTableImpl(Optional.of(parentSymbolTable), interfaceDeclaration.getName().getText());
 		symbolTableStack.push(symbolTable);
 		interfaceDeclaration.setSymbolTable(symbolTable);
 
@@ -136,13 +136,13 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 
 	@Override
 	public void startPartial (Partial partial) {
-		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
+		SymbolTableImpl parentSymbolTable = symbolTableStack.lastElement();
 		
 		String stName = "Partial " + partial.getName() + 
 //				"[" + partial.getCaptures().size() + "]" +
 				"(" + partial.getArgs().size() + ")";
 				
-		DefaultSymbolTable functionSymbolTable = new DefaultSymbolTable(Optional.of(parentSymbolTable), stName);
+		SymbolTableImpl functionSymbolTable = new SymbolTableImpl(Optional.of(parentSymbolTable), stName);
 		
 		partial.assignSymbolTable(functionSymbolTable);
 		symbolTableStack.push(functionSymbolTable);
@@ -162,26 +162,26 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 //	}
 	@Override
 	public void startFunctionDefinition(FunctionDefinition functionDefinition) {
-		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
+		SymbolTableImpl parentSymbolTable = symbolTableStack.lastElement();
 		parentSymbolTable.addFunction(functionDefinition);
 	}
 	
 	@Override
 	public void startFunctionFormalArgument(AstFunctionParameter formalArgument) {
-		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
+		SymbolTableImpl symbolTable = symbolTableStack.lastElement();
 		formalArgument.setSymbolTable(symbolTable);
 	}
 	
 	@Override
 	public void startFunctionCallExpression(AstFunctionCallExpression expression) {
-		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
+		SymbolTableImpl symbolTable = symbolTableStack.lastElement();
 		assert(symbolTable != null);
 		
 		expression.setSymbolTable(symbolTable);
 	}
 	@Override
 	public void startConstructorCallExpression (ConstructorCallExpression expression) {
-		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
+		SymbolTableImpl symbolTable = symbolTableStack.lastElement();
 		assert(symbolTable != null);
 		
 		expression.setSymbolTable(symbolTable);
@@ -189,40 +189,40 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 
 	@Override
 	public void startSimpleReferenceExpression(SimpleReferenceExpression expression) {
-		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
+		SymbolTableImpl symbolTable = symbolTableStack.lastElement();
 		assert(symbolTable != null);
 		
 		expression.setSymbolTable(symbolTable);
 	}
 
 	public void startFieldAccess (AstMemberAccessExpression expression) {
-		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
+		SymbolTableImpl symbolTable = symbolTableStack.lastElement();
 		assert(symbolTable != null);
 		expression.setSymbolTable(symbolTable);
 	}
 
 	@Override
 	public void start(SimpleType simpleType) {
-		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
+		SymbolTableImpl symbolTable = symbolTableStack.lastElement();
 		simpleType.setSymbolTable(symbolTable);
 	}
 	
 	@Override
 	public void startIntegerConstant(AstIntegerConstantExpression expression) {
-		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
+		SymbolTableImpl symbolTable = symbolTableStack.lastElement();
 		expression.setSymbolTable(symbolTable);
 	}
 	
 	@Override
 	public void startStringConstant(AstStringConstantExpression expression) {
-		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
+		SymbolTableImpl symbolTable = symbolTableStack.lastElement();
 		expression.setSymbolTable(symbolTable);
 	}
 	
 	
 	@Override
 	public void start (AstLocalVariableStatement statement) {
-		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
+		SymbolTableImpl symbolTable = symbolTableStack.lastElement();
 		statement.setSymbolTable(symbolTable);
 		symbolTable.addLocalVariable(statement);
 	}

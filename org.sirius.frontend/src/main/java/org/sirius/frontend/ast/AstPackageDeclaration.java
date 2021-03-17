@@ -13,7 +13,7 @@ import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.apiimpl.PackageDeclarationImpl;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.SymbolTable;
 
 /** Package declaration, eg as written in package descriptor.
@@ -48,7 +48,7 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 		this.reporter = reporter;
 		this.qname = qname;
 //		this.symbolTable = new LocalSymbolTable(reporter);
-		this.symbolTable = new DefaultSymbolTable("<TODO>" /*TODO*/);
+		this.symbolTable = new SymbolTableImpl("<TODO>" /*TODO*/);
 		
 		functionDeclarations.forEach (fct -> {this.functionDeclarations.add(fct);	this.visitables.add(fct);});
 		classDeclarations.forEach	 (cd  -> {

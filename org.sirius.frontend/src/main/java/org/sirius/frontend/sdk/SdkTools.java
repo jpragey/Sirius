@@ -29,7 +29,7 @@ import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.QNameRefType;
 import org.sirius.frontend.core.AbstractCompilationUnit;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.QNameSetterVisitor;
 import org.sirius.frontend.symbols.SymbolResolutionVisitor;
 import org.sirius.frontend.symbols.SymbolTableFillingVisitor;
@@ -51,7 +51,7 @@ public class SdkTools {
 	private AstModuleDeclaration sdkModule;
 	private SdkContent sdkContent;
 
-	public SdkTools(Reporter reporter, DefaultSymbolTable symbolTable) {
+	public SdkTools(Reporter reporter, SymbolTableImpl symbolTable) {
 		super();
 		this.reporter = reporter;
 
@@ -64,7 +64,7 @@ public class SdkTools {
 		this.sdkContent = new SdkContent(this.sdkModule);
 	}
 
-	private AstModuleDeclaration parseSdk(DefaultSymbolTable symbolTable) {
+	private AstModuleDeclaration parseSdk(SymbolTableImpl symbolTable) {
 		
 		List<Class<?>> sdkClasses = Sdk.sdkClasses();
 		
@@ -139,7 +139,7 @@ public class SdkTools {
 		return md;
 	}
 	
-	private AstClassOrInterface parseClass(Class<?> clss, TopLevelClass topLevelClassAnno, DefaultSymbolTable symbolTable) {
+	private AstClassOrInterface parseClass(Class<?> clss, TopLevelClass topLevelClassAnno, SymbolTableImpl symbolTable) {
 		String name = topLevelClassAnno.name();
 		
 		AstClassOrInterface classOrIntf;
@@ -160,7 +160,7 @@ public class SdkTools {
 		return classOrIntf;
 	}
 	
-	private List<FunctionDefinition> parseTopLevel(Class<?> clss, TopLevelMethods topLevelMethods, DefaultSymbolTable symbolTable) {
+	private List<FunctionDefinition> parseTopLevel(Class<?> clss, TopLevelMethods topLevelMethods, SymbolTableImpl symbolTable) {
 		
 		List<FunctionDefinition> functionDefinitions = new ArrayList<>();
 		for(Method method: clss.getDeclaredMethods()) {
@@ -174,7 +174,7 @@ public class SdkTools {
 		return functionDefinitions;
 	}
 	
-	private FunctionDefinition parseTopLevelFunction(Method method, SiriusMethod m, /*QName classPkgQName, */DefaultSymbolTable symbolTable) {
+	private FunctionDefinition parseTopLevelFunction(Method method, SiriusMethod m, /*QName classPkgQName, */SymbolTableImpl symbolTable) {
 		
 		String methodName = m.methodName();
 		if(methodName.isEmpty())

@@ -8,9 +8,10 @@ import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.LocalVariableReference;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.FunctionActualArgumentImpl;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.Symbol;
+import org.sirius.frontend.symbols.SymbolTable;
 
 /** 'single token' reference; meaning is highly context-dependant (local variable, function parameter, member value...)
  *
@@ -22,12 +23,12 @@ import org.sirius.frontend.symbols.Symbol;
 public class SimpleReferenceExpression implements AstExpression, Scoped {
 	private Reporter reporter;
 	private AstToken referenceName;
-	private DefaultSymbolTable symbolTable = null;
+	private SymbolTableImpl symbolTable = null;
 	private Scope scope = null;
 	
 	private Optional<Expression> impl = null;
 	
-	private SimpleReferenceExpression(Reporter reporter, AstToken referenceName, DefaultSymbolTable symbolTable) {
+	private SimpleReferenceExpression(Reporter reporter, AstToken referenceName, SymbolTableImpl symbolTable) {
 		super();
 		this.reporter = reporter;
 		this.referenceName = referenceName;
@@ -45,7 +46,7 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 		return referenceName.getText();
 	}
 
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
 	}
 
@@ -152,14 +153,14 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 	}
 
 	@Override
-	public AstExpression linkToParentST(DefaultSymbolTable parentSymbolTable) {
+	public AstExpression linkToParentST(SymbolTable parentSymbolTable) {
 		SimpleReferenceExpression expr = new SimpleReferenceExpression(reporter, referenceName, 
-				new DefaultSymbolTable(Optional.of(parentSymbolTable), this.getClass().getSimpleName()));
+				new SymbolTableImpl(Optional.of(parentSymbolTable), this.getClass().getSimpleName()));
 		return expr;
 	}
 
 	@Override
-	public DefaultSymbolTable getSymbolTable() {
+	public SymbolTableImpl getSymbolTable() {
 		return symbolTable;
 	}
 

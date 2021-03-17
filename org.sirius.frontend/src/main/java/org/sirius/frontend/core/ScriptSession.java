@@ -18,7 +18,7 @@ import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.parser.SiriusParser.ScriptCompilationUnitContext;
 import org.sirius.frontend.sdk.SdkTools;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class ScriptSession implements Session {
 
@@ -33,7 +33,7 @@ public class ScriptSession implements Session {
 	
 	private Optional<ShebangDeclaration> shebang = Optional.empty(); 
 
-	private DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable("ScriptSession");
+	private SymbolTableImpl globalSymbolTable = new SymbolTableImpl("ScriptSession");
 
 	private ScriptCompilationUnit compilationUnit;
 
@@ -50,7 +50,7 @@ public class ScriptSession implements Session {
 		return compilationUnit;
 	}
 
-	public DefaultSymbolTable getGlobalSymbolTable() {
+	public SymbolTableImpl getGlobalSymbolTable() {
 		return globalSymbolTable;
 	}
 
@@ -73,7 +73,7 @@ public class ScriptSession implements Session {
 		}
 	}
 	
-	private ScriptCompilationUnit parseScriptInput(InputTextProvider input, DefaultSymbolTable getGlobalSymbolTable) {
+	private ScriptCompilationUnit parseScriptInput(InputTextProvider input, SymbolTableImpl getGlobalSymbolTable) {
 		
 		String sourceCode = input.getText();
 		

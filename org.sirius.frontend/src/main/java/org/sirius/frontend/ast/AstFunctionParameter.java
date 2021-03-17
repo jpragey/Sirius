@@ -6,7 +6,7 @@ import org.sirius.common.core.QName;
 import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.FunctionFormalArgumentImpl;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 /** Argument for function / method or class constructor declaration
  * 
@@ -17,7 +17,7 @@ public class AstFunctionParameter implements Verifiable {
 	
 	private AstType type;
 	private AstToken name;
-	private DefaultSymbolTable symbolTable;
+	private SymbolTableImpl symbolTable;
 	/** index in arg list (set *after* construction */
 	private int index;
 
@@ -60,7 +60,7 @@ public class AstFunctionParameter implements Verifiable {
 		return name.getText();
 	}
 	
-	public void setSymbolTable(DefaultSymbolTable symbolTable) {
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
 	}
 	

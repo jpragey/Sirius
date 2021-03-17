@@ -25,13 +25,13 @@ import org.sirius.frontend.core.stdlayout.ModuleFiles;
 import org.sirius.frontend.core.stdlayout.PackageFiles;
 import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
-import org.sirius.frontend.symbols.DefaultSymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class StandardSession implements Session {
 
 	private Reporter reporter;
 
-	private DefaultSymbolTable globalSymbolTable = new DefaultSymbolTable("StandardSession");
+	private SymbolTableImpl globalSymbolTable = new SymbolTableImpl("StandardSession");
 	
 	private List<ModuleContent> moduleContents = new ArrayList<>();
 
