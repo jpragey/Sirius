@@ -3,6 +3,7 @@
 
 The compiler overall organization is described link:compiler_components.html[] .
 
+Setting up a dev environment: link:dev_environment.html[] .
 
 
 

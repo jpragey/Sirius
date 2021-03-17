@@ -8,7 +8,13 @@ To compile it, you need java 11+, maven 3.6.0+ and some recent git.
 To install the full JDK (the JRE alone is not enough):
 
 ```bash
-sudo apt install openjdk-11-jdk
+sudo apt install openjdk-11-jdk git maven
+```
+
+If you want to (re)create the doc site, you will need a few more packages:
+
+```bash
+sudo apt install graphviz plantuml
 ```
 Then get Sirius source and compile it:
 
@@ -41,7 +47,7 @@ java --module-path ../dist/lib/org.sirius.sdk-0.0.1-SNAPSHOT.jar:../dist/lib/org
 ```
 NB: JvmPackage is a fake class that holds top-level functions - name to be changed at some point.
 
-To create the site (and doc):
+To create the doc site:
 
 ```bash
 mvn site site:stage
