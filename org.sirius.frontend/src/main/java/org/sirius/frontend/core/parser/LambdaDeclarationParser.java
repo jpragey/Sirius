@@ -1,5 +1,6 @@
 package org.sirius.frontend.core.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,10 +10,13 @@ import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.FunctionBody;
+import org.sirius.frontend.ast.LambdaClosure;
+import org.sirius.frontend.ast.LambdaDeclaration;
 import org.sirius.frontend.ast.LambdaDefinition;
 import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionParameterVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.FunctionBodyContext;
+import org.sirius.frontend.parser.SiriusParser.LambdaDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.LambdaDefinitionContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
 
@@ -29,41 +33,6 @@ public class LambdaDeclarationParser {
 		this.reporter = reporter;
 	}
 
-	//AstFunctionParameter
-/***	
-	public static class LambdaParameterVisitor extends SiriusBaseVisitor<AstLambdaParameter> {
-		private Reporter reporter;
-		
-		public LambdaParameterVisitor(Reporter reporter) {
-			super();
-			this.reporter = reporter;
-		}
-
-		@Override
-		public AstLambdaParameter visitLambdaDeclaration(LambdaDeclarationContext ctx) {
-			
-			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
-			AstType type = typeVisitor.visit(ctx.type());
-
-			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
-
-			AstLambdaParameter lp = new AstLambdaParameter(type);
-			
-			return super.visitLambdaDeclaration(ctx);
-		}
-//		@Override
-//		public AstLambdaParameter visitFunctionFormalArgument(FunctionFormalArgumentContext ctx) {
-//			
-//			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
-//			
-//			AstType type = typeVisitor.visit(ctx.type());
-//			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
-//
-//			return new AstFunctionParameter(type, name);
-//		}
-		
-	}
-*/
 	public static class FunctionBodyVisitor extends SiriusBaseVisitor<List<AstStatement> > {
 		private Reporter reporter;
 		
@@ -84,14 +53,38 @@ public class LambdaDeclarationParser {
 		}
 	}
 
-	public static class LambdaDeclarationVisitor extends SiriusBaseVisitor<LambdaDefinition> {
+	public static class LambdaDeclarationVisitor extends SiriusBaseVisitor<LambdaDeclaration> {
 		private Reporter reporter;
 
-		public LambdaDeclarationVisitor(Reporter reporter/*, QName containerQName*/) {
+		public LambdaDeclarationVisitor(Reporter reporter) {
 			super();
 			this.reporter = reporter;
 		}
+		
+		@Override
+		public LambdaDeclaration visitLambdaDeclaration(LambdaDeclarationContext ctx) {
+			LambdaClosure closure = new LambdaClosure(); // TODO, 
+			
+			TypeParser.TypeVisitor argTypeVisitor = new TypeParser.TypeVisitor(reporter);
+			
+			List<AstType> args = ctx.lambdaDeclarationArgType().stream().map(typeContext -> argTypeVisitor.visit(typeContext)).collect(Collectors.toList());
+			
+			TypeParser.TypeVisitor returnTypeVisitor = new TypeParser.TypeVisitor(reporter);
+			AstType returnType = returnTypeVisitor.visit(ctx.returnType);
+			
+			LambdaDeclaration ld = new LambdaDeclaration(closure, args, returnType);
+			return ld;
+		}
+	}
 
+	public static class LambdaDefinitionVisitor extends SiriusBaseVisitor<LambdaDefinition> {
+		private Reporter reporter;
+
+		public LambdaDefinitionVisitor(Reporter reporter) {
+			super();
+			this.reporter = reporter;
+		}
+		
 		@Override
 		public LambdaDefinition visitLambdaDefinition(LambdaDefinitionContext ctx) {
 			
@@ -105,8 +98,6 @@ public class LambdaDeclarationParser {
 			for(var fp: functionParams) {
 				fp.setIndex(currentArgIndex++);
 			}
-			
-//			List<AstFunctionParameter> functionParams = Collections.emptyList();// TODO: temp
 			
 			// -- Return type
 			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);

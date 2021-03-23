@@ -39,12 +39,12 @@ public class LambdaDefinitionParserTest {
 	}
 	
 	
-	private LambdaDefinition parseTypeDeclaration(String inputText /*, QName containerQName*/) {
+	private LambdaDefinition parseLambdaDefinition(String inputText) {
 		
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.lambdaDefinition();
 				
-		LambdaDeclarationParser.LambdaDeclarationVisitor typeVisitor = new LambdaDeclarationParser.LambdaDeclarationVisitor(reporter /*, containerQName*/);
+		LambdaDeclarationParser.LambdaDefinitionVisitor typeVisitor = new LambdaDeclarationParser.LambdaDefinitionVisitor(reporter /*, containerQName*/);
 		LambdaDefinition myType = typeVisitor.visit(tree);
 		
 		return myType;
@@ -54,7 +54,7 @@ public class LambdaDefinitionParserTest {
 	@DisplayName("Lambda parameters")
 	@Disabled("Lambda support temp. removed")
 	public void functionWithParameters() {
-		LambdaDefinition lambda = parseTypeDeclaration("void (A a, B b) {}");
+		LambdaDefinition lambda = parseLambdaDefinition("void (A a, B b) {}");
 		//assertEquals(partialList.getNameString(), "f");
 		assertEquals(lambda.getArgs().size(), 2);
 		
@@ -66,7 +66,7 @@ public class LambdaDefinitionParserTest {
 	@Test
 	@DisplayName("Lambda Simple return type")
 	public void functionReturnType() {
-		LambdaDefinition lambda = parseTypeDeclaration("Result () {}");
+		LambdaDefinition lambda = parseLambdaDefinition("Result () {}");
 		AstType returnType = lambda.getReturnType();
 		
 		assertThat(returnType, instanceOf(SimpleType.class));
@@ -77,7 +77,7 @@ public class LambdaDefinitionParserTest {
 	@Test
 	@DisplayName("Lambda with void return type")
 	public void functionVoidReturnType() {
-		LambdaDefinition lambda = parseTypeDeclaration("void () {}"/*, new QName()*/);
+		LambdaDefinition lambda = parseLambdaDefinition("void () {}"/*, new QName()*/);
 		AstType returnType = lambda.getReturnType();
 		
 		assertThat(returnType, instanceOf(AstVoidType.class));
@@ -86,7 +86,7 @@ public class LambdaDefinitionParserTest {
 	@Test
 	@DisplayName("Lambda containing statements")
 	public void functionWithBodyStatements() {
-		LambdaDefinition lambda = parseTypeDeclaration("void () {Integer i; return 42;}");
+		LambdaDefinition lambda = parseLambdaDefinition("void () {Integer i; return 42;}");
 		List<AstStatement> bodyStatements = lambda.getBody().getStatements();
 		
 		assertThat(bodyStatements.size(), is(2));

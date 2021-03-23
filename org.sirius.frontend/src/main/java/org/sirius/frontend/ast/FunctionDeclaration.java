@@ -15,6 +15,7 @@ public class FunctionDeclaration implements Visitable, Verifiable {
 	private AstToken name;
 	
 	private LambdaDeclaration lambdaDeclaration;
+	private List<AstFunctionParameter> args; // TODO: remove redundancy args / lambdaDeclaration  
 	
 	private boolean member /* ie is an instance method*/;
 	
@@ -26,7 +27,9 @@ public class FunctionDeclaration implements Visitable, Verifiable {
 		super();
 		this.member = member;
 		this.name = name;
-		this.lambdaDeclaration = new LambdaDeclaration(args, returnType);
+		this.args = args;
+		
+		this.lambdaDeclaration = new LambdaDeclaration(args.stream().map(p -> p.getType()).collect(Collectors.toUnmodifiableList()), returnType);
 	}
 	public void setContainerQName(QName containerQName) {
 		this.qName = containerQName.child(new QName(name.getText()));
@@ -59,7 +62,7 @@ public class FunctionDeclaration implements Visitable, Verifiable {
 	}
 
 	public List<AstFunctionParameter> getArgs() {
-		return lambdaDeclaration.getArgs();
+		return args;
 	}
 
 	public boolean isMember() {

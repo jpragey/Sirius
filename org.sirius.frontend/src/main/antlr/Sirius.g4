@@ -222,8 +222,20 @@ functionParameter
 	type LOWER_ID
 ;
 
+// -- LAMBDAS
+
 // lamda declaration: parameter names are optional, return type is mandatory, no body
-//lambdaDeclaration 
+lambdaDeclaration :
+	// []
+	'('  lambdaDeclarationArgType
+		(',' lambdaDeclarationArgType) *
+	 ')'
+	 '->' returnType=type 
+	; 
+	
+lambdaDeclarationArgType :
+	type
+	;
 //@init {
 //}
 //	: 
@@ -237,16 +249,16 @@ functionParameter
 //	')' 
 //	;
 
-lambdaOptionalArgument 
-:
-	type LOWER_ID ?
-;
-lambdaFormalArgumentList 
-:
-  	(  lambdaOptionalArgument		
-  	  (  ',' lambdaOptionalArgument	)*
-    )?
-;
+//lambdaOptionalArgument 
+//:
+//	type LOWER_ID ?
+//;
+//lambdaFormalArgumentList 
+//:
+//  	(  lambdaOptionalArgument		
+//  	  (  ',' lambdaOptionalArgument	)*
+//    )?
+//;
 
 
 lambdaDefinition 
@@ -457,6 +469,7 @@ type
 	| first=type '&' second=type	# intersectionType
 	| '<' type '>'					# bracketedType
 	| el=type '[' ']'				# arrayType
+	| lambdaDeclaration				# lambdaType
 ////	| '{' type '*' '}'				{ $declaration = factory.createIterable($type.declaration); }
 	;
 	
