@@ -278,6 +278,7 @@ statement
 	| expression ';'			# isExpressionStatement
 	| localVariableStatement	# isLocalVaribleStatement
 	| ifElseStatement			# isIfElseStatement
+	| blockStatement			# isBlockStatement
 	;
 
 returnStatement 
@@ -303,6 +304,12 @@ ifElseStatement
 		(
 			'else' elseBlock = statement 
 		)?
+	;
+
+blockStatement
+	: '{'
+	(statement *)
+	 '}'
 	;
 
 // -------------------- EXPRESSION

@@ -1,9 +1,12 @@
 package org.sirius.frontend.core.parser;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AnnotationList;
+import org.sirius.frontend.ast.AstBlock;
 import org.sirius.frontend.ast.AstExpression;
 import org.sirius.frontend.ast.AstExpressionStatement;
 import org.sirius.frontend.ast.AstIfElseStatement;
@@ -13,21 +16,25 @@ import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
+import org.sirius.frontend.parser.SiriusParser.BlockStatementContext;
 import org.sirius.frontend.parser.SiriusParser.ExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.IfElseStatementContext;
 import org.sirius.frontend.parser.SiriusParser.IsExpressionStatementContext;
 import org.sirius.frontend.parser.SiriusParser.LocalVariableStatementContext;
 import org.sirius.frontend.parser.SiriusParser.ReturnStatementContext;
+import org.sirius.frontend.symbols.SymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 
 /** Visitor-based parser for the 'statement' rule.
  *
  * 
  * statement returns [AstStatement stmt]
-	: returnStatement	{ $stmt = $returnStatement.stmt; }								# isReturnStatement
-	| expression ';'	{ $stmt = new AstExpressionStatement($expression.express); }	# isExpressionStatement
-	| localVariableStatement	{ $stmt = $localVariableStatement.lvStatement; }		# isLocalVaribleStatement
-	| ifElseStatement	{ $stmt = $ifElseStatement.stmt; }								# isIfElseStatement
+	: returnStatement			# isReturnStatement
+	| expression ';'			# isExpressionStatement
+	| localVariableStatement	# isLocalVaribleStatement
+	| ifElseStatement			# isIfElseStatement
+	| blockStatement			# isBlockStatement
 	;
 
  * @author jpragey
@@ -99,6 +106,24 @@ public class StatementParser {
 					Optional.empty();
 			
 			return new AstIfElseStatement(reporter, ifExpression, ifBlock, elseBlock);
+		}
+		@Override
+		public AstStatement visitBlockStatement(BlockStatementContext ctx) {
+			SymbolTable symbolTable = new SymbolTableImpl("<Unknown block statement TODO>");
+			
+			
+			StatementParser.StatementVisitor statementVisitor = new StatementParser.StatementVisitor(reporter);
+			
+			List<AstStatement> statements =  ctx.statement().stream()
+				.map(stmtCtxt -> stmtCtxt.accept(statementVisitor))
+				.collect(Collectors.toList());
+
+			
+			
+			
+//			List<AstStatement> statements = List.of();
+
+			return new AstBlock(symbolTable, statements);
 		}
 	}
 

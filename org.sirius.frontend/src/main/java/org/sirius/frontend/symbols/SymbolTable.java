@@ -31,5 +31,7 @@ public interface SymbolTable {
 	/** For debugging */
 	void dump(String prefix, Consumer<String> print);
 
+	String getDbgName();
+	void setName(String name);
 
 }

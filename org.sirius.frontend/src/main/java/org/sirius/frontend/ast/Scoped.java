@@ -6,6 +6,8 @@ public interface Scoped {
 
 	public SymbolTable getSymbolTable();
 	
+	default void setScopeName(String name) {getSymbolTable().setName(name);}
+	
 //	public String getScopeName();
 	
 }

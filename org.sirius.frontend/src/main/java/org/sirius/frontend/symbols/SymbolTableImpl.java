@@ -50,9 +50,14 @@ public class SymbolTableImpl implements SymbolTable {
 		this(Optional.empty(), dbgName);
 	}
 
-	
+	@Override
 	public String getDbgName() {
 		return dbgName;
+	}
+	@Override
+	public void setName(String name) {
+		this.dbgName = name;
+		
 	}
 //	public void setDbgName(String dbgName) {
 //		this.dbgName = dbgName;
