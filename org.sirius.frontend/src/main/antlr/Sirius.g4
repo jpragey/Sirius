@@ -236,30 +236,6 @@ lambdaDeclaration :
 lambdaDeclarationArgType :
 	type
 	;
-//@init {
-//}
-//	: 
-//		// annotationList // ???
-//	(	  returnType=type	 
-//	  	| 'void' 	
-//	)
-//	  // ( '<' ( d=typeParameterDeclaration ( ',' d=typeParameterDeclaration )* )? '>')? // ???
-//	'(' 
-//	  	lambdaFormalArgumentList
-//	')' 
-//	;
-
-//lambdaOptionalArgument 
-//:
-//	type LOWER_ID ?
-//;
-//lambdaFormalArgumentList 
-//:
-//  	(  lambdaOptionalArgument		
-//  	  (  ',' lambdaOptionalArgument	)*
-//    )?
-//;
-
 
 lambdaDefinition 
 @init {

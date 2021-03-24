@@ -2,7 +2,7 @@ package org.sirius.frontend.ast;
 
 import java.util.List;
 
-public class LambdaDefinition {
+public class LambdaDefinition implements Verifiable, Visitable {
 
 //	private LambdaDeclaration lambdaDeclaration;
 	private AstType returnType; 
@@ -28,6 +28,18 @@ public class LambdaDefinition {
 
 	public FunctionBody getBody() {
 		return body;
+	}
+
+	@Override
+	public void verify(int featureFlags) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(AstVisitor visitor) {
+		visitor.startLambdaDefinition(this);
+		visitor.endLambdaDefinition(this);
 	}
 
 	

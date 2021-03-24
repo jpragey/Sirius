@@ -23,15 +23,18 @@ public class FunctionDefinition implements Visitable, Verifiable {
 	private List<Partial> partials;
 	private Partial allArgsPartial;
 	
-//	private List<AstStatement> body;
-	private FunctionBody body;
+//	private FunctionBody body;
 	
 	
-	private FunctionDeclaration functionDeclaration;
+	private LambdaDefinition lambdaDefinition;
+	private AstToken name;
+	private QName qName;
 	
 	private List<ClosureElement> closure;
 	private Optional<FunctionDefinition> firstArgAppliedFuncDef;
 
+	private boolean member;
+	
 	public FunctionDefinition(List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/, AstToken name, List<AstStatement> body) {
 		this(List.of()/* closure*/, args, returnType, 
@@ -46,16 +49,17 @@ public class FunctionDefinition implements Visitable, Verifiable {
 			List<AstStatement> body) 
 	{
 		super();
+		this.member = member;
 		this.closure = closure;
 		this.partials = new ArrayList<>(args.size() + 1);
-		this.body = new FunctionBody(body);
-		
-		this.functionDeclaration = new FunctionDeclaration(args, returnType, member, name); 
+//		this.body = new FunctionBody(body);
+		this.lambdaDefinition = new LambdaDefinition(args, returnType, new FunctionBody(body));
+		this.name = name;
 		
 		int argSize = args.size();
 		for(int from = 0; from <= argSize; from++) 
 		{
-			List<AstFunctionParameter> partialArgs = args.subList(0, from/*, argSize*/);
+			List<AstFunctionParameter> partialArgs = args.subList(0, from);
 			
 			Partial partial = new Partial(
 					name,
@@ -68,10 +72,10 @@ public class FunctionDefinition implements Visitable, Verifiable {
 			
 		}
 		this.allArgsPartial = partials.get(argSize); // => last in partial list
-		this.firstArgAppliedFuncDef = applyOneArgToClosure(args, this.closure, this.functionDeclaration, body);
+		this.firstArgAppliedFuncDef = applyOneArgToClosure(args, this.closure, body);
 	}
 	 
-	private static Optional<FunctionDefinition> applyOneArgToClosure(List<AstFunctionParameter> currentArgs, List<ClosureElement> closure, FunctionDeclaration functionDeclaration,
+	private Optional<FunctionDefinition> applyOneArgToClosure(List<AstFunctionParameter> currentArgs, List<ClosureElement> closure, //FunctionDeclaration functionDeclaration,
 			List<AstStatement> body) {
 		
 		if(currentArgs.isEmpty()) {
@@ -86,9 +90,9 @@ public class FunctionDefinition implements Visitable, Verifiable {
 				.build(); 
 				
 		FunctionDefinition applied = new FunctionDefinition(nextClosure, nextArgs, 
-				functionDeclaration.getReturnType(), 
-				functionDeclaration.isMember(), /* ie is an instance method*/             
-				functionDeclaration.getName(), 
+				lambdaDefinition.getReturnType(),
+				member,
+				name,
 				body); 
 		
 		return Optional.of(applied);
@@ -100,7 +104,7 @@ public class FunctionDefinition implements Visitable, Verifiable {
 
 
 	public void setContainerQName(QName containerQName) {
-		this.functionDeclaration.setContainerQName(containerQName);
+		this.qName = containerQName.child(name.getText());
 	}
 	
 	@Override
@@ -122,7 +126,7 @@ public class FunctionDefinition implements Visitable, Verifiable {
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startFunctionDefinition(this);
-		this.functionDeclaration.visit(visitor);
+		this.lambdaDefinition.visit(visitor);
 		for(Partial partial: partials) {
 			partial.visit(visitor);
 		}
@@ -140,22 +144,18 @@ public class FunctionDefinition implements Visitable, Verifiable {
 	
 	
 	public QName getqName() {
-		return functionDeclaration.getqName();
+		return qName;
 	}
 
 	public AstToken getName() {
-		return functionDeclaration.getName();
+		return name;
 	}
 	public String getNameString() {
 		return getName().getText();
 	}
 
 	public FunctionBody getBody() {
-		return body;
-	}
-
-	public FunctionDeclaration getFunctionDeclaration() {
-		return functionDeclaration;
+		return lambdaDefinition.getBody();
 	}
 
 	public Optional<FunctionDefinition> getFirstArgAppliedFunctionDef() {
@@ -163,11 +163,11 @@ public class FunctionDefinition implements Visitable, Verifiable {
 	}
 	
 	public List<AstFunctionParameter> getArgs() {
-		return functionDeclaration.getArgs();
+		return lambdaDefinition.getArgs();
 	}
 
 	public AstType getReturnType() {
-		return functionDeclaration.getReturnType();
+		return lambdaDefinition.getReturnType();
 	}
 
 	/** Return the closed FunctionDefinition that has no argument (all args are in closure)  */
@@ -180,10 +180,10 @@ public class FunctionDefinition implements Visitable, Verifiable {
 		verifyList(partials, featureFlags);
 		allArgsPartial.verify(featureFlags);
 		
-		body.verify(featureFlags);
+//		body.verify(featureFlags);
 		
-		
-		functionDeclaration.verify(featureFlags);
+		verifyNotNull(qName, "qName");
+		lambdaDefinition.verify(featureFlags);
 		
 		verifyList(closure, featureFlags);
 		verifyOptional(firstArgAppliedFuncDef, "firstArgAppliedFuncDef", featureFlags);

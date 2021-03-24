@@ -42,6 +42,16 @@ public interface AstVisitor {
 	public default void startFunctionDeclaration (FunctionDeclaration functionDeclaration) {}
 	public default void endFunctionDeclaration   (FunctionDeclaration functionDeclaration) {}
 
+	
+
+	public default void startLambdaDeclaration (LambdaDeclaration declaration) {}
+	public default void endLambdaDeclaration   (LambdaDeclaration declaration) {}
+
+	public default void startLambdaDefinition	(LambdaDefinition definition) {}
+	public default void endLambdaDefinition 	(LambdaDefinition definition) {}
+
+	
+	
 	public default void startPartial (Partial partialFunctionDeclaration) {}
 	public default void endPartial   (Partial partialFunctionDeclaration) {}
 	

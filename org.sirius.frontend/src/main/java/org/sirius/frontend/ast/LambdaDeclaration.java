@@ -3,7 +3,7 @@ package org.sirius.frontend.ast;
 import java.util.List;
 import java.util.Optional;
 
-public class LambdaDeclaration implements Verifiable {
+public class LambdaDeclaration implements Verifiable, Visitable {
 
 	private LambdaClosure closure;
 	private AstType returnType; 
@@ -32,6 +32,12 @@ public class LambdaDeclaration implements Verifiable {
 	public void verify(int featureFlags) {
 		returnType.verify(featureFlags);
 		verifyList(args, featureFlags);
+	}
+
+	@Override
+	public void visit(AstVisitor visitor) {
+		visitor.startLambdaDeclaration(this);
+		visitor.endLambdaDeclaration(this);
 	}
 
 	/** Move the first functionparameter to end of closures, in a new LambdaDeclaration  
