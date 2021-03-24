@@ -84,27 +84,27 @@ public class FunctionDeclarationParserTest {
 				equalTo(new String[] {"a", "b"}));
 		
 		// Check closures
-		assertThat(fd.getClosure().size(), is(0));
+		assertThat(fd.getClosure().getClosureEntries().size(), is(0));
 		assertThat(fd.getArgs().size(), is(2));
 		
 		FunctionDefinition fd1 = fd.getFirstArgAppliedFunctionDef().get();
-		assertThat(fd1.getClosure().size(), is(1));
+		assertThat(fd1.getClosure().getClosureEntries().size(), is(1));
 		assertThat(fd1.getArgs().size(), is(1));
 		
-		assertThat(fd1.getClosure().get(0).getName().getText(), is("a"));
+		assertThat(fd1.getClosure().getClosureEntries().get(0).getName().getText(), is("a"));
 		assertThat(fd1.getArgs().get(0).getName().getText(), is("b"));
 		
 		FunctionDefinition fd2 = fd1.getFirstArgAppliedFunctionDef().get();
-		assertThat(fd2.getClosure().size(), is(2));
+		assertThat(fd2.getClosure().getClosureEntries().size(), is(2));
 		assertThat(fd2.getArgs().size(), is(0));
 
-		assertThat(fd2.getClosure().get(0).getName().getText(), is("a"));
-		assertThat(fd2.getClosure().get(1).getName().getText(), is("b"));
+		assertThat(fd2.getClosure().getClosureEntries().get(0).getName().getText(), is("a"));
+		assertThat(fd2.getClosure().getClosureEntries().get(1).getName().getText(), is("b"));
 
 		assertThat(fd2.getFirstArgAppliedFunctionDef().isEmpty(), is(true));
 		
 		// Most close
-		assertThat(fd.mostClosed().getClosure().size(), is(2));
+		assertThat(fd.mostClosed().getClosure().getClosureEntries().size(), is(2));
 		assertThat(fd.mostClosed().getArgs().size(), is(0));
 	}
 

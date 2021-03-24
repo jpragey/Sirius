@@ -1,6 +1,15 @@
 package org.sirius.frontend.ast;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import org.sirius.common.core.QName;
+import org.sirius.frontend.api.Statement;
+import org.sirius.frontend.api.Type;
+import org.sirius.frontend.apiimpl.FunctionImpl;
+
+import com.google.common.collect.ImmutableList;
 
 public class LambdaDefinition implements Verifiable, Visitable {
 
@@ -10,6 +19,7 @@ public class LambdaDefinition implements Verifiable, Visitable {
 
 	private FunctionBody body;
 	
+	private FunctionImpl functionImpl = null;
 
 	public LambdaDefinition(List<AstFunctionParameter> args, AstType returnType, FunctionBody body) {
 //		this.lambdaDeclaration = new LambdaDeclaration(args, returnType);
@@ -32,8 +42,6 @@ public class LambdaDefinition implements Verifiable, Visitable {
 
 	@Override
 	public void verify(int featureFlags) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -42,5 +50,31 @@ public class LambdaDefinition implements Verifiable, Visitable {
 		visitor.endLambdaDefinition(this);
 	}
 
-	
+	public FunctionImpl toAPI(QName lambdaQName) {
+		
+		List<AstFunctionParameter> args = getArgs();
+		if(functionImpl == null) {
+			Type resolvedReturnType = returnType.getApiType();
+
+			List<AstStatement> bodyStmts = body.getStatements();
+			
+			Optional<List<Statement>> apiBody = Optional.empty();
+			
+			List<Statement> apiStatements = new ArrayList<>(bodyStmts.size());
+			for(AstStatement stmt:  bodyStmts/*statements*/) {
+				Optional<Statement> optSt = stmt.toAPI();
+				assert(optSt.isPresent());	// TODO
+				Statement st = optSt.get();
+				apiStatements.add(st);
+			}
+			boolean member = false;	// TODO: ???
+			functionImpl = new FunctionImpl(lambdaQName, args, resolvedReturnType, apiStatements, member);
+			assert(functionImpl.getArguments().size() == args.size());
+		}
+
+		assert(functionImpl.getArguments().size() == args.size());
+
+		return functionImpl;
+	}
+
 }

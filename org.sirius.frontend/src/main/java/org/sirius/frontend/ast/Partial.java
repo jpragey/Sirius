@@ -14,27 +14,21 @@ import org.sirius.frontend.symbols.Scope;
 
 import com.google.common.collect.ImmutableList;
 
-public class Partial implements Visitable, Verifiable {
+public class Partial implements Visitable, Verifiable, Scoped {
 	
 	private AstToken name;
 	private QName qName;
 
-	private ImmutableList<AstFunctionParameter> args;
+	private LambdaDefinition lambdaDefinition;
 
 	private boolean member = false;
 
-	private AstType returnType = AstVoidType.instance;
-	private List<AstStatement> body/* = new ArrayList<>()*/; 
-	
 	private SymbolTableImpl symbolTable = null;
 	private Scope scope = null;
 
 	private FunctionImpl functionImpl = null;
-
-//	private List<AstFunctionParameter> closure0;
 	
 	public Partial(AstToken name,
-//			List<AstFunctionParameter> closure, 
 			List<AstFunctionParameter> args, 
 			boolean member,
 			AstType returnType,
@@ -42,30 +36,25 @@ public class Partial implements Visitable, Verifiable {
 	{
 		super();
 		this.name = name;
-//		this.closure = ImmutableList.copyOf(closure);
-		this.args = ImmutableList.copyOf(args);
-	
-		this.member = member;
-//		this.qName = qName;
-		this.qName = null;
 
-		this.returnType = returnType;
-		this.body = body;
+		this.lambdaDefinition = new LambdaDefinition(args, returnType, new FunctionBody(body));
+
+		this.member = member;
+		this.qName = null;
 	}
 
 	public void assignSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
-		for(AstFunctionParameter arg: args) {
+		for(AstFunctionParameter arg: lambdaDefinition.getArgs()) {
 			this.symbolTable.addFunctionArgument(arg);
-//			this.scope.addFunctionArgument(arg);
 		}
 	}
 
 
-	private Type resolveReturnType() {
-		Type resolved = returnType.getApiType();
-		return resolved;
-	}
+//	private Type resolveReturnType() {
+//		Type resolved = lambdaDefinition.getReturnType().getApiType();
+//		return resolved;
+//	}
 
 	public void setContainerQName(QName containerQName) {
 		this.qName = containerQName.child(new QName(name.getText()));
@@ -75,10 +64,12 @@ public class Partial implements Visitable, Verifiable {
 		return name;
 	}
 
-	public ImmutableList<AstFunctionParameter> getArgs() {
-		return args;
+	public List<AstFunctionParameter> getArgs() {
+		return lambdaDefinition.getArgs();
 	}
 	public AstFunctionParameter getArg(int argIndex) {
+		List<AstFunctionParameter> args = getArgs();
+		
 		if(argIndex<0 || argIndex > args.size())
 			throw new IllegalArgumentException("Trying to get arg " + argIndex + " of function of " + args.size() + " args; function " + toString());
 		return args.get(argIndex);
@@ -90,6 +81,7 @@ public class Partial implements Visitable, Verifiable {
 	}
 	@Override
 	public String toString() {
+		List<AstFunctionParameter> args = getArgs();
 		String text =
 				name.getText() + 
 				"_" + args.size() + "_" +
@@ -101,29 +93,18 @@ public class Partial implements Visitable, Verifiable {
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startPartial(this);
-		args.stream().forEach(formalArg -> formalArg.visit(visitor));
-//		if(body.isPresent())
-//			body.get().stream().forEach(st -> st.visit(visitor));
-		body.stream().forEach(st -> st.visit(visitor));
-		returnType.visit(visitor);
+		getArgs().stream().forEach(formalArg -> formalArg.visit(visitor));
+		lambdaDefinition.getBody().getStatements().stream().forEach(st -> st.visit(visitor));
+		lambdaDefinition.getReturnType().visit(visitor);
 		visitor.endPartial(this);
 	}
 
 
 	public FunctionImpl toAPI() {
 		
+		List<AstFunctionParameter> args = getArgs();
 		if(functionImpl == null) {
-
-			Optional<List<Statement>> apiBody = Optional.empty();
-			List<Statement> apiStatements = new ArrayList<>(body.size());
-			for(AstStatement stmt: body /*statements*/) {
-				Optional<Statement> optSt = stmt.toAPI();
-				assert(optSt.isPresent());	// TODO
-				Statement st = optSt.get();
-				apiStatements.add(st);
-			}
-
-			functionImpl = new FunctionImpl(qName, args, resolveReturnType(), apiStatements, member);
+			this.functionImpl = lambdaDefinition.toAPI(qName);
 			assert(functionImpl.getArguments().size() == args.size());
 		}
 
@@ -132,18 +113,18 @@ public class Partial implements Visitable, Verifiable {
 		return functionImpl;
 	}
 	public AstType getReturnType() {
-		return returnType;
+		return lambdaDefinition.getReturnType();
 	}
 
 	public List<AstStatement> getBodyStatements() {
-		return body;
+		return lambdaDefinition.getBody().getStatements();
 	}
 	
 	
 	public void assignScope(Scope scope) {
 		this.scope = scope;
 
-		for(AstFunctionParameter arg: args)
+		for(AstFunctionParameter arg: lambdaDefinition.getArgs())
 			this.scope.addFunctionArgument(arg);
 
 		// -- add closure to scope
@@ -156,7 +137,7 @@ public class Partial implements Visitable, Verifiable {
 //		}
 		
 		
-		for(AstStatement stmt: body) {
+		for(AstStatement stmt: lambdaDefinition.getBody().getStatements()) {
 			if(stmt instanceof AstLocalVariableStatement) {
 				scope.addLocalVariable((AstLocalVariableStatement)stmt);
 			}
@@ -173,9 +154,9 @@ public class Partial implements Visitable, Verifiable {
 
 	@Override
 	public void verify(int featureFlags) {
-		verifyList(args, featureFlags);
+		verifyList(getArgs(), featureFlags);
 
-		verifyList(body, featureFlags); 
+		verifyList(lambdaDefinition.getBody().getStatements(), featureFlags); 
 		
 		verifyCachedObjectNotNull(symbolTable, "Partial.symbolTable", featureFlags);
 		verifyNotNull(scope, "partial.scope");

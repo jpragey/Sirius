@@ -20,30 +20,27 @@ public class FunctionDefinition implements Visitable, Verifiable {
 	 *  partials[2] = f(x, y)
 	 *  partials[3] = f(x, y, z)
 	 *  */
+	private AstToken name;
+	private QName qName;
 	private List<Partial> partials;
 	private Partial allArgsPartial;
 	
-//	private FunctionBody body;
-	
-	
 	private LambdaDefinition lambdaDefinition;
-	private AstToken name;
-	private QName qName;
 	
-	private List<ClosureElement> closure;
+	private LambdaClosure closure;
 	private Optional<FunctionDefinition> firstArgAppliedFuncDef;
 
 	private boolean member;
 	
 	public FunctionDefinition(List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/, AstToken name, List<AstStatement> body) {
-		this(List.of()/* closure*/, args, returnType, 
+		this(new LambdaClosure(), args, returnType, 
 			member /* ie is an instance method*/,             
 			name, 
 			body);
 	}
 
-	public FunctionDefinition(List<ClosureElement> closure, List<AstFunctionParameter> args, AstType returnType, 
+	public FunctionDefinition(LambdaClosure closure, List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/,             
 			AstToken name, 
 			List<AstStatement> body) 
@@ -52,13 +49,13 @@ public class FunctionDefinition implements Visitable, Verifiable {
 		this.member = member;
 		this.closure = closure;
 		this.partials = new ArrayList<>(args.size() + 1);
-//		this.body = new FunctionBody(body);
 		this.lambdaDefinition = new LambdaDefinition(args, returnType, new FunctionBody(body));
 		this.name = name;
 		
 		int argSize = args.size();
 		for(int from = 0; from <= argSize; from++) 
 		{
+//			ImmutableList<AstFunctionParameter> partialArgs = ImmutableList.copyOf(args.subList(0, from));
 			List<AstFunctionParameter> partialArgs = args.subList(0, from);
 			
 			Partial partial = new Partial(
@@ -69,13 +66,23 @@ public class FunctionDefinition implements Visitable, Verifiable {
 					body
 					);
 			partials.add(partial);
-			
+
+//			FunctionDefinition partialFuncDef = new FunctionDefinition(new LambdaClosure(), partialArgs, returnType, 
+//					member,             
+//					name, 
+//					body); 
+
+//			partialFunctionDefinitions.add(partialFuncDef);
 		}
 		this.allArgsPartial = partials.get(argSize); // => last in partial list
+		
+//		this.allArgsFunctionDefinition = this.partialFunctionDefinitions.get(argSize);
+
+		
 		this.firstArgAppliedFuncDef = applyOneArgToClosure(args, this.closure, body);
 	}
 	 
-	private Optional<FunctionDefinition> applyOneArgToClosure(List<AstFunctionParameter> currentArgs, List<ClosureElement> closure, //FunctionDeclaration functionDeclaration,
+	private Optional<FunctionDefinition> applyOneArgToClosure(List<AstFunctionParameter> currentArgs, LambdaClosure /* List<ClosureElement>*/ closure, //FunctionDeclaration functionDeclaration,
 			List<AstStatement> body) {
 		
 		if(currentArgs.isEmpty()) {
@@ -84,10 +91,7 @@ public class FunctionDefinition implements Visitable, Verifiable {
 		
 		List<AstFunctionParameter> nextArgs = currentArgs.subList(1, currentArgs.size()); 
 		
-		List<ClosureElement> nextClosure = ImmutableList.<ClosureElement>builder()
-				.addAll(closure)
-				.add(new ClosureElement(currentArgs.get(0)))
-				.build(); 
+		LambdaClosure nextClosure = closure.appendEntry(new ClosureElement(currentArgs.get(0)));
 				
 		FunctionDefinition applied = new FunctionDefinition(nextClosure, nextArgs, 
 				lambdaDefinition.getReturnType(),
@@ -98,7 +102,7 @@ public class FunctionDefinition implements Visitable, Verifiable {
 		return Optional.of(applied);
 	}
 	
-	public List<ClosureElement> getClosure() {
+	public LambdaClosure getClosure() {
 		return closure;
 	}
 
@@ -185,7 +189,7 @@ public class FunctionDefinition implements Visitable, Verifiable {
 		verifyNotNull(qName, "qName");
 		lambdaDefinition.verify(featureFlags);
 		
-		verifyList(closure, featureFlags);
+//		verifyList(closure, featureFlags);
 		verifyOptional(firstArgAppliedFuncDef, "firstArgAppliedFuncDef", featureFlags);
 	}
 }

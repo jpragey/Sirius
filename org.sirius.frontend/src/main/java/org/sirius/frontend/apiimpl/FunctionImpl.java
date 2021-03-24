@@ -15,13 +15,13 @@ import com.google.common.collect.ImmutableList;
 
 public class FunctionImpl implements AbstractFunction {
 	private QName functionQName;
-	private ImmutableList<FunctionFormalArgument> implArguments;
+	private List<FunctionFormalArgument> implArguments;
 	private Type returnType;
 
 	private Optional<List<Statement>> bodyStatements;
 	boolean member;
 
-	public FunctionImpl(QName functionQName, ImmutableList<AstFunctionParameter> formalArguments, Type returnType, 
+	public FunctionImpl(QName functionQName, List<AstFunctionParameter> formalArguments, Type returnType, 
 			List<Statement> bodyStatements, boolean member) {
 		this.functionQName = functionQName;
 		this.returnType = returnType;
