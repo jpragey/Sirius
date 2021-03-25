@@ -174,12 +174,10 @@ functionDeclaration
 	  	typeParameterDeclarationList
 	  )?
 	  '('
-		  functionParameterList
+		  functionDefinitionParameterList
 	  ')' 
-//	  ( functionBody )?
-//	  ( functionBody )	// TODO: ??? should be optional
 	;
-// Function with a body and named arguments	
+// Function definition (with body and named arguments)	
 functionDefinition 
 	: annotationList
 	  (	  returnType=type	 
@@ -190,15 +188,21 @@ functionDefinition
 	  	typeParameterDeclarationList
 	  )?
 	  '('
-		  functionParameterList
+		  functionDefinitionParameterList
 	  ')' 
 	  ( functionBody )
 //	  ( functionBody )	// TODO: ??? should be optional
 	;
 	
-functionParameterList
-	:   ( functionParameter		
-	  	  (  ',' functionParameter	)*
+functionDefinitionParameterList
+	:   ( functionDefinitionParameter		
+	  	  (  ',' functionDefinitionParameter	)*
+	    )?
+	;
+
+functionDeclarationParameterList
+	:   ( functionDeclarationParameter		
+	  	  (  ',' functionDeclarationParameter	)*
 	    )?
 	;
 
@@ -217,40 +221,40 @@ functionBody
 	 '}'
 	;
 
-functionParameter
-:
+functionDefinitionParameter :
 	type LOWER_ID
 ;
 
-// -- LAMBDAS
+functionDeclarationParameter :
+	type ( LOWER_ID ?)
+;
+
+// -------------------- LAMBDAS
 
 // lamda declaration: parameter names are optional, return type is mandatory, no body
 lambdaDeclaration :
 	// []
-	'('  lambdaDeclarationArgType
-		(',' lambdaDeclarationArgType) *
-	 ')'
+	'('  functionDeclarationParameterList ')'
 	 '->' returnType=type 
 	; 
 	
-lambdaDeclarationArgType :
-	type
-	;
 
 lambdaDefinition 
 @init {
 }
 	: 
 		// annotationList // ???
-	  (	  returnType=type	 
-	  	| 'void' 	
-	  )
+//	  (	  returnType=type	 
+//	  	| 'void' 	
+//	  )
 	  // ( '<' ( d=typeParameterDeclaration ( ',' d=typeParameterDeclaration )* )? '>')? // ???
-	  '('
-	  	(  lambdaFormalArgument		
-	  	  (  ',' lambdaFormalArgument	)*
-	    )?								{  }
-	  ')' 
+	  '(' functionDefinitionParameterList ')'
+	  
+	  (':' (	  returnType=type	 
+	  	| 'void' 	
+	  ) )?
+	  
+	   
 	  functionBody
 	;
 
@@ -319,9 +323,7 @@ expression
 	
 	// -- Function call
 	| 
-		functionCallExpression 		# isFunctionCallExpression
-//	|
-//		lambdaDeclaration			# isLambdaDeclaration
+	  functionCallExpression 		# isFunctionCallExpression
 	| lambdaDefinition 		# isLambdaDefinition
 	| 
 	    thisExpr=expression '.' functionCallExpression 		# isMethodCallExpression
@@ -385,7 +387,7 @@ classDeclaration
 	: 'class' 		
 	  TYPE_ID		
 	  '('
-			functionParameterList
+			functionDefinitionParameterList
 	  ')'
 	  ( typeParameterDeclarationList )? 
 	  ( 'implements' implementedInterface=TYPE_ID  

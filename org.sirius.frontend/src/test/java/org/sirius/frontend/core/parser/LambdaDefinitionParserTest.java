@@ -3,12 +3,15 @@ package org.sirius.frontend.core.parser;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
+import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -17,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
+import org.sirius.frontend.ast.AstExpression;
 import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
@@ -54,7 +58,7 @@ public class LambdaDefinitionParserTest {
 	@DisplayName("Lambda parameters")
 	@Disabled("Lambda support temp. removed")
 	public void functionWithParameters() {
-		LambdaDefinition lambda = parseLambdaDefinition("void (A a, B b) {}");
+		LambdaDefinition lambda = parseLambdaDefinition("(A a, B b) {}");
 		//assertEquals(partialList.getNameString(), "f");
 		assertEquals(lambda.getArgs().size(), 2);
 		
@@ -66,7 +70,7 @@ public class LambdaDefinitionParserTest {
 	@Test
 	@DisplayName("Lambda Simple return type")
 	public void functionReturnType() {
-		LambdaDefinition lambda = parseLambdaDefinition("Result () {}");
+		LambdaDefinition lambda = parseLambdaDefinition("() : Result {}");
 		AstType returnType = lambda.getReturnType();
 		
 		assertThat(returnType, instanceOf(SimpleType.class));
@@ -77,7 +81,16 @@ public class LambdaDefinitionParserTest {
 	@Test
 	@DisplayName("Lambda with void return type")
 	public void functionVoidReturnType() {
-		LambdaDefinition lambda = parseLambdaDefinition("void () {}"/*, new QName()*/);
+		LambdaDefinition lambda = parseLambdaDefinition(" () : void {}");
+		AstType returnType = lambda.getReturnType();
+		
+		assertThat(returnType, instanceOf(AstVoidType.class));
+	}
+
+	@Test
+	@DisplayName("Lambda without return type (void)")
+	public void functionWihoutReturnType() {
+		LambdaDefinition lambda = parseLambdaDefinition(" () {}");
 		AstType returnType = lambda.getReturnType();
 		
 		assertThat(returnType, instanceOf(AstVoidType.class));
@@ -86,9 +99,23 @@ public class LambdaDefinitionParserTest {
 	@Test
 	@DisplayName("Lambda containing statements")
 	public void functionWithBodyStatements() {
-		LambdaDefinition lambda = parseLambdaDefinition("void () {Integer i; return 42;}");
+		LambdaDefinition lambda = parseLambdaDefinition("() : void {Integer i; return 42;}");
 		List<AstStatement> bodyStatements = lambda.getBody().getStatements();
 		
 		assertThat(bodyStatements.size(), is(2));
+	}
+
+	@Test
+	@DisplayName("Lambda definition is an expression")
+	public void lambdaDefinitionAsExpression() {
+		String inputText = "(A a) : void {}";
+		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		ParseTree tree = parser.expression();
+
+		ExpressionParser.ExpressionVisitor v = new ExpressionParser.ExpressionVisitor(reporter);
+		AstExpression lambdaExpr =  v.visit(tree);
+		
+		assertThat(lambdaExpr, notNullValue());
+		assertThat(lambdaExpr, instanceOf(LambdaDefinition.class));
 	}
 }

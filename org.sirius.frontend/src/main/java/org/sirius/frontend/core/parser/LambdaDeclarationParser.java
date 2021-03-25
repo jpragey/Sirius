@@ -13,11 +13,15 @@ import org.sirius.frontend.ast.FunctionBody;
 import org.sirius.frontend.ast.LambdaClosure;
 import org.sirius.frontend.ast.LambdaDeclaration;
 import org.sirius.frontend.ast.LambdaDefinition;
+import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionParameterListVisitor;
 import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionParameterVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.FunctionBodyContext;
+import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionParameterContext;
+import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionParameterListContext;
 import org.sirius.frontend.parser.SiriusParser.LambdaDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.LambdaDefinitionContext;
+import org.sirius.frontend.parser.SiriusParser.LambdaFormalArgumentContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
@@ -66,8 +70,10 @@ public class LambdaDeclarationParser {
 			LambdaClosure closure = new LambdaClosure(); // TODO, 
 			
 			TypeParser.TypeVisitor argTypeVisitor = new TypeParser.TypeVisitor(reporter);
-			
-			List<AstType> args = ctx.lambdaDeclarationArgType().stream().map(typeContext -> argTypeVisitor.visit(typeContext)).collect(Collectors.toList());
+
+			List<AstType> args = ctx.functionDeclarationParameterList().functionDeclarationParameter().stream()
+					.map(typeContext -> argTypeVisitor.visit(typeContext))
+					.collect(Collectors.toList());
 			
 			TypeParser.TypeVisitor returnTypeVisitor = new TypeParser.TypeVisitor(reporter);
 			AstType returnType = returnTypeVisitor.visit(ctx.returnType);
@@ -89,11 +95,10 @@ public class LambdaDeclarationParser {
 		public LambdaDefinition visitLambdaDefinition(LambdaDefinitionContext ctx) {
 			
 			// -- Function parameters
+			FunctionParameterListVisitor argListVisitor = new FunctionParameterListVisitor(reporter);
 			
-			FunctionParameterVisitor paramVisitor = new FunctionParameterVisitor(reporter);
-			List<AstFunctionParameter> functionParams = ctx.lambdaFormalArgument().stream()
-					.map(funcParam -> paramVisitor.visitLambdaFormalArgument(funcParam))
-					.collect(Collectors.toList());
+			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
+			
 			int currentArgIndex = 0; // index in argument list
 			for(var fp: functionParams) {
 				fp.setIndex(currentArgIndex++);

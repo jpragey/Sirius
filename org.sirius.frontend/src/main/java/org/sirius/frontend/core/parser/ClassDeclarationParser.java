@@ -33,12 +33,10 @@ public class ClassDeclarationParser {
 
 	public static class ClassDeclarationVisitor extends SiriusBaseVisitor<AstClassDeclaration> {
 		private Reporter reporter;
-//		private QName containerQName0;
 
-		public ClassDeclarationVisitor(Reporter reporter/*, QName containerQName*/) {
+		public ClassDeclarationVisitor(Reporter reporter) {
 			super();
 			this.reporter = reporter;
-//			this.containerQName = containerQName;
 		}
 
 		@Override
@@ -48,12 +46,11 @@ public class ClassDeclarationParser {
 			
 			// -- Constructor arguments
 			FunctionDeclarationParser.FunctionParameterListVisitor parameterVisitor = new FunctionDeclarationParser.FunctionParameterListVisitor(reporter);
-			List<AstFunctionParameter> anonConstructorArguments = parameterVisitor.visitFunctionParameterList(ctx.functionParameterList());
+			List<AstFunctionParameter> anonConstructorArguments = parameterVisitor.visitFunctionDefinitionParameterList(ctx.functionDefinitionParameterList());
 			
 			// -- Implemented interfaces
 			List<AstToken> ancestors = ctx.TYPE_ID().stream()
 				.skip(1)
-//				.map(terminalNode -> new AstClassOrInterface.AncestorInfo(new AstToken(terminalNode.getSymbol())))
 				.map(terminalNode -> new AstToken(terminalNode.getSymbol()))
 				.collect(Collectors.toList());
 			
@@ -67,7 +64,6 @@ public class ClassDeclarationParser {
 					: typeParameterListVisitor.visit(c);
 			
 			// -- Member functions
-//			QName containerQName = new QName("TODO");	// TODO
 			FunctionDeclarationParser.FunctionDefinitionVisitor fctVisitor = new FunctionDeclarationParser.FunctionDefinitionVisitor(reporter);
 			List<FunctionDefinition> methods = ctx.children.stream()
 				.map(parseTree -> parseTree.accept(fctVisitor))
@@ -80,15 +76,9 @@ public class ClassDeclarationParser {
 				.filter(partialList -> partialList!=null)
 				.collect(Collectors.toList());
 			
-//			boolean interfaceType = false;
-			
-//			QName packageQName  = containerQName;
-			
 			AstClassDeclaration classDeclaration = new AstClassDeclaration(
 					reporter, 
-//					interfaceType, 
 					name, 
-//					packageQName,
 					ImmutableList.copyOf(typeParameters),
 					ImmutableList.copyOf(methods),
 					memberValues,

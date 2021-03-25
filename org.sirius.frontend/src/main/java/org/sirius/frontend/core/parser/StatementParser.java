@@ -86,7 +86,8 @@ public class StatementParser {
 			Optional<AstExpression> initExpression = Optional.empty();
 			ExpressionContext exprCtxt = ctx.expression();
 			if(exprCtxt != null) {
-				initExpression = Optional.of(exprCtxt.accept(visitor));
+				AstExpression exp = exprCtxt.accept(visitor);
+				initExpression = Optional.ofNullable(exp);
 			}
 			
 			return new AstLocalVariableStatement(annotationList, type, varName, initExpression);

@@ -5,15 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.sirius.common.core.QName;
+import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.FunctionImpl;
+import org.sirius.frontend.symbols.SymbolTable;
 
-import com.google.common.collect.ImmutableList;
+public class LambdaDefinition implements AstExpression, Verifiable, Visitable {
 
-public class LambdaDefinition implements Verifiable, Visitable {
-
-//	private LambdaDeclaration lambdaDeclaration;
 	private AstType returnType; 
 	private List<AstFunctionParameter> args;
 
@@ -22,7 +21,6 @@ public class LambdaDefinition implements Verifiable, Visitable {
 	private FunctionImpl functionImpl = null;
 
 	public LambdaDefinition(List<AstFunctionParameter> args, AstType returnType, FunctionBody body) {
-//		this.lambdaDeclaration = new LambdaDeclaration(args, returnType);
 		this.args = args;
 		this.returnType = returnType;
 		this.body = body;
@@ -75,6 +73,26 @@ public class LambdaDefinition implements Verifiable, Visitable {
 		assert(functionImpl.getArguments().size() == args.size());
 
 		return functionImpl;
+	}
+
+	@Override
+	public AstExpression linkToParentST(SymbolTable parentSymbolTable) {
+		throw new UnsupportedOperationException();	// TODO
+	}
+
+	@Override
+	public AstType getType() {
+		throw new UnsupportedOperationException();	// TODO
+	}
+
+	@Override
+	public Optional<Expression> getExpression() {
+		throw new UnsupportedOperationException();	// TODO
+	}
+
+	@Override
+	public String asString() {
+		throw new UnsupportedOperationException();	// TODO
 	}
 
 }

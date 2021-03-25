@@ -8,12 +8,14 @@ import org.sirius.frontend.ast.AstArrayType;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.IntersectionType;
+import org.sirius.frontend.ast.LambdaDeclaration;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.UnionType;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.ArrayTypeContext;
 import org.sirius.frontend.parser.SiriusParser.BracketedTypeContext;
 import org.sirius.frontend.parser.SiriusParser.IntersectionTypeContext;
+import org.sirius.frontend.parser.SiriusParser.LambdaDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.SimpleType0Context;
 import org.sirius.frontend.parser.SiriusParser.UnionTypeContext;
 
@@ -90,6 +92,13 @@ public class TypeParser {
 			////SimpleType simpleType = new SimpleType(reporter, new AstToken(ctx.TYPE_ID().getSymbol()));
 			
 			return myType;
+		}
+		
+		@Override
+		public AstType visitLambdaDeclaration(LambdaDeclarationContext ctx) {
+			LambdaDeclarationParser.LambdaDeclarationVisitor declVisitor = new LambdaDeclarationParser.LambdaDeclarationVisitor(reporter);
+			LambdaDeclaration lambdaDeclaration = declVisitor.visit(ctx);
+			return lambdaDeclaration;
 		}
 	}
 

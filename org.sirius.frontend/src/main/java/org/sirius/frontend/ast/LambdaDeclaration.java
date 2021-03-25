@@ -3,7 +3,9 @@ package org.sirius.frontend.ast;
 import java.util.List;
 import java.util.Optional;
 
-public class LambdaDeclaration implements Verifiable, Visitable {
+import org.sirius.frontend.api.Type;
+
+public class LambdaDeclaration implements AstType, Verifiable, Visitable {
 
 	private LambdaClosure closure;
 	private AstType returnType; 
@@ -38,6 +40,39 @@ public class LambdaDeclaration implements Verifiable, Visitable {
 	public void visit(AstVisitor visitor) {
 		visitor.startLambdaDeclaration(this);
 		visitor.endLambdaDeclaration(this);
+	}
+
+	
+	
+	@Override
+	public String messageStr() {
+	
+		return "<lambda>()";
+	}
+
+	@Override
+	public Type getApiType() {
+		throw new UnsupportedOperationException("");	// TODO
+	}
+
+	@Override
+	public AstType resolve() {
+		throw new UnsupportedOperationException("");// TODO
+	}
+
+	@Override
+	public boolean isExactlyA(AstType type) {
+		throw new UnsupportedOperationException("");// TODO
+	}
+
+	@Override
+	public boolean isStrictDescendantOf(AstType type) {
+		throw new UnsupportedOperationException("");// TODO
+	}
+
+	@Override
+	public boolean isAncestorOrSameAs(AstType type) {
+		throw new UnsupportedOperationException("");// TODO
 	}
 
 	/** Move the first functionparameter to end of closures, in a new LambdaDeclaration  

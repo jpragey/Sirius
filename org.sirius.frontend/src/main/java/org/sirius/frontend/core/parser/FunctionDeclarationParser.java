@@ -17,8 +17,8 @@ import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.FunctionBodyContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionParameterContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionParameterListContext;
+import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionParameterContext;
+import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionParameterListContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
 import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListContext;
 
@@ -44,7 +44,7 @@ public class FunctionDeclarationParser {
 		}
 
 		@Override
-		public AstFunctionParameter visitFunctionParameter(FunctionParameterContext ctx) {
+		public AstFunctionParameter visitFunctionDefinitionParameter(FunctionDefinitionParameterContext ctx) {
 			
 			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
 			
@@ -84,11 +84,11 @@ public class FunctionDeclarationParser {
 		}
 		
 		@Override
-		public List<AstFunctionParameter> visitFunctionParameterList(FunctionParameterListContext ctx) {
+		public List<AstFunctionParameter> visitFunctionDefinitionParameterList(FunctionDefinitionParameterListContext ctx) {
 			FunctionParameterVisitor v = new FunctionParameterVisitor(reporter);
 			
 			List<AstFunctionParameter> functionParameters = 
-			ctx.functionParameter().stream()
+			ctx.functionDefinitionParameter().stream()
 				.map(formalArgCtx -> v.visit(formalArgCtx))
 				.collect(Collectors.toList());
 			
@@ -138,7 +138,7 @@ public class FunctionDeclarationParser {
 			// -- Function parameters
 			FunctionParameterListVisitor argListVisitor = new FunctionParameterListVisitor(reporter);
 			
-			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionParameterList());
+			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
 			
 			// -- Return type
 			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
@@ -170,7 +170,7 @@ public class FunctionDeclarationParser {
 			// -- Function parameters
 			FunctionParameterListVisitor argListVisitor = new FunctionParameterListVisitor(reporter);
 			
-			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionParameterList());
+			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
 			
 			// -- Return type
 			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);

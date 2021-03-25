@@ -16,7 +16,9 @@ import org.sirius.frontend.ast.AstMemberAccessExpression;
 import org.sirius.frontend.ast.AstStringConstantExpression;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.ConstructorCallExpression;
+import org.sirius.frontend.ast.LambdaDefinition;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
+import org.sirius.frontend.core.parser.LambdaDeclarationParser.LambdaDefinitionVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.ConstantExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.ExpressionContext;
@@ -26,6 +28,7 @@ import org.sirius.frontend.parser.SiriusParser.IsConstructorCallExpressionContex
 import org.sirius.frontend.parser.SiriusParser.IsFieldAccessExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.IsMethodCallExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.IsVariableRefExpressionContext;
+import org.sirius.frontend.parser.SiriusParser.LambdaDefinitionContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
@@ -155,7 +158,13 @@ public class ExpressionParser {
 			return new SimpleReferenceExpression(reporter, refName);
 		}
 		
-		
+		@Override
+		public AstExpression visitLambdaDefinition(LambdaDefinitionContext ctx) {
+			LambdaDefinitionVisitor v = new LambdaDefinitionVisitor(reporter);
+			LambdaDefinition ld = v.visit(ctx);
+			
+			return ld;
+		}
 		
 	}
 
