@@ -10,10 +10,9 @@ import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.core.AbstractCompilationUnit;
-import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.QNameSetterVisitor;
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.ScopeSetterVisitor;
-import org.sirius.frontend.symbols.SymbolResolutionVisitor;
 import org.sirius.frontend.symbols.SymbolTableFillingVisitor;
 
 public class StdAstTransforms {
@@ -81,19 +80,14 @@ public class StdAstTransforms {
 		compilationUnit.visit(qNameSetterVisitor);
 	}
 
-	public static void setScopes(AbstractCompilationUnit compilationUnit) {
-		ScopeSetterVisitor visitor = new ScopeSetterVisitor();
+	public static void setScopes(AbstractCompilationUnit compilationUnit, Scope globalScope) {
+		ScopeSetterVisitor visitor = new ScopeSetterVisitor(globalScope);
 		compilationUnit.visit(visitor);
 	}
 	
-	public static void fillSymbolTables(AbstractCompilationUnit compilationUnit, SymbolTableImpl symbolTable) {
-		SymbolTableFillingVisitor fillingVisitor = new SymbolTableFillingVisitor(symbolTable);
+	public static void fillSymbolTables(AbstractCompilationUnit compilationUnit, Scope scope) {
+		SymbolTableFillingVisitor fillingVisitor = new SymbolTableFillingVisitor(scope);
 		compilationUnit.visit(fillingVisitor);
 	}
-	public static void resolveSymbols(Reporter reporter, AbstractCompilationUnit compilationUnit, SymbolTableImpl symbolTable) {
-		SymbolResolutionVisitor resolutionVisitor = new SymbolResolutionVisitor(reporter, symbolTable);
-		compilationUnit.visit(resolutionVisitor);
-	}
-
 
 }

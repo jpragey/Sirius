@@ -10,13 +10,16 @@ import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.FunctionImpl;
 import org.sirius.frontend.symbols.SymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
-public class LambdaDefinition implements AstExpression, Verifiable, Visitable {
+public class LambdaDefinition implements AstExpression, Verifiable, Visitable, Scoped {
 
 	private AstType returnType; 
 	private List<AstFunctionParameter> args;
 
 	private FunctionBody body;
+	
+	private SymbolTableImpl symbolTable = null;
 	
 	private FunctionImpl functionImpl = null;
 
@@ -94,5 +97,17 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable {
 	public String asString() {
 		throw new UnsupportedOperationException();	// TODO
 	}
+	
 
+	@Override
+	public SymbolTable getSymbolTable() {
+		assert(this.symbolTable != null);
+		return this.symbolTable;
+	}
+
+	public void setSymbolTable(SymbolTableImpl symbolTable) {
+		this.symbolTable = symbolTable;
+	}
+
+	
 }

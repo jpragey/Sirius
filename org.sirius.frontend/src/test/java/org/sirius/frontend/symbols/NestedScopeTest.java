@@ -43,7 +43,6 @@ public class NestedScopeTest {
 
 	@Test
 	@DisplayName("Check qnames in class methods and values")
-//	@Disabled
 	public void functionScopeByArumentsScopeTest() {
 		ScriptSession session = Compiler.compileScript("#!\n public void f(Integer x, Integer y, Integer z){}");
 		FunctionDefinition methodF = session.getAstModules().get(0).getPackageDeclarations().get(0).getFunctionDeclarations().get(0);
@@ -66,24 +65,10 @@ public class NestedScopeTest {
 		assertTrue(scope2.lookupSymbol("y").isPresent());
 		assertTrue(scope2.lookupSymbol("z").isEmpty());
 		
-//		Partial partial3 = methodF.getPartials().get(3);
 		Scope scope3 = methodF.getPartials().get(3).getScope();
 		assertTrue(scope3.lookupSymbol("x").isPresent());
 		assertTrue(scope3.lookupSymbol("y").isPresent());
 		assertTrue(scope3.lookupSymbol("z").isPresent());
-		
-		
-//		PartialList methodF = cd.getFunctionDeclarations().get(0);
-		
-//		Optional<PartialList> fFunct =  cd.getScope().getFunction("f");
-//		assertThat(fFunct.isPresent(), equalTo(true));
-//		assertThat(fFunct.get().getqName(), equalTo(new QName("p", "k", "C", "f")));
-//		assertThat(fFunct.get().getPartials().get(0).getqName(), equalTo(new QName("p", "k", "C", "f")));
-//		
-//		Optional<AstMemberValueDeclaration> sValue =  cd.getScope().getValue("s");
-//		assertThat(sValue.isPresent(), equalTo(true));
-//		assertThat(sValue.get().getQname(), equalTo(new QName("p", "k", "C", "s")));
-		
 	}
 	
 	@Test

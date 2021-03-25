@@ -17,6 +17,9 @@ public class Scope {
 		super();
 		this.parentScope = parentScope;
 	}
+	public Scope() {
+		this(Optional.empty());
+	}
 	
 	public void addFunction(FunctionDefinition funct) {
 		AstToken name = funct.getName();
@@ -61,6 +64,10 @@ public class Scope {
 		Optional<Symbol> symb = symbolTable.lookupBySimpleName(simpleName);
 		return symb;
 	}
+	public SymbolTableImpl getSymbolTable() {
+		return symbolTable;
+	}
 
+	
 	
 }

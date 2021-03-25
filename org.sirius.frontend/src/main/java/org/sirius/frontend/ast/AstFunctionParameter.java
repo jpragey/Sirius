@@ -64,8 +64,8 @@ public class AstFunctionParameter implements Verifiable {
 		this.symbolTable = symbolTable;
 	}
 	
-	public void resolve() {
-	}
+//	public void resolve() {
+//	}
 	
 	private FunctionFormalArgumentImpl impl = null;
 	

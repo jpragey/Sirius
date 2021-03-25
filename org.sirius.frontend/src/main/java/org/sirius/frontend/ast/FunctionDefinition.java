@@ -55,7 +55,6 @@ public class FunctionDefinition implements Visitable, Verifiable {
 		int argSize = args.size();
 		for(int from = 0; from <= argSize; from++) 
 		{
-//			ImmutableList<AstFunctionParameter> partialArgs = ImmutableList.copyOf(args.subList(0, from));
 			List<AstFunctionParameter> partialArgs = args.subList(0, from);
 			
 			Partial partial = new Partial(
@@ -66,18 +65,9 @@ public class FunctionDefinition implements Visitable, Verifiable {
 					body
 					);
 			partials.add(partial);
-
-//			FunctionDefinition partialFuncDef = new FunctionDefinition(new LambdaClosure(), partialArgs, returnType, 
-//					member,             
-//					name, 
-//					body); 
-
-//			partialFunctionDefinitions.add(partialFuncDef);
 		}
-		this.allArgsPartial = partials.get(argSize); // => last in partial list
 		
-//		this.allArgsFunctionDefinition = this.partialFunctionDefinitions.get(argSize);
-
+		this.allArgsPartial = partials.get(argSize); // => last in partial list
 		
 		this.firstArgAppliedFuncDef = applyOneArgToClosure(args, this.closure, body);
 	}

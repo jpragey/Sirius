@@ -29,22 +29,20 @@ public interface Session {
 	}
 	
 
-	default void stdTransform(Reporter reporter, InputTextProvider input, AbstractCompilationUnit compilationUnit, SymbolTableImpl globalSymbolTable) {
+	default void stdTransform(Reporter reporter, InputTextProvider input, AbstractCompilationUnit compilationUnit, /*SymbolTableImpl globalSymbolTable, */
+			org.sirius.frontend.symbols.Scope globalScope) {
 		StdAstTransforms.insertPackagesInModules(reporter, compilationUnit);
 		
 		// -- Set qualified names 
 		StdAstTransforms.setQNames(compilationUnit);
 		
 		// -- Set scopes
-		StdAstTransforms.setScopes(compilationUnit);
+		StdAstTransforms.setScopes(compilationUnit, globalScope);
 		
 		StdAstTransforms.linkClassesToInterfaces(reporter, compilationUnit);
 			
 		// -- Set symbol tables (thus create the ST tree), add symbols to tables
-		StdAstTransforms.fillSymbolTables(compilationUnit, globalSymbolTable);
-
-		// -- Resolve symbols in expressions
-		StdAstTransforms.resolveSymbols(reporter, compilationUnit, globalSymbolTable);
+		StdAstTransforms.fillSymbolTables(compilationUnit, globalScope);
 	}
 	
 }

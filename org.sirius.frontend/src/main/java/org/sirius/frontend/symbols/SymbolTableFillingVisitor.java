@@ -35,9 +35,9 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 	private Stack<SymbolTableImpl> symbolTableStack = new Stack<>();
 	
 
-	public SymbolTableFillingVisitor(SymbolTableImpl globalSymbolTable) {
+	public SymbolTableFillingVisitor(Scope scope) {
 		super();
-		this.symbolTableStack.push(globalSymbolTable);
+		this.symbolTableStack.push(scope.getSymbolTable());
 	}
 
 	private void processImports(SymbolTableImpl st, List<ImportDeclaration> imports) {
@@ -116,24 +116,6 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 		symbolTableStack.pop();
 	}	
 
-//	@Override
-//	public void startFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
-//		/*
-//		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
-//		
-//		DefaultSymbolTable functionSymbolTable = new DefaultSymbolTable(parentSymbolTable, functionDeclaration.getName().getText());
-//		functionDeclaration.assignSymbolTable(functionSymbolTable);
-//		symbolTableStack.push(functionSymbolTable);
-//		
-//		parentSymbolTable.addFunction(functionDeclaration);
-//		*/
-//	}
-//
-//	@Override
-//	public void endFunctionDeclaration(AstFunctionDeclarationBuilder functionDeclaration) {
-//		symbolTableStack.pop();
-//	}
-
 	@Override
 	public void startPartial (Partial partial) {
 		SymbolTableImpl parentSymbolTable = symbolTableStack.lastElement();
@@ -155,11 +137,6 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 		symbolTableStack.pop();
 	}
 
-//	@Override
-//	public void startPartialList (PartialList partialList) {
-//		DefaultSymbolTable parentSymbolTable = symbolTableStack.lastElement();
-//		parentSymbolTable.addFunction(partialList);
-//	}
 	@Override
 	public void startFunctionDefinition(FunctionDefinition functionDefinition) {
 		SymbolTableImpl parentSymbolTable = symbolTableStack.lastElement();
@@ -226,11 +203,4 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 		statement.setSymbolTable(symbolTable);
 		symbolTable.addLocalVariable(statement);
 	}
-
-//	@Override
-//	public void startReturnStatement(AstReturnStatement statement) {
-//		DefaultSymbolTable symbolTable = symbolTableStack.lastElement();
-//		statement.getExpression()
-//		AstVisitor.super.startReturnStatement(statement);
-//	}
 }

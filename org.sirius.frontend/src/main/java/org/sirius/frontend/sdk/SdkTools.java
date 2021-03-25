@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
@@ -29,10 +28,8 @@ import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.QNameRefType;
 import org.sirius.frontend.core.AbstractCompilationUnit;
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTableImpl;
-import org.sirius.frontend.symbols.QNameSetterVisitor;
-import org.sirius.frontend.symbols.SymbolResolutionVisitor;
-import org.sirius.frontend.symbols.SymbolTableFillingVisitor;
 import org.sirius.sdk.tooling.Inherit;
 import org.sirius.sdk.tooling.Sdk;
 import org.sirius.sdk.tooling.SiriusMethod;
@@ -51,11 +48,11 @@ public class SdkTools {
 	private AstModuleDeclaration sdkModule;
 	private SdkContent sdkContent;
 
-	public SdkTools(Reporter reporter, SymbolTableImpl symbolTable) {
+	public SdkTools(Reporter reporter, Scope scope) {
 		super();
 		this.reporter = reporter;
 
-		this.sdkModule = parseSdk(symbolTable);
+		this.sdkModule = parseSdk(scope);
 				
 		this.sdkModule.getPackageDeclarations().forEach(pkg->{
 			QName pkgQName = pkg.getQname();
@@ -64,7 +61,7 @@ public class SdkTools {
 		this.sdkContent = new SdkContent(this.sdkModule);
 	}
 
-	private AstModuleDeclaration parseSdk(SymbolTableImpl symbolTable) {
+	private AstModuleDeclaration parseSdk(Scope scope) {
 		
 		List<Class<?>> sdkClasses = Sdk.sdkClasses();
 		
@@ -76,11 +73,11 @@ public class SdkTools {
 			TopLevelMethods topLevelmethodsAnno = clss.getDeclaredAnnotation(TopLevelMethods.class);	// can be null
 			
 			if(topLevelClassAnno != null) {
-				AstClassOrInterface classOrIntf =  parseClass(clss, topLevelClassAnno, symbolTable);
+				AstClassOrInterface classOrIntf =  parseClass(clss, topLevelClassAnno, scope.getSymbolTable() /* symbolTable*/);
 				classOrInterfaces.add(classOrIntf);
 			}
 			if(topLevelmethodsAnno != null) {
-				List<FunctionDefinition> partialLists = parseTopLevel(clss, topLevelmethodsAnno, symbolTable);
+				List<FunctionDefinition> partialLists = parseTopLevel(clss, topLevelmethodsAnno, scope.getSymbolTable() /* symbolTable*/);
 				allFunctionDefs.addAll(partialLists);
 //				System.out.println("- Top-level methods: " + clss + ", anno: " + topLevelmethodsAnno);
 			}
@@ -123,18 +120,15 @@ public class SdkTools {
 		StdAstTransforms.setQNames(compilationUnit);
 
 		// -- Set scopes
-		StdAstTransforms.setScopes(compilationUnit);
+		StdAstTransforms.setScopes(compilationUnit, scope);
 
 		StdAstTransforms.linkClassesToInterfaces(reporter, compilationUnit);
 		
-		StdAstTransforms.fillSymbolTables(compilationUnit, symbolTable);
-
-		StdAstTransforms.resolveSymbols(reporter, compilationUnit, symbolTable);
-
+		StdAstTransforms.fillSymbolTables(compilationUnit, scope);
 		
-		classDeclarations.forEach(cd -> {symbolTable.addClass(cd);});
-		interfaceDeclarations.forEach(id-> {symbolTable.addInterface(id);});
-		allFunctionDefs.forEach(pl ->  {symbolTable.addFunction(pl);});
+		classDeclarations.forEach(cd -> {scope.getSymbolTable().addClass(cd);});
+		interfaceDeclarations.forEach(id-> {scope.getSymbolTable().addInterface(id);});
+		allFunctionDefs.forEach(pl ->  {scope.getSymbolTable().addFunction(pl);});
 		
 		return md;
 	}
@@ -167,14 +161,14 @@ public class SdkTools {
 			
 			SiriusMethod m = method.getDeclaredAnnotation(SiriusMethod.class);
 			if(m != null ) {
-				FunctionDefinition functionDefinition = parseTopLevelFunction(method, m, /*classPkgQName, */symbolTable);
+				FunctionDefinition functionDefinition = parseTopLevelFunction(method, m, symbolTable);
 				functionDefinitions.add(functionDefinition);
 			}
 		}
 		return functionDefinitions;
 	}
 	
-	private FunctionDefinition parseTopLevelFunction(Method method, SiriusMethod m, /*QName classPkgQName, */SymbolTableImpl symbolTable) {
+	private FunctionDefinition parseTopLevelFunction(Method method, SiriusMethod m, SymbolTableImpl symbolTable) {
 		
 		String methodName = m.methodName();
 		if(methodName.isEmpty())
@@ -205,7 +199,7 @@ public class SdkTools {
 		boolean member = !annotationList.contains("static");
 		
 		// TODO: -> FunctionDeclaration ???
-		FunctionDefinition partialfunctionDefinitionList = new FunctionDefinition(args, returnType, member /* this*/, /*qName,*/ /*concrete,*/ AstToken.internal(methodName), 
+		FunctionDefinition partialfunctionDefinitionList = new FunctionDefinition(args, returnType, member, AstToken.internal(methodName), 
 				Collections.emptyList() /*body statements*/); 
 
 		

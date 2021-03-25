@@ -25,13 +25,14 @@ import org.sirius.frontend.core.stdlayout.ModuleFiles;
 import org.sirius.frontend.core.stdlayout.PackageFiles;
 import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class StandardSession implements Session {
 
 	private Reporter reporter;
 
-	private SymbolTableImpl globalSymbolTable = new SymbolTableImpl("StandardSession");
+	private Scope globalScope = new Scope();
 	
 	private List<ModuleContent> moduleContents = new ArrayList<>();
 
@@ -47,7 +48,7 @@ public class StandardSession implements Session {
 		return reporter;
 	}
 
-	private SiriusParser createParser(InputTextProvider input/*, AstFactory astFactory*/) {
+	private SiriusParser createParser(InputTextProvider input) {
 		String sourceCode = input.getText();
 		
 		CharStream stream = CharStreams.fromString(sourceCode); 
@@ -88,7 +89,7 @@ public class StandardSession implements Session {
 
 
 		// -- Various transformations
-		stdTransform(reporter, input, compilationUnit, globalSymbolTable);
+		stdTransform(reporter, input, compilationUnit, globalScope);
 		
 		List<AstModuleDeclaration> moduleDeclarations = compilationUnit.getModuleDeclarations();
 		for(AstModuleDeclaration moduleDeclaration: moduleDeclarations) {

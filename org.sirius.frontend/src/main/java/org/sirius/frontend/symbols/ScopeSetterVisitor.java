@@ -11,6 +11,7 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
+import org.sirius.frontend.ast.LambdaDefinition;
 import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
@@ -53,8 +54,9 @@ public class ScopeSetterVisitor implements AstVisitor {
 	}
 	private LinkedList<STableNameElement> nameElementsStack = new LinkedList<>();
 	
-	public ScopeSetterVisitor() {
+	public ScopeSetterVisitor(Scope globalScope ) {
 		super();
+		scopeStack.push(globalScope);
 		stmtIndexStack.push(0);
 	}
 
@@ -167,5 +169,15 @@ public class ScopeSetterVisitor implements AstVisitor {
 	public void endBlock(AstBlock blockStmt) {
 		stmtIndexStack.removeLast();
 		nameElementsStack.removeLast();
+	}
+	
+	@Override
+	public void startLambdaDefinition(LambdaDefinition definition) {
+		Scope scope = pushNewScope();
+	}
+	
+	@Override
+	public void endLambdaDefinition(LambdaDefinition definition) {
+		popScope();
 	}
 }

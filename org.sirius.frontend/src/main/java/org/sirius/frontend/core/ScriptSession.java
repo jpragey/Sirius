@@ -18,6 +18,7 @@ import org.sirius.frontend.parser.SiriusLexer;
 import org.sirius.frontend.parser.SiriusParser;
 import org.sirius.frontend.parser.SiriusParser.ScriptCompilationUnitContext;
 import org.sirius.frontend.sdk.SdkTools;
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class ScriptSession implements Session {
@@ -33,7 +34,7 @@ public class ScriptSession implements Session {
 	
 	private Optional<ShebangDeclaration> shebang = Optional.empty(); 
 
-	private SymbolTableImpl globalSymbolTable = new SymbolTableImpl("ScriptSession");
+	private Scope globalScope = new Scope();
 
 	private ScriptCompilationUnit compilationUnit;
 
@@ -51,17 +52,17 @@ public class ScriptSession implements Session {
 	}
 
 	public SymbolTableImpl getGlobalSymbolTable() {
-		return globalSymbolTable;
+		return globalScope.getSymbolTable();
 	}
 
 	
 	private void addInput(InputTextProvider input) {
-		SdkTools sdkTools = new SdkTools(reporter, globalSymbolTable);
+		SdkTools sdkTools = new SdkTools(reporter, globalScope);
 //		sdkTools.parseSdk(globalSymbolTable);
 
-		this.compilationUnit = parseScriptInput(input, globalSymbolTable);
+		this.compilationUnit = parseScriptInput(input, globalScope.getSymbolTable());
 
-		stdTransform(reporter, input, compilationUnit, globalSymbolTable);
+		stdTransform(reporter, input, compilationUnit, globalScope);
 
 		this.shebang = compilationUnit.getShebangDeclaration();
 

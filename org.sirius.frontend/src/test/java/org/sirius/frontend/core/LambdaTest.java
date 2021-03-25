@@ -58,7 +58,9 @@ public class LambdaTest {
 	@Test
 	@DisplayName("Lambda smoke test")
 	public void lambdaSmokeTest() {
-		AstStatement rawLambda = parseLambdaDefinition("(A, B) -> Integer add = (A a, B b) : Integer {};");
+		AstStatement rawLambda = parseLambdaDefinition(
+				"(Integer, Integer) -> Integer add = (Integer a, Integer b) : Integer {};"
+				);
 		
 		assertThat(rawLambda, instanceOf(AstLocalVariableStatement.class));
 		AstLocalVariableStatement var = (AstLocalVariableStatement)rawLambda;
@@ -69,7 +71,8 @@ public class LambdaTest {
 		LambdaDeclaration varType = (LambdaDeclaration)var.getType();
 
 		assertThat(var.getInitialValue().get(), instanceOf(LambdaDefinition.class));
-		LambdaDefinition initValue = (LambdaDefinition)var.getInitialValue().get();
+		LambdaDefinition lambdaDefinition = (LambdaDefinition)var.getInitialValue().get();
 
+//		lambdaDefinition.getType()
 	}
 }
