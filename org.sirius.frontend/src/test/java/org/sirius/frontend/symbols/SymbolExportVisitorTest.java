@@ -6,7 +6,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterEach;
@@ -29,8 +28,6 @@ import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.core.parser.InterfaceDeclarationParser;
 import org.sirius.frontend.core.parser.ParserUtil;
 import org.sirius.frontend.parser.SiriusParser;
-
-import com.google.common.collect.ImmutableList;
 
 public class SymbolExportVisitorTest {
 
@@ -68,8 +65,8 @@ public class SymbolExportVisitorTest {
 
 	private	AstClassDeclaration newClass(String simpleName, List<FunctionDefinition> partialLists) {
 		AstClassDeclaration cd = new AstClassDeclaration(reporter, AstToken.internal(simpleName), 
-				ImmutableList.of(),	//<TypeParameter> typeParameters,
-				ImmutableList.copyOf(partialLists), //ImmutableList<PartialList> functionDeclarations,
+				List.of(),	//<TypeParameter> typeParameters,
+				List.copyOf(partialLists), //ImmutableList<PartialList> functionDeclarations,
 				List.of(),		//<AstMemberValueDeclaration> valueDeclarations,
 				List.of(),		//<AstFunctionParameter> anonConstructorArguments,
 				List.of()		//<AncestorInfo> ancestorInfos

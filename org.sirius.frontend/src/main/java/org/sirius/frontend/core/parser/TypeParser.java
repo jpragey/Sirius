@@ -19,8 +19,6 @@ import org.sirius.frontend.parser.SiriusParser.LambdaDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.SimpleType0Context;
 import org.sirius.frontend.parser.SiriusParser.UnionTypeContext;
 
-import com.google.common.collect.ImmutableList;
-
 /** Visitor-based parser for the 'type' rule.
  * 
  * @author jpragey
@@ -72,25 +70,15 @@ public class TypeParser {
 		public AstType visitSimpleType0(SimpleType0Context ctx) {
 			assert(ctx.TYPE_ID() != null);
 			AstToken name = new AstToken(ctx.TYPE_ID().getSymbol());
-//			String name = ctx.TYPE_ID().getText();
-
-//			System.out.println("Visiting type " + name);
-			
-//			TypeVisitor childTypeVisitor = new TypeVisitor();
 			
 			List<AstType> typeParams = ctx.children.stream()
-//					.map(parseTree -> parseTree.accept(childTypeVisitor))
 					.map(parseTree -> parseTree.accept(this /* Osé !*/))
 				.filter(myType -> myType!=null)
 				.collect(Collectors.toUnmodifiableList())
 				;
 			
 			
-			AstType myType = new SimpleType(reporter, name, ImmutableList.copyOf(typeParams));
-			
-			////Reporter reporter = null;
-			////SimpleType simpleType = new SimpleType(reporter, new AstToken(ctx.TYPE_ID().getSymbol()));
-			
+			AstType myType = new SimpleType(reporter, name, List.copyOf(typeParams));
 			return myType;
 		}
 		

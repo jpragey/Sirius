@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstClassOrInterface;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
@@ -15,8 +14,6 @@ import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.ClassDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListContext;
-
-import com.google.common.collect.ImmutableList;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
@@ -79,8 +76,8 @@ public class ClassDeclarationParser {
 			AstClassDeclaration classDeclaration = new AstClassDeclaration(
 					reporter, 
 					name, 
-					ImmutableList.copyOf(typeParameters),
-					ImmutableList.copyOf(methods),
+					List.copyOf(typeParameters),
+					List.copyOf(methods),
 					memberValues,
 					anonConstructorArguments,
 					ancestors

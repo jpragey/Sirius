@@ -11,8 +11,6 @@ import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.ast.AstFunctionParameter;
 
-import com.google.common.collect.ImmutableList;
-
 public class FunctionImpl implements AbstractFunction {
 	private QName functionQName;
 	private List<FunctionFormalArgument> implArguments;
@@ -33,7 +31,7 @@ public class FunctionImpl implements AbstractFunction {
 			FunctionFormalArgument formalArg = arg.toAPI(functionQName);
 			implArgs.add(formalArg);
 		}
-		this.implArguments = ImmutableList.copyOf(implArgs); 
+		this.implArguments = List.copyOf(implArgs); 
 	}
 
 	@Override

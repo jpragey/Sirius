@@ -16,8 +16,6 @@ import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.InterfaceDeclarationImpl;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 
-import com.google.common.collect.ImmutableList;
-
 public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstParametric<AstInterfaceDeclaration>, AstClassOrInterface, Named, Verifiable {
 
 	private Reporter reporter;
@@ -26,21 +24,21 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	
 	private SymbolTableImpl symbolTable; 
 
-	private ImmutableList<TypeParameter> typeParameters;
+	private List<TypeParameter> typeParameters;
 	private AstToken name;
 	
-	private ImmutableList<FunctionDeclaration> functionDeclarations;
-	private ImmutableList<FunctionDefinition> functionDefinitions;
+	private List<FunctionDeclaration> functionDeclarations;
+	private List<FunctionDefinition> functionDefinitions;
 	
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 
 	private QName qName = new QName("<not_set>"); 
 
 	public AstInterfaceDeclaration(Reporter reporter, AstToken name, //Optional<QName> packageQName,
-			ImmutableList<FunctionDeclaration> functionDeclarations,
-			ImmutableList<FunctionDefinition> functionDefinitions,
-			ImmutableList<TypeParameter> typeParameters,
-			ImmutableList<AstToken> ancestorInfos,
+			List<FunctionDeclaration> functionDeclarations,
+			List<FunctionDefinition> functionDefinitions,
+			List<TypeParameter> typeParameters,
+			List<AstToken> ancestorInfos,
 			List<AstMemberValueDeclaration> valueDeclarations
 			) 
 	{
@@ -58,11 +56,11 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 
 	public AstInterfaceDeclaration(Reporter reporter, AstToken name) {
 		this(reporter, name,
-				ImmutableList.of() /*functionDeclarations*/,
-				ImmutableList.of() /*functionDefinitions*/,
-				ImmutableList.of() /*typeDeclarations*/,
-				ImmutableList.of() /*ancestorInfos*/,
-				ImmutableList.of() /*valueDeclarations*/
+				List.of() /*functionDeclarations*/,
+				List.of() /*functionDefinitions*/,
+				List.of() /*typeDeclarations*/,
+				List.of() /*ancestorInfos*/,
+				List.of() /*valueDeclarations*/
 				);
 	}
 
@@ -94,7 +92,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	}
 
 	@Override
-	public ImmutableList<TypeParameter> getTypeParameters() {
+	public List<TypeParameter> getTypeParameters() {
 		return typeParameters;
 	}
 	
@@ -166,7 +164,6 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	}
 
 	public void setPackageQName(QName packageQName) {
-//		this.packageQName = Optional.of(packageQName);
 		this.qName = packageQName.child(this.name.getText());
 	}
 
@@ -192,13 +189,15 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	}
 
 	public AstInterfaceDeclaration withFormalParameter(TypeParameter param) {
-		ImmutableList.Builder<TypeParameter> builder = ImmutableList.builderWithExpectedSize(typeParameters.size() + 1);
-		ImmutableList<TypeParameter> newTypeParams = builder.addAll(typeParameters).add(param).build();
-		return new AstInterfaceDeclaration(reporter, name, // packageQName,
+		List<TypeParameter> newTypeParams = new ArrayList<>(typeParameters.size() + 1);
+		newTypeParams.addAll(typeParameters);
+		newTypeParams.add(param);
+		
+		return new AstInterfaceDeclaration(reporter, name,
 				functionDeclarations,
 				functionDefinitions,
 				newTypeParams,
-				ImmutableList.of(),	// TODO
+				List.of(),	// TODO
 				valueDeclarations
 				);
 	}
@@ -221,7 +220,6 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	
 	@Override 
 	public void addAncestor(AstToken ancestor) {	// TODO: remove
-//		this.ancestors.add(new AncestorInfo(ancestor));	
 		this.ancestors.add(ancestor);	
 	}
 	
@@ -235,15 +233,15 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		
 //		if(!fd.getAnnotationList().contains("static"))
 //			fd.setMember(true);
-
+		List<FunctionDefinition> functionDefs = new ArrayList<>(functionDefinitions.size() + 1);
+		functionDefs.addAll(functionDefs);
+		functionDefs.add(fd);
+		
 		return new AstInterfaceDeclaration(reporter, name, 
 				functionDeclarations,
-				ImmutableList.<FunctionDefinition>builder()
-					.addAll(functionDefinitions)
-					.add(fd)
-					.build(),
+				functionDefs,
 				typeParameters,
-				ImmutableList.copyOf(ancestors),
+				List.copyOf(ancestors),
 				valueDeclarations
 				);
 	}

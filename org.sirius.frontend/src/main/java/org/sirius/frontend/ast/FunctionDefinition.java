@@ -6,9 +6,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
-import org.sirius.frontend.symbols.Scope;
-
-import com.google.common.collect.ImmutableList;
 
 public class FunctionDefinition implements Visitable, Verifiable {
 

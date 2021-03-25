@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.ast.AstClassOrInterface;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
@@ -14,8 +13,6 @@ import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.InterfaceDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListContext;
-
-import com.google.common.collect.ImmutableList;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
@@ -54,14 +51,11 @@ public class InterfaceDeclarationParser {
 			TypeParameterDeclarationListContext c =  ctx.typeParameterDeclarationList();
 			List<TypeParameter> typeParameters = // TODO: Optional ???
 					(c == null) 
-					? ImmutableList.of()
+					? List.of()
 					: typeParameterListVisitor.visit(c);
 			
 			
-//			ImmutableList<PartialList> functionDeclarations = ImmutableList.of();
-			
 			// -- Member functions
-//			QName containerQName = new QName("TODO");	// TODO
 			FunctionDeclarationParser.FunctionDeclarationVisitor fctVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter);
 			List<FunctionDeclaration> methods = ctx.children.stream()
 				.map(parseTree -> parseTree.accept(fctVisitor))
@@ -75,7 +69,6 @@ public class InterfaceDeclarationParser {
 				.collect(Collectors.toList());
 			
 			MemberValueDeclarationParser.MemberValueVisitor memberValuesVisitor = new MemberValueDeclarationParser.MemberValueVisitor(reporter);
-//			FunctionDeclarationParser.FunctionDeclarationVisitor fctVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter, containerQName);
 			List<AstMemberValueDeclaration> memberValues = ctx.children.stream()
 				.map(parseTree -> parseTree.accept(memberValuesVisitor))
 				.filter(partialList -> partialList!=null)
@@ -83,11 +76,11 @@ public class InterfaceDeclarationParser {
 			
 			
 			AstInterfaceDeclaration interfaceDeclaration = new AstInterfaceDeclaration(reporter, name, 
-					ImmutableList.copyOf(methods), 
-					ImmutableList.copyOf(methodDefinitions), 
-					ImmutableList.copyOf(typeParameters),
-					ImmutableList.copyOf(intfList),
-					ImmutableList.copyOf(memberValues));
+					List.copyOf(methods), 
+					List.copyOf(methodDefinitions), 
+					List.copyOf(typeParameters),
+					List.copyOf(intfList),
+					List.copyOf(memberValues));
 			return interfaceDeclaration;
 		}
 	}

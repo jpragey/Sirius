@@ -1,18 +1,12 @@
 package org.sirius.frontend.ast;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
-import org.sirius.frontend.api.Statement;
-import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.FunctionImpl;
-import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Scope;
-
-import com.google.common.collect.ImmutableList;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class Partial implements Visitable, Verifiable, Scoped {
 	

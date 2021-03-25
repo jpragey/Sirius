@@ -16,11 +16,9 @@ import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.ClassDeclarationImpl;
 import org.sirius.frontend.sdk.SdkContent;
-import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.Symbol;
-
-import com.google.common.collect.ImmutableList;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParametric<AstClassDeclaration>, AstClassOrInterface, Named, Verifiable {
 
@@ -29,9 +27,9 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	private QName qName = new QName(undefQName); 
 	
 	// Formal parameters
-	private ImmutableList<TypeParameter> typeParameters;
+	private List<TypeParameter> typeParameters;
 	
-	private ImmutableList<FunctionDefinition> functionDefinitions;
+	private List<FunctionDefinition> functionDefinitions;
 	
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	private List<AstFunctionParameter> anonConstructorArguments = new ArrayList<>(); 
@@ -52,8 +50,8 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	private Reporter reporter;
 	
 	public AstClassDeclaration(Reporter reporter, AstToken name, 
-			ImmutableList<TypeParameter> typeParameters,
-			ImmutableList<FunctionDefinition> functionDeclarations,
+			List<TypeParameter> typeParameters,
+			List<FunctionDefinition> functionDeclarations,
 			List<AstMemberValueDeclaration> valueDeclarations,
 			List<AstFunctionParameter> anonConstructorArguments,
 			List<AstToken> ancestorInfos) 
@@ -73,17 +71,18 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	public AstClassDeclaration(Reporter reporter, AstToken name)
 	{
 		this(reporter, name, 
-			ImmutableList.of(),							//<TypeFormalParameterDeclaration> typeParameters,
-			ImmutableList.of(), 						//<AstFunctionDeclaration>(), // functionDeclarations,
+			List.of(),					//<TypeFormalParameterDeclaration> typeParameters,
+			List.of(), 					//<AstFunctionDeclaration>(), // functionDeclarations,
 			new ArrayList<AstMemberValueDeclaration>(), //List valueDeclarations,
 			new ArrayList<AstFunctionParameter>() 		//List anonConstructorArguments
 			, new ArrayList<AstToken>()
 		);
 	}
 	public AstClassDeclaration withFormalParameter(TypeParameter param) {
-		
-		ImmutableList.Builder<TypeParameter> builder = ImmutableList.builderWithExpectedSize(typeParameters.size() + 1);
-		ImmutableList<TypeParameter> newTypeParams = builder.addAll(typeParameters).add(param).build();
+
+		List<TypeParameter> newTypeParams = new ArrayList<>(typeParameters.size() + 1);
+		newTypeParams.addAll(typeParameters);
+		newTypeParams.add(param);
 
 		AstClassDeclaration fd = new AstClassDeclaration(reporter,
 				name, 
@@ -95,8 +94,9 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 	public AstClassDeclaration withFunctionDeclaration(FunctionDefinition fd) {
 		
-		ImmutableList.Builder<FunctionDefinition> builder = ImmutableList.builderWithExpectedSize(functionDefinitions.size() + 1);
-		ImmutableList<FunctionDefinition> newFunctions = builder.addAll(functionDefinitions).add(fd).build();
+		List<FunctionDefinition> newFunctions = new ArrayList<>(functionDefinitions.size() + 1);
+		newFunctions.addAll(functionDefinitions);
+		newFunctions.add(fd);
 
 		AstClassDeclaration cd = new AstClassDeclaration(reporter, name, typeParameters, newFunctions, 
 				valueDeclarations, anonConstructorArguments, ancestors);
