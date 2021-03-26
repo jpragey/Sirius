@@ -2,13 +2,16 @@
 
 Lambdas are unnamed functions.
 
-The type of a lambda is definned by the *Function*:
+The type of a lambda is defined by the *Function*, or can be abbreviated:
 [source, java]
 ----
 Function< return_type, [comma-separated arg_types]>
+return_type (comma-separated arg_types)
 ----
 For example the type of a binary function that takes two *Integer* s and returns an *Integer* is:
 [source, java]
 ----
 Function<Integer, [Integer, Integer]>
+//or
+Integer (Integer, Integer)
 ----

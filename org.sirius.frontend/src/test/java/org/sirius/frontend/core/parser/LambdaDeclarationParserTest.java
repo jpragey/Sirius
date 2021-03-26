@@ -52,11 +52,18 @@ public class LambdaDeclarationParserTest {
 	}
 
 	@Test
-	@DisplayName("Lambda declaration")
-//	@Disabled("Lambda support temp. removed")
-	public void functionWithParameters() {
-		LambdaDeclaration lambda = parseLambdaDeclaration("(A, B, C) -> Integer");
-		//assertEquals(partialList.getNameString(), "f");
+	@DisplayName("Lambda declaration, 3 parameters, short(non-template) form")
+	public void functionWithParameters_shortForm() {
+		functionWithParameters("(A, B, C) -> Integer");
+	}
+	@Test
+	@DisplayName("Lambda declaration, 3 parameters, template form")
+	public void functionWithParameters_genericForm() {
+		functionWithParameters("Function < Integer , [A, B, C] > ");
+	}
+	private void functionWithParameters(String sourceCode) {
+		LambdaDeclaration lambda = parseLambdaDeclaration(sourceCode);
+
 		assertThat(lambda.getArgTypes(), hasSize(3));
 
 		assertThat(

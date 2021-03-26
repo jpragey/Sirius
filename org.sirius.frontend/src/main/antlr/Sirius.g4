@@ -236,6 +236,9 @@ lambdaDeclaration :
 	// []
 	'('  functionDeclarationParameterList ')'
 	 '->' returnType=type 
+	 
+	 | // Temp., to be replaced by template class
+	 	'Function' '<' returnType=type ',' '[' functionDeclarationParameterList ']' '>'
 	; 
 	
 
