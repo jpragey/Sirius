@@ -97,12 +97,7 @@
 			<version>${sirius.version}</version>
 		</dependency>
 
-<!-- 		<dependency>
-		    <groupId>com.google.guava</groupId>
-		    <artifactId>guava</artifactId>
-		    <version>29.0-jre</version>
-		</dependency>
- -->
+
 	    <dependency>
 	        <groupId>org.junit.jupiter</groupId>
 	        <artifactId>junit-jupiter-engine</artifactId>
@@ -281,6 +276,7 @@
 			                <source-highlighter>coderay</source-highlighter>
 			                <coderay-css>style</coderay-css>
       					</attributes>
+      					<preserveDirectories>true</preserveDirectories>
      				</configuration>
      			</execution>
      		</executions>

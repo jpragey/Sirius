@@ -1,0 +1,14 @@
+= Lambdas
+
+Lambdas are unnamed functions.
+
+The type of a lambda is definned by the *Function*:
+[source, java]
+----
+Function< return_type, [comma-separated arg_types]>
+----
+For example the type of a binary function that takes two *Integer* s and returns an *Integer* is:
+[source, java]
+----
+Function<Integer, [Integer, Integer]>
+----
