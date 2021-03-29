@@ -23,7 +23,7 @@ public class FunctionImpl implements AbstractFunction {
 			List<Statement> bodyStatements, boolean member) {
 		this.functionQName = functionQName;
 		this.returnType = returnType;
-		this.bodyStatements = Optional.of(bodyStatements);
+		this.bodyStatements = Optional.ofNullable(bodyStatements);
 		this.member = member;
 
 		ArrayList<FunctionFormalArgument> implArgs = new ArrayList<>(formalArguments.size()); 
@@ -33,7 +33,11 @@ public class FunctionImpl implements AbstractFunction {
 		}
 		this.implArguments = List.copyOf(implArgs); 
 	}
-
+	/** Construct a  function declaration (No body) (TODO: refactor) */
+	public FunctionImpl(QName functionQName, List<AstFunctionParameter> formalArguments, Type returnType, boolean member) {
+		this(functionQName, formalArguments, returnType, 
+				null /*List<Statement> bodyStatements*/ /* Oops*/ , member);
+	}
 	@Override
 	public String toString() {
 		return "API function " + functionQName.dotSeparated() + "(" + implArguments.size() + " args)";

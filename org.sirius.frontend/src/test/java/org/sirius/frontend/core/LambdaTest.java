@@ -1,6 +1,7 @@
 package org.sirius.frontend.core;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,6 +20,10 @@ import org.junit.jupiter.api.Test;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
+import org.sirius.frontend.api.ClassType;
+import org.sirius.frontend.api.MemberValue;
+import org.sirius.frontend.api.ModuleDeclaration;
+import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstType;
@@ -28,6 +33,7 @@ import org.sirius.frontend.ast.LambdaDefinition;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.core.parser.ParserUtil;
 import org.sirius.frontend.core.parser.StatementParser;
+import org.sirius.frontend.parser.Compiler;
 import org.sirius.frontend.parser.SiriusParser;
 
 public class LambdaTest {
@@ -74,5 +80,25 @@ public class LambdaTest {
 		LambdaDefinition lambdaDefinition = (LambdaDefinition)var.getInitialValue().get();
 
 //		lambdaDefinition.getType()
+	}
+	
+	@Test
+	@Disabled("Temp, Lambdas not correctly implemented")
+	public void lambdaDefsAreCorrectlySet() {
+		String sourceCode = "#!\n package p.k; class C(){"
+				+"(Integer, Integer) -> Integer add = (Integer a, Integer b) : Integer {};"
+				+"(Integer, Integer) -> Integer sub = (Integer a, Integer b) : Integer {};"
+				+"(Integer, Integer) -> Integer mult = (Integer a, Integer b) : Integer {};"
+				+ "}";
+		ScriptSession session = Compiler.compileScript(sourceCode);
+		
+		ModuleDeclaration md = session.getModuleDeclarations().get(0);
+		PackageDeclaration pd =  md.getPackages().get(0);
+		ClassType classC = pd.getClasses().get(0);
+		
+		MemberValue add = classC.getMemberValues().get(0);
+		assertThat(add.getInitialValue().isPresent(), is(true));
+//		assertThat(add.getInitialValue(), instanceOf(LambdaDefinition.class));
+
 	}
 }

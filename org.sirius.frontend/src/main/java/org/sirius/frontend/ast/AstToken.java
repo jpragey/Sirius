@@ -107,6 +107,10 @@ public class AstToken implements org.sirius.common.core.Token {
 			public String getText() {
 				return text;
 			}
+			@Override
+			public String toString() {
+				return text;
+			}
 		};
 	}
 }

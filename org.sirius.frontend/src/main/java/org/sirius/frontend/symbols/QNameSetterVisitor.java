@@ -11,6 +11,7 @@ import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.FunctionDefinition;
+import org.sirius.frontend.ast.LambdaDefinition;
 import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.TypeParameter;
@@ -134,4 +135,16 @@ public class QNameSetterVisitor implements AstVisitor {
 		valueDeclaration.setContainerQName(containerQName);
 	}
 	
+	private int lambdaNameIndex = 0;
+	
+	@Override
+	public void startLambdaDefinition(LambdaDefinition lambdaDef) {
+		QName containerQName = qnameStack.peek();
+		String lambdaName = "$l." + lambdaNameIndex;
+		QName lambdaQName = containerQName.child(lambdaName);
+		
+		lambdaDef.setqName(lambdaQName);
+		// TODO Auto-generated method stub
+//		AstVisitor.super.startLambdaDefinition(definition);
+	}
 }

@@ -8,10 +8,10 @@ The type of a lambda is defined by the *Function*, or can be abbreviated:
 Function< return_type, [comma-separated arg_types]>
 return_type (comma-separated arg_types)
 ----
-For example the type of a binary function that takes two *Integer* s and returns an *Integer* is:
+For example the type of a binary function that takes an *A*, a *B* and a *C* and returns an *Integer* is:
 [source, java]
 ----
-Function<Integer, [Integer, Integer]>
+Function < Integer, [A, B, C] >
 //or
-Integer (Integer, Integer)
+(A, B, C) -> Integer
 ----

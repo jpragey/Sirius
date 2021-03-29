@@ -23,10 +23,23 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 	
 	private FunctionImpl functionImpl = null;
 
+	private Optional<QName> qName = Optional.empty();
+	
+	
+
 	public LambdaDefinition(List<AstFunctionParameter> args, AstType returnType, FunctionBody body) {
 		this.args = args;
 		this.returnType = returnType;
 		this.body = body;
+	}
+	
+	public QName getqName() {
+		return qName.get();
+	}
+
+	public void setqName(QName qName) {
+		assert(qName != null);
+		this.qName = Optional.of(qName);
 	}
 
 	public AstType getReturnType() {
@@ -59,7 +72,7 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 
 			List<AstStatement> bodyStmts = body.getStatements();
 			
-			Optional<List<Statement>> apiBody = Optional.empty();
+//			Optional<List<Statement>> apiBody = Optional.empty();
 			
 			List<Statement> apiStatements = new ArrayList<>(bodyStmts.size());
 			for(AstStatement stmt:  bodyStmts/*statements*/) {
@@ -90,12 +103,15 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 
 	@Override
 	public Optional<Expression> getExpression() {
-		throw new UnsupportedOperationException();	// TODO
+		return Optional.empty();	// TODO
+//		throw new UnsupportedOperationException();	
 	}
 
 	@Override
 	public String asString() {
-		throw new UnsupportedOperationException();	// TODO
+		return "<lambda>" + qName.orElse(QName.empty).toString() + "{}";
+
+//		throw new UnsupportedOperationException();	// TODO
 	}
 	
 

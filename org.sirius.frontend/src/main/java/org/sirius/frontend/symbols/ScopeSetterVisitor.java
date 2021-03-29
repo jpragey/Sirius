@@ -174,6 +174,7 @@ public class ScopeSetterVisitor implements AstVisitor {
 	@Override
 	public void startLambdaDefinition(LambdaDefinition definition) {
 		Scope scope = pushNewScope();
+		definition.setSymbolTable(scope.getSymbolTable()); // TODO: ugly
 	}
 	
 	@Override
