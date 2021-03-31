@@ -67,14 +67,23 @@ public class SdkTools {
 		
 		List<AstClassOrInterface> classOrInterfaces = new ArrayList<>();
 		List<FunctionDefinition> allFunctionDefs = new ArrayList<>();
+		SymbolTableImpl symbolTable = scope.getSymbolTable();
+		List<AstClassDeclaration> classDeclarations = new ArrayList<>();
+		List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
+		
 		for(Class<?> clss: sdkClasses) {
 			
 			TopLevelClass topLevelClassAnno = clss.getDeclaredAnnotation(TopLevelClass.class);	// can be null
 			TopLevelMethods topLevelmethodsAnno = clss.getDeclaredAnnotation(TopLevelMethods.class);	// can be null
 			
 			if(topLevelClassAnno != null) {
-				AstClassOrInterface classOrIntf =  parseClass(clss, topLevelClassAnno, scope.getSymbolTable() /* symbolTable*/);
+				AstClassOrInterface classOrIntf =  parseClass(clss, topLevelClassAnno, symbolTable);
 				classOrInterfaces.add(classOrIntf);
+				if(classOrIntf instanceof AstClassDeclaration)
+					classDeclarations.add((AstClassDeclaration)classOrIntf);
+				if(classOrIntf instanceof AstInterfaceDeclaration)
+					interfaceDeclarations.add((AstInterfaceDeclaration)classOrIntf);
+				
 			}
 			if(topLevelmethodsAnno != null) {
 				List<FunctionDefinition> partialLists = parseTopLevel(clss, topLevelmethodsAnno, scope.getSymbolTable() /* symbolTable*/);
@@ -82,14 +91,14 @@ public class SdkTools {
 //				System.out.println("- Top-level methods: " + clss + ", anno: " + topLevelmethodsAnno);
 			}
 		}
-		List<AstClassDeclaration> classDeclarations = classOrInterfaces.stream()
-				.filter(cl -> (cl instanceof AstClassDeclaration))
-				.map(cl -> (AstClassDeclaration)cl)
-				.collect(Collectors.toList());
-		List<AstInterfaceDeclaration> interfaceDeclarations = classOrInterfaces.stream()
-				.filter(cl -> (cl instanceof AstInterfaceDeclaration))
-				.map(cl -> (AstInterfaceDeclaration)cl)
-				.collect(Collectors.toList());
+//		List<AstClassDeclaration> classDeclarations = classOrInterfaces.stream()
+//				.filter(cl -> (cl instanceof AstClassDeclaration))
+//				.map(cl -> (AstClassDeclaration)cl)
+//				.collect(Collectors.toList());
+//		List<AstInterfaceDeclaration> interfaceDeclarations = classOrInterfaces.stream()
+//				.filter(cl -> (cl instanceof AstInterfaceDeclaration))
+//				.map(cl -> (AstInterfaceDeclaration)cl)
+//				.collect(Collectors.toList());
 		
 		AstPackageDeclaration pd = new AstPackageDeclaration(reporter, siriusLangQName /* QName.empty*/, 
 				allFunctionDefs,		//functionDeclarations, 
@@ -127,7 +136,9 @@ public class SdkTools {
 		StdAstTransforms.fillSymbolTables(compilationUnit, scope);
 		
 		classDeclarations.forEach(cd -> {scope.getSymbolTable().addClass(cd);});
-		interfaceDeclarations.forEach(id-> {scope.getSymbolTable().addInterface(id);});
+		interfaceDeclarations.forEach(id-> {
+			scope.getSymbolTable().addInterface(id);
+			});
 		allFunctionDefs.forEach(pl ->  {scope.getSymbolTable().addFunction(pl);});
 		
 		return md;
@@ -135,6 +146,7 @@ public class SdkTools {
 	
 	private AstClassOrInterface parseClass(Class<?> clss, TopLevelClass topLevelClassAnno, SymbolTableImpl symbolTable) {
 		String name = topLevelClassAnno.name();
+//		QName packageQName = topLevelClassAnno.packageQName();
 		
 		AstClassOrInterface classOrIntf;
 		if(clss.isInterface()) {

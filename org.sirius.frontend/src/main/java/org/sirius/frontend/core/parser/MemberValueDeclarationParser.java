@@ -10,6 +10,7 @@ import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
+import org.sirius.frontend.parser.SiriusParser.ExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.MemberValueDeclarationContext;
 
 public class MemberValueDeclarationParser {
@@ -32,7 +33,9 @@ public class MemberValueDeclarationParser {
 			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
 			
 			ExpressionParser.ExpressionVisitor expressionVisitor = new ExpressionParser.ExpressionVisitor(reporter);
-			Optional<AstExpression> initialValue = (ctx.expression() == null) ?  Optional.empty() : Optional.of(ctx.expression().accept(expressionVisitor));
+			ExpressionContext initValueContext = ctx.expression();
+			Optional<AstExpression> initialValue = (initValueContext == null) ?  
+					Optional.empty() : Optional.of(initValueContext.accept(expressionVisitor));
 
 			return new AstMemberValueDeclaration(annotations, type, name, initialValue);
 		}

@@ -35,6 +35,7 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 	private Map<QName, AstClassDeclaration> classDeclarationByQname = new HashMap<>();
 	
 	private List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
+	private Map<QName,AstInterfaceDeclaration> interfaceDeclarationByQname = new HashMap<>();
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	
 	private SymbolTable symbolTable; 
@@ -57,7 +58,12 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 			classDeclarationByQname.put(cd.getQName(), cd); 
 			this.visitables.add(cd);
 			});
-		interfaceDeclarations.forEach(id  -> {this.interfaceDeclarations.add(id);	this.visitables.add(id);});
+		interfaceDeclarations.forEach(id  -> {
+			id.setPackageQName(qname);
+			this.interfaceDeclarations.add(id);
+			interfaceDeclarationByQname.put(id.getQName(), id);
+			this.visitables.add(id);
+			});
 		valueDeclarations.forEach    (vd  -> {this.valueDeclarations.add(vd);		this.visitables.add(vd);});
 	}
 
@@ -144,6 +150,11 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 	
 	public List<AstInterfaceDeclaration> getInterfaceDeclarations() {
 		return interfaceDeclarations;
+	}
+	
+	public Optional<AstInterfaceDeclaration> getInterfaceDeclaration(QName interfaceQName) {
+		AstInterfaceDeclaration id = interfaceDeclarationByQname.get(interfaceQName);
+		return Optional.ofNullable(id);
 	}
 	
 	public boolean isEmpty() {

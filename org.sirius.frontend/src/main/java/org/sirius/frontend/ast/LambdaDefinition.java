@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.sirius.common.core.MapOfList;
 import org.sirius.common.core.QName;
+import org.sirius.frontend.api.AbstractFunction;
+import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.apiimpl.ClassDeclarationImpl;
 import org.sirius.frontend.apiimpl.FunctionImpl;
 import org.sirius.frontend.symbols.SymbolTable;
 import org.sirius.frontend.symbols.SymbolTableImpl;
@@ -21,7 +26,25 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 	
 	private SymbolTableImpl symbolTable = null;
 	
-	private FunctionImpl functionImpl = null;
+	public static class APIFunctionInfo {
+		private FunctionImpl functionType = null;
+		private ClassType classType = null;
+		
+		public APIFunctionInfo(FunctionImpl functionType, ClassType classType) {
+			super();
+			this.functionType = functionType;
+			this.classType = classType;
+		}
+		public FunctionImpl getFunctionType() {
+			return functionType;
+		}
+		public ClassType getClassType() {
+			return classType;
+		}
+		
+	}
+//	private FunctionImpl functionImpl = null;
+	private APIFunctionInfo functionInfoImpl = null;
 
 	private Optional<QName> qName = Optional.empty();
 	
@@ -64,31 +87,45 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 		visitor.endLambdaDefinition(this);
 	}
 
-	public FunctionImpl toAPI(QName lambdaQName) {
-		
+	private ClassType toFunctionObjectAPI(QName lambdaQName) {
+		QName lambdaClassQName = lambdaQName;
+		MapOfList<QName, FunctionDefinition> allFctMap = new MapOfList<>(); 	// TODO
+		List<MemberValue> valueDeclarations = List.of();	// TODO
+		List<AstInterfaceDeclaration> interfaces = List.of();	// TODO
+		ClassDeclarationImpl classImpl = new ClassDeclarationImpl(lambdaClassQName, allFctMap, valueDeclarations, interfaces);
+
+		return classImpl;
+	}
+	private FunctionImpl toFunctionAPI(QName lambdaQName) {
+
 		List<AstFunctionParameter> args = getArgs();
-		if(functionImpl == null) {
-			Type resolvedReturnType = returnType.getApiType();
+		Type resolvedReturnType = returnType.getApiType();
 
-			List<AstStatement> bodyStmts = body.getStatements();
-			
-//			Optional<List<Statement>> apiBody = Optional.empty();
-			
-			List<Statement> apiStatements = new ArrayList<>(bodyStmts.size());
-			for(AstStatement stmt:  bodyStmts/*statements*/) {
-				Optional<Statement> optSt = stmt.toAPI();
-				assert(optSt.isPresent());	// TODO
-				Statement st = optSt.get();
-				apiStatements.add(st);
-			}
-			boolean member = false;	// TODO: ???
-			functionImpl = new FunctionImpl(lambdaQName, args, resolvedReturnType, apiStatements, member);
-			assert(functionImpl.getArguments().size() == args.size());
+		List<AstStatement> bodyStmts = body.getStatements();
+
+
+		List<Statement> apiStatements = new ArrayList<>(bodyStmts.size());
+		for(AstStatement stmt:  bodyStmts) {
+			Optional<Statement> optSt = stmt.toAPI();
+			assert(optSt.isPresent());	// TODO
+			Statement st = optSt.get();
+			apiStatements.add(st);
 		}
-
+		boolean member = false;	// TODO: ???
+		FunctionImpl functionImpl = new FunctionImpl(lambdaQName, args, resolvedReturnType, apiStatements, member);
 		assert(functionImpl.getArguments().size() == args.size());
 
 		return functionImpl;
+	}
+
+	public APIFunctionInfo toAPI(QName lambdaQName) {
+//		APIFunctionInfo functionInfoImpl
+//		List<AstFunctionParameter> args = getArgs();
+		if(this.functionInfoImpl == null) {
+			this.functionInfoImpl = new APIFunctionInfo(toFunctionAPI(lambdaQName), toFunctionObjectAPI(lambdaQName));
+		}
+
+		return this.functionInfoImpl;
 	}
 
 	@Override
@@ -103,8 +140,13 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 
 	@Override
 	public Optional<Expression> getExpression() {
-		return Optional.empty();	// TODO
-//		throw new UnsupportedOperationException();	
+		assert(this.qName.isPresent());
+		APIFunctionInfo functionInfo =  toAPI(this.qName.get());
+		
+//		functionInfo.g
+		
+//		return Optional.empty();	// TODO
+		throw new UnsupportedOperationException();	
 	}
 
 	@Override
@@ -125,5 +167,10 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 		this.symbolTable = symbolTable;
 	}
 
+	@Override
+	public String toString() {
+		String s = asString();
+		return s;
+	}
 	
 }

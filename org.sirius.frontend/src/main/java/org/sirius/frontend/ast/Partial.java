@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.apiimpl.FunctionImpl;
+import org.sirius.frontend.ast.LambdaDefinition.APIFunctionInfo;
 import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 
@@ -98,7 +99,8 @@ public class Partial implements Visitable, Verifiable, Scoped {
 		
 		List<AstFunctionParameter> args = getArgs();
 		if(functionImpl == null) {
-			this.functionImpl = lambdaDefinition.toAPI(qName);
+			APIFunctionInfo functionInfo = lambdaDefinition.toAPI(qName);
+			this.functionImpl = functionInfo.getFunctionType();	// TODO
 			assert(functionImpl.getArguments().size() == args.size());
 		}
 

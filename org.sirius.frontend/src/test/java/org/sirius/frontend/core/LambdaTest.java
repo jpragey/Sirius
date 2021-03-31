@@ -87,8 +87,8 @@ public class LambdaTest {
 	public void lambdaDefsAreCorrectlySet() {
 		String sourceCode = "#!\n package p.k; class C(){"
 				+"(Integer, Integer) -> Integer add = (Integer a, Integer b) : Integer {};"
-				+"(Integer, Integer) -> Integer sub = (Integer a, Integer b) : Integer {};"
-				+"(Integer, Integer) -> Integer mult = (Integer a, Integer b) : Integer {};"
+//				+"(Integer, Integer) -> Integer sub = (Integer a, Integer b) : Integer {};"
+//				+"(Integer, Integer) -> Integer mult = (Integer a, Integer b) : Integer {};"
 				+ "}";
 		ScriptSession session = Compiler.compileScript(sourceCode);
 		

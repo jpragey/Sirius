@@ -65,11 +65,15 @@ public class SdkToolsTest {
 		AstClassDeclaration slStringClassDecl = sdkContent.getSiriusLangStringASTCD();
 		assertThat(slStringClassDecl.getQName(), is(new QName("sirius", "lang", "String")));
 
+		AstInterfaceDeclaration slFunctionInterfaceDecl = sdkContent.getSiriusLangFunctionASTCD();
+		assertThat(slFunctionInterfaceDecl.getQName(), is(new QName("sirius", "lang", "Function")));
+
 		checkSymbolTableContainsInterface(symbolTable, new QName("sirius", "lang", "Stringifiable"));
 		checkSymbolTableContainsClass    (symbolTable, new QName("sirius", "lang", "String"));
 		checkSymbolTableContainsInterface(symbolTable, new QName("sirius", "lang", "Addable"));
 		checkSymbolTableContainsClass	 (symbolTable, new QName("sirius", "lang", "Integer"));
 		checkSymbolTableContainsClass	 (symbolTable, new QName("sirius", "lang", "Boolean"));
+		checkSymbolTableContainsInterface(symbolTable, new QName("sirius", "lang", "Function"));
 		
 	}
 	
