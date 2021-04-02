@@ -23,5 +23,7 @@ public class Util {
 	
 	// TODO: move
 	public static final String jvmPackageClassName = "JvmPackage";	// TODO: should be "$package$"
+	/** JVM backend maps s.l.Integer to ints (false) or classes (true) */
+	public static final Boolean mapIntsToClasses = true;
 	public static final String jvmModuleVersion = "0.0.1-SNAPSHOT";
 }

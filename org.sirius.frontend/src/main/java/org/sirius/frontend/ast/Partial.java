@@ -24,7 +24,7 @@ public class Partial implements Visitable, Verifiable, Scoped {
 	private FunctionImpl functionImpl = null;
 	
 	public Partial(AstToken name,
-			List<AstFunctionParameter> args, 
+			List<AstFunctionArgument> args, 
 			boolean member,
 			AstType returnType,
 			List<AstStatement> body) 
@@ -40,7 +40,7 @@ public class Partial implements Visitable, Verifiable, Scoped {
 
 	public void assignSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
-		for(AstFunctionParameter arg: lambdaDefinition.getArgs()) {
+		for(AstFunctionArgument arg: lambdaDefinition.getArgs()) {
 			this.symbolTable.addFunctionArgument(arg);
 		}
 	}
@@ -59,11 +59,11 @@ public class Partial implements Visitable, Verifiable, Scoped {
 		return name;
 	}
 
-	public List<AstFunctionParameter> getArgs() {
+	public List<AstFunctionArgument> getArgs() {
 		return lambdaDefinition.getArgs();
 	}
-	public AstFunctionParameter getArg(int argIndex) {
-		List<AstFunctionParameter> args = getArgs();
+	public AstFunctionArgument getArg(int argIndex) {
+		List<AstFunctionArgument> args = getArgs();
 		
 		if(argIndex<0 || argIndex > args.size())
 			throw new IllegalArgumentException("Trying to get arg " + argIndex + " of function of " + args.size() + " args; function " + toString());
@@ -76,7 +76,7 @@ public class Partial implements Visitable, Verifiable, Scoped {
 	}
 	@Override
 	public String toString() {
-		List<AstFunctionParameter> args = getArgs();
+		List<AstFunctionArgument> args = getArgs();
 		String text =
 				name.getText() + 
 				"_" + args.size() + "_" +
@@ -97,7 +97,7 @@ public class Partial implements Visitable, Verifiable, Scoped {
 
 	public FunctionImpl toAPI() {
 		
-		List<AstFunctionParameter> args = getArgs();
+		List<AstFunctionArgument> args = getArgs();
 		if(functionImpl == null) {
 			APIFunctionInfo functionInfo = lambdaDefinition.toAPI(qName);
 			this.functionImpl = functionInfo.getFunctionType();	// TODO
@@ -120,7 +120,7 @@ public class Partial implements Visitable, Verifiable, Scoped {
 	public void assignScope(Scope scope) {
 		this.scope = scope;
 
-		for(AstFunctionParameter arg: lambdaDefinition.getArgs())
+		for(AstFunctionArgument arg: lambdaDefinition.getArgs())
 			this.scope.addFunctionArgument(arg);
 
 		// -- add closure to scope

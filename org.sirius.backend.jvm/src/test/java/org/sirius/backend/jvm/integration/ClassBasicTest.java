@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.BackendOptions;
@@ -182,8 +183,7 @@ public class ClassBasicTest {
 		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
 		InMemoryClassWriterListener l = backend.addInMemoryOutput();
 		
-		backend.addFileOutput("/tmp/siriusTmp/module", Optional.of("/tmp/siriusTmp/classes"));
-		
+//		backend.addFileOutput("/tmp/siriusTmp/module", Optional.of("/tmp/siriusTmp/classes"));
 		
 		backend.process(session);
 		
@@ -203,6 +203,39 @@ public class ClassBasicTest {
 		
 		assertEquals(result.getClass().getName(), "sirius.lang.Integer");
 		assertEquals( ((sirius.lang.Integer)result).getValue(), 10);
+	}
 
+	@Test
+	@DisplayName("A basic member function can be called")
+	@Disabled("Restore when scopes are OK (in function call)")
+	public void basicMemberFunctionCallTest() throws Exception {
+		String script = "#!\n "
+		+ "class A(){ Integer add0() {return 42;} }\n"
+		+ "Integer main() { A aa = A();  Integer res = aa.add0(); return res;}";
+		
+		ScriptSession session = CompileTools.compileScript(script, reporter);
+		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
+		InMemoryClassWriterListener l = backend.addInMemoryOutput();
+		
+		backend.addFileOutput("/tmp/siriusTmp/module", Optional.of("/tmp/siriusTmp/classes"));
+		
+		backend.process(session);
+		
+		ClassLoader classLoader = l.getClassLoader();
+		
+		String mainClassQName = Util.jvmPackageClassName; 
+		
+		Class<?> cls = classLoader.loadClass(mainClassQName);
+
+		Object helloObj = cls.getDeclaredConstructor().newInstance();
+		Method[] methods = helloObj.getClass().getDeclaredMethods();
+		
+		Method main = cls.getMethod("main", new Class[] { /* String[].class */});
+		Object[] argTypes = new Object[] {};
+		
+		Object result = main.invoke(null, argTypes /*, args*/);
+		
+		assertEquals(result.getClass().getName(), "sirius.lang.Integer");
+		assertEquals( ((sirius.lang.Integer)result).getValue(), 42);
 	}
 }

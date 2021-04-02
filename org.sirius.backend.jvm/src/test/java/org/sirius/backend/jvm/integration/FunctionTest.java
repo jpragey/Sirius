@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
@@ -16,6 +17,7 @@ import org.sirius.backend.jvm.Bytecode;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
 import org.sirius.backend.jvm.JvmBackend;
 import org.sirius.backend.jvm.Util;
+import org.sirius.backend.jvm.Utils;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
@@ -35,17 +37,35 @@ public class FunctionTest {
 		assertTrue(reporter.ok());
 	}
 
-	public Object compileRunAndReturn(String script) throws Exception {
+	public InMemoryClassWriterListener compileToBytecode(String script) throws Exception {
 		
-		ScriptSession session = CompileTools.compileScript(script, reporter);
+		ScriptSession session =
+		CompileTools.compileScript(script, reporter);
 		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
+
+//		backend.addFileOutput("/tmp/siriusTmp2", Optional.of("jvmTest/classes"));
 		InMemoryClassWriterListener l = backend.addInMemoryOutput();
-
-		backend.addFileOutput("/tmp/siriusTmp2", Optional.of("jvmTest/classes"));
-
-		backend.process(session);
 		
-		HashMap<String, Bytecode> map = l.getByteCodesMap();
+		backend.process(session);
+
+		return l;
+//		Map<String, Bytecode> bytecodeMap = l.getByteCodesMap(); // 	map <dot-separated class name> -> <class bytecode>
+//		return bytecodeMap;
+	}
+	
+	public Object compileRunAndReturn(String script) throws Exception {
+
+		InMemoryClassWriterListener l = compileToBytecode(script);
+
+//		ScriptSession session = CompileTools.compileScript(script, reporter);
+//		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
+//		InMemoryClassWriterListener l = backend.addInMemoryOutput();
+//
+//		backend.addFileOutput("/tmp/siriusTmp2", Optional.of("jvmTest/classes"));
+//
+//		backend.process(session);
+		
+//		HashMap<String, Bytecode> map = l.getByteCodesMap();
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
@@ -60,7 +80,7 @@ public class FunctionTest {
 		Object[] argTypes = new Object[] {};
 		
 		Object result = main.invoke(null, argTypes /*, args*/);
-		System.out.println("Result: " + result);
+//		System.out.println("Result: " + result);
 		
 		return result;
 	}
@@ -84,17 +104,25 @@ public class FunctionTest {
 	@Test
 	public void twoArgumentsFunctionCall() throws Exception {
 		String script = "#!\n "
-			+ "Integer id(Integer x, Integer y) {return y;} "
-			+ "Integer main() {Integer i= id(10,43); return i;}"
+				+ "Integer add(Integer x, Integer y) {return x+y;} " // -> x+y
+				+ "Integer main() {"
+				+ "		return add(10,44); "
+				+ "}"
 				;
+
+		InMemoryClassWriterListener l = compileToBytecode(script);
+
+		HashMap<String, Bytecode> bytecodeMap = l.getByteCodesMap();
+		Bytecode bc = bytecodeMap.get(Util.jvmPackageClassName);
+		
+		Utils.ModuleInfo mi = Utils.parseModuleBytecode(bc.getBytes());
 		
 		Object sirResult = compileRunAndReturn(script);
 
 		assert(sirResult instanceof sirius.lang.Integer);
 		int result = ((sirius.lang.Integer)sirResult).getValue();
 
-		assertThat(result, is(43));
-		
+		assertThat(result, is(54));
 	}
 
 }

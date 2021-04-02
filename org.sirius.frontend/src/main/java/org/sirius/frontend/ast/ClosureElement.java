@@ -13,7 +13,7 @@ public class ClosureElement implements Verifiable {
 		this.type = type;
 		this.name = name;
 	}
-	public ClosureElement(AstFunctionParameter param) {
+	public ClosureElement(AstFunctionArgument param) {
 		this(param.getType(), param.getName());
 	}
 	public AstType getType() {

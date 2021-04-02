@@ -3,6 +3,7 @@ package org.sirius.frontend.core;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -31,7 +32,7 @@ import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.FunctionImpl;
 import org.sirius.frontend.apiimpl.ScopeImpl;
-import org.sirius.frontend.ast.AstFunctionParameter;
+import org.sirius.frontend.ast.AstFunctionArgument;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstReturnStatement;
@@ -212,6 +213,11 @@ public class MethodTests {
 		assertThat(type, instanceOf(IntegerType.class));
 //		assert(type instanceof ClassDeclaration);
 //		assertEquals( ((ClassDeclaration)type).getQName(), new QName("sirius", "lang", "Integer"));
+		
+		// -- class method
+		assertEquals(cd.getFunctions().size(), 1);
+		AbstractFunction apiMethod = cd.getFunctions().get(0);
+		assertThat(apiMethod.getQName().dotSeparated(), is("p.k.C.f"));
 
 	}
 	
@@ -278,9 +284,9 @@ public class MethodTests {
 		assertEquals(allArgsPartial.getArgs().size(), 2);
 		
 		SymbolTableImpl partialSymbolTable = allArgsPartial.getSymbolTable();
-		Optional<AstFunctionParameter> optArg = partialSymbolTable.lookupFunctionArgument("x");
+		Optional<AstFunctionArgument> optArg = partialSymbolTable.lookupFunctionArgument("x");
 		assert(optArg.isPresent());
-		Optional<AstFunctionParameter> opt1Arg = partialSymbolTable.lookupFunctionArgument("y");
+		Optional<AstFunctionArgument> opt1Arg = partialSymbolTable.lookupFunctionArgument("y");
 		assert(opt1Arg.isPresent());
 		
 		AstReturnStatement returnStatement = (AstReturnStatement)func.getBody().getStatement(0);

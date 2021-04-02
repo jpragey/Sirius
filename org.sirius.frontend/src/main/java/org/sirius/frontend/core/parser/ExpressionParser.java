@@ -20,6 +20,7 @@ import org.sirius.frontend.ast.LambdaDefinition;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.core.parser.LambdaDeclarationParser.LambdaDefinitionVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
+import org.sirius.frontend.parser.SiriusParser.ClassInstanciationExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.ConstantExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.ExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionCallExpressionContext;
@@ -123,9 +124,8 @@ public class ExpressionParser {
 		}
 
 
-
 		@Override
-		public ConstructorCallExpression visitIsConstructorCallExpression(IsConstructorCallExpressionContext ctx) {
+		public AstExpression visitClassInstanciationExpression(ClassInstanciationExpressionContext ctx) {
 			AstToken name = new AstToken(ctx.name);
 			
 			ExpressionVisitor argVisitor = new ExpressionVisitor(reporter);
@@ -138,8 +138,6 @@ public class ExpressionParser {
 			return new ConstructorCallExpression(reporter, name, actualArguments);
 		}
 
-
-
 		@Override
 		public AstExpression visitIsFieldAccessExpression(IsFieldAccessExpressionContext ctx) {
 			
@@ -148,8 +146,6 @@ public class ExpressionParser {
 			
 			return new AstMemberAccessExpression(reporter, thisExpression, valueName);
 		}
-
-
 
 		@Override
 		public SimpleReferenceExpression visitIsVariableRefExpression(IsVariableRefExpressionContext ctx) {

@@ -13,7 +13,7 @@ import org.sirius.frontend.symbols.SymbolTableImpl;
  * @author jpragey
  *
  */
-public class AstFunctionParameter implements Verifiable {
+public class AstFunctionArgument implements Verifiable {
 	
 	private AstType type;
 	private AstToken name;
@@ -21,7 +21,7 @@ public class AstFunctionParameter implements Verifiable {
 	/** index in arg list (set *after* construction */
 	private int index;
 
-	public AstFunctionParameter(AstType type, AstToken name) {
+	public AstFunctionArgument(AstType type, AstToken name) {
 		super();
 		this.type = type;
 		this.name = name;

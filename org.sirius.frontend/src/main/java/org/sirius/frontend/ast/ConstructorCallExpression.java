@@ -126,7 +126,8 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 		
 		@Override
 		public String toString() {
-			return getType().toString() + "(...)";
+			return "ConstructorCallImpl(...)";
+//			return getType().toString() + "(...)";
 		}
 	}
 	

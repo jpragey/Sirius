@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.ast.AstFunctionParameter;
+import org.sirius.frontend.ast.AstFunctionArgument;
 import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
@@ -97,7 +97,7 @@ public class LambdaDeclarationParser {
 			// -- Function parameters
 			FunctionParameterListVisitor argListVisitor = new FunctionParameterListVisitor(reporter);
 			
-			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
+			List<AstFunctionArgument> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
 			
 			int currentArgIndex = 0; // index in argument list
 			for(var fp: functionParams) {

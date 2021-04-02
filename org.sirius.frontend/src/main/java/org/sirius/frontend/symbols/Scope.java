@@ -2,7 +2,7 @@ package org.sirius.frontend.symbols;
 
 import java.util.Optional;
 
-import org.sirius.frontend.ast.AstFunctionParameter;
+import org.sirius.frontend.ast.AstFunctionArgument;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
@@ -33,7 +33,7 @@ public class Scope {
 	public void addLocalVariable(AstLocalVariableStatement declaration) {
 		symbolTable.addLocalVariable(declaration);
 	}
-	public void addFunctionArgument(AstFunctionParameter functionArgument) {
+	public void addFunctionArgument(AstFunctionArgument functionArgument) {
 		symbolTable.addFunctionArgument(functionArgument);
 	}
 	
@@ -52,8 +52,8 @@ public class Scope {
 		Optional<AstLocalVariableStatement> lvpl = symbolTable.lookupLocalVariable(simpleName);
 		return lvpl;
 	}
-	public Optional<AstFunctionParameter> getFunctionParameter(String simpleName) {
-		Optional<AstFunctionParameter> lvpl = symbolTable.lookupFunctionArgument(simpleName);
+	public Optional<AstFunctionArgument> getFunctionArgument(String simpleName) {
+		Optional<AstFunctionArgument> lvpl = symbolTable.lookupFunctionArgument(simpleName);
 		return lvpl;
 	}
 	

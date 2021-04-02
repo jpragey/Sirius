@@ -3,7 +3,7 @@ package org.sirius.frontend.symbols;
 import java.util.Optional;
 
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFunctionParameter;
+import org.sirius.frontend.ast.AstFunctionArgument;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
@@ -19,7 +19,7 @@ public class Symbol {
 	private Optional<AstInterfaceDeclaration> interfaceDeclaration = Optional.empty();
 	private Optional<TypeParameter> formalParameterDeclaration = Optional.empty();
 	private Optional<FunctionDefinition> functionDeclaration = Optional.empty();
-	private Optional<AstFunctionParameter> functionArgument = Optional.empty();
+	private Optional<AstFunctionArgument> functionArgument = Optional.empty();
 
 	private Optional<AstMemberValueDeclaration> valueDeclaration = Optional.empty();
 	private Optional<ImportedSymbol> importDeclaration = Optional.empty();
@@ -61,7 +61,7 @@ public class Symbol {
 		this.valueDeclaration = Optional.of(argument);
 	}
 
-	public Symbol(AstToken name, AstFunctionParameter argument) {
+	public Symbol(AstToken name, AstFunctionArgument argument) {
 		super();
 		assert(name != null);
 		this.name = name;
@@ -113,7 +113,7 @@ public class Symbol {
 		return localVariableDeclaration;
 	}
 
-	public Optional<AstFunctionParameter> getFunctionArgument() {
+	public Optional<AstFunctionArgument> getFunctionArgument() {
 		return functionArgument;
 	}
 	

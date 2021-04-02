@@ -3,6 +3,7 @@ package org.sirius.backend.jvm;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_STATIC;
 import static org.objectweb.asm.Opcodes.ARETURN;
+import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.RETURN;
 
@@ -98,8 +99,11 @@ public class JvmMemberFunction {
 		org.sirius.frontend.api.Type type = statement.getExpressionType();
 
 		if(type instanceof IntegerType) {
-			mv.visitInsn(ARETURN);	// TODO ???
-//						    mv.visitInsn(IRETURN);
+			if(Util.mapIntsToClasses) {
+				mv.visitInsn(ARETURN);	// TODO ???
+			} else {
+				mv.visitInsn(IRETURN);
+			}
 		} else if(type instanceof ClassType) {
 			mv.visitInsn(ARETURN);
 		} else {

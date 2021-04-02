@@ -127,29 +127,47 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 		this.scope = scope;
 	}
 
+//	private Optional<Expression> cacheLocalVariableStatement(String simpleName) {
+//		Optional<AstLocalVariableStatement> localVarDecl = scope.getLocalVariable(simpleName);
+//		if(localVarDecl.isPresent()) {
+//			AstLocalVariableStatement st = localVarDecl.get();
+//			LocalVariableReferenceImpl lvr = new LocalVariableReferenceImpl(st);
+//			impl = Optional.of(lvr);
+//			return impl;
+//		}
+//	}
 	@Override
 	public Optional<Expression> getExpression() {
-		if(impl == null) {
-			String simpleName = referenceName.getText();
+		if(this.impl != null) {
+			return this.impl;
+		}
 
-			Optional<AstLocalVariableStatement> localVarDecl = scope.getLocalVariable(simpleName);
-			if(localVarDecl.isPresent()) {
-				AstLocalVariableStatement st = localVarDecl.get();
-				LocalVariableReferenceImpl lvr = new LocalVariableReferenceImpl(st);
-				impl = Optional.of(lvr);
-				return impl;
-			}
-			
-			Optional<AstFunctionParameter> functionParamDecl = scope.getFunctionParameter(simpleName);
+		String simpleName = referenceName.getText();
+
+		Optional<AstLocalVariableStatement> localVarDecl = scope.getLocalVariable(simpleName);
+		if(localVarDecl.isPresent()) {
+			AstLocalVariableStatement st = localVarDecl.get();
+			LocalVariableReferenceImpl lvr = new LocalVariableReferenceImpl(st);
+			this.impl = Optional.of(lvr);
+			//				return impl;
+		}
+
+		if(this.impl == null) {
+			Optional<AstFunctionArgument> functionParamDecl = scope.getFunctionArgument(simpleName);
 			if(functionParamDecl.isPresent()) {
-				AstFunctionParameter st = functionParamDecl.get();
+				AstFunctionArgument st = functionParamDecl.get();
 				FunctionActualArgumentImpl actualArg = new FunctionActualArgumentImpl(st);
-				impl = Optional.of(actualArg);
-				return impl;
+				this.impl = Optional.of(actualArg);
+				//					return impl;
 			}
 		}
-		return impl;
+
+		if(this.impl == null) {
+			reporter.error("Reference not found: " + referenceName.getText(), this.referenceName);
+			this.impl = Optional.empty();
+		}
 		
+		return this.impl;
 	}
 
 	@Override

@@ -20,7 +20,7 @@ import org.sirius.frontend.symbols.SymbolTableImpl;
 public class LambdaDefinition implements AstExpression, Verifiable, Visitable, Scoped {
 
 	private AstType returnType; 
-	private List<AstFunctionParameter> args;
+	private List<AstFunctionArgument> args;
 
 	private FunctionBody body;
 	
@@ -50,7 +50,7 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 	
 	
 
-	public LambdaDefinition(List<AstFunctionParameter> args, AstType returnType, FunctionBody body) {
+	public LambdaDefinition(List<AstFunctionArgument> args, AstType returnType, FunctionBody body) {
 		this.args = args;
 		this.returnType = returnType;
 		this.body = body;
@@ -69,7 +69,7 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 		return returnType;
 	}
 
-	public List<AstFunctionParameter> getArgs() {
+	public List<AstFunctionArgument> getArgs() {
 		return args;
 	}
 
@@ -98,7 +98,7 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 	}
 	private FunctionImpl toFunctionAPI(QName lambdaQName) {
 
-		List<AstFunctionParameter> args = getArgs();
+		List<AstFunctionArgument> args = getArgs();
 		Type resolvedReturnType = returnType.getApiType();
 
 		List<AstStatement> bodyStmts = body.getStatements();

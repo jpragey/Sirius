@@ -15,7 +15,7 @@ import org.sirius.frontend.api.StdAstTransforms;
 import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstClassOrInterface;
-import org.sirius.frontend.ast.AstFunctionParameter;
+import org.sirius.frontend.ast.AstFunctionArgument;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
@@ -189,7 +189,7 @@ public class SdkTools {
 		AstType returnType = new AstVoidType();	// TODO
 		
 		// -- function arguments
-		List<AstFunctionParameter> args = new ArrayList<>(method.getParameters().length);
+		List<AstFunctionArgument> args = new ArrayList<>(method.getParameters().length);
 		int paramIndex = 0;
 		for(Parameter parameter: method.getParameters()) {
 			org.sirius.sdk.tooling.Parameter anno = parameter.getAnnotation(org.sirius.sdk.tooling.Parameter.class);
@@ -201,7 +201,7 @@ public class SdkTools {
 			
 			type.setSymbolTable(symbolTable);
 			
-			AstFunctionParameter arg = new AstFunctionParameter(type, AstToken.internal(name));
+			AstFunctionArgument arg = new AstFunctionArgument(type, AstToken.internal(name));
 			arg.setIndex(paramIndex++);
 			arg.setSymbolTable(symbolTable);
 			args.add(arg);

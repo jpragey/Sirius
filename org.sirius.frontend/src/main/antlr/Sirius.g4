@@ -332,12 +332,7 @@ expression
 	    thisExpr=expression '.' functionCallExpression 		# isMethodCallExpression
 	
 	|  // -- Constructor call
-	  name=TYPE_ID '('		
-		
-		(arg0=expression 	
-			( ',' arg1=expression)*
-		)?
-	  ')' # isConstructorCallExpression
+	   classInstanciationExpression		# isConstructorCallExpression
 	| 
 	  // -- Field access
 	  lhs = expression '.' LOWER_ID		# isFieldAccessExpression
@@ -345,6 +340,14 @@ expression
 		// -- Local/member/global variable, function parameter
  		ref = LOWER_ID                  # isVariableRefExpression
 	;
+
+classInstanciationExpression : 
+	name=TYPE_ID '('		
+		
+		(arg0=expression 	
+			( ',' arg1=expression)*
+		)?
+	  ')'	;
 
 functionCallExpression 
 	: 

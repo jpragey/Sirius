@@ -3,13 +3,13 @@ package org.sirius.frontend.apiimpl;
 import org.sirius.common.core.Token;
 import org.sirius.frontend.api.FunctionActualArgument;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.ast.AstFunctionParameter;
+import org.sirius.frontend.ast.AstFunctionArgument;
 
 public class FunctionActualArgumentImpl implements FunctionActualArgument {
 	private Type type;
 	private Token name;
 	private int paramIndex;
-	public FunctionActualArgumentImpl(AstFunctionParameter param) {
+	public FunctionActualArgumentImpl(AstFunctionArgument param) {
 		this.type = param.getType().getApiType();
 		this.name = param.getName().asToken();
 		this.paramIndex = param.getIndex();

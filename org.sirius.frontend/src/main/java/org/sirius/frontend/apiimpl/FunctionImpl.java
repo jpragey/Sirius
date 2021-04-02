@@ -9,7 +9,7 @@ import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.FunctionFormalArgument;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.ast.AstFunctionParameter;
+import org.sirius.frontend.ast.AstFunctionArgument;
 
 public class FunctionImpl implements AbstractFunction {
 	private QName functionQName;
@@ -19,7 +19,7 @@ public class FunctionImpl implements AbstractFunction {
 	private Optional<List<Statement>> bodyStatements;
 	boolean member;
 
-	public FunctionImpl(QName functionQName, List<AstFunctionParameter> formalArguments, Type returnType, 
+	public FunctionImpl(QName functionQName, List<AstFunctionArgument> formalArguments, Type returnType, 
 			List<Statement> bodyStatements, boolean member) {
 		this.functionQName = functionQName;
 		this.returnType = returnType;
@@ -27,14 +27,14 @@ public class FunctionImpl implements AbstractFunction {
 		this.member = member;
 
 		ArrayList<FunctionFormalArgument> implArgs = new ArrayList<>(formalArguments.size()); 
-		for(AstFunctionParameter arg: formalArguments) {
+		for(AstFunctionArgument arg: formalArguments) {
 			FunctionFormalArgument formalArg = arg.toAPI(functionQName);
 			implArgs.add(formalArg);
 		}
 		this.implArguments = List.copyOf(implArgs); 
 	}
 	/** Construct a  function declaration (No body) (TODO: refactor) */
-	public FunctionImpl(QName functionQName, List<AstFunctionParameter> formalArguments, Type returnType, boolean member) {
+	public FunctionImpl(QName functionQName, List<AstFunctionArgument> formalArguments, Type returnType, boolean member) {
 		this(functionQName, formalArguments, returnType, 
 				null /*List<Statement> bodyStatements*/ /* Oops*/ , member);
 	}
