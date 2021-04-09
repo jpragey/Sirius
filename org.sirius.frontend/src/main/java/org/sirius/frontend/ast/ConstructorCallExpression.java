@@ -12,53 +12,41 @@ import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.IntegerType;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.SymbolTableImpl;
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTable;
 
 public class ConstructorCallExpression implements AstExpression, Scoped {
 
 	private Reporter reporter;
-	/** Function name */
 	private AstToken name;
 	
 	private List<AstExpression> actualArguments = new ArrayList<>();
-
-	private SymbolTableImpl symbolTable = null;
-
 	
+	private Scope scope = null;
 	
-	private ConstructorCallExpression(Reporter reporter, AstToken name, List<AstExpression> actualArguments,
-			SymbolTableImpl symbolTable) {
+	public ConstructorCallExpression(Reporter reporter, AstToken name, List<AstExpression> actualArguments) {
 		super();
 		this.reporter = reporter;
 		this.name = name;
 		this.actualArguments = actualArguments;
-		this.symbolTable = symbolTable;
-	}
-
-	public ConstructorCallExpression(Reporter reporter, AstToken name, List<AstExpression> actualArguments) {
-		this(reporter,name, actualArguments, new SymbolTableImpl(name.getText()));
-	}
-
-	public ConstructorCallExpression(Reporter reporter, AstToken name) {
-		super();
-		this.reporter = reporter;
-		this.name = name;
-	}
-
-	public void setSymbolTable(SymbolTableImpl symbolTable) {
-		this.symbolTable = symbolTable;
-	}
-	@Override
-	public SymbolTableImpl getSymbolTable() {
-		return symbolTable;
+		this.scope = null;
 	}
 
 	public void addArgument(AstExpression argExpression) {
 		this.actualArguments.add(argExpression);
 	}
 	
-	
+	public Scope getScope() {
+		assert(scope != null);
+		return scope;
+	}
+
+	public void setScope(Scope scope) {
+		assert(scope != null);
+		this.scope = scope;
+	}
+
 	public List<AstExpression> getActualArguments() {
 		return actualArguments;
 	}
@@ -67,7 +55,7 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 	public AstType getType() {
 		String fctName = name.getText();
 		
-		Optional<Symbol> symbol = symbolTable.lookupBySimpleName(fctName);
+		Optional<Symbol> symbol = scope.getSymbolTable().lookupBySimpleName(fctName);
 		if(symbol.isPresent()) {
 			Optional<AstClassDeclaration> fct = symbol.get().getClassDeclaration();
 			if(fct.isPresent()) {
@@ -96,7 +84,7 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 		@Override
 		public Type getType() {
 			String simpleName = name.getText();
-			Optional<Symbol> s = symbolTable.lookupBySimpleName(simpleName);
+			Optional<Symbol> s = scope.lookupSymbol(simpleName);
 			if(s.isPresent()) {
 				Optional<AstClassDeclaration> cd = s.get().getClassDeclaration();
 				if(cd.isPresent()) {
@@ -113,7 +101,6 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 				reporter.error("Symbol not found: ", name);
 			}
 			throw new UnsupportedOperationException("ConstructorCallImpl.getType() should return an Optional<>");
-//			return null;
 		}
 
 		@Override
@@ -127,7 +114,6 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 		@Override
 		public String toString() {
 			return "ConstructorCallImpl(...)";
-//			return getType().toString() + "(...)";
 		}
 	}
 	
@@ -152,18 +138,25 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 
 	@Override
 	public AstExpression linkToParentST(SymbolTable parentSymbolTable) {
-		AstExpression expr = new ConstructorCallExpression(reporter, 
-				name, 
-				actualArguments.stream().map(exp -> exp.linkToParentST(parentSymbolTable)).collect(Collectors.toList()),
-				new SymbolTableImpl(Optional.of(parentSymbolTable), ConstructorCallExpression.class.getSimpleName()));
+		
+		List<AstExpression> newArgs = actualArguments.stream().map(exp -> exp.linkToParentST(parentSymbolTable)).collect(Collectors.toList());
+		
+		AstExpression expr = new ConstructorCallExpression(reporter, name, newArgs);
 		return expr;
 	}
 
 	@Override
 	public void verify(int featureFlags) {
 		verifyList(actualArguments, featureFlags);
-		verifyNotNull(symbolTable, "symbolTable");
+		verifyNotNull(scope, "scope");
 		verifyNotNull(impl, "ConstructorCallExpression.impl");
+	}
+
+	@Override
+	public void setScope2(Scope scope) {
+		assert(this.scope == null);
+		assert(scope != null);
+		this.scope = scope;
 	}
 
 }

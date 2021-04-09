@@ -10,6 +10,7 @@ import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
+import org.sirius.frontend.ast.TypeParameter;
 
 public interface SymbolTable {
 	Optional<Symbol> lookupBySimpleName(String simpleName);
@@ -27,6 +28,9 @@ public interface SymbolTable {
 	Optional<AstInterfaceDeclaration> lookupInterfaceDeclaration(String simpleName);
 
 	Optional<AstMemberValueDeclaration> lookupValue(String simpleName);
+
+	
+	void addFormalParameter(QName containerQName, TypeParameter formalParameter);	// TODO: remove ???
 
 	/** For debugging */
 	void dump(String prefix, Consumer<String> print);

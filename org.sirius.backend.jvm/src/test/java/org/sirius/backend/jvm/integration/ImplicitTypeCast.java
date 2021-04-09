@@ -43,15 +43,13 @@ public class ImplicitTypeCast {
 	public Object compileRunAndReturn(String script) throws Exception {
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
-		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
+		JvmBackend backend = new JvmBackend(reporter, false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
 		InMemoryClassWriterListener l = backend.addInMemoryOutput();
 		
 		backend.process(session);
 		
 		HashMap<String, Bytecode> map = l.getByteCodesMap();
 		System.out.println(map.keySet());
-//		session.getGlobalSymbolTable().dump();
-
 		
 		ClassLoader classLoader = l.getClassLoader();
 		

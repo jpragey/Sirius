@@ -110,21 +110,13 @@ public class StatementParser {
 		}
 		@Override
 		public AstStatement visitBlockStatement(BlockStatementContext ctx) {
-			SymbolTable symbolTable = new SymbolTableImpl("<Unknown block statement TODO>");
-			
-			
 			StatementParser.StatementVisitor statementVisitor = new StatementParser.StatementVisitor(reporter);
 			
 			List<AstStatement> statements =  ctx.statement().stream()
 				.map(stmtCtxt -> stmtCtxt.accept(statementVisitor))
 				.collect(Collectors.toList());
 
-			
-			
-			
-//			List<AstStatement> statements = List.of();
-
-			return new AstBlock(symbolTable, statements);
+			return new AstBlock(statements);
 		}
 	}
 

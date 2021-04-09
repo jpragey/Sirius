@@ -14,6 +14,7 @@ import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.ClassDeclarationImpl;
 import org.sirius.frontend.apiimpl.FunctionImpl;
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTable;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 
@@ -24,7 +25,7 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 
 	private FunctionBody body;
 	
-	private SymbolTableImpl symbolTable = null;
+	private Scope scope = null;
 	
 	public static class APIFunctionInfo {
 		private FunctionImpl functionType = null;
@@ -43,12 +44,9 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 		}
 		
 	}
-//	private FunctionImpl functionImpl = null;
 	private APIFunctionInfo functionInfoImpl = null;
 
 	private Optional<QName> qName = Optional.empty();
-	
-	
 
 	public LambdaDefinition(List<AstFunctionArgument> args, AstType returnType, FunctionBody body) {
 		this.args = args;
@@ -119,8 +117,6 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 	}
 
 	public APIFunctionInfo toAPI(QName lambdaQName) {
-//		APIFunctionInfo functionInfoImpl
-//		List<AstFunctionParameter> args = getArgs();
 		if(this.functionInfoImpl == null) {
 			this.functionInfoImpl = new APIFunctionInfo(toFunctionAPI(lambdaQName), toFunctionObjectAPI(lambdaQName));
 		}
@@ -143,8 +139,6 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 		assert(this.qName.isPresent());
 		APIFunctionInfo functionInfo =  toAPI(this.qName.get());
 		
-//		functionInfo.g
-		
 //		return Optional.empty();	// TODO
 		throw new UnsupportedOperationException();	
 	}
@@ -152,25 +146,31 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 	@Override
 	public String asString() {
 		return "<lambda>" + qName.orElse(QName.empty).toString() + "{}";
-
-//		throw new UnsupportedOperationException();	// TODO
 	}
 	
-
-	@Override
-	public SymbolTable getSymbolTable() {
-		assert(this.symbolTable != null);
-		return this.symbolTable;
+	public Scope createScope(Scope parent) {
+		this.scope = new Scope(parent, ":" + getqName().dotSeparated());
+		return this.scope;
 	}
 
-	public void setSymbolTable(SymbolTableImpl symbolTable) {
-		this.symbolTable = symbolTable;
-	}
 
 	@Override
 	public String toString() {
 		String s = asString();
 		return s;
 	}
-	
+
+	@Override
+	public Scope getScope() {
+		assert(this.scope != null);
+		return this.scope;
+	}
+
+	@Override
+	public void setScope2(Scope scope) {
+		assert(this.scope == null);
+		assert(scope != null);
+		this.scope = scope;
+	}
+
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.AbstractCompilationUnit;
+import org.sirius.frontend.symbols.Scope;
 
 /** CompilationUnit from module descriptor */
 public class ModuleDescriptor implements AbstractCompilationUnit, Visitable {
@@ -35,6 +36,11 @@ public class ModuleDescriptor implements AbstractCompilationUnit, Visitable {
 	@Override
 	public List<AstModuleDeclaration> getModuleDeclarations() {
 		return Arrays.asList(moduleDeclaration);
+	}
+
+	@Override
+	public Scope getScope() {
+		throw new UnsupportedOperationException("Not implemented yet"); // TODO ???
 	}
 
 }

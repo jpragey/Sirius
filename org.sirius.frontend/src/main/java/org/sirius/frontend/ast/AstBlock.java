@@ -1,34 +1,22 @@
 package org.sirius.frontend.ast;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.sirius.frontend.api.BlockStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.apiimpl.BlockStatementImpl;
-import org.sirius.frontend.symbols.SymbolTable;
-import org.sirius.frontend.symbols.SymbolTableImpl;
+import org.sirius.frontend.symbols.Scope;
 
 public class AstBlock implements AstStatement, Scoped {
 
-	private SymbolTable symbolTable; 
+	private Scope scope = null;
 	private List<AstStatement> statements;
 	
-	public AstBlock(SymbolTable symbolTable, List<AstStatement> statements) {
+	public AstBlock(List<AstStatement> statements) {
 		super();
-		this.symbolTable = symbolTable;
 		this.statements = statements;
 	}
 	
-	public AstBlock() {
-		this(new SymbolTableImpl("AstBlock"), new ArrayList<>());
-	}
-
-	@Override
-	public SymbolTable getSymbolTable() {
-		return symbolTable;
-	}
 	public List<AstStatement> getStatements() {
 		return statements;
 	} 
@@ -55,6 +43,18 @@ public class AstBlock implements AstStatement, Scoped {
 	public void verify(int featureFlags) {
 		verifyList(statements, featureFlags);
 		
+	}
+
+	@Override
+	public Scope getScope() {
+		assert(this.scope != null);
+		return this.scope;
+	}
+
+	@Override
+	public void setScope2(Scope scope) {
+		assert(scope != null);
+		this.scope = scope;
 	}
 	
 }

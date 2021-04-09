@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.AbstractCompilationUnit;
+import org.sirius.frontend.symbols.Scope;
 
 /** CompilationUnit from package descriptor */
 public class PackageDescriptorCompilationUnit implements AbstractCompilationUnit, Visitable {
@@ -36,6 +37,11 @@ public class PackageDescriptorCompilationUnit implements AbstractCompilationUnit
 	@Override
 	public List<AstModuleDeclaration> getModuleDeclarations() {
 		throw new UnsupportedOperationException("PackageDescriptorCompilationUnit.getModuleDeclarations() should be removed."); // TODO
+	}
+
+	@Override
+	public Scope getScope() {
+		throw new UnsupportedOperationException("Not implemented yet"); // TODO ???
 	}
 
 }

@@ -1,29 +1,10 @@
 package org.sirius.frontend.core.parser;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.ast.AstModuleDeclaration;
-import org.sirius.frontend.ast.AstPackageDeclaration;
-import org.sirius.frontend.ast.ImportDeclaration;
-import org.sirius.frontend.ast.ImportDeclarationElement;
-import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
-import org.sirius.frontend.ast.ScriptCompilationUnit;
-import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.ConcreteModuleContext;
-import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.PackageDescriptorCompilationUnitContext;
-import org.sirius.frontend.parser.SiriusParser.QnameContext;
-import org.sirius.frontend.parser.SiriusParser.ScriptCompilationUnitContext;
 import org.sirius.frontend.parser.SiriusParser.StandardCompilationUnitContext;
-import org.sirius.frontend.symbols.SymbolTableImpl;
+import org.sirius.frontend.symbols.Scope;
 
 /** Visitor-based parser for the 'scriptCompilationUnit' rule.
  * 
@@ -34,16 +15,17 @@ public class StandardCompilatioUnitParser {
 
 	public static class StandardCompilationUnitVisitor extends SiriusBaseVisitor<StandardCompilationUnit> {
 		private Reporter reporter;
+		private Scope globalScope;
 
-		public StandardCompilationUnitVisitor(Reporter reporter) {
+		public StandardCompilationUnitVisitor(Reporter reporter, Scope globalScope) {
 			super();
 			this.reporter = reporter;
+			this.globalScope = globalScope;
 		}
 
 		@Override
 		public StandardCompilationUnit visitStandardCompilationUnit(StandardCompilationUnitContext ctx) {
-			SymbolTableImpl globalSymbolTable = new SymbolTableImpl("");
-			StandardCompilationUnit unit = new StandardCompilationUnit(reporter, globalSymbolTable);
+			StandardCompilationUnit unit = new StandardCompilationUnit(reporter, globalScope);
 			return unit;
 		}
 	}

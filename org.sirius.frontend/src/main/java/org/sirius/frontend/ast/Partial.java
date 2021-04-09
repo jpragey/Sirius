@@ -45,12 +45,6 @@ public class Partial implements Visitable, Verifiable, Scoped {
 		}
 	}
 
-
-//	private Type resolveReturnType() {
-//		Type resolved = lambdaDefinition.getReturnType().getApiType();
-//		return resolved;
-//	}
-
 	public void setContainerQName(QName containerQName) {
 		this.qName = containerQName.child(new QName(name.getText()));
 	}
@@ -123,16 +117,6 @@ public class Partial implements Visitable, Verifiable, Scoped {
 		for(AstFunctionArgument arg: lambdaDefinition.getArgs())
 			this.scope.addFunctionArgument(arg);
 
-		// -- add closure to scope
-//		for(AstFunctionParameter d : this.closure) {
-//			// -- Convert function parameter to local variable
-//			// TODO: ???
-//			AstLocalVariableStatement stmt = new AstLocalVariableStatement(new AnnotationList(), d.getType(), d.getName(), Optional.empty() /*d.initialValue*/);
-//			
-//			scope.addLocalVariable(stmt);
-//		}
-		
-		
 		for(AstStatement stmt: lambdaDefinition.getBody().getStatements()) {
 			if(stmt instanceof AstLocalVariableStatement) {
 				scope.addLocalVariable((AstLocalVariableStatement)stmt);
@@ -158,5 +142,12 @@ public class Partial implements Visitable, Verifiable, Scoped {
 		verifyNotNull(scope, "partial.scope");
 		verifyCachedObjectNotNull(functionImpl, "Partial.functionImpl", featureFlags);
 	}
-	
+
+	@Override
+	public void setScope2(Scope scope) {
+		assert(this.scope == null);
+		assert(scope != null);
+		this.scope = scope;
+	}
+
 }

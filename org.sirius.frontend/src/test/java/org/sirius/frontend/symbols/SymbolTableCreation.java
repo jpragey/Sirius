@@ -20,9 +20,7 @@ public class SymbolTableCreation {
 				+ "module a.b \"1.0\" {} "
 				+ "void f(){println(\"Hello World\");}");
 		
-		SymbolTableImpl st = session.getGlobalSymbolTable();
-//		st.dump();
-		
+		SymbolTableImpl st = session.getCompilationUnit().getScope().getSymbolTable() /*.getGlobalSymbolTable()*/;
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		

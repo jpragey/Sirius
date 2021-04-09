@@ -1,16 +1,22 @@
 package org.sirius.frontend.core;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+//import static org.hamcrest.MatcherAssert.h;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
@@ -26,6 +32,9 @@ import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.FunctionBody;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
+import org.sirius.frontend.symbols.Scope;
+import org.sirius.frontend.symbols.Symbol;
+import org.sirius.frontend.symbols.SymbolTable;
 
 public class ScopeTest {
 
@@ -148,7 +157,7 @@ public class ScopeTest {
 	}
 	
 	@Test
-	public void checkScopesNames() {
+	public void checkScopesNames() {	// TODO: wtf ???
 		String sourceCode = "#!\n "
 				+ "module m0.m1 \"1.0\" {}"
 				+ "package pkg0.pkg1;"
@@ -199,4 +208,82 @@ public class ScopeTest {
 		
 	}
 		
+	
+//	private Reporter reporter;
+//
+//	@BeforeEach
+//	public void setup() {
+//		this.reporter = new AccumulatingReporter(new ShellReporter());
+//	}
+
+//	private void compile(String sourceCode) {
+//		FrontEnd frontEnd = new FrontEnd(reporter);
+//		TextInputTextProvider provider = new TextInputTextProvider("some/package", "script.sirius", sourceCode);
+//		ScriptSession session = frontEnd.createScriptSession(provider);
+//		assertTrue(reporter.ok());
+//
+//	}
+	@Test
+	@DisplayName("Check that the body of a top-level function seen other top-level functions")
+	@Disabled("FunctionDefinition doesn't have a scope yet")	// TODO
+	public void moduleScopeSeenIntopLevelFunction() {
+		String source = "void before(){}" +
+						"void func(){}" +
+						"void after(){}"
+						;
+		
+		ScriptSession session = compile(source);
+		
+		AstPackageDeclaration pd = session.getAstModules().get(0).getPackageDeclarations().get(0);
+		List<FunctionDefinition> fds = pd.getFunctionDeclarations();
+		assertThat(fds.size(), is(3));
+
+		FunctionDefinition beforeFD = fds.get(0);
+		FunctionDefinition funcFD = fds.get(1);
+		FunctionDefinition afterFD = fds.get(2);
+		
+		SymbolTable funcSymbolTable = funcFD.getSymbolTable();
+		
+	}
+
+	@Test
+	@DisplayName("Nested blocks: inner block parent ST is outer block ST")
+//	@Disabled("FunctionDefinition doesn't have a scope yet")	// TODO
+	public void innerParentIsOuterST() {
+		String source = "void func(){ {} }"
+						;
+		
+ 		ScriptSession session = compile(source);
+		
+		AstPackageDeclaration pd = session.getAstModules().get(0).getPackageDeclarations().get(0);
+		List<FunctionDefinition> fds = pd.getFunctionDeclarations();
+		assertThat(fds.size(), is(1));
+
+		FunctionDefinition funcFD = fds.get(0);
+		
+		Scope funcFDScope = funcFD.getScope();
+		assertThat(funcFDScope, notNullValue());
+
+		// parent -> Package scope
+		assertThat(funcFDScope.getParentScope().isPresent(), is(true)); 
+		Scope funcParentScope = funcFDScope.getParentScope().get();
+
+		// parent parent -> Module scope
+		assertThat(funcParentScope.getParentScope().isPresent(), is(true)); 
+		Scope moduleScope = funcParentScope.getParentScope().get();
+
+//		SymbolTable moduleST = moduleScope.getSymbolTable();
+//		Optional<Symbol> optPrintlnFroModuleSymbol = moduleST.lookupBySimpleName("println");
+		Optional<Symbol> optPrintlnFroModuleSymbol = moduleScope.lookupSymbol("println");
+		assertThat(optPrintlnFroModuleSymbol.isPresent(), is(true));
+
+		
+		SymbolTable funcSymbolTable = funcFD.getSymbolTable();
+//		
+//		Optional<Symbol> optPrintlnSymbol =  funcSymbolTable.lookupBySimpleName("println");
+		Optional<Symbol> optPrintlnSymbol =  funcFD.getScope().lookupSymbol("println");
+		assertThat(optPrintlnSymbol.isPresent(), is(true));
+		
+	}
+
 }

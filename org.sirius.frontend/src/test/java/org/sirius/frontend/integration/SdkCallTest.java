@@ -47,7 +47,7 @@ public class SdkCallTest {
 		
 		assertEquals(argIntConstant.getValue(), 42);
 		
-		Symbol symbol = session.getGlobalSymbolTable().lookupByQName(new QName("sirius", "lang", "println")).get();
+		Symbol symbol = session.getCompilationUnit().getScope().getSymbolTable()/*.getGlobalSymbolTable()*/.lookupByQName(new QName("sirius", "lang", "println")).get();
 		
 	}
 	

@@ -6,13 +6,13 @@ import java.util.Optional;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.AbstractCompilationUnit;
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class StandardCompilationUnit implements AbstractCompilationUnit, Visitable, Scoped {
 
 	private List<ImportDeclaration> importDeclarations = new ArrayList<>();
 	
-//	private List<PartialList> functionDeclarations = new ArrayList<>();
 	private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
 	private List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
 	
@@ -20,13 +20,12 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 
 	private Reporter reporter; 
 	
-	private SymbolTableImpl symbolTable; 
+	private Scope globalScope;
 	
-	
-	public StandardCompilationUnit(Reporter reporter, SymbolTableImpl globalSymbolTable) {
+	public StandardCompilationUnit(Reporter reporter, Scope globalScope) {
 		super();
 		this.reporter = reporter;
-		this.symbolTable = new SymbolTableImpl(Optional.of(globalSymbolTable), this.getClass().getSimpleName());
+		this.globalScope = globalScope;
 	}
 
 
@@ -38,28 +37,17 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 		this.importDeclarations.add(importDeclaration);
 		
 		for(ImportDeclarationElement e: importDeclaration.getElements()) {
-			this.symbolTable.addImportSymbol(importDeclaration.getPack(), e);
+			this.globalScope.getSymbolTable().addImportSymbol(importDeclaration.getPack(), e);
 		}
 	}
 
-//	public void addFunctionDeclaration(PartialList declaration) {
-////		this.functionDeclarations.add(declaration.build(symbolTable /*TODO: ???*/  ));
-//		this.functionDeclarations.add(declaration);
-//	}
-
 	public void clearFunctionDeclarations() {
-//		functionDeclarations.clear();
 	}
-	
-//	public List<PartialList> getFunctionDeclarations() {
-//		return functionDeclarations;
-//	}
 	
 	@Override
 	public void visit(AstVisitor visitor) {
 		visitor.startCompilationUnit(this);
 		importDeclarations.stream().forEach(imp -> imp.visit(visitor));
-//		functionDeclarations.stream().forEach(fd -> fd.visit(visitor));
 		classDeclarations.stream().forEach(cd -> cd.visit(visitor));
 		visitor.endCompilationUnit(this);
 	}
@@ -85,8 +73,15 @@ public class StandardCompilationUnit implements AbstractCompilationUnit, Visitab
 	}
 
 	@Override
-	public SymbolTableImpl getSymbolTable() {
-		return symbolTable;
+	public Scope getScope() {
+		return globalScope;
 	}
 
+	@Override
+	public void setScope2(Scope scope) {
+		assert(this.globalScope == null);
+		assert(scope != null);
+		this.globalScope = scope;
+	}
+	
 }

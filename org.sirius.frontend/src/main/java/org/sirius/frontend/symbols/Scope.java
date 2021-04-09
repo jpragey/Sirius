@@ -3,6 +3,7 @@ package org.sirius.frontend.symbols;
 import java.util.Optional;
 
 import org.sirius.frontend.ast.AstFunctionArgument;
+import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
@@ -11,14 +12,27 @@ import org.sirius.frontend.ast.FunctionDefinition;
 public class Scope {
 	private Optional<Scope> parentScope;
 
-	private SymbolTableImpl symbolTable = new SymbolTableImpl("");
+	private SymbolTableImpl symbolTable;
 	
-	public Scope(Optional<Scope> parentScope) {
+	private String dbgName;
+	
+	private Scope(Optional<Scope> parentScope, SymbolTableImpl symbolTable, String dbgName) {
 		super();
 		this.parentScope = parentScope;
+		this.symbolTable = symbolTable;
+		this.dbgName = dbgName;
 	}
-	public Scope() {
-		this(Optional.empty());
+	
+	public Scope(Optional<Scope> parentScope, String dbgName) {
+		this(parentScope, new SymbolTableImpl(parentScope.map(ps->ps.getSymbolTable())  , dbgName), dbgName);
+	}
+	
+	public Scope(Scope parentScope, String dbgName) {
+		this(Optional.of(parentScope), dbgName);
+	}
+	
+	public Scope(String dbgName) {
+		this(Optional.empty(), dbgName);
 	}
 	
 	public void addFunction(FunctionDefinition funct) {
@@ -35,6 +49,10 @@ public class Scope {
 	}
 	public void addFunctionArgument(AstFunctionArgument functionArgument) {
 		symbolTable.addFunctionArgument(functionArgument);
+	}
+	
+	public void addInterface(AstInterfaceDeclaration interfaceDeclaration) {
+		symbolTable.addInterface(interfaceDeclaration);
 	}
 	
 	
@@ -57,9 +75,6 @@ public class Scope {
 		return lvpl;
 	}
 	
-	
-	
-	
 	public Optional<Symbol> lookupSymbol(String simpleName) {
 		Optional<Symbol> symb = symbolTable.lookupBySimpleName(simpleName);
 		return symb;
@@ -68,6 +83,14 @@ public class Scope {
 		return symbolTable;
 	}
 
-	
+	@Override
+	public String toString() {
+		return dbgName;
+	}
+
+	public Optional<Scope> getParentScope() {
+		return parentScope;
+	}
+
 	
 }

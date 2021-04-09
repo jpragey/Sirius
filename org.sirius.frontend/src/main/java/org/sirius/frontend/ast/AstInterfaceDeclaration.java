@@ -14,7 +14,7 @@ import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.InterfaceDeclarationImpl;
-import org.sirius.frontend.symbols.SymbolTableImpl;
+import org.sirius.frontend.symbols.Scope;
 
 public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstParametric<AstInterfaceDeclaration>, AstClassOrInterface, Named, Verifiable {
 
@@ -22,7 +22,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 
 	private List<AstToken> ancestors = new ArrayList<>();
 	
-	private SymbolTableImpl symbolTable; 
+	private Scope scope = null;
 
 	private List<TypeParameter> typeParameters;
 	private AstToken name;
@@ -34,7 +34,7 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 
 	private QName qName = new QName("<not_set>"); 
 
-	public AstInterfaceDeclaration(Reporter reporter, AstToken name, //Optional<QName> packageQName,
+	public AstInterfaceDeclaration(Reporter reporter, AstToken name, 
 			List<FunctionDeclaration> functionDeclarations,
 			List<FunctionDefinition> functionDefinitions,
 			List<TypeParameter> typeParameters,
@@ -81,16 +81,6 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		return this.qName;
 	}
 
-	public void setSymbolTable(SymbolTableImpl symbolTable) {
-		if(symbolTable == null)
-			throw new NullPointerException();
-		
-		this.symbolTable = symbolTable;
-
-		for(TypeParameter d: typeParameters)
-			this.symbolTable.addFormalParameter(this.qName, d);
-	}
-
 	@Override
 	public List<TypeParameter> getTypeParameters() {
 		return typeParameters;
@@ -99,11 +89,6 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 	@Override
 	public Optional<AstInterfaceDeclaration> apply(AstType parameter) {
 		throw new UnsupportedOperationException("AstInterfaceDeclaration...");
-	}
-
-	@Override
-	public SymbolTableImpl getSymbolTable() {
-		return symbolTable;
 	}
 
 	@Override
@@ -230,9 +215,6 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 
 	
 	public AstInterfaceDeclaration withFunctionDeclaration(FunctionDefinition fd) {
-		
-//		if(!fd.getAnnotationList().contains("static"))
-//			fd.setMember(true);
 		List<FunctionDefinition> functionDefs = new ArrayList<>(functionDefinitions.size() + 1);
 		functionDefs.addAll(functionDefs);
 		functionDefs.add(fd);
@@ -298,5 +280,24 @@ public class AstInterfaceDeclaration implements AstType, Scoped, Visitable, AstP
 		
 		verifyList(valueDeclarations, featureFlags);
 	}
-	
+
+	@Override
+	public Scope getScope() {
+		assert(this.scope != null);
+		return this.scope;
+	}
+
+	public void setScope(Scope scope) {
+		this.scope = scope;
+		
+		for(TypeParameter d: typeParameters)
+			this.scope.getSymbolTable() .addFormalParameter(this.qName, d);
+	}
+	@Override
+	public void setScope2(Scope scope) {
+		assert(this.scope == null);
+		assert(scope != null);
+		this.scope = scope;
+	}
+
 }

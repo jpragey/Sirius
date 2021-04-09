@@ -47,10 +47,12 @@ public class SdkTools {
 
 	private AstModuleDeclaration sdkModule;
 	private SdkContent sdkContent;
+	private Scope scope;	// TODO: move to SDKContent
 
-	public SdkTools(Reporter reporter, Scope scope) {
+	public SdkTools(Reporter reporter) {
 		super();
 		this.reporter = reporter;
+		this.scope = new Scope("java.lang(SDK)");
 
 		this.sdkModule = parseSdk(scope);
 				
@@ -59,6 +61,10 @@ public class SdkTools {
 			packagesMap.put(pkgQName, pkg);
 		});
 		this.sdkContent = new SdkContent(this.sdkModule);
+	}
+
+	public Scope getScope() {
+		return scope;
 	}
 
 	private AstModuleDeclaration parseSdk(Scope scope) {
@@ -88,17 +94,8 @@ public class SdkTools {
 			if(topLevelmethodsAnno != null) {
 				List<FunctionDefinition> partialLists = parseTopLevel(clss, topLevelmethodsAnno, scope.getSymbolTable() /* symbolTable*/);
 				allFunctionDefs.addAll(partialLists);
-//				System.out.println("- Top-level methods: " + clss + ", anno: " + topLevelmethodsAnno);
 			}
 		}
-//		List<AstClassDeclaration> classDeclarations = classOrInterfaces.stream()
-//				.filter(cl -> (cl instanceof AstClassDeclaration))
-//				.map(cl -> (AstClassDeclaration)cl)
-//				.collect(Collectors.toList());
-//		List<AstInterfaceDeclaration> interfaceDeclarations = classOrInterfaces.stream()
-//				.filter(cl -> (cl instanceof AstInterfaceDeclaration))
-//				.map(cl -> (AstInterfaceDeclaration)cl)
-//				.collect(Collectors.toList());
 		
 		AstPackageDeclaration pd = new AstPackageDeclaration(reporter, siriusLangQName /* QName.empty*/, 
 				allFunctionDefs,		//functionDeclarations, 
@@ -121,6 +118,11 @@ public class SdkTools {
 			@Override
 			public List<AstModuleDeclaration> getModuleDeclarations() {
 				return moduleDeclarations;
+			}
+
+			@Override
+			public Scope getScope() {
+				throw new UnsupportedOperationException("Not implemented yet"); // TODO ???
 			}
 			
 		};
@@ -146,7 +148,6 @@ public class SdkTools {
 	
 	private AstClassOrInterface parseClass(Class<?> clss, TopLevelClass topLevelClassAnno, SymbolTableImpl symbolTable) {
 		String name = topLevelClassAnno.name();
-//		QName packageQName = topLevelClassAnno.packageQName();
 		
 		AstClassOrInterface classOrIntf;
 		if(clss.isInterface()) {
@@ -211,9 +212,7 @@ public class SdkTools {
 		boolean member = !annotationList.contains("static");
 		
 		// TODO: -> FunctionDeclaration ???
-		FunctionDefinition partialfunctionDefinitionList = new FunctionDefinition(args, returnType, member, AstToken.internal(methodName), 
-				Collections.emptyList() /*body statements*/); 
-
+		FunctionDefinition partialfunctionDefinitionList = new FunctionDefinition(args, returnType, member, AstToken.internal(methodName), Collections.emptyList() /*body statements*/); 
 		
 		return partialfunctionDefinitionList;
 	}

@@ -27,13 +27,13 @@ import org.sirius.frontend.symbols.Symbol;
 
 public class SdkToolsTest {
 	private Reporter reporter;
-	private Scope scope = new Scope();
+//	private Scope scope = new Scope("SDK test root");
 	private SdkTools sdkTools;
 	
 	@BeforeEach
 	public void setup() throws Exception {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
-		this.sdkTools = new SdkTools(reporter, scope);
+		this.sdkTools = new SdkTools(reporter /*, scope*/);
 	}
 	@AfterEach
 	public void tearDown() throws Exception {
@@ -43,12 +43,12 @@ public class SdkToolsTest {
 
 	@Test
 	public void sdkSLClassesCanBeRetrievedBySimpleName() {
-		assertTrue(scope.getSymbolTable().lookupBySimpleName("String").isPresent());
+		assertTrue(this.sdkTools.getScope().getSymbolTable().lookupBySimpleName("String").isPresent());
 	}
 	
 	@Test
 	public void sdkParsingMustCreateBasicClasses() {
-		SymbolTableImpl symbolTable = scope.getSymbolTable();
+		SymbolTableImpl symbolTable = this.sdkTools.getScope().getSymbolTable();
 		assertEquals(reporter.getErrorCount(), 0);
 		
 		SdkContent sdkContent = sdkTools.getSdkContent();
@@ -95,7 +95,7 @@ public class SdkToolsTest {
 	
 	@Test
 	public void checkAncestorsForSiriusInteger() {
-		SymbolTableImpl symbolTable = scope.getSymbolTable();
+		SymbolTableImpl symbolTable = this.sdkTools.getScope().getSymbolTable();
 		Symbol symbol = symbolTable.lookupByQName(new QName("sirius", "lang", "Integer")).get();
 		AstClassDeclaration cd = symbol.getClassDeclaration().get();  
 		
@@ -110,7 +110,7 @@ public class SdkToolsTest {
 	
 	@Test
 	public void checkBasicTopLevelFunctionsFoundInPackageClass() {
-		SymbolTableImpl symbolTable = scope.getSymbolTable();
+		SymbolTableImpl symbolTable = this.sdkTools.getScope().getSymbolTable();
 
 		Symbol symbol = symbolTable.lookupByQName(new QName("sirius", "lang", "println")).get();
 		FunctionDefinition func = symbol.getFunctionDeclaration().get();
@@ -131,7 +131,7 @@ public class SdkToolsTest {
 
 	@Test
 	public void checkIntegerIsStringifiable() {
-		SymbolTableImpl symbolTable = scope.getSymbolTable();
+		SymbolTableImpl symbolTable = this.sdkTools.getScope().getSymbolTable();
 
 		AstClassDeclaration intCD = symbolTable.lookupByQName(new QName("sirius", "lang", "Integer")).get().getClassDeclaration().get();
 //		AstClassDeclaration stringifiableCD = symbolTable.lookup(new QName("sirius", "lang", "Stringifiable")).get().getClassDeclaration().get();

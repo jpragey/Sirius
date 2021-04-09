@@ -414,4 +414,12 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		verifyList(interfaces, featureFlags);
 
 	}
+	
+	@Override
+	public void setScope2(Scope scope) {
+		assert(this.scope == null);
+		assert(scope != null);
+		this.scope = scope;
+	}
+
 }

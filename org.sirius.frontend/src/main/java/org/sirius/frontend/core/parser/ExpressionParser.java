@@ -30,6 +30,7 @@ import org.sirius.frontend.parser.SiriusParser.IsFieldAccessExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.IsMethodCallExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.IsVariableRefExpressionContext;
 import org.sirius.frontend.parser.SiriusParser.LambdaDefinitionContext;
+import org.sirius.frontend.symbols.Scope;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 

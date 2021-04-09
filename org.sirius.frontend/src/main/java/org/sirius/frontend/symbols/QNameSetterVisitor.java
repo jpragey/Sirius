@@ -35,7 +35,6 @@ public class QNameSetterVisitor implements AstVisitor {
 	@Override
 	public void startPackageDeclaration(AstPackageDeclaration declaration) {
 		QName moduleQName = qnameStack.peek();
-//		QName pkgQName = moduleQName.child(declaration.getQname());
 		QName pkgQName = declaration.getQname();
 		qnameStack.push(pkgQName);
 	}
@@ -51,7 +50,6 @@ public class QNameSetterVisitor implements AstVisitor {
 		classDeclaration.setPackageQName(packageQName);
 		
 		QName classQName = classDeclaration.getQName();
-//System.out.println("startClass : " + classQName);		
 		qnameStack.push(classQName);
 		
 		for(TypeParameter formalParameter: classDeclaration.getTypeParameters()) {
@@ -62,17 +60,14 @@ public class QNameSetterVisitor implements AstVisitor {
 	@Override
 	public void endClassDeclaration(AstClassDeclaration classDeclaration) {
 		QName classQName = qnameStack.pop();
-//System.out.println("endClass : " + classQName);		
 	}
 
 	@Override
 	public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
-//		String className = classDeclaration.getName().getText();
 		QName packageQName = qnameStack.lastElement();
 		interfaceDeclaration.setPackageQName(packageQName);
 		
 		QName classQName = interfaceDeclaration.getQName();
-//System.out.println("startInterface : " + classQName);		
 		qnameStack.push(classQName);
 		
 		for(TypeParameter formalParameter: interfaceDeclaration.getTypeParameters()) {
@@ -82,7 +77,6 @@ public class QNameSetterVisitor implements AstVisitor {
 	@Override
 	public void endInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
 		QName classQName = qnameStack.pop();
-//System.out.println("endInterface : " + classQName);		
 	}
 	
 	@Override
@@ -94,8 +88,6 @@ public class QNameSetterVisitor implements AstVisitor {
 	public void endModuleDeclaration(AstModuleDeclaration declaration) {
 		qnameStack.pop();
 	}
-	
-	
 
 	@Override
 	public void startFunctionDefinition(FunctionDefinition functionDefinition) {
@@ -107,8 +99,6 @@ public class QNameSetterVisitor implements AstVisitor {
 	public void endFunctionDefinition(FunctionDefinition functionDefinition) {
 		qnameStack.pop();
 	}
-	
-	
 	
 	@Override
 	public void startPartial(Partial partial) {
@@ -144,7 +134,5 @@ public class QNameSetterVisitor implements AstVisitor {
 		QName lambdaQName = containerQName.child(lambdaName);
 		
 		lambdaDef.setqName(lambdaQName);
-		// TODO Auto-generated method stub
-//		AstVisitor.super.startLambdaDefinition(definition);
 	}
 }

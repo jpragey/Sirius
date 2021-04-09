@@ -21,6 +21,7 @@ import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.symbols.Scope;
 
 
 public class StandardCompilationUnitTest {
@@ -40,7 +41,7 @@ public class StandardCompilationUnitTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.standardCompilationUnit();
 				
-		StandardCompilatioUnitParser.StandardCompilationUnitVisitor visitor = new StandardCompilatioUnitParser.StandardCompilationUnitVisitor(reporter);
+		StandardCompilatioUnitParser.StandardCompilationUnitVisitor visitor = new StandardCompilatioUnitParser.StandardCompilationUnitVisitor(reporter, new Scope("Test global"));
 		StandardCompilationUnit standardCU = visitor.visit(tree);
 		return standardCU;
 	}
@@ -49,7 +50,6 @@ public class StandardCompilationUnitTest {
 	@DisplayName("Simplest standard compilation unit - not implemented yet")
 	public void simplestScriptCU() {
 		standardCUCheck("", cu-> {
-//			assertTrue(cu.getShebangDeclaration().isEmpty());
 		});
 	}
 	public StandardCompilationUnit standardCUCheck(String inputText, Consumer<StandardCompilationUnit> verify) {

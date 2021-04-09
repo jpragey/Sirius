@@ -3,6 +3,7 @@ package org.sirius.frontend.ast;
 import java.util.Optional;
 
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTable;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 
@@ -22,12 +23,10 @@ public interface AstExpression extends Verifiable {
 	 * 
 	 * @return the API expression, empty if it can't be defined (eg syntax error)
 	 */
-	Optional<Expression> getExpression(/*AstScope scope*/);
+	Optional<Expression> getExpression();
 
-//	DefaultSymbolTable getSymbolTable();
-	
-	
 	String asString();
+	
 	@Override
 	String toString();
 }

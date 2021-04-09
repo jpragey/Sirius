@@ -80,7 +80,6 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 
 	@Override
 	public String toString() {
-//		return getType().toString() + " " + referenceName.getText() + "->" ;
 		return "ref to " + referenceName.getText() + "->" ;
 	}
 	@Override
@@ -127,15 +126,6 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 		this.scope = scope;
 	}
 
-//	private Optional<Expression> cacheLocalVariableStatement(String simpleName) {
-//		Optional<AstLocalVariableStatement> localVarDecl = scope.getLocalVariable(simpleName);
-//		if(localVarDecl.isPresent()) {
-//			AstLocalVariableStatement st = localVarDecl.get();
-//			LocalVariableReferenceImpl lvr = new LocalVariableReferenceImpl(st);
-//			impl = Optional.of(lvr);
-//			return impl;
-//		}
-//	}
 	@Override
 	public Optional<Expression> getExpression() {
 		if(this.impl != null) {
@@ -149,7 +139,6 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 			AstLocalVariableStatement st = localVarDecl.get();
 			LocalVariableReferenceImpl lvr = new LocalVariableReferenceImpl(st);
 			this.impl = Optional.of(lvr);
-			//				return impl;
 		}
 
 		if(this.impl == null) {
@@ -158,7 +147,6 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 				AstFunctionArgument st = functionParamDecl.get();
 				FunctionActualArgumentImpl actualArg = new FunctionActualArgumentImpl(st);
 				this.impl = Optional.of(actualArg);
-				//					return impl;
 			}
 		}
 
@@ -189,5 +177,11 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 		verifyNotNull(impl, "SimpleReferenceExpression.impl");
 	}
 
+	@Override
+	public void setScope2(Scope scope) {
+		assert(this.scope == null);
+		assert(scope != null);
+		this.scope = scope;
+	}
 
 }

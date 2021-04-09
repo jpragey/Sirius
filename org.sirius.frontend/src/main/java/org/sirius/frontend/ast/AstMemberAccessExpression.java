@@ -7,34 +7,29 @@ import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.MemberValueAccessExpression;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTable;
-import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class AstMemberAccessExpression implements AstExpression, Scoped {
 
 	private Reporter reporter; 
 	private AstExpression containerExpression;
 	private AstToken valueName;
-	private SymbolTable symbolTable;
+	private Scope scope = null;
 
 	private Optional<Expression> impl;
 	
-	private AstMemberAccessExpression(Reporter reporter, AstExpression containerExpression, AstToken valueName,
-			SymbolTable symbolTable) {
+	private AstMemberAccessExpression(Reporter reporter, AstExpression containerExpression, AstToken valueName, Scope scope) {
 		super();
 		this.reporter = reporter;
 		this.containerExpression = containerExpression;
 		this.valueName = valueName;
-		this.symbolTable = symbolTable;
+		this.scope = scope;
 		this.impl = null;
 	}
 
 	public AstMemberAccessExpression(Reporter reporter, AstExpression containerExpression, AstToken valueName) {
-		this(reporter, containerExpression, valueName, null /*symbolTable*/);
-//		super();
-//		this.reporter = reporter;
-//		this.containerExpression = containerExpression;
-//		this.valueName = valueName;
+		this(reporter, containerExpression, valueName, null);
 	}
 
 	
@@ -43,19 +38,8 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 	}
 
 	@Override
-	public SymbolTable getSymbolTable() {
-		return symbolTable;
-	}
-
-	public void setSymbolTable(SymbolTableImpl symbolTable) {
-		this.symbolTable = symbolTable;
-	}
-
-	@Override
 	public String toString() {
-//		String cs = containerExpression.toString();
 		return "AstMemberAccessExpression: <container>." + valueName.getText();
-//		return "AstMemberAccessExpression: " + containerExpression.toString() + "." + valueName.getText();
 	}
 	@Override
 	public String asString() {
@@ -95,7 +79,6 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 	}
 
 	private static class MemberValueAccessExpressionImpl implements MemberValueAccessExpression {
-//		Optional<AstType> optType = containerExpression.getType();
 
 		private MemberValue memberValue;
 		private Expression containerExpression;
@@ -117,8 +100,6 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 		@Override
 		public Expression getContainerExpression() {
 			return containerExpression;
-//			Expression ex = containerExpression.getExpression();
-//			return ex;
 		}
 
 		@Override
@@ -145,13 +126,10 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 			for(AstMemberValueDeclaration vd: contClassDef.getValueDeclarations()) { // TODO should be a map vdName -> VD
 				String vdName = vd.getName().getText();
 				if(vdName.equals(valueName.getText())) {
-//					Optional<MemberValue> optVd = vd.getMemberValue();
-//					assert(optVd.isPresent());	// TODO : ok for now, we have only member values (no top level)
 					MemberValue mv = vd.getMemberValue();
 			
 					MemberValueAccessExpressionImpl mvaExpr = new MemberValueAccessExpressionImpl(mv, optContainerExpr.get(), memberType);
 					impl = Optional.of(mvaExpr);
-//					impl = Optional.of(new MemberValueAccessExpressionImpl(mv));
 					return impl;
 				}
 			}
@@ -165,20 +143,35 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 
 	@Override
 	public AstExpression linkToParentST(SymbolTable parentSymbolTable) {
-		
+
+		Scope newScope = new Scope(this.scope, ":" + valueName.getText());
 		AstMemberAccessExpression expr = new AstMemberAccessExpression(
 				reporter, 
 				containerExpression.linkToParentST(parentSymbolTable),
 				valueName,
-				new SymbolTableImpl(Optional.of(parentSymbolTable), this.getClass().getSimpleName()));
+				newScope
+				);
 		return expr;
 	}
 
 	@Override
 	public void verify(int featureFlags) {
 		containerExpression.verify(featureFlags);
-		verifyNotNull(symbolTable, "AstMemberAccessExpression.symbolTable");
+		verifyNotNull(this.scope, "AstMemberAccessExpression.scope");
 		verifyNotNull(impl, "AstMemberAccessExpression.impl");
 	}
+
+	@Override
+	public Scope getScope() {
+		assert(this.scope != null);
+		return this.scope;
+	}
 	
+	@Override
+	public void setScope2(Scope scope) {
+		assert(this.scope == null);
+		assert(scope != null);
+		this.scope = scope;
+	}
+
 }

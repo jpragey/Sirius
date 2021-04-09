@@ -6,8 +6,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
+import org.sirius.frontend.symbols.Scope;
+import org.sirius.frontend.symbols.SymbolTable;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
-public class FunctionDefinition implements Visitable, Verifiable {
+public class FunctionDefinition implements Visitable, Verifiable, Scoped {
 
 	/** Partial, sorted by 
 	 * For example, for f(x, y, z):
@@ -27,6 +30,8 @@ public class FunctionDefinition implements Visitable, Verifiable {
 	private LambdaClosure closure;
 	private Optional<FunctionDefinition> firstArgAppliedFuncDef;
 
+	private Scope scope = null;
+	
 	private boolean member;
 	
 	public FunctionDefinition(List<AstFunctionArgument> args, AstType returnType, 
@@ -171,12 +176,26 @@ public class FunctionDefinition implements Visitable, Verifiable {
 		verifyList(partials, featureFlags);
 		allArgsPartial.verify(featureFlags);
 		
-//		body.verify(featureFlags);
-		
 		verifyNotNull(qName, "qName");
 		lambdaDefinition.verify(featureFlags);
 		
-//		verifyList(closure, featureFlags);
 		verifyOptional(firstArgAppliedFuncDef, "firstArgAppliedFuncDef", featureFlags);
+	}
+
+	public Scope createScope(Scope parent) {
+		this.scope = new Scope(parent, ":" + name.getText());
+		return this.scope;
+	}
+
+	@Override
+	public Scope getScope() {
+		return this.scope;
+	}
+
+	@Override
+	public void setScope2(Scope scope) {
+		assert(this.scope == null);
+		assert(scope != null);
+		this.scope = scope;
 	}
 }

@@ -1,0 +1,135 @@
+= Scopes
+
+A scope of a name is a (possibly discontinuous) portion of source code where this name is valid.
+
+link:blockScope[Block scope]::
+    Block inside a function body, or function body itself.
+
+Function scope::
+    Function parameter scope (from their declaration point to the end of function body) : see link:functionScope[]
+
+Class scope:: link:#classScope[Class scope]
+
+File scope:: link:#fileScope[File scope]
+
+[width="100%",frame="topbot",options="header,footer"]
+|===
+| Module
+| Function
+| Class
+|===
+
+
+== Block scope
+[[blockScope]]
+
+A symbol declared in a block is local to
+that block, including subblocks.
+[source, java]
+----
+{
+    int a = 1;
+    int b = a;  // b == 1
+    { int a = 2;    // OK
+      int b = a;    // b == 2
+    }
+    int c = a;  // c == 1
+}
+int d == a; // Error, a not defined
+----
+
+
+== Function scope
+[[functionScope]]
+
+Function arguments have function scope:they are known from the end of their declaration to the end of the function body. It they can be referred to in subsequent argument declaration initialisers.
+
+[source, java]
+----
+void f(int a=10,
+        int b = a) {    // OK, a soon declared
+    int c = a+b;
+}
+----
+
+== Class scope
+[[classScope]]
+
+A variable defined in a class is known in the whole class definition and in all member functions bodies and member function parameters initialisers.
+
+[source, java]
+----
+class C(int a) {
+    int b = 1;
+    void f(int a0 = a) {
+        int a1 = a + b;
+    }
+}
+----
+
+== File scope
+[[fileScope]]
+
+Symbol is introduced from 'somewhere else (TODO)' by **import** statement:
+[source, java]
+----
+import a.b.X;   // X is known class
+import JString=java.lang.String; // JString is an alias for java.lang.String
+import JInt=java.lang.Integer; // introduce JInt
+import java.lang.Integer.bitCount; // bitCount(int)
+import jbitCount = java.lang.Integer.bitCount; 
+----
+
+
+== Scopes and functions
+
+A function with parameters defines several functions returning partially-applied functions, that is, object implementing *s.l.Function* and taking one less parameters than the function it derives from. For example:
+
+[source, java]
+----
+ R f(A0 a0, A1 a1, A2 a2) {...}
+ Function<
+    R, 
+    [A0, A1, A2]>
+ =>
+ Function<
+    Function<
+        R, 
+        [A1, A2]>, 
+    [A0]>
+ =>
+ Function<
+    Function<
+        Function<
+            R, 
+            [A2]>, 
+        [A1]>, 
+    [A0]>
+=>
+ Function<
+    Function<
+        Function<
+            Function<
+                R, 
+                []>, 
+            [A2]>, 
+        [A1]>, 
+    [A0]>
+----
+ 
+== C++ scopes (standard)
+
+Global scope :: Outside any function, class, namespace. Used for linking.
+
+Namespace scope :: 
+
+Local scope:: Within function or lambda, incl.parameter names.
+
+Class scope:: class member
+
+Statement scope:: variables declared in **for**, **if**, **while**, **switch**. Visible to the end of statement block.
+
+Function scope:: for labels (gotos).
+
+
+

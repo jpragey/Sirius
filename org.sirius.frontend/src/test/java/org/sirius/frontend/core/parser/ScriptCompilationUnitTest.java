@@ -20,6 +20,7 @@ import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 
 
@@ -41,7 +42,7 @@ public class ScriptCompilationUnitTest {
 		ParseTree tree = parser.scriptCompilationUnit();
 				
 		ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor visitor = new ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor(
-				reporter, new SymbolTableImpl(""));
+				reporter, new Scope("ScriptCU"));
 		ScriptCompilationUnit packageCU = visitor.visit(tree);
 		return packageCU;
 		
@@ -89,7 +90,6 @@ public class ScriptCompilationUnitTest {
 		scriptCUCheck("#!\n void f(){}", cu-> {
 			assertThat(cu.getModuleDeclarations().size(), equalTo(1));
 			assertThat(cu.getModuleDeclarations().get(0).getqName().dotSeparated(), equalTo(""));
-//			assertThat(cu.getModuleDeclarations().get(1).getqName().dotSeparated(), equalTo("a.b.d"));
 		});
 	}
 	

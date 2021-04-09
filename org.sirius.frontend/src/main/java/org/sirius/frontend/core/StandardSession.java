@@ -32,7 +32,7 @@ public class StandardSession implements Session {
 
 	private Reporter reporter;
 
-	private Scope globalScope = new Scope();
+	private Scope globalScope = new Scope("StandardSession global");
 	
 	private List<ModuleContent> moduleContents = new ArrayList<>();
 
@@ -78,7 +78,7 @@ public class StandardSession implements Session {
 
 		ParseTree tree = parser.standardCompilationUnit();
 		
-		StandardCompilatioUnitParser.StandardCompilationUnitVisitor visitor = new StandardCompilatioUnitParser.StandardCompilationUnitVisitor(reporter);
+		StandardCompilatioUnitParser.StandardCompilationUnitVisitor visitor = new StandardCompilatioUnitParser.StandardCompilationUnitVisitor(reporter, globalScope);
 		StandardCompilationUnit compilationUnit = visitor.visit(tree);
 
 		parseInput(input, compilationUnit);
@@ -89,7 +89,7 @@ public class StandardSession implements Session {
 
 
 		// -- Various transformations
-		stdTransform(reporter, input, compilationUnit, globalScope);
+		stdTransform(reporter, input, compilationUnit/*, globalScope*/);
 		
 		List<AstModuleDeclaration> moduleDeclarations = compilationUnit.getModuleDeclarations();
 		for(AstModuleDeclaration moduleDeclaration: moduleDeclarations) {

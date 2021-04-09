@@ -36,9 +36,9 @@ public class AstModuleDeclarationTest {
 		assertThat(md.getqName(), is(moduleQName));
 		
 		AstPackageDeclaration pd0 = md.getPackageDeclarations().get(0);
-		assertThat(pd0.getQname(), is(moduleQName /*QName.empty*/));
+		assertThat(pd0.getQname(), is(moduleQName));
 
-		assertThat(md.getPackage(moduleQName /*QName.empty*/), is(notNullValue()));
-		assertThat(md.getPackage(moduleQName /*QName.empty*/).getFunctionDeclarations(), hasSize(1));
+		assertThat(md.getPackage(moduleQName), is(notNullValue()));
+		assertThat(md.getPackage(moduleQName).getFunctionDeclarations(), hasSize(1));
 	}
 }

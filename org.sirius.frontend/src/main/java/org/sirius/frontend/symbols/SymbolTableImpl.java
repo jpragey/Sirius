@@ -59,9 +59,7 @@ public class SymbolTableImpl implements SymbolTable {
 		this.dbgName = name;
 		
 	}
-//	public void setDbgName(String dbgName) {
-//		this.dbgName = dbgName;
-//	}
+
 	public void addSymbol(QName symbolQName, Symbol symbol) {
 		assert(symbolQName != null);
 		symbols.put(symbolQName, symbol);
@@ -100,8 +98,6 @@ public class SymbolTableImpl implements SymbolTable {
 
 		// TODO: add symbol in qname-based 'symbols' map 
 		symbolsBySimpleName.put(simpleName.getText(), new Symbol(simpleName, valueDeclaration));
-		
-//		addSymbol(packageQName, simpleName, new Symbol(simpleName, valueDeclaration));
 	}
 
 	/** Local variable */
@@ -113,7 +109,6 @@ public class SymbolTableImpl implements SymbolTable {
 		
 	}
 
-//	private Optional<AstFunctionFormalArgument> functionArgument = Optional.empty();
 	/** Local variable */
 	public void addFunctionArgument(AstFunctionArgument functionArgument) {
 		AstToken simpleName = functionArgument.getName();
@@ -264,9 +259,6 @@ public class SymbolTableImpl implements SymbolTable {
 			sb.append(", ");
 		}
 		String s = sb.toString();
-//		String s = symbolsBySimpleName.entrySet().stream()
-//			.map(entry -> entry.getKey().toString() + "->" + entry.getValue())
-//			.collect(Collectors.joining(","));
 		
 		if(parent.isPresent()) {
 			s = s + "\n=>" +parent.get().toString();

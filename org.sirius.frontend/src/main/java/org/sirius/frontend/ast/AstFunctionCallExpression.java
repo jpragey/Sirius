@@ -15,6 +15,7 @@ import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.TypeCastExpression;
 import org.sirius.frontend.apiimpl.FunctionCallImpl;
 import org.sirius.frontend.symbols.SymbolTableImpl;
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTable;
 
@@ -24,30 +25,25 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	
 	private List<AstExpression> actualArguments = new ArrayList<>();
 
-	private SymbolTable symbolTable;	// TODO: remove ???
-	
+	private Scope scope = null;
+
 	private Reporter reporter;
 	
-	// 
 	private Optional<AstExpression> thisExpression = Optional.empty();
 	
 
-	// TODO: clean
-	private AstFunctionCallExpression(AstToken name, List<AstExpression> actualArguments, Reporter reporter,
-			Optional<AstExpression> thisExpression, SymbolTable symbolTable) {
+	private AstFunctionCallExpression(AstToken name, List<AstExpression> actualArguments, Reporter reporter, Optional<AstExpression> thisExpression) {
 		super();
 		this.name = name;
 		this.actualArguments = actualArguments;
 		this.reporter = reporter;
 		this.thisExpression = thisExpression;
-		this.symbolTable = symbolTable;
 	}
 
 	public AstFunctionCallExpression(Reporter reporter, AstToken name, List<AstExpression> actualArguments, 
 			Optional<AstExpression> thisExpression) 
 	{
-		this(name, actualArguments, reporter, thisExpression, new SymbolTableImpl(""));
-
+		this(name, actualArguments, reporter, thisExpression/*, new SymbolTableImpl("")*/);
 	}
 	public AstFunctionCallExpression(Reporter reporter, AstToken name) {
 		super();
@@ -57,15 +53,6 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	
 	public AstFunctionCallExpression(Reporter reporter, Token name) {
 		this(reporter, new AstToken(name));
-	}
-
-	@Override
-	public SymbolTable getSymbolTable() {
-		return symbolTable;
-	}
-
-	public void setSymbolTable(SymbolTableImpl symbolTable) {
-		this.symbolTable = symbolTable;
 	}
 
 	public AstToken getName() {
@@ -96,7 +83,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	public AstType getType() {
 		String fctName = name.getText();
 		
-		Optional<Symbol> symbol = symbolTable.lookupBySimpleName(fctName);
+		Optional<Symbol> symbol = scope.getSymbolTable().lookupBySimpleName(fctName);
 		if(symbol.isPresent()) {
 			Optional<FunctionDefinition> fct = symbol.get().getFunctionDeclaration();
 			if(fct.isPresent()) {
@@ -128,7 +115,6 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 			return argExpression.getExpression();
 		}
 		
-		// -- 
 		if(expectedType.isAncestorOrSameAs(argType)) {
 			Optional<Expression> optExpr = argExpression.getExpression();
 			assert(optExpr.isPresent());	// TODO: ???
@@ -158,7 +144,6 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 		
 		reporter.error("Couldn't map actual type " + argType.messageStr() + " to type " + expectedType.messageStr());
 		return Optional.empty();
-//		System.out.println("---");
 	}
 
 	private List<Expression> mapArgList(FunctionDefinition functionDeclaration) {
@@ -179,7 +164,8 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	
 	@Override
 	public Optional<Expression> getExpression() {
-		Optional<Symbol> symbol = symbolTable.lookupBySimpleName(name.getText());
+		assert(scope != null);
+		Optional<Symbol> symbol = scope.lookupSymbol(name.getText());
 		if(symbol.isPresent()) {
 			Optional<FunctionDefinition> fd = symbol.get().getFunctionDeclaration();
 			if(fd.isPresent()) {
@@ -194,7 +180,7 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 
 					FunctionCallImpl fctCallImpl = new FunctionCallImpl(reporter, functionDeclaration, name, 
 							argExpressions, 
-							optThisExpr, symbolTable);
+							optThisExpr, scope.getSymbolTable() /* symbolTable*/);
 						
 					return Optional.of(fctCallImpl);
 				}
@@ -228,8 +214,8 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 				name, 
 				newArgs, 
 				reporter,
-				thisExpression,	// TODO: linkToParentST ???  
-				new SymbolTableImpl(Optional.of(parentSymbolTable), AstFunctionCallExpression.class.getSimpleName()));
+				thisExpression	// TODO: linkToParentST ???  
+						);
 		
 		return newExpr;
 	}
@@ -237,12 +223,27 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 	@Override
 	public void verify(int featureFlags) {
 		verifyList(actualArguments, featureFlags);
-
-		verifyNotNull(symbolTable, "");
+		verifyNotNull(scope, "");
 		
-		// 
 		if(thisExpression.isPresent())
 			 verifyOptional(thisExpression, "thisExpression", featureFlags);
+	}
+
+	@Override
+	public Scope getScope() {
+		assert(this.scope != null);
+		return this.scope;
+	}
+
+	public void setScope(Scope scope) {
+		this.scope = scope;
+	}
+
+	@Override
+	public void setScope2(Scope scope) {
+		assert(this.scope == null);
+		assert(scope != null);
+		this.scope = scope;
 	}
 
 }

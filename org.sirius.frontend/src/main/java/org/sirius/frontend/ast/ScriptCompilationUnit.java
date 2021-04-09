@@ -7,8 +7,7 @@ import java.util.Optional;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.AbstractCompilationUnit;
-import org.sirius.frontend.symbols.SymbolTableImpl;
-import org.sirius.frontend.symbols.SymbolTable;
+import org.sirius.frontend.symbols.Scope;
 
 public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable, Scoped {
 
@@ -20,15 +19,15 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	
 	private Reporter reporter; 
 	
-	private SymbolTableImpl symbolTable; 
+	private Scope scope = null;
 
-	public ScriptCompilationUnit(Reporter reporter, SymbolTableImpl globalSymbolTable,
+	public ScriptCompilationUnit(Reporter reporter, Scope globalScope, 
 			Optional<ShebangDeclaration> shebangDeclaration,
 			List<ImportDeclaration> importDeclarations,
 			List<AstModuleDeclaration> modules) {
 		super();
 		this.reporter = reporter;
-		this.symbolTable = globalSymbolTable;
+		this.scope = globalScope;
 
 		assert(shebangDeclaration != null);
 		this.shebangDeclaration = shebangDeclaration;
@@ -55,7 +54,9 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		this.importDeclarations.add(importDeclaration);
 		
 		for(ImportDeclarationElement e: importDeclaration.getElements()) {
-			this.symbolTable.addImportSymbol(importDeclaration.getPack(), e /* e.getImportedTypeName(), e.getAlias()*/);
+			this.scope
+				.getSymbolTable()	// TODO: direct call
+				.addImportSymbol(importDeclaration.getPack(), e);
 		}
 	}
 
@@ -85,7 +86,16 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 	}
 
 	@Override
-	public SymbolTableImpl getSymbolTable() {
-		return symbolTable;
+	public Scope getScope() {
+		assert(this.scope != null);
+		return this.scope;
 	}
+
+	@Override
+	public void setScope2(Scope scope) {
+		assert(this.scope == null);
+		assert(scope != null);
+		this.scope = scope;
+	}
+
 }

@@ -13,8 +13,7 @@ import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.apiimpl.PackageDeclarationImpl;
-import org.sirius.frontend.symbols.SymbolTableImpl;
-import org.sirius.frontend.symbols.SymbolTable;
+import org.sirius.frontend.symbols.Scope;
 
 /** Package declaration, eg as written in package descriptor.
  * It may also be an anonymous package declaration (without package descriptor) 
@@ -38,7 +37,7 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 	private Map<QName,AstInterfaceDeclaration> interfaceDeclarationByQname = new HashMap<>();
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	
-	private SymbolTable symbolTable; 
+	private Scope scope = null;
 
 	private PackageDeclaration packageDeclaration = null;
 
@@ -48,8 +47,6 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 		super();
 		this.reporter = reporter;
 		this.qname = qname;
-//		this.symbolTable = new LocalSymbolTable(reporter);
-		this.symbolTable = new SymbolTableImpl("<TODO>" /*TODO*/);
 		
 		functionDeclarations.forEach (fct -> {this.functionDeclarations.add(fct);	this.visitables.add(fct);});
 		classDeclarations.forEach	 (cd  -> {
@@ -74,8 +71,6 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 		verifyList(classDeclarations, featureFlags);
 		verifyList(interfaceDeclarations, featureFlags);
 		verifyList(valueDeclarations, featureFlags);
-		
-		//private LocalSymbolTable symbolTable; 
 
 		verifyCachedObjectNotNull(packageDeclaration, "AstPackageDeclaration.packageDeclaration (API) ", featureFlags);
 	}
@@ -91,11 +86,6 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 
 	public List<FunctionDefinition> getFunctionDeclarations() {
 		return functionDeclarations;
-	}
-
-	@Override
-	public SymbolTable getSymbolTable() {
-		return symbolTable;
 	}
 
 	@Override
@@ -165,5 +155,18 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 				valueDeclarations.isEmpty();
 		return empty;
 	}
-	
+
+	@Override
+	public Scope getScope() {
+		assert(this.scope != null);
+		return this.scope;
+	}
+
+	@Override
+	public void setScope2(Scope scope) {
+		assert(this.scope == null);
+		assert(scope != null);
+		this.scope = scope;
+	}
+
 }

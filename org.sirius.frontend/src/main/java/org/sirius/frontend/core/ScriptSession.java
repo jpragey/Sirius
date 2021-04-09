@@ -34,8 +34,6 @@ public class ScriptSession implements Session {
 	
 	private Optional<ShebangDeclaration> shebang = Optional.empty(); 
 
-	private Scope globalScope = new Scope();
-
 	private ScriptCompilationUnit compilationUnit;
 
 	private List<AstModuleDeclaration> astModules = new ArrayList<>();
@@ -50,19 +48,14 @@ public class ScriptSession implements Session {
 	public ScriptCompilationUnit getCompilationUnit() {
 		return compilationUnit;
 	}
-
-	public SymbolTableImpl getGlobalSymbolTable() {
-		return globalScope.getSymbolTable();
-	}
-
 	
 	private void addInput(InputTextProvider input) {
-		SdkTools sdkTools = new SdkTools(reporter, globalScope);
-//		sdkTools.parseSdk(globalSymbolTable);
+		SdkTools sdkTools = new SdkTools(reporter);
 
-		this.compilationUnit = parseScriptInput(input, globalScope.getSymbolTable());
+		Scope sdkScope = sdkTools.getScope();
+		this.compilationUnit = parseScriptInput(input, sdkScope);
 
-		stdTransform(reporter, input, compilationUnit, globalScope);
+		stdTransform(reporter, input, compilationUnit);
 
 		this.shebang = compilationUnit.getShebangDeclaration();
 
@@ -74,7 +67,7 @@ public class ScriptSession implements Session {
 		}
 	}
 	
-	private ScriptCompilationUnit parseScriptInput(InputTextProvider input, SymbolTableImpl getGlobalSymbolTable) {
+	private ScriptCompilationUnit parseScriptInput(InputTextProvider input, Scope sdkScope) {
 		
 		String sourceCode = input.getText();
 		
@@ -91,8 +84,7 @@ public class ScriptSession implements Session {
 		// -- Parsing
 		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
 
-		ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor visitor = new ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor(
-				reporter, getGlobalSymbolTable);
+		ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor visitor = new ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor(reporter, sdkScope);
 		ScriptCompilationUnit compilationUnit = visitor.visit(unitContext);
 
 		return compilationUnit;
@@ -111,6 +103,4 @@ public class ScriptSession implements Session {
 	public List<AstModuleDeclaration> getAstModules() {
 		return astModules;
 	}
-	
-	
 }

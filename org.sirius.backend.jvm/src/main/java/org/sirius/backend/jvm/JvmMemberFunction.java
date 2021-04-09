@@ -50,10 +50,6 @@ public class JvmMemberFunction {
 			this.currentScope = this.rootScope;
 		}
 		
-//		public JvmScope getCurrent() {
-//			return this.currentScope;
-//		}
-
 		@Override
 		public String toString() {
 			return currentScope.toString();
@@ -186,7 +182,6 @@ public class JvmMemberFunction {
 
 		// -- Write var init code at the start of function/block bytecode
 		private void writeLocalVarsInitCode(JvmScope.LocalVarHolder h, MethodVisitor mv, JvmScope scope) {
-//			LocalVariableStatement st = h.getStatement();
 			int locvarIndex = h.getIndex();
 			Optional<Expression> optInitExp = h.getInitExp();
 			if(optInitExp.isPresent()) {
@@ -223,7 +218,6 @@ public class JvmMemberFunction {
 					writeIfElseStatementBytecode(classWriter, mv, (IfElseStatement)st, scope);
 				} else if(st instanceof ExpressionStatement) {
 					writeExpressionStatementBytecode(classWriter, mv, (ExpressionStatement)st, scope);
-//					writeIfElseStatementBytecode(classWriter, mv, (IfElseStatement)st, scope);
 				} else if(st instanceof LocalVariableStatement) { 
 					// Ignore
 				} else {
@@ -233,8 +227,6 @@ public class JvmMemberFunction {
 
 			scope.markEnd();
 			scopeManager.leaveScope();
-			
-//			scope.writeLocalVariableStatements(classWriter, mv);
 		}
 	}
 
@@ -270,7 +262,6 @@ public class JvmMemberFunction {
 	 * @param functionName
 	 */
 	private void writeJvmMainBytecode(ClassWriter classWriter, String functionName) {
-//		System.out.println("Writing JVM main() bytecode for function: " + functionName);
 
 		String functionDescriptor = "([Ljava/lang/String;)V";	// eg (Ljava/lang/String;)V
 		int access = ACC_PUBLIC | ACC_STATIC;
@@ -310,7 +301,6 @@ public class JvmMemberFunction {
 		mv.visitInsn(RETURN);
 //		mv.visitMaxs(1, 1);
 		mv.visitEnd();
-
 	}
 
 	/** Write bytecode for the whole function
@@ -349,8 +339,6 @@ public class JvmMemberFunction {
 		mv.visitEnd();
 
 		// -- Opt. create a 'void main(java.lang.String[]' method
-//		System.out.println("Trying to create JVM entry point at " + functionQName);
-//		System.out.println(" From options: " + backendOptions.getJvmMainFunctionQName());
 		backendOptions.getJvmMainFunctionQName().ifPresent(qname -> {
 			if(functionQName.equals(qname)) {
 				writeJvmMainBytecode(classWriter, qname.getLast());

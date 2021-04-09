@@ -29,8 +29,9 @@ public interface Session {
 	}
 	
 
-	default void stdTransform(Reporter reporter, InputTextProvider input, AbstractCompilationUnit compilationUnit, /*SymbolTableImpl globalSymbolTable, */
-			org.sirius.frontend.symbols.Scope globalScope) {
+	default void stdTransform(Reporter reporter, InputTextProvider input, AbstractCompilationUnit compilationUnit) {
+		org.sirius.frontend.symbols.Scope globalScope = compilationUnit.getScope();
+		
 		StdAstTransforms.insertPackagesInModules(reporter, compilationUnit);
 		
 		// -- Set qualified names 

@@ -1,13 +1,14 @@
 package org.sirius.frontend.ast;
 
+import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTable;
 
 public interface Scoped {
 
-	public SymbolTable getSymbolTable();
+	public Scope getScope();
+	default SymbolTable getSymbolTable() {return getScope().getSymbolTable();}
 	
-	default void setScopeName(String name) {getSymbolTable().setName(name);}
+	default void setScopeName(String name) {getScope().getSymbolTable().setName(name);}
 	
-//	public String getScopeName();
-	
+	void setScope2(Scope scope);
 }

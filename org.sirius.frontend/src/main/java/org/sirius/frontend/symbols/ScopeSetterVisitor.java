@@ -1,16 +1,18 @@
 package org.sirius.frontend.symbols;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 import org.sirius.frontend.ast.AstBlock;
 import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstFunctionCallExpression;
+import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
+import org.sirius.frontend.ast.ConstructorCallExpression;
+import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.LambdaDefinition;
 import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
@@ -23,7 +25,6 @@ public class ScopeSetterVisitor implements AstVisitor {
 	
 	private static class STableNameElement {
 		
-		// Module package class function block
 		private String prefix;
 		private String suffix;
 		private String content;
@@ -60,8 +61,9 @@ public class ScopeSetterVisitor implements AstVisitor {
 		stmtIndexStack.push(0);
 	}
 
-	private Scope pushNewScope() {
-		Scope newScope = new Scope(scopeStack.empty() ? Optional.empty() : Optional.of(scopeStack.peek()));
+	private Scope pushNewScope(String newScopeName) {
+		Optional<Scope> currentScope = scopeStack.empty() ? Optional.empty() : Optional.of(scopeStack.peek());
+		Scope newScope = new Scope(currentScope, newScopeName);
 		scopeStack.push(newScope);
 		return newScope;
 	}
@@ -82,7 +84,7 @@ public class ScopeSetterVisitor implements AstVisitor {
 	
 	@Override
 	public void startScriptCompilationUnit(ScriptCompilationUnit compilationUnit) {
-		Scope scope = pushNewScope();
+		Scope scope = pushNewScope("ScriptCU root");
 	}
 	@Override
 	public void endScriptCompilationUnit(ScriptCompilationUnit compilationUnit) {
@@ -92,7 +94,7 @@ public class ScopeSetterVisitor implements AstVisitor {
 	
 	@Override
 	public void startModuleDeclaration(AstModuleDeclaration declaration) {
-		Scope scope = pushNewScope();
+		Scope scope = pushNewScope("Module " + declaration.getQnameString().toString());
 		STableNameElement el = new STableNameElement(declaration);
 		nameElementsStack.add(el);
 	}
@@ -104,21 +106,23 @@ public class ScopeSetterVisitor implements AstVisitor {
 	
 	@Override
 	public void startPackageDeclaration(AstPackageDeclaration declaration) {
+		Scope newScope = pushNewScope("Package " + declaration.getQnameString());
+		declaration.setScope2(newScope);
+		
 		declaration.setScopeName(declaration.getQnameString());
 		STableNameElement el = new STableNameElement(declaration);
 		nameElementsStack.add(el);
 	}
 	@Override
 	public void endPackageDeclaration(AstPackageDeclaration declaration) {
-		// TODO Auto-generated method stub
-		AstVisitor.super.endPackageDeclaration(declaration);
+		popScope();
 		nameElementsStack.removeLast();
 	}
 	
 	
 	@Override
 	public void startClassDeclaration(AstClassDeclaration classDeclaration) {
-		Scope scope = pushNewScope();
+		Scope scope = pushNewScope("Class " + classDeclaration.getName().getText());
 		classDeclaration.assignScope(scope);
 		STableNameElement el = new STableNameElement(classDeclaration);
 		nameElementsStack.add(el);
@@ -131,31 +135,46 @@ public class ScopeSetterVisitor implements AstVisitor {
 	}
 	
 	@Override
+	public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
+		Scope scope = pushNewScope("Interface " + interfaceDeclaration.getNameString());
+		interfaceDeclaration.setScope2(scope);
+	}
+	@Override
+	public void endInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
+		popScope();
+	}
+	
+	
+	@Override
 	public void startSimpleReferenceExpression(SimpleReferenceExpression expression) {
 		Scope scope = scopeStack.peek();
 		expression.setScope(scope);
 	}
 	
 	@Override
+	public void startFunctionCallExpression(AstFunctionCallExpression expression) {
+		Scope scope = scopeStack.peek();
+		expression.setScope(scope);
+	}
+	
+	@Override
 	public void startPartial(Partial partialFunctionDeclaration) {
-		Scope scope = pushNewScope();
+		Scope scope = pushNewScope("Partial " + partialFunctionDeclaration.getName().getText());
 		partialFunctionDeclaration.assignScope(scope);
-//		partialFunctionDeclaration.setScopeName(partialFunctionDeclaration.getqName().dotSeparated());
 	}
 	@Override
 	public void endPartial(Partial partialFunctionDeclaration) {
 		popScope();
 	}
 
-//	private int currentBlockIndex = 0;
-
 	@Override
 	public void startBlock(AstBlock block) {
 
+		Scope scope = pushNewScope("Block (TODO: name)");
+		block.setScope2(scope);
+
 		String name = currentFullName();
-//		String name = stmtIndexStack.stream().map(i -> i.toString()).collect(Collectors.joining(".", "$b:", "$"));
 		int index = stmtIndexStack.removeLast();
-		
 		
 		block.getSymbolTable().setName(name);
 		index++;
@@ -169,16 +188,36 @@ public class ScopeSetterVisitor implements AstVisitor {
 	public void endBlock(AstBlock blockStmt) {
 		stmtIndexStack.removeLast();
 		nameElementsStack.removeLast();
+
+		popScope();
 	}
 	
 	@Override
 	public void startLambdaDefinition(LambdaDefinition definition) {
-		Scope scope = pushNewScope();
-		definition.setSymbolTable(scope.getSymbolTable()); // TODO: ugly
+		Scope parentScope = scopeStack.peek();
+		Scope lambdaScope = definition.createScope(parentScope);
+		scopeStack.push(lambdaScope);
 	}
 	
 	@Override
 	public void endLambdaDefinition(LambdaDefinition definition) {
 		popScope();
 	}
+
+	@Override
+	public void startFunctionDefinition(FunctionDefinition functionDefinition) {
+		Scope fctScope = pushNewScope(functionDefinition.getNameString());
+		functionDefinition.setScope2(fctScope);
+	}
+	@Override
+	public void endFunctionDefinition(FunctionDefinition functionDefinition) {
+		popScope();
+	}
+	
+	@Override
+	public void startConstructorCallExpression(ConstructorCallExpression expression) {
+		Scope scope = scopeStack.peek();
+		expression.setScope(scope);
+	}
+	
 }

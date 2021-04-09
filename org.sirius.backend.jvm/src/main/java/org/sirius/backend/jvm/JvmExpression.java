@@ -278,13 +278,29 @@ public class JvmExpression {
 //				String owner = "$package$";		// owner "java/io/PrintStream",;
 				Optional<QName> optContainerQName = func.getClassOrInterfaceContainerQName();
 				
-				String owner = optContainerQName.isPresent() ?
-						optContainerQName.get().getStringElements().stream().collect(Collectors.joining("/")) :
-							Util.jvmPackageClassName /*"$package$"*/;
-				
-				if(owner.equals("sirius/lang") && invokeOpcode == INVOKESTATIC) {
-					owner = "org/sirius/backend/jvm/bridge/TopLevel";
+				String owner;
+				if(optContainerQName.isPresent()) {
+					QName containerQName = optContainerQName.get();
+					owner = containerQName.getStringElements().stream().collect(Collectors.joining("/"));
+					
+				} else {
+
+					owner = Util.jvmPackageClassName;					// returning int: this line alone is OK
+					
+					if(funcName.equals("println")) { // TODO: ARGHHH !!!
+
+						if(/*owner.equals("sirius/lang") &&*/ invokeOpcode == INVOKESTATIC) {
+							owner = "org/sirius/backend/jvm/bridge/TopLevel";
+						}
+					}
 				}
+//				String owner = optContainerQName.isPresent() ?
+//						optContainerQName.get().getStringElements().stream().collect(Collectors.joining("/")) :
+//							Util.jvmPackageClassName /*"$package$"*/;
+				
+//				if(owner.equals("sirius/lang") && invokeOpcode == INVOKESTATIC) {
+//					owner = "org/sirius/backend/jvm/bridge/TopLevel";
+//				}
 //				org.sirius.backend.jvm.bridge
 				
 //				String owner = func.getClassOrInterfaceContainerQName().flatMap(qname -> "");

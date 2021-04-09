@@ -41,7 +41,7 @@ public class FunctionTest {
 		
 		ScriptSession session =
 		CompileTools.compileScript(script, reporter);
-		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
+		JvmBackend backend = new JvmBackend(reporter, false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
 
 //		backend.addFileOutput("/tmp/siriusTmp2", Optional.of("jvmTest/classes"));
 		InMemoryClassWriterListener l = backend.addInMemoryOutput();
@@ -49,24 +49,12 @@ public class FunctionTest {
 		backend.process(session);
 
 		return l;
-//		Map<String, Bytecode> bytecodeMap = l.getByteCodesMap(); // 	map <dot-separated class name> -> <class bytecode>
-//		return bytecodeMap;
 	}
 	
 	public Object compileRunAndReturn(String script) throws Exception {
 
 		InMemoryClassWriterListener l = compileToBytecode(script);
 
-//		ScriptSession session = CompileTools.compileScript(script, reporter);
-//		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
-//		InMemoryClassWriterListener l = backend.addInMemoryOutput();
-//
-//		backend.addFileOutput("/tmp/siriusTmp2", Optional.of("jvmTest/classes"));
-//
-//		backend.process(session);
-		
-//		HashMap<String, Bytecode> map = l.getByteCodesMap();
-		
 		ClassLoader classLoader = l.getClassLoader();
 		
 		String mainClassQName = Util.jvmPackageClassName /* "$package$"*/; 

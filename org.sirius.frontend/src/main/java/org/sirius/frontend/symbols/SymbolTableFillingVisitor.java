@@ -53,12 +53,12 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 
 	@Override 
 	public void startScriptCompilationUnit(ScriptCompilationUnit compilationUnit) {
-		processImports(compilationUnit.getSymbolTable(), compilationUnit.getImportDeclarations());
+		processImports(compilationUnit.getScope().getSymbolTable(), compilationUnit.getImportDeclarations());
 	}
 	
 	@Override
 	public void startCompilationUnit(StandardCompilationUnit compilationUnit) {
-		processImports(compilationUnit.getSymbolTable(), compilationUnit.getImportDeclarations());
+		processImports(compilationUnit.getScope().getSymbolTable() /* compilationUnit.getSymbolTable()*/, compilationUnit.getImportDeclarations());
 	}
 
 	@Override
@@ -93,13 +93,12 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 		
 		SymbolTableImpl symbolTable = new SymbolTableImpl(Optional.of(parentSymbolTable), interfaceDeclaration.getName().getText());
 		symbolTableStack.push(symbolTable);
-		interfaceDeclaration.setSymbolTable(symbolTable);
-
+		
 		for(TypeParameter formalParameter: interfaceDeclaration.getTypeParameters()) {
 			interfaceDeclaration.getSymbolTable().addFormalParameter(interfaceDeclaration.getQName(), formalParameter);
 		}
 		
-		interfaceDeclaration.getSymbolTable().addInterface(interfaceDeclaration);
+		interfaceDeclaration.getScope().addInterface(interfaceDeclaration);
 		
 		parentSymbolTable.addInterface(interfaceDeclaration);
 	}
@@ -121,16 +120,12 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 		SymbolTableImpl parentSymbolTable = symbolTableStack.lastElement();
 		
 		String stName = "Partial " + partial.getName() + 
-//				"[" + partial.getCaptures().size() + "]" +
 				"(" + partial.getArgs().size() + ")";
 				
 		SymbolTableImpl functionSymbolTable = new SymbolTableImpl(Optional.of(parentSymbolTable), stName);
 		
 		partial.assignSymbolTable(functionSymbolTable);
 		symbolTableStack.push(functionSymbolTable);
-		
-//		parentSymbolTable.addFunction(functionDeclaration);
-		
 	}
 	@Override
 	public void endPartial   (Partial partialFunctionDeclaration) {
@@ -153,15 +148,12 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 	public void startFunctionCallExpression(AstFunctionCallExpression expression) {
 		SymbolTableImpl symbolTable = symbolTableStack.lastElement();
 		assert(symbolTable != null);
-		
-		expression.setSymbolTable(symbolTable);
+		assert(expression.getSymbolTable() != null);
 	}
 	@Override
 	public void startConstructorCallExpression (ConstructorCallExpression expression) {
 		SymbolTableImpl symbolTable = symbolTableStack.lastElement();
 		assert(symbolTable != null);
-		
-		expression.setSymbolTable(symbolTable);
 	}
 
 	@Override
@@ -175,7 +167,6 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 	public void startFieldAccess (AstMemberAccessExpression expression) {
 		SymbolTableImpl symbolTable = symbolTableStack.lastElement();
 		assert(symbolTable != null);
-		expression.setSymbolTable(symbolTable);
 	}
 
 	@Override
