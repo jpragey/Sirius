@@ -3,6 +3,7 @@ package org.sirius.frontend.core;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 //import static org.hamcrest.MatcherAssert.h;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -24,6 +26,8 @@ import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.ast.AstBlock;
 import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstFunctionCallExpression;
+import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstReturnStatement;
@@ -32,6 +36,7 @@ import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.FunctionBody;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
+import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTable;
@@ -224,8 +229,8 @@ public class ScopeTest {
 //
 //	}
 	@Test
-	@DisplayName("Check that the body of a top-level function seen other top-level functions")
-	@Disabled("FunctionDefinition doesn't have a scope yet")	// TODO
+	@DisplayName("Check that the body of a top-level function sees other top-level functions")
+//	@Disabled("FunctionDefinition doesn't have a scope yet")	// TODO
 	public void moduleScopeSeenIntopLevelFunction() {
 		String source = "void before(){}" +
 						"void func(){}" +
@@ -242,7 +247,10 @@ public class ScopeTest {
 		FunctionDefinition funcFD = fds.get(1);
 		FunctionDefinition afterFD = fds.get(2);
 		
-		SymbolTable funcSymbolTable = funcFD.getSymbolTable();
+//		SymbolTable funcSymbolTable = funcFD.getSymbolTable();
+		assertThat(funcFD.getScope().lookupSymbol("func").isPresent(), is(true));
+		assertThat(funcFD.getScope().lookupSymbol("before").isPresent(), is(true));
+		assertThat(funcFD.getScope().lookupSymbol("after").isPresent(), is(true));
 		
 	}
 
@@ -286,4 +294,29 @@ public class ScopeTest {
 		
 	}
 
+	@Test
+	@DisplayName("A class instance can see its member(s)")
+//	@Disabled("FunctionDefinition doesn't have a scope yet")	// TODO
+	public void classInstanceHasItsMembersInScope() {
+		String source = "class A(){ Integer add0() {return 42;} }\n"
+				+ "Integer main() { A aa = A();  Integer res = aa.add0(); return res;}";
+		
+ 		ScriptSession session = compile(source);
+ 		AstPackageDeclaration pkg = session.getAstModules().get(0).getPackageDeclarations().get(0);
+ 		
+ 		FunctionDefinition mainFct = pkg.getFunctionDeclarations().get(0);
+ 		assertThat(mainFct.getNameString(), is("main"));
+ 		
+ 		Optional<Symbol> addOptSymbol = mainFct.getScope().lookupSymbol("add0");
+ 		assertThat(addOptSymbol.isPresent(), is(false)); // Not directly accessed
+
+ 		assertThat(mainFct.getBody().getStatement(1), instanceOf(AstLocalVariableStatement.class)); // res = aa.add0()
+ 		AstLocalVariableStatement resAssignStatement = (AstLocalVariableStatement)mainFct.getBody().getStatement(1);
+
+ 		assertThat(resAssignStatement.getInitialValue().get(), instanceOf(AstFunctionCallExpression.class));
+ 		AstFunctionCallExpression add0CallExpr = (AstFunctionCallExpression)resAssignStatement.getInitialValue().get();
+
+ 		assertThat(add0CallExpr.getThisExpression().get(), instanceOf(SimpleReferenceExpression.class));
+ 		SimpleReferenceExpression aaRefExpr = (SimpleReferenceExpression)add0CallExpr.getThisExpression().get();
+	}
 }

@@ -50,7 +50,7 @@ NB: JvmPackage is a fake class that holds top-level functions - name to be chang
 To create the doc site:
 
 ```bash
-mvn site site:stage
+mvn site site:stage -P Site
 ```
 And you get the result in `target/staging/`.
 
