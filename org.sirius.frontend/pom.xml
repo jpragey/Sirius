@@ -75,7 +75,7 @@
 	<dependency>
 	    <groupId>org.ow2.asm</groupId>
 	    <artifactId>asm</artifactId>
-	    <version>7.1</version>
+	    <version>${libs.asm.version}</version>
 	</dependency>
 	    
 	<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
