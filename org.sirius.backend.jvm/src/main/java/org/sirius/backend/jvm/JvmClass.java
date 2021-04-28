@@ -79,31 +79,18 @@ public class JvmClass {
 	/* Flags for class/interface:
 	 * @See https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.1
 	 * Used at least for classWriter.visit()
-	 * 
-	 *  Flag Name 		Interpretation
-	 *  
-	ACC_PUBLIC 		Declared public; may be accessed from outside its package.
-	ACC_FINAL 		Declared final; no subclasses allowed.
-	ACC_SUPER 		Treat superclass methods specially when invoked by the invokespecial instruction.
-	ACC_INTERFACE 	Is an interface, not a class.
-	ACC_ABSTRACT 	Declared abstract; must not be instantiated.
-	ACC_SYNTHETIC 	Declared synthetic; not present in the source code.
-	ACC_ANNOTATION 	Declared as an annotation type.
-	ACC_ENUM 		Declared as an enum type.
-	ACC_MODULE		Is a module, not a class or interface.
 	 */
-
 	public enum AsmClassFlags {
-		PUBLIC(Opcodes.ACC_PUBLIC), // 		Declared public; may be accessed from outside its package.
-		FINAL(Opcodes.ACC_FINAL), // 		Declared final; no subclasses allowed.
-		SUPER(Opcodes.ACC_SUPER), // 		Treat superclass methods specially when invoked by the invokespecial instruction.
-		INTERFACE(Opcodes.ACC_INTERFACE), // 	Is an interface, not a class.
-		ABSTRACT(Opcodes.ACC_ABSTRACT), // 	Declared abstract; must not be instantiated.
-		SYNTHETIC(Opcodes.ACC_SYNTHETIC), // 	Declared synthetic; not present in the source code.
+		PUBLIC(Opcodes.ACC_PUBLIC),			// 	Declared public; may be accessed from outside its package.
+		FINAL(Opcodes.ACC_FINAL), 			// 	Declared final; no subclasses allowed.
+		SUPER(Opcodes.ACC_SUPER), 			// 	Treat superclass methods specially when invoked by the invokespecial instruction.
+		INTERFACE(Opcodes.ACC_INTERFACE), 	// 	Is an interface, not a class.
+		ABSTRACT(Opcodes.ACC_ABSTRACT), 	// 	Declared abstract; must not be instantiated.
+		SYNTHETIC(Opcodes.ACC_SYNTHETIC), 	// 	Declared synthetic; not present in the source code.
 		ANNOTATION(Opcodes.ACC_ANNOTATION), // 	Declared as an annotation type.
-		ENUM(Opcodes.ACC_ENUM), // 		Declared as an enum type.
-		MODULE(Opcodes.ACC_MODULE) //		Is a module, not a class or interface.
-		;
+		ENUM(Opcodes.ACC_ENUM), 			// 	Declared as an enum type.
+		MODULE(Opcodes.ACC_MODULE); 			//	Is a module, not a class or interface.
+		
 		public int asmFlag; // ACC_XXX value
 
 		private AsmClassFlags(int asmFlag) {
@@ -119,7 +106,7 @@ public class JvmClass {
 		}
 	}
 	
-	public Bytecode createBytecode(/*List<ClassWriterListener> listeners*/) {
+	public Bytecode createBytecode() {
 
 		String clssQname = qName.dotSeparated();
 		this.definedClasses.add(clssQname);
@@ -152,36 +139,16 @@ public class JvmClass {
 		byte[] bytes = classWriter.toByteArray();
 		Bytecode bytecode = new Bytecode(bytes, qName);
 		return bytecode;
-		
-//		for(ClassWriterListener l: listeners)
-//			l.addByteCode(bytecode);
 	}
 	
 	private void startClass(ClassWriter classWriter) {
-
-		/* Flags for class/interface:
-		 * @See https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.1
-		 * 
-		 *  Flag Name 		Interpretation
-		 *  
-		ACC_PUBLIC 		Declared public; may be accessed from outside its package.
-		ACC_FINAL 		Declared final; no subclasses allowed.
-		ACC_SUPER 		Treat superclass methods specially when invoked by the invokespecial instruction.
-		ACC_INTERFACE 	Is an interface, not a class.
-		ACC_ABSTRACT 	Declared abstract; must not be instantiated.
-		ACC_SYNTHETIC 	Declared synthetic; not present in the source code.
-		ACC_ANNOTATION 	Declared as an annotation type.
-		ACC_ENUM 		Declared as an enum type.
-		ACC_MODULE		Is a module, not a class or interface.
-		 */
-
 		int access =  AsmClassFlags.SUPER.asmFlag
 					| AsmClassFlags.PUBLIC.asmFlag;
 		
-//		/* From doc:
-//		 * The internal name of a class is its fully qualified name (as returned by Class.getName(), where '.' are replaced by '/'). 
-//		 * This method should only be used for an object or array type.
-//		 */
+		/* From doc:
+		 * The internal name of a class is its fully qualified name (as returned by Class.getName(), where '.' are replaced by '/'). 
+		 * This method should only be used for an object or array type.
+		 */
 		String classInternalName = Util.classInternalName(qName);
 
 		classWriter.visit(Bytecode.VERSION, access, classInternalName, null /*signature*/, "java/lang/Object"/*superName*/, null /*interfaces*/);

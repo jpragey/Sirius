@@ -2,33 +2,21 @@ package org.sirius.backend.jvm;
 
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_STATIC;
-import static org.objectweb.asm.Opcodes.ARETURN;
-import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import org.sirius.backend.jvm.JvmScope.LocalVarHolder;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.ClassType;
-import org.sirius.frontend.api.Expression;
-import org.sirius.frontend.api.ExpressionStatement;
 import org.sirius.frontend.api.FunctionFormalArgument;
-import org.sirius.frontend.api.IfElseStatement;
-import org.sirius.frontend.api.IntegerType;
-import org.sirius.frontend.api.LocalVariableStatement;
-import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 
 public class JvmMemberFunction {
@@ -38,38 +26,6 @@ public class JvmMemberFunction {
 	private Reporter reporter;
 	private BackendOptions backendOptions;
 
-	
-	private static class ScopeManager {
-		private JvmScope currentScope ;
-		private DescriptorFactory descriptorFactory;
-		private JvmScope rootScope;
-		
-		public ScopeManager(DescriptorFactory descriptorFactory) {
-			this.descriptorFactory = descriptorFactory;
-			this.rootScope = new JvmScope(descriptorFactory, Optional.empty(), "<root>");
-			this.currentScope = this.rootScope;
-		}
-		
-		@Override
-		public String toString() {
-			return currentScope.toString();
-		}
-		public JvmScope enterNewScope(String dbgName) {
-			JvmScope current = this.currentScope;
-			assert(current != null);
-			JvmScope scope = new JvmScope(descriptorFactory, Optional.of(current),  dbgName);
-			current.addSubScopes(scope);
-			this.currentScope = scope;
-			return scope;
-		}
-		public void leaveScope() {
-			this.currentScope = this.currentScope.getParentScope().get();
-		}
-
-		public void writeLocalVariables(ClassWriter classWriter, MethodVisitor mv) {
-			rootScope.indexedScope(descriptorFactory).writeLocalVariableStatements(classWriter, mv);
-		}
-	}
 	
 	private ScopeManager scopeManager;
 
@@ -84,82 +40,13 @@ public class JvmMemberFunction {
 		this.scopeManager = new ScopeManager(descriptorFactory);
 		
 	};
-
-	public void writeReturnStatementBytecode(ClassWriter classWriter/*, MemberFunction declaration*/, MethodVisitor mv, ReturnStatement statement, JvmScope scope) {
-
-		// -- write return expression
-		JvmExpression expr = new JvmExpression(reporter, descriptorFactory);
-		expr.writeExpressionBytecode(mv, statement.getExpression(), scope);
-
-		// -- write return
-		org.sirius.frontend.api.Type type = statement.getExpressionType();
-
-		if(type instanceof IntegerType) {
-			if(Util.mapIntsToClasses) {
-				mv.visitInsn(ARETURN);	// TODO ???
-			} else {
-				mv.visitInsn(IRETURN);
-			}
-		} else if(type instanceof ClassType) {
-			mv.visitInsn(ARETURN);
-		} else {
-			reporter.error("Currently unsupported expression type in return statement: " + type);
-		}
-	}
-
-	public void writeIfElseStatementBytecode(ClassWriter classWriter, MethodVisitor mv, IfElseStatement statement, JvmScope scope) {
-		/*
-		 * if-then :
-		 *   evaluate expr
-		 *   IFEQ goto endifLabel
-		 *   ifBlock
-		 * endifLabel:
-		 * 
-		 * if-then-else :
-		 *   evaluate expr
-		 *   IFEQ goto endifLabel
-		 *   <ifBlock>
-		 * endifLabel:
-		 * 	 GOTO endElseBlock
-		 *   <elseBlock>
-		 * endElseBlock
-		 */
-
-
-		Expression expr = statement.getExpression();
-		Statement ifStmt = statement.getIfStatement();
-		Optional<Statement> elseStmt = statement.getElseStatement();
-
-		new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, expr, scope);
-		// -- IFEQ
-
-		Label endifLabel = new Label();
-		mv.visitJumpInsn(Opcodes.IFEQ, endifLabel);
-
-		JvmStatementBlock ifBlock = new JvmStatementBlock(Arrays.asList(ifStmt));
-		ifBlock.writeByteCode(classWriter, mv);
-
-
-		if(elseStmt.isEmpty()) {
-			mv.visitLabel(endifLabel);
-		} else {
-			Label endElseLabel = new Label();
-			mv.visitJumpInsn(Opcodes.GOTO, endElseLabel);
-
-			mv.visitLabel(endifLabel);
-
-			JvmStatementBlock elseBlock = new JvmStatementBlock(Arrays.asList(elseStmt.get()));
-			elseBlock.writeByteCode(classWriter, mv);
-
-			mv.visitLabel(endElseLabel);
-		}
-	}
-
-	public void writeExpressionStatementBytecode(ClassWriter classWriter, MethodVisitor mv, ExpressionStatement statement, JvmScope scope) {
-		JvmExpression jvmExpression = new JvmExpression(reporter, descriptorFactory);
-		Expression expression = statement.getExpression();
-		jvmExpression.writeExpressionBytecode(mv, expression, scope);
-	}
+	
+	
+//	public void writeExpressionStatementBytecode(ClassWriter classWriter, MethodVisitor mv, ExpressionStatement statement, JvmScope scope) {
+//		JvmExpression jvmExpression = new JvmExpression(reporter, descriptorFactory);
+//		Expression expression = statement.getExpression();
+//		jvmExpression.writeExpressionBytecode(mv, expression, scope);
+//	}
 
 	/** simulate "return ;"
 	 *  
@@ -172,64 +59,6 @@ public class JvmMemberFunction {
 		mv.visitInsn(RETURN);
 	}
 
-	public class JvmStatementBlock {
-		List<Statement> statements;
-
-		public JvmStatementBlock(List<Statement> statements) {
-			super();
-			this.statements = statements;
-		}
-
-		// -- Write var init code at the start of function/block bytecode
-		private void writeLocalVarsInitCode(JvmScope.LocalVarHolder h, MethodVisitor mv, JvmScope scope) {
-			int locvarIndex = h.getIndex();
-			Optional<Expression> optInitExp = h.getInitExp();
-			if(optInitExp.isPresent()) {
-				Expression initExpr = optInitExp.get();
-				JvmExpression jvmExpr = new JvmExpression(reporter, descriptorFactory);
-				jvmExpr.writeExpressionBytecode(mv, initExpr, scope);
-
-				mv.visitVarInsn(Opcodes.ASTORE, locvarIndex);
-
-			}
-		}
-
-		public void writeByteCode(ClassWriter classWriter, MethodVisitor mv) {
-
-			JvmScope scope = scopeManager.enterNewScope("{block}");
-
-
-			// Collect local variables to generate initialization code
-			for(Statement st: statements ) {
-				if(st instanceof LocalVariableStatement) { 
-					LocalVariableStatement locVarsStmt = (LocalVariableStatement)st;
-					scope.addLocalVariable(locVarsStmt);
-				}
-			}
-			// Write local var init code
-			for(JvmScope.LocalVarHolder h: scope.getLocVarsStmts()) {
-				writeLocalVarsInitCode(h, mv, scope);
-			}
-
-			for(Statement st: statements ) {
-				if(st instanceof ReturnStatement) {
-					writeReturnStatementBytecode(classWriter, mv, (ReturnStatement)st, scope);
-				} else if(st instanceof IfElseStatement) {
-					writeIfElseStatementBytecode(classWriter, mv, (IfElseStatement)st, scope);
-				} else if(st instanceof ExpressionStatement) {
-					writeExpressionStatementBytecode(classWriter, mv, (ExpressionStatement)st, scope);
-				} else if(st instanceof LocalVariableStatement) { 
-					// Ignore
-				} else {
-					throw new UnsupportedOperationException("No bytecode to write for statement " + st.getClass().getCanonicalName());
-				}
-			}
-
-			scope.markEnd();
-			scopeManager.leaveScope();
-		}
-	}
-
 	private void writeFunctionContent(ClassWriter classWriter, MethodVisitor mv, List<FunctionFormalArgument> remainingParams) {
 		JvmScope scope = scopeManager.enterNewScope(
 				this.memberFunction.getQName().getLast() +
@@ -239,8 +68,8 @@ public class JvmMemberFunction {
 		if(remainingParams.isEmpty()) {
 			// -- all params are manages, handle statements
 
-			JvmStatementBlock bodyBlock = new JvmStatementBlock(memberFunction.getBodyStatements().get());
-			bodyBlock.writeByteCode(classWriter, mv);
+			JvmStatementBlock bodyBlock = new JvmStatementBlock(reporter, descriptorFactory, scopeManager, memberFunction.getBodyStatements().get());
+			bodyBlock.writeBytecode(classWriter, mv);
 
 			writeDummyDefaultReturn(mv);
 			
