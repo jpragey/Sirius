@@ -21,7 +21,8 @@ public class JvmPackage {
 		super();
 		this.reporter = reporter;
 		this.packageDeclaration = packageDeclaration;
-		this.packageClass = new JvmClass(reporter, packageDeclaration, backendOptions);
+//		this.packageClass = new JvmClass(reporter, packageDeclaration, backendOptions);
+		this.packageClass = JvmClass.createPackageClass(reporter, packageDeclaration, backendOptions);
 		this.backendOptions = backendOptions;
 
 		jvmClasses.add(this.packageClass);
@@ -61,7 +62,7 @@ public class JvmPackage {
 
 	public void createByteCode(List<ClassWriterListener> listeners) {
 		for(JvmClass c: jvmClasses) {
-			c.toBytecode(listeners);
+			c.visitBytecode(listeners);
 		}
 	}		
 }

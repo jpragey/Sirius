@@ -22,8 +22,8 @@ public class JvmModule {
 	private BackendOptions backendOptions;
 	
 	private class JvmModuleExport {
-		QName packageQName;
-		List<QName> toClause;
+		private QName packageQName;
+		private List<QName> toClause;
 		public JvmModuleExport(QName packageQName, List<QName> toClause) {
 			super();
 			this.packageQName = packageQName;
@@ -38,9 +38,6 @@ public class JvmModule {
 		public List<QName> getToClause() {
 			return toClause;
 		}
-		
-		
-		
 	}
 	
 	public JvmModule(Reporter reporter, ModuleDeclaration moduleDeclaration, BackendOptions backendOptions) {
@@ -66,13 +63,9 @@ public class JvmModule {
 
 		classWriter.visitSource("module-info.jar", null /*debug*/);
 		
-		int access0 = ACC_MODULE; // Always use ACC_SUPER ! 
+		int access = ACC_MODULE; // Always use ACC_SUPER ! 
 //		classWriter.visitSource();
-		classWriter.visit(Bytecode.VERSION, access0, "module-info" /*classInternalName*/, null /*signature*/, null /*"java/lang/Object"*//*superName*/, null /*interfaces*/);
-//		String classInternalName = Util.classInternalName(classQname);
-//		int access = ACC_SUPER; // Always use ACC_SUPER ! 
-//		////		if(classDeclaration.getVisibility() == Visibility.PUBLIC)
-//		access |= ACC_PUBLIC;
+		classWriter.visit(Bytecode.VERSION, access, "module-info" /*classInternalName*/, null /*signature*/, null /*"java/lang/Object"*//*superName*/, null /*interfaces*/);
 		
 //		int access = ACC_OPEN | ACC_SYNTHETIC | ACC_MANDATED;
 		int moduleAccess =  ACC_PUBLIC;
@@ -80,11 +73,10 @@ public class JvmModule {
 //		System.out.println("Module qname: '" + moduleQname + "', version: '" + moduleVersion + "'.");
 
 		ModuleVisitor mv = classWriter.visitModule(moduleQname, moduleAccess, moduleVersion);
-////		mv.visitMainClass("$package$"/*Main class*/);
+
 		mv.visitRequire("java.base", ACC_MANDATED, null);
-//		mv.visitRequire("sirius.lang", ACC_TRANSITIVE, "0.0.1-SNAPSHOT");
-		mv.visitRequire("org.sirius.runtime", ACC_TRANSITIVE, "0.0.1-SNAPSHOT");
-		mv.visitRequire("org.sirius.sdk", ACC_TRANSITIVE, "0.0.1-SNAPSHOT");
+		mv.visitRequire("org.sirius.runtime", ACC_TRANSITIVE, Constants.SIRIUS_RUNTIME_VERSION /* "0.0.1-SNAPSHOT"*/);
+		mv.visitRequire("org.sirius.sdk", ACC_TRANSITIVE, Constants.SIRIUS_SDK_VERSION /* "0.0.1-SNAPSHOT"*/);
 		
 		// -- exports
 		List<JvmModuleExport> jvmModuleExports = List.of(

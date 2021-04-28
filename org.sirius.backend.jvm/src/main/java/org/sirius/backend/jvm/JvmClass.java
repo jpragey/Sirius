@@ -44,16 +44,16 @@ public class JvmClass {
 		addMemberFunctions(cd);
 		addMemberValues(cd);
 	}
-//	public JvmClass(Reporter reporter, InterfaceDeclaration cd, BackendOptions backendOptions) {
-//		this(reporter, cd.getQName(), backendOptions);
-//		addMemberFunctions(cd);
-//		addMemberValues(cd);
-//	}
+	
 	// For Package class
-	public JvmClass(Reporter reporter, PackageDeclaration pd, BackendOptions backendOptions) {
-		this(reporter, pd.getQName().child(Util.jvmPackageClassName), backendOptions);
-	}
+//	public JvmClass(Reporter reporter, PackageDeclaration pd, BackendOptions backendOptions) {
+//		this(reporter, pd.getQName().child(Util.jvmPackageClassName), backendOptions);
+//	}
 
+	public static JvmClass createPackageClass(Reporter reporter, PackageDeclaration pd, BackendOptions backendOptions) {
+		return new JvmClass(reporter, pd.getQName().child(Util.jvmPackageClassName), backendOptions);
+	}
+	
 	private void addMemberValues(ClassType cd) {
 		for(MemberValue mv: cd.getMemberValues()) {
 			JvmMemberValue jvmMv = new JvmMemberValue(mv, descriptorFactory, reporter);
@@ -111,10 +111,15 @@ public class JvmClass {
 		}
 		
 	}
-	
-	public void /*Bytecode*/ toBytecode(List<ClassWriterListener> listeners) {
 
-		//			System.out.println(" -- Starting ClassDeclaration " + classDeclaration.getQName());
+	public void visitBytecode(List<ClassWriterListener> listeners) {
+		for(ClassWriterListener l: listeners) {
+			Bytecode bytecode = createBytecode();
+			l.addByteCode(bytecode);
+		}
+	}
+	
+	public Bytecode createBytecode(/*List<ClassWriterListener> listeners*/) {
 
 		String clssQname = qName.dotSeparated();
 		this.definedClasses.add(clssQname);
@@ -146,11 +151,10 @@ public class JvmClass {
 
 		byte[] bytes = classWriter.toByteArray();
 		Bytecode bytecode = new Bytecode(bytes, qName);
+		return bytecode;
 		
-		for(ClassWriterListener l: listeners)
-			l.addByteCode(bytecode);
-		
-//		return bytecode;
+//		for(ClassWriterListener l: listeners)
+//			l.addByteCode(bytecode);
 	}
 	
 	private void startClass(ClassWriter classWriter) {
@@ -170,22 +174,17 @@ public class JvmClass {
 		ACC_ENUM 		Declared as an enum type.
 		ACC_MODULE		Is a module, not a class or interface.
 		 */
-//		int access = ACC_SUPER; // Always use ACC_SUPER ! 
-//		////		if(classDeclaration.getVisibility() == Visibility.PUBLIC)
-//		access |= ACC_PUBLIC;
 
-		int access = AsmClassFlags.SUPER.asmFlag;
-//		if(classd)
-		access |= AsmClassFlags.PUBLIC.asmFlag;
+		int access =  AsmClassFlags.SUPER.asmFlag
+					| AsmClassFlags.PUBLIC.asmFlag;
 		
-//		String classInternalName = JvmClassWriter.classInternalName(classDeclaration);
 //		/* From doc:
 //		 * The internal name of a class is its fully qualified name (as returned by Class.getName(), where '.' are replaced by '/'). 
 //		 * This method should only be used for an object or array type.
 //		 */
 		String classInternalName = Util.classInternalName(qName);
 
-		classWriter.visit(Bytecode.VERSION, access, classInternalName/*"Hello"*/, null /*signature*/, "java/lang/Object"/*superName*/, null /*interfaces*/);
+		classWriter.visit(Bytecode.VERSION, access, classInternalName, null /*signature*/, "java/lang/Object"/*superName*/, null /*interfaces*/);
 	}
 
 	/** 

@@ -11,6 +11,11 @@ import org.objectweb.asm.ClassWriter;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 
+/** Bytecode for a java class. Maps to a single '.class' output file (or jar entry)
+ * 
+ * @author jpragey
+ *
+ */
 public class Bytecode {
 
 	private byte[] bytes;
