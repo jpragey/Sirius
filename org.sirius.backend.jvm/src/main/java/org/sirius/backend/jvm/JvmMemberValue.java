@@ -32,7 +32,7 @@ public class JvmMemberValue {
 	public String toString() {
 		return memberValue.toString();
 	}
-	public void writeBytecode(ClassWriter classWriter/*, MemberFunction declaration*/) {
+	public void writeBytecode(ClassWriter classWriter) {
 
 		int access = 0;
 		if(isPublic)
@@ -69,7 +69,7 @@ public class JvmMemberValue {
 		mv.visitVarInsn(Opcodes.ALOAD, 0 /*0 = this  locvarIndex*/);
 
 		// -- put value
-		new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, expression, scope);
+		new JvmExpression(reporter, descriptorFactory, expression).writeExpressionBytecode(mv,  scope);
 				
 		String owner = Util.classInternalName(qName); // internal name x/y/A
 		String name = memberValue.getName().getText();

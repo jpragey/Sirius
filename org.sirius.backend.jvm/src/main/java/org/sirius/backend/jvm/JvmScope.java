@@ -30,12 +30,12 @@ public class JvmScope {
 	private List<JvmScope> subScopes;
 	private Optional<JvmScope> parentScope;
 
-	public static class IndexedVariable {
+	private static class IndexedVariable {
 		private Type localVarType;
 		private String localVarName;
 		private Optional<Expression> initExp;
 		private int index;
-		public IndexedVariable(LocalVarHolder v, int index) {
+		public IndexedVariable(JvmLocalVariable v, int index) {
 			this.localVarType = v.localVarType;
 			this.localVarName = v.localVarName;
 			this.initExp = v.initExp;
@@ -43,21 +43,19 @@ public class JvmScope {
 		}
 		
 	}
-	public static class IndexedScope {
+	private static class IndexedScope {
 		private DescriptorFactory descriptorFactory;
-		private int startIndex;
 		private JvmScope jvmScope;
 		private List<IndexedScope> subScopes;
 		private List<IndexedVariable> indexedVariables;
-		public IndexedScope(DescriptorFactory descriptorFactory, JvmScope jvmScope, int startIndex) {
+		private IndexedScope(DescriptorFactory descriptorFactory, JvmScope jvmScope, int startIndex) {
 			this.descriptorFactory = descriptorFactory;
 			this.jvmScope = jvmScope;
-			this.startIndex = startIndex;
 
 			int currentIndex = startIndex;
 			// -- indexed variables
 			this.indexedVariables = new ArrayList<IndexedVariable>(jvmScope.locVarsStmts.size());
-			for(LocalVarHolder v : jvmScope.locVarsStmts) {
+			for(JvmLocalVariable v : jvmScope.locVarsStmts) {
 				IndexedVariable iv = new IndexedVariable(v, currentIndex++);
 				this.indexedVariables.add(iv);
 			}
@@ -71,55 +69,48 @@ public class JvmScope {
 		}
 		
 		public void writeLocalVariableStatements(ClassWriter classWriter, MethodVisitor mv) {
-//			System.out.println(" << scope: entering " + this.jvmScope.dbgName + " by index " + this.startIndex);
 
 			for(IndexedVariable h: this.indexedVariables) {
 				String name = h.localVarName;
-
-//				System.out.println(" -- Write scope var " + name);
 
 				String descriptor = descriptorFactory.fieldDescriptor(h.localVarType);		// TODO: field ???      var descriptor
 				String signature = null; // the type signature of this local variable. May be {@literal null} if the local variable type does not use generic types.
 				
 				int index=h.index;
-				assert(this.jvmScope.startLabel != null);
-				if(this.jvmScope.endLabel == null) {
-//					System.out.println();
-				}
+				Label startLabel = this.jvmScope.startLabel;  
+				Label endLabel = this.jvmScope.endLabel;  
+				assert(startLabel != null);
+				assert(endLabel != null);
 				
-				assert(this.jvmScope.endLabel != null);
-				
-				mv.visitLocalVariable(name, descriptor, signature, this.jvmScope.startLabel, this.jvmScope.endLabel, index);
+				mv.visitLocalVariable(name, descriptor, signature, startLabel, endLabel, index);
 			}
 			
 			for(IndexedScope subScope: subScopes) {
 				subScope.writeLocalVariableStatements(classWriter, mv);
 			}
-			
-//			System.out.println(" >> leaving scope " + this.jvmScope.dbgName + " index " + this.startIndex);
 		}
 	}
 	
 	
-	public class LocalVarHolder {
+	public static class JvmLocalVariable {
 		private Type localVarType;
 		private String localVarName;
 		private Optional<Expression> initExp;
 		
 		private int index;
 
-		public LocalVarHolder(Type localVarType, String localVarName, Optional<Expression> initExp) {
-			this.index = varIndex++;
+		private JvmLocalVariable(Type localVarType, String localVarName, Optional<Expression> initExp, int index) {
+			this.index = index;
 			this.localVarType = localVarType;
 			this.localVarName = localVarName;
 			this.initExp = initExp;
 		}
-		public LocalVarHolder(LocalVariableStatement statement) {
-			this(statement.getType(), statement.getName().getText(), statement.getInitialValue());
+		public JvmLocalVariable(LocalVariableStatement statement, int index) {
+			this(statement.getType(), statement.getName().getText(), statement.getInitialValue(), index);
 		}
 		
-		public LocalVarHolder(FunctionFormalArgument statement) {
-			this(statement.getType(), statement.getQName().getLast(), Optional.empty() /* TODO */);
+		public JvmLocalVariable(FunctionFormalArgument statement, int index) {
+			this(statement.getType(), statement.getQName().getLast(), Optional.empty() /* TODO */, index);
 		}
 		
 		public int getIndex() {
@@ -137,8 +128,8 @@ public class JvmScope {
 		
 	}
 	
-	private List<LocalVarHolder> locVarsStmts = new ArrayList<>();
-	private HashMap<String, LocalVarHolder> varByName = new HashMap<>();
+	private List<JvmLocalVariable> locVarsStmts = new ArrayList<>();
+	private HashMap<String, JvmLocalVariable> varByName = new HashMap<>();
 	private String dbgName;
 	
 	public JvmScope(DescriptorFactory descriptorFactory, Optional<JvmScope> parentScope, String dbgName) {
@@ -155,7 +146,6 @@ public class JvmScope {
 		return parentScope;
 	}
 
-
 	public List<JvmScope> getSubScopes() {
 		return subScopes;
 	}
@@ -167,25 +157,23 @@ public class JvmScope {
 		this.endLabel = new Label();
 	}
 
-	public LocalVarHolder addLocalVariable(LocalVariableStatement st) {
-		LocalVarHolder h = new LocalVarHolder(st);
+	public JvmLocalVariable addLocalVariable(LocalVariableStatement st) {
+		JvmLocalVariable h = new JvmLocalVariable(st, this.varIndex++);
 		locVarsStmts.add(h);
 		varByName.put(st.getName().getText(), h);
 		return h;
 	}
-	public LocalVarHolder addFunctionArgument(FunctionFormalArgument st) {
-		LocalVarHolder h = new LocalVarHolder(st);
+	public JvmLocalVariable addFunctionArgument(FunctionFormalArgument st) {
+		JvmLocalVariable h = new JvmLocalVariable(st, this.varIndex++);
 		locVarsStmts.add(h);
 		varByName.put(h.localVarName, h);
 		return h;
 	}
 
 	
-	public Optional<LocalVarHolder> getVarByName(String varName) {
-		LocalVarHolder h = this.varByName.get(varName);
-		if(h == null)
-			return Optional.empty();
-		return Optional.of(h);
+	public Optional<JvmLocalVariable> getVarByName(String varName) {
+		JvmLocalVariable locVar = this.varByName.get(varName);
+		return Optional.ofNullable(locVar);
 	}
 
 	@Override
@@ -194,10 +182,12 @@ public class JvmScope {
 				subScopes.stream().map(sc->sc.toString()).collect(Collectors.joining(", ", "[", "]")) ;
 	}
 
-	public IndexedScope indexedScope(DescriptorFactory descriptorFactory) {
-		return new IndexedScope(descriptorFactory, this, 0);
+	public void writeLocalVariableStatements(ClassWriter classWriter, MethodVisitor mv) {
+		IndexedScope iscope = new IndexedScope(descriptorFactory, this, 0);
+		iscope.writeLocalVariableStatements(classWriter, mv);
 	}
-	public List<LocalVarHolder> getLocVarsStmts() {
+	
+	public List<JvmLocalVariable> getLocVarsStmts() {
 		return locVarsStmts;
 	}
 }

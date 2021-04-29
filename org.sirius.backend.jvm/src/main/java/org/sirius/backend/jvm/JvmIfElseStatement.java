@@ -52,7 +52,7 @@ public class JvmIfElseStatement implements JvmStatement {
 		Statement ifStmt = statement.getIfStatement();
 		Optional<Statement> elseStmt = statement.getElseStatement();
 
-		new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, expr, scope);
+		new JvmExpression(reporter, descriptorFactory, expr).writeExpressionBytecode(mv, scope);
 		// -- IFEQ
 
 		Label endifLabel = new Label();

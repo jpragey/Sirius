@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
-import org.sirius.backend.jvm.JvmScope.LocalVarHolder;
+import org.sirius.backend.jvm.JvmScope.JvmLocalVariable;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
@@ -76,7 +76,7 @@ public class JvmMemberFunction {
 		} else {
 			// -- manage first param and recurse
 			FunctionFormalArgument param = remainingParams.remove(0);
-			LocalVarHolder varHolder = scope.addFunctionArgument(param);
+			JvmLocalVariable varHolder = scope.addFunctionArgument(param);
 			
 			writeFunctionContent(classWriter, mv, remainingParams);
 		}

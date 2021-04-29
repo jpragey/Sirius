@@ -26,11 +26,11 @@ public class JvmReturnStatement implements JvmStatement {
 	}
 
 	@Override
-	public void writeBytecode(ClassWriter classWriter/*, MemberFunction declaration*/, MethodVisitor mv /*, ReturnStatement statement, JvmScope scope*/) {
+	public void writeBytecode(ClassWriter classWriter, MethodVisitor mv) {
 
 		// -- write return expression
-		JvmExpression expr = new JvmExpression(reporter, descriptorFactory);
-		expr.writeExpressionBytecode(mv, statement.getExpression(), scope);
+		JvmExpression expr = new JvmExpression(reporter, descriptorFactory, statement.getExpression());
+		expr.writeExpressionBytecode(mv, scope);
 
 		// -- write return
 		org.sirius.frontend.api.Type type = statement.getExpressionType();

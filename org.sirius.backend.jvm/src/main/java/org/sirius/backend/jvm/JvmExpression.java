@@ -33,16 +33,17 @@ public class JvmExpression {
 
 	private Reporter reporter;
 	private DescriptorFactory descriptorFactory;
-
+	private Expression expression;
 	
 	
-	public JvmExpression(Reporter reporter, DescriptorFactory descriptorFactory) {
+	public JvmExpression(Reporter reporter, DescriptorFactory descriptorFactory, Expression expression) {
 		super();
 		this.reporter = reporter;
 		this.descriptorFactory = descriptorFactory;
+		this.expression = expression;
 	}
 
-	public void writeExpressionBytecode(MethodVisitor mv, Expression expression, JvmScope scope) {
+	public void writeExpressionBytecode(MethodVisitor mv, JvmScope scope) {
 		if(expression instanceof FunctionCall) {
 			FunctionCall call = (FunctionCall)expression;
 			processFunctionCall(mv, call, scope);
@@ -109,13 +110,13 @@ public class JvmExpression {
 			QName srcQName = ((ClassType)sourceType).getQName();
 			QName targetQName = ((ClassType)targetType).getQName();
 			if(srcQName .equals(targetQName)) {
-				new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, sourceExpr, scope);
+				new JvmExpression(reporter, descriptorFactory, sourceExpr).writeExpressionBytecode(mv, scope);
 				return;
 			}
 		}
 		
 		if(sourceType.equals(targetType)) {
-			new JvmExpression(reporter, descriptorFactory).writeExpressionBytecode(mv, sourceExpr, scope);
+			new JvmExpression(reporter, descriptorFactory, sourceExpr).writeExpressionBytecode(mv, scope);
 		} else {
 			reporter.warning("??? TypeCast (TODO)" + sourceType + " into " + targetType );
 		}
@@ -149,8 +150,14 @@ public class JvmExpression {
 		mv.visitInsn(opcode);
 	}
 	private void processBinaryOpExpression(MethodVisitor mv, BinaryOpExpression expression, JvmScope scope) {
-		writeExpressionBytecode(mv, expression.getLeft(), scope);
-		writeExpressionBytecode(mv, expression.getRight(), scope);
+		JvmExpression leftExpr  = new JvmExpression(reporter, descriptorFactory, expression.getLeft());
+		JvmExpression rightExpr = new JvmExpression(reporter, descriptorFactory, expression.getRight());
+		
+		leftExpr .writeExpressionBytecode(mv, scope);
+		rightExpr.writeExpressionBytecode(mv, scope);
+
+//		writeExpressionBytecode(mv, expression.getLeft(), scope);
+//		writeExpressionBytecode(mv, expression.getRight(), scope);
 		
 		BinaryOpExpression.Operator operator = expression.getOperator();
 		String opFuncName;
@@ -172,9 +179,9 @@ public class JvmExpression {
 		}
 		
 		mv.visitMethodInsn(
-				INVOKEVIRTUAL,	// opcode 
-				"sirius/lang/Integer", // owner "java/io/PrintStream", 
-				opFuncName, //"println", 
+				INVOKEVIRTUAL,			// opcode 
+				"sirius/lang/Integer", 	// owner "java/io/PrintStream", 
+				opFuncName, 			//"println", 
 				"(Lsirius/lang/Integer;)Lsirius/lang/Integer;", // descriptor,	// "(Ljava/lang/String;)V",	// method descriptor 
 				false /*isInterface*/);
 
@@ -193,7 +200,7 @@ public class JvmExpression {
 			
 		} else {
 
-			assert(type instanceof ClassType /*ClassDeclaration*/);
+			assert(type instanceof ClassType);
 			String internalName = Util.classInternalName((ClassType)type);
 
 			mv.visitTypeInsn(NEW, internalName);
@@ -205,7 +212,8 @@ public class JvmExpression {
 
 	public void processValueAccessExpression(MethodVisitor mv, MemberValueAccessExpression expression, JvmScope scope) {
 		Expression containerExpr = expression.getContainerExpression();
-		writeExpressionBytecode(mv, containerExpr, scope);
+		JvmExpression jvmContainerExpr = new JvmExpression(reporter, descriptorFactory, containerExpr);
+		jvmContainerExpr.writeExpressionBytecode(mv, scope);
 		
 		Type containerType = containerExpr.getType();
 		MemberValue memberValue = expression.getMemberValue();
@@ -223,40 +231,29 @@ public class JvmExpression {
 	public void processLocalVariableReference(MethodVisitor mv, LocalVariableReference varRef, JvmScope scope) {
 		
 		String varName = varRef.getName().getText();
-		Type type = varRef.getType();
 		
-		Optional<JvmScope.LocalVarHolder> h = scope.getVarByName(varName);
-		if(h.isEmpty()) {
+		Optional<JvmScope.JvmLocalVariable> jvmLocalVar = scope.getVarByName(varName);
+		jvmLocalVar.ifPresentOrElse( (locVar) -> {
+			Type type = varRef.getType();
+			int varIndex = locVar.getIndex();
+
+			if(type instanceof IntegerType) {
+				mv.visitVarInsn(Opcodes.ALOAD, varIndex);
+			} else  if(type instanceof ClassType) {
+				mv.visitVarInsn(Opcodes.ALOAD, varIndex);
+			} else {
+				mv.visitVarInsn(Opcodes.ILOAD, varIndex);
+			}
+			
+		}, ()->{
 			reporter.error("(JVM backend): Internal error: local variable not found: " + varName, varRef.getName());
-			return;
-		}
-		
-		int varIndex = h.get().getIndex();
-
-		if(type instanceof IntegerType) {
-			mv.visitVarInsn(Opcodes.ALOAD, varIndex);
-		} else  if(type instanceof ClassType) {
-			mv.visitVarInsn(Opcodes.ALOAD, varIndex);
-		} else {
-			mv.visitVarInsn(Opcodes.ILOAD, varIndex);
-		}
-
+		});
 	}
 
 	private void processFunctionCall(MethodVisitor mv, FunctionCall call, JvmScope scope) {
 		String funcName = call.getFunctionName().getText();
-		
-//		if(funcName.equals("println")) {
-//			mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-//
-//			for(Expression argExpr:call.getArguments()) {
-//				writeExpressionBytecode(mv, argExpr, scope);
-//			}
-//
-//			mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false /*isInterface*/);
-//		} else {
-			
-			AbstractFunction func = call.getDeclaration().get();	// TODO: check for absence
+
+		AbstractFunction func = call.getDeclaration().get();	// TODO: check for absence
 			if(func.getClassOrInterfaceContainerQName().isPresent()) {
 			}
 			int invokeOpcode;
@@ -267,18 +264,16 @@ public class JvmExpression {
 			}
 			
 			for(Expression expr: call.getArguments()) {
-//System.out.println("-------------------");
-				writeExpressionBytecode(mv, expr, scope);
-//System.out.println("-------------------");
+				JvmExpression jvmExpr = new JvmExpression(reporter, descriptorFactory, expr);
+				jvmExpr.writeExpressionBytecode(mv, scope);
 			}
 
 			Optional<AbstractFunction> topLevelFunc = call.getDeclaration();
 			if(topLevelFunc.isPresent()) {
 				String methodDescriptor = descriptorFactory.methodDescriptor(topLevelFunc.get());
-//				String owner = "$package$";		// owner "java/io/PrintStream",;
 				Optional<QName> optContainerQName = func.getClassOrInterfaceContainerQName();
 				
-				String owner;
+				String owner;	// eg "org/sirius/backend/jvm/bridge/TopLevel"
 				if(optContainerQName.isPresent()) {
 					QName containerQName = optContainerQName.get();
 					owner = containerQName.getStringElements().stream().collect(Collectors.joining("/"));

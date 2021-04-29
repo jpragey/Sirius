@@ -33,6 +33,7 @@ class ScopeManager {
 	}
 
 	public void writeLocalVariables(ClassWriter classWriter, MethodVisitor mv) {
-		rootScope.indexedScope(descriptorFactory).writeLocalVariableStatements(classWriter, mv);
+//		rootScope.indexedScope(descriptorFactory).writeLocalVariableStatements(classWriter, mv);
+		rootScope.writeLocalVariableStatements(classWriter, mv);
 	}
 }

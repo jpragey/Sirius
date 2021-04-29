@@ -29,13 +29,13 @@ public class JvmStatementBlock implements JvmStatement {
 	}
 
 	// -- Write var init code at the start of function/block bytecode
-	private void writeLocalVarsInitCode(JvmScope.LocalVarHolder h, MethodVisitor mv, JvmScope scope) {
+	private void writeLocalVarsInitCode(JvmScope.JvmLocalVariable h, MethodVisitor mv, JvmScope scope) {
 		int locvarIndex = h.getIndex();
 		Optional<Expression> optInitExp = h.getInitExp();
 		if(optInitExp.isPresent()) {
 			Expression initExpr = optInitExp.get();
-			JvmExpression jvmExpr = new JvmExpression(reporter, descriptorFactory);
-			jvmExpr.writeExpressionBytecode(mv, initExpr, scope);
+			JvmExpression jvmExpr = new JvmExpression(reporter, descriptorFactory, initExpr);
+			jvmExpr.writeExpressionBytecode(mv, scope);
 
 			mv.visitVarInsn(Opcodes.ASTORE, locvarIndex);
 
@@ -56,7 +56,7 @@ public class JvmStatementBlock implements JvmStatement {
 			}
 		}
 		// Write local var init code
-		for(JvmScope.LocalVarHolder h: scope.getLocVarsStmts()) {
+		for(JvmScope.JvmLocalVariable h: scope.getLocVarsStmts()) {
 			writeLocalVarsInitCode(h, mv, scope);
 		}
 
