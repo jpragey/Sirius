@@ -21,26 +21,18 @@ public class JvmPackage {
 		super();
 		this.reporter = reporter;
 		this.packageDeclaration = packageDeclaration;
-//		this.packageClass = new JvmClass(reporter, packageDeclaration, backendOptions);
-		this.packageClass = JvmClass.createPackageClass(reporter, packageDeclaration, backendOptions);
+		DescriptorFactory descriptorFactory = new DescriptorFactory(reporter);
+		this.packageClass = JvmClass.createPackageClass(reporter, packageDeclaration, backendOptions, descriptorFactory,
+				retainOnlyAllArgsFunctions(packageDeclaration.getFunctions())  // TODO: remove ???
+				);
 		this.backendOptions = backendOptions;
 
 		jvmClasses.add(this.packageClass);
 		for(ClassType cd: packageDeclaration.getClasses()) {
-			jvmClasses.add(new JvmClass(reporter, cd, backendOptions));
-
-//			if(Util.debugMainClass)
-//				jvmClasses.add(debugJvmMainClass(reporter, backendOptions));
+			jvmClasses.add(new JvmClass(reporter, cd, backendOptions, descriptorFactory));
 		}
 		for(ClassType id: packageDeclaration.getInterfaces()) {
-			jvmClasses.add(new JvmClass(reporter, id, backendOptions));
-		}
-
-		Collection<AbstractFunction> packageFuncs = packageDeclaration.getFunctions();
-		packageFuncs = retainOnlyAllArgsFunctions(packageFuncs);	// TODO: remove
-
-		for(AbstractFunction func: packageFuncs) {
-			packageClass.addTopLevelFunction(func);
+			jvmClasses.add(new JvmClass(reporter, id, backendOptions, descriptorFactory));
 		}
 	}
 

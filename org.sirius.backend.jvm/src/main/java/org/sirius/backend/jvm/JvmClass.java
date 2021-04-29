@@ -6,8 +6,10 @@ import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
 import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
@@ -24,52 +26,51 @@ public class JvmClass {
 	private Reporter reporter;
 	private QName qName;
 
-	private List<String> definedClasses = new ArrayList<>();
 	private DescriptorFactory descriptorFactory = new DescriptorFactory(reporter);
 	
-	private ArrayList<JvmMemberFunction> memberFunctions = new ArrayList<>();
+	private List<JvmMemberFunction> memberFunctions;
+	private List<JvmMemberValue> memberValues;
 	
-	private ArrayList<JvmMemberValue> memberValues = new ArrayList<>();
 	private BackendOptions backendOptions;
 	
-	public JvmClass(Reporter reporter, QName qName, BackendOptions backendOptions) {
+	public JvmClass(Reporter reporter, QName qName, BackendOptions backendOptions, DescriptorFactory descriptorFactory, 
+			List<JvmMemberFunction> memberFunctions, List<JvmMemberValue> memberValues) {
 		super();
 		this.reporter = reporter;
 		this.qName = qName;
 		this.backendOptions = backendOptions;
+		this.descriptorFactory = descriptorFactory;
+		this.memberFunctions = memberFunctions;
+		this.memberValues = memberValues;
 	}
 	
-	public JvmClass(Reporter reporter, ClassType cd, BackendOptions backendOptions) {
-		this(reporter, cd.getQName(), backendOptions);
-		addMemberFunctions(cd);
-		addMemberValues(cd);
+	public JvmClass(Reporter reporter, QName qName, BackendOptions backendOptions, DescriptorFactory descriptorFactory) {
+		this(reporter, qName, backendOptions, descriptorFactory, List.<JvmMemberFunction>of(), List.<JvmMemberValue>of());
 	}
 	
-	// For Package class
-//	public JvmClass(Reporter reporter, PackageDeclaration pd, BackendOptions backendOptions) {
-//		this(reporter, pd.getQName().child(Util.jvmPackageClassName), backendOptions);
+	public JvmClass(Reporter reporter, ClassType cd, BackendOptions backendOptions, DescriptorFactory descriptorFactory) {
+		this(reporter, cd.getQName(), backendOptions, descriptorFactory,
+				cd.getFunctions().stream()
+					.map(mf -> new JvmMemberFunction(reporter, backendOptions,  descriptorFactory, mf, false /*isStatic*/))
+					.collect(Collectors.toUnmodifiableList()), 
+				cd.getMemberValues().stream()
+					.map((mv) -> new JvmMemberValue(mv, descriptorFactory, reporter))
+					.collect(Collectors.toUnmodifiableList())
+				);
+	}
+	
+	public static JvmClass createPackageClass(Reporter reporter, PackageDeclaration pd, BackendOptions backendOptions, DescriptorFactory descriptorFactory,
+			Collection<AbstractFunction> packageFuncs) {
+		return new JvmClass(reporter, pd.getQName().child(Util.jvmPackageClassName), backendOptions, descriptorFactory,
+				packageFuncs.stream()
+					.map(func->new JvmMemberFunction(reporter, backendOptions,descriptorFactory,func, true /*isStatic*/))
+					.collect(Collectors.toUnmodifiableList()), 
+					List.<JvmMemberValue>of());
+	}
+	
+//	public void addTopLevelFunction(AbstractFunction func) {
+//		memberFunctions.add(new JvmMemberFunction(reporter, backendOptions, descriptorFactory, func, true /*isStatic*/));
 //	}
-
-	public static JvmClass createPackageClass(Reporter reporter, PackageDeclaration pd, BackendOptions backendOptions) {
-		return new JvmClass(reporter, pd.getQName().child(Util.jvmPackageClassName), backendOptions);
-	}
-	
-	private void addMemberValues(ClassType cd) {
-		for(MemberValue mv: cd.getMemberValues()) {
-			JvmMemberValue jvmMv = new JvmMemberValue(mv, descriptorFactory, reporter);
-			this.memberValues.add(jvmMv);
-		}
-	}
-	
-	private void addMemberFunctions(ClassType cd) {
-		for(AbstractFunction mf: cd.getFunctions())
-			memberFunctions.add(new JvmMemberFunction(reporter, backendOptions,  descriptorFactory, mf, false /*isStatic*/));
-	}
-	
-	public void addTopLevelFunction(AbstractFunction func) {
-		memberFunctions.add(new JvmMemberFunction(reporter, backendOptions, descriptorFactory, func, true /*isStatic*/));
-		
-	}
 	
 	@Override
 	public String toString() {
@@ -100,16 +101,13 @@ public class JvmClass {
 	}
 
 	public void visitBytecode(List<ClassWriterListener> listeners) {
+		Bytecode bytecode = createBytecode();
 		for(ClassWriterListener l: listeners) {
-			Bytecode bytecode = createBytecode();
 			l.addByteCode(bytecode);
 		}
 	}
 	
 	public Bytecode createBytecode() {
-
-		String clssQname = qName.dotSeparated();
-		this.definedClasses.add(clssQname);
 
 		ClassWriter classWriter = new ClassWriter(
 				ClassWriter.COMPUTE_FRAMES | // No need to 
