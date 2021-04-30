@@ -51,7 +51,7 @@ public class JvmModule {
 		}
 	}
 	
-	private void addModuleDeclaration(List<ClassWriterListener> listeners) {
+	private void writeModuleDeclaratorBytecode(List<ClassWriterListener> listeners) {
 		QName classQname = new QName("module-info");
 		String moduleQname = moduleDeclaration.getQName().dotSeparated();
 		
@@ -104,7 +104,7 @@ public class JvmModule {
 	public void createByteCode(List<ClassWriterListener> listeners) {
 		listeners.forEach(l -> l.start(moduleDeclaration));
 
-		addModuleDeclaration(listeners);
+		writeModuleDeclaratorBytecode(listeners);
 
 		for(JvmPackage pd: jvmPackages) {
 			pd.createByteCode(listeners);
@@ -113,6 +113,15 @@ public class JvmModule {
 		listeners.forEach(l -> l.end());
 	}
 	
+	
+	public List<JvmPackage> getJvmPackages() {
+		return jvmPackages;
+	}
+
+	public void setJvmPackages(ArrayList<JvmPackage> jvmPackages) {
+		this.jvmPackages = jvmPackages;
+	}
+
 	@Override
 	public String toString() {
 		return this.moduleDeclaration.toString();

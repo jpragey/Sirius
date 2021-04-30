@@ -176,5 +176,14 @@ public class JvmClass {
 		mv.visitEnd();
 	}
 
+	public List<JvmMemberFunction> getMemberFunctions() {
+		return memberFunctions;
+	}
+
+	public List<JvmMemberValue> getMemberValues() {
+		return memberValues;
+	}
+
+	
 }
 

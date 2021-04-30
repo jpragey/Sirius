@@ -24,8 +24,9 @@ class CodeTreeBuilder implements Visitor {
 		this.nodeModule = new JvmModule(reporter, declaration, backendOptions);
 	}
 
-	public void createByteCode(List<ClassWriterListener> listeners) {
+	public JvmModule createByteCode(List<ClassWriterListener> listeners) {
 		nodeModule.createByteCode(listeners);
+		return nodeModule;
 	}
 
 	@Override

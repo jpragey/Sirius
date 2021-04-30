@@ -125,7 +125,10 @@ public class JvmScope {
 		public String getLocalVarName() {
 			return localVarName;
 		}
-		
+		@Override
+		public String toString() {
+			return "[" + index + "]" + this.localVarName;
+		}
 	}
 	
 	private List<JvmLocalVariable> locVarsStmts = new ArrayList<>();

@@ -5,15 +5,21 @@ import java.util.Optional;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 
-class ScopeManager {
+public class ScopeManager {
 	private JvmScope currentScope ;
 	private DescriptorFactory descriptorFactory;
 	private JvmScope rootScope;
 	
-	public ScopeManager(DescriptorFactory descriptorFactory) {
+	public ScopeManager(DescriptorFactory descriptorFactory, JvmScope rootScope) {
 		this.descriptorFactory = descriptorFactory;
-		this.rootScope = new JvmScope(descriptorFactory, Optional.empty(), "<root>");
+		this.rootScope = rootScope;
 		this.currentScope = this.rootScope;
+	}
+	public ScopeManager(DescriptorFactory descriptorFactory) {
+		this(descriptorFactory, new JvmScope(descriptorFactory, Optional.empty(), "<root>"));
+//		this.descriptorFactory = descriptorFactory;
+//		this.rootScope = new JvmScope(descriptorFactory, Optional.empty(), "<root>");
+//		this.currentScope = this.rootScope;
 	}
 	
 	@Override
@@ -36,4 +42,5 @@ class ScopeManager {
 //		rootScope.indexedScope(descriptorFactory).writeLocalVariableStatements(classWriter, mv);
 		rootScope.writeLocalVariableStatements(classWriter, mv);
 	}
+	
 }

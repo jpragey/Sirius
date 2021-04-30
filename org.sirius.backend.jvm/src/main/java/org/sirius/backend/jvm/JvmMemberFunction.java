@@ -26,15 +26,17 @@ public class JvmMemberFunction {
 	private Reporter reporter;
 	private BackendOptions backendOptions;
 
-	
+//	private JvmScope containerScope;
 	private ScopeManager scopeManager;
 
-	public JvmMemberFunction(Reporter reporter, BackendOptions backendOptions, DescriptorFactory descriptorFactory, AbstractFunction memberFunction, boolean isStatic) {
+	public JvmMemberFunction(Reporter reporter, BackendOptions backendOptions, DescriptorFactory descriptorFactory, AbstractFunction memberFunction,
+			/*JvmScope containerScope,*/ boolean isStatic) {
 		super();
 		this.reporter = reporter;
 		this.backendOptions = backendOptions;
 		this.descriptorFactory = descriptorFactory;
 		this.memberFunction = memberFunction;
+//		this.containerScope = containerScope;
 		this.isStatic = isStatic;
 
 		this.scopeManager = new ScopeManager(descriptorFactory);
@@ -47,6 +49,11 @@ public class JvmMemberFunction {
 //		Expression expression = statement.getExpression();
 //		jvmExpression.writeExpressionBytecode(mv, expression, scope);
 //	}
+
+	public ScopeManager getScopeManager() {
+		return scopeManager;
+	}
+
 
 	/** simulate "return ;"
 	 *  
@@ -182,5 +189,8 @@ public class JvmMemberFunction {
 		return memberFunction.getQName().dotSeparated() + 
 				"(" + memberFunction.getArguments().size() + " params)";
 	}
-	
+
+	public QName getQName() {
+		return memberFunction.getQName(); 
+	}
 }

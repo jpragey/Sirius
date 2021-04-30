@@ -45,7 +45,7 @@ public class JvmStatementBlock implements JvmStatement {
 	@Override
 	public void writeBytecode(ClassWriter classWriter, MethodVisitor mv) {
 
-		JvmScope scope = scopeManager.enterNewScope("{block}");
+		JvmScope scope = scopeManager.enterNewScope("{block}" /*for debugging*/);
 
 
 		// Collect local variables to generate initialization code

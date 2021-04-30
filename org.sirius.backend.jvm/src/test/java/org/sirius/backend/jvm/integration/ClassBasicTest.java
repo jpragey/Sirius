@@ -1,8 +1,13 @@
 package org.sirius.backend.jvm.integration;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.BackendOptions;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
 import org.sirius.backend.jvm.JvmBackend;
+import org.sirius.backend.jvm.JvmMemberFunction;
+import org.sirius.backend.jvm.JvmModule;
+import org.sirius.backend.jvm.JvmPackage;
 import org.sirius.backend.jvm.Util;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
@@ -219,7 +227,18 @@ public class ClassBasicTest {
 		
 		backend.addFileOutput("/tmp/siriusTmp/module", Optional.of("/tmp/siriusTmp/classes"));
 		
-		backend.process(session);
+//		backend.process(session);
+		List<JvmModule> jvmModules = backend.jvmProcess(session);
+		assertThat(jvmModules, hasSize(1));
+
+		assertThat(jvmModules.get(0).getJvmPackages(), hasSize(1));
+		JvmPackage jvmPackage = jvmModules.get(0).getJvmPackages().get(0);
+
+		assertThat(jvmPackage.getPackageClass().getMemberFunctions(), hasSize(1));
+		JvmMemberFunction jvmMainFunc = jvmPackage.getPackageClass().getMemberFunctions().get(0);		// TODO: rename getMemberFunctions => getFunctions (not always member !)
+		assertThat(jvmMainFunc.getQName().dotSeparated(), is("main"));
+		
+		
 		
 		ClassLoader classLoader = l.getClassLoader();
 		

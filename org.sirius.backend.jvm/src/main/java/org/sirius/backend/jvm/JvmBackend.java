@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.sirius.backend.core.Backend;
 import org.sirius.common.core.QName;
@@ -60,25 +61,31 @@ public class JvmBackend implements Backend {
 	
 	@Override
 	public void process(Session session) {
+		List<JvmModule> ignored = jvmProcess(session);
+		
+	}
+	public List<JvmModule> jvmProcess(Session session) {
 //		processSDK();
 		printIfVerbose("JVM: starting session, nb of modules: " + session.getModuleDeclarations().size());
-		session.getModuleDeclarations().stream().forEach(this::processModule);
+		List<JvmModule> modules = session.getModuleDeclarations().stream().map(this::processModule).collect(Collectors.toList());
 		
 		backendOptions.checkAllJvmMainBytecodeWritten();
+		
+		return modules;
 	}
 	
-	private void processModule(ModuleDeclaration declaration) {
-		printIfVerbose("Jvm: processing module " + declaration);
+	private JvmModule processModule(ModuleDeclaration moduleDeclaration) {
+		printIfVerbose("Jvm: processing module " + moduleDeclaration);
 
-		listeners.forEach(l ->  l.start(declaration) );
+		listeners.forEach(l ->  l.start(moduleDeclaration) );
 
 
 		CodeTreeBuilder codeTreeBuilder = new CodeTreeBuilder(reporter, backendOptions);
-		declaration.visitMe(codeTreeBuilder);
-		codeTreeBuilder.createByteCode(listeners);
+		moduleDeclaration.visitMe(codeTreeBuilder);
+		JvmModule jvmModule = codeTreeBuilder.createByteCode(listeners);
 		
 		listeners.forEach(ClassWriterListener::end);
-
+		return jvmModule;
 	}
 	
 }

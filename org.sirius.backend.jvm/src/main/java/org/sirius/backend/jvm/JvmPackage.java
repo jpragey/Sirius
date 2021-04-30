@@ -56,5 +56,15 @@ public class JvmPackage {
 		for(JvmClass c: jvmClasses) {
 			c.visitBytecode(listeners);
 		}
-	}		
+	}
+
+	public ArrayList<JvmClass> getJvmClasses() {
+		return jvmClasses;
+	}
+
+	public JvmClass getPackageClass() {
+		return packageClass;
+	}
+	
+	
 }
