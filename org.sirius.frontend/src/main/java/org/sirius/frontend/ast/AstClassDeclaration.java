@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.Token;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ClassType;
+import org.sirius.frontend.api.ExecutionEnvironment;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.ClassDeclarationImpl;
@@ -282,7 +283,9 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			List<MemberValue> memberValues =  valueDeclarations.stream()
 					.map(v->v.getMemberValue())
 					.collect(Collectors.toList());
-			classDeclarationImpl =  new ClassDeclarationImpl(qName, getAllFunctions(), memberValues, interfaces);
+			Optional<ExecutionEnvironment> execEnv = Optional.empty();	// TODO ???
+			
+			classDeclarationImpl =  new ClassDeclarationImpl(qName, getAllApiMemberFunctions() /* getAllFunctions()*/, memberValues, interfaces, execEnv);
 		}
 		return classDeclarationImpl;
 	}

@@ -1,6 +1,7 @@
 package org.sirius.frontend.api;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.core.Token;
@@ -28,6 +29,10 @@ public interface StringConstantExpression extends Expression {
 		@Override
 		public List<AbstractFunction> getFunctions() {
 			return List.of();
+		}
+		@Override
+		public Optional<ExecutionEnvironment> getExecutionEnvironment() {
+			return Optional.empty();
 		}
 
 	};

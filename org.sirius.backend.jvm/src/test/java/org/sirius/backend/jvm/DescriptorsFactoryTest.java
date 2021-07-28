@@ -3,6 +3,7 @@ package org.sirius.backend.jvm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
+import org.sirius.frontend.api.ExecutionEnvironment;
 import org.sirius.frontend.api.MemberValue;
 
 public class DescriptorsFactoryTest {
@@ -49,6 +51,10 @@ public class DescriptorsFactoryTest {
 		@Override
 		public List<AbstractFunction> getFunctions() {
 			return List.of();
+		}
+		@Override
+		public Optional<ExecutionEnvironment> getExecutionEnvironment() {
+			return Optional.empty();
 		}
 
 	}

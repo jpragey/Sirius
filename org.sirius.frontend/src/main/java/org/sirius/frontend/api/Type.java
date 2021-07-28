@@ -1,5 +1,7 @@
 package org.sirius.frontend.api;
 
+import java.util.Optional;
+
 public interface Type {
 
 	public static IntegerType integerType = new IntegerType() {
@@ -10,6 +12,11 @@ public interface Type {
 		@Override
 		public String toString() {
 			return "Type.integerType";
+		}
+
+		@Override
+		public Optional<ExecutionEnvironment> getExecutionEnvironment() {
+			return Optional.empty();
 		}
 	};
 	public static FloatType floatType = new FloatType() {

@@ -2,11 +2,13 @@ package org.sirius.frontend.apiimpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.sirius.common.core.MapOfList;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
+import org.sirius.frontend.api.ExecutionEnvironment;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.ast.FunctionDefinition;
@@ -50,5 +52,10 @@ public class InterfaceDeclarationImpl implements ClassType {
 	@Override
 	public boolean isAncestorOrSame(Type type) {
 		throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
+	}
+	
+	@Override
+	public Optional<ExecutionEnvironment> getExecutionEnvironment() {
+		return Optional.empty();// TODO ???
 	}
 }

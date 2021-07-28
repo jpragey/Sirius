@@ -1,6 +1,7 @@
 package org.sirius.frontend.api;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.sirius.common.core.QName;
 /** Class or interface
@@ -14,6 +15,12 @@ public interface ClassType extends Type {
 	List<AbstractFunction> getFunctions();
 
 	QName getQName();
+	
+	/** Return the ExecutionEnvironment if class is callable.
+	 * 
+	 * @return
+	 */
+	Optional<ExecutionEnvironment> getExecutionEnvironment();
 	
 	default void visitContent(Visitor visitor) {
 		

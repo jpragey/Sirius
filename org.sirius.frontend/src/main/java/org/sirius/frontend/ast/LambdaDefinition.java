@@ -8,6 +8,7 @@ import org.sirius.common.core.MapOfList;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
+import org.sirius.frontend.api.ExecutionEnvironment;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Statement;
@@ -87,10 +88,12 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 
 	private ClassType toFunctionObjectAPI(QName lambdaQName) {
 		QName lambdaClassQName = lambdaQName;
-		MapOfList<QName, FunctionDefinition> allFctMap = new MapOfList<>(); 	// TODO
+//		MapOfList<QName, FunctionDefinition> allFctMap = new MapOfList<>(); 	// TODO
+		List<AbstractFunction> allFct = List.of(); // TODO
 		List<MemberValue> valueDeclarations = List.of();	// TODO
 		List<AstInterfaceDeclaration> interfaces = List.of();	// TODO
-		ClassDeclarationImpl classImpl = new ClassDeclarationImpl(lambdaClassQName, allFctMap, valueDeclarations, interfaces);
+		Optional<ExecutionEnvironment> execEnv = Optional.empty();	// TODO ???
+		ClassDeclarationImpl classImpl = new ClassDeclarationImpl(lambdaClassQName, allFct, valueDeclarations, interfaces, execEnv);
 
 		return classImpl;
 	}
