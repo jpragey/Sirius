@@ -46,6 +46,18 @@ public class Bytecode {
 	public QName getClassQName() {
 		return classQName;
 	}
+	/** Return class name used by JVM classloaders (dot separeted, with \$ for inner classes)
+	 * Note that inner classes are not supported yet.
+	 *  From the JLS doc, examples of valid class names include:
+     *  "java.security.KeyStore$Builder$FileBuilder$1"
+	 * @return the binary class name
+	 */
+	public String getBinaryClassName() {
+		String bcn = classQName.dotSeparated();
+		// Inner classes not supported yet
+		assert(!bcn.contains("$"));
+		return bcn;
+	}
 
 	/** */
 	public void createClassFiles(Reporter reporter, String classDir, QName classQName) {

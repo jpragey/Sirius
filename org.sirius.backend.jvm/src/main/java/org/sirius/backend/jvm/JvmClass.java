@@ -21,6 +21,12 @@ import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.PackageDeclaration;
 
+/** Class in JVM sense.
+ * Translates to a new {@link Bytecode} using a new ASM {@link ClassWriter}, with "<init>()" method.
+ * 
+ * @author jpragey
+ *
+ */
 public class JvmClass {
 	
 	private Reporter reporter;
@@ -44,10 +50,6 @@ public class JvmClass {
 		this.memberValues = memberValues;
 	}
 	
-	public JvmClass(Reporter reporter, QName qName, BackendOptions backendOptions, DescriptorFactory descriptorFactory) {
-		this(reporter, qName, backendOptions, descriptorFactory, List.<JvmMemberFunction>of(), List.<JvmMemberValue>of());
-	}
-	
 	public JvmClass(Reporter reporter, ClassType cd, BackendOptions backendOptions, DescriptorFactory descriptorFactory) {
 		this(reporter, cd.getQName(), backendOptions, descriptorFactory,
 				cd.getFunctions().stream()
@@ -67,10 +69,6 @@ public class JvmClass {
 					.collect(Collectors.toUnmodifiableList()), 
 					List.<JvmMemberValue>of());
 	}
-	
-//	public void addTopLevelFunction(AbstractFunction func) {
-//		memberFunctions.add(new JvmMemberFunction(reporter, backendOptions, descriptorFactory, func, true /*isStatic*/));
-//	}
 	
 	@Override
 	public String toString() {
@@ -183,7 +181,6 @@ public class JvmClass {
 	public List<JvmMemberValue> getMemberValues() {
 		return memberValues;
 	}
-
 	
 }
 

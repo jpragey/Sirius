@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,4 +114,19 @@ public class FunctionTest {
 		assertThat(result, is(54));
 	}
 
+}
+
+class Main {
+	public static float caller(Function<Integer, Float> callback) {
+		return callback.apply(42);
+	}
+
+		public static void main(String[] args) {
+	
+	
+			System.out.println("Hello world");
+			
+			caller(parm -> 666.0f);
+
+		}
 }

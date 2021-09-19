@@ -6,13 +6,6 @@ import org.sirius.frontend.symbols.SymbolTable;
 
 public class AstVoidType implements AstType {
 
-	private static VoidType voidType = new VoidType() {
-		@Override
-		public boolean isAncestorOrSame(Type type) {
-			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-		}
-	};
-
 	public static final AstVoidType instance = new AstVoidType();
 	
 	@Override
@@ -21,8 +14,8 @@ public class AstVoidType implements AstType {
 	}
 
 	@Override
-	public VoidType getApiType() {
-		return voidType;
+	public Type getApiType() {
+		return Type.voidType;
 	}
 
 	@Override

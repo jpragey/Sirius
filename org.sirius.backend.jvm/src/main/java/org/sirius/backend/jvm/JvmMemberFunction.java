@@ -21,6 +21,8 @@ import org.sirius.frontend.api.Statement;
 
 public class JvmMemberFunction {
 	private AbstractFunction memberFunction;
+	private QName functionQName;
+	
 	private boolean isStatic;
 	private DescriptorFactory descriptorFactory;
 	private Reporter reporter;
@@ -36,6 +38,7 @@ public class JvmMemberFunction {
 		this.backendOptions = backendOptions;
 		this.descriptorFactory = descriptorFactory;
 		this.memberFunction = memberFunction;
+		this.functionQName = memberFunction.getQName();
 //		this.containerScope = containerScope;
 		this.isStatic = isStatic;
 
@@ -68,7 +71,7 @@ public class JvmMemberFunction {
 
 	private void writeFunctionContent(ClassWriter classWriter, MethodVisitor mv, List<FunctionFormalArgument> remainingParams) {
 		JvmScope scope = scopeManager.enterNewScope(
-				this.memberFunction.getQName().getLast() +
+				this.functionQName.getLast() +
 				"-" + remainingParams.size() + "-args"
 				);
 		
@@ -111,8 +114,7 @@ public class JvmMemberFunction {
 			int invokeOpcode = INVOKESTATIC;
 			String methodDescriptor = "()V";
 			
-			Optional<QName> parentQName = memberFunction
-					.getQName()
+			Optional<QName> parentQName = functionQName
 					.parent();
 			assert(parentQName.isPresent());
 			String owner = parentQName.get()
@@ -145,12 +147,12 @@ public class JvmMemberFunction {
 	 */
 	public void writeBytecode(ClassWriter classWriter) {
 
-		QName functionQName = memberFunction.getQName();
+//		QName functionQName = memberFunction.getQName();
 		
 		String functionName = functionQName.getLast();
 		Optional<List<Statement>> optBody = memberFunction.getBodyStatements();
 		if(optBody.isEmpty()) {
-			reporter.error("Can't generate bytecode for function " + memberFunction.getQName().dotSeparated() + ", body is missing."); // TODO add function location to message
+			reporter.error("Can't generate bytecode for function " + functionQName.dotSeparated() + ", body is missing."); // TODO add function location to message
 		}
 
 		String functionDescriptor = descriptorFactory.methodDescriptor(memberFunction);	// eg (Ljava/lang/String;)V
@@ -162,7 +164,7 @@ public class JvmMemberFunction {
 				null /* String signature */,
 				null /* String[] exceptions */);
 
-		JvmScope scope = scopeManager.enterNewScope(this.memberFunction.getQName().getLast());
+		JvmScope scope = scopeManager.enterNewScope(this.functionQName.getLast());
 		
 		
 		List<FunctionFormalArgument> currentArgs = new ArrayList<>(memberFunction.getArguments()); // TODO: shouldn't be mutable
@@ -186,11 +188,11 @@ public class JvmMemberFunction {
 	
 	@Override
 	public String toString() {
-		return memberFunction.getQName().dotSeparated() + 
+		return functionQName.dotSeparated() + 
 				"(" + memberFunction.getArguments().size() + " params)";
 	}
 
 	public QName getQName() {
-		return memberFunction.getQName(); 
+		return functionQName; 
 	}
 }
