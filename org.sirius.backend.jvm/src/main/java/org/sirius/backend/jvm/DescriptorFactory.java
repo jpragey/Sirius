@@ -1,5 +1,6 @@
 package org.sirius.backend.jvm;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
@@ -42,14 +43,16 @@ public class DescriptorFactory {
 		}
 	}
 	
-	public String methodDescriptor(AbstractFunction function/*, Scope scope*/) {
-		Type returnType = function .getReturnType();
-		String descr = function.getArguments().stream()
+	public String methodDescriptor(Type returnType, List<FunctionFormalArgument> arguments) {
+		String descr = arguments.stream()
 			.map((FunctionFormalArgument arg) -> fieldDescriptor(arg.getType()) )
 			.collect(Collectors.joining("", "(", ")"))
 			+ (returnType instanceof VoidType ? "V" : fieldDescriptor(returnType))
 			;
-		
+		return descr;
+	}
+	public String methodDescriptor(AbstractFunction function) {
+		String descr = methodDescriptor(function.getReturnType(), function.getArguments());
 		return descr;
 	}
 	

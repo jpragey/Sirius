@@ -18,8 +18,11 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
+import org.sirius.frontend.api.FunctionClass;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.PackageDeclaration;
+import org.sirius.frontend.api.Statement;
+import org.sirius.frontend.api.Type;
 
 /** Class in JVM sense.
  * Translates to a new {@link Bytecode} using a new ASM {@link ClassWriter}, with "<init>()" method.
@@ -36,11 +39,15 @@ public class JvmClass {
 	
 	private List<JvmMemberFunction> memberFunctions;
 	private List<JvmMemberValue> memberValues;
+	private List<ClassExecutorFunction> classExecutorFunctions;
 	
 	private BackendOptions backendOptions;
 	
 	public JvmClass(Reporter reporter, QName qName, BackendOptions backendOptions, DescriptorFactory descriptorFactory, 
-			List<JvmMemberFunction> memberFunctions, List<JvmMemberValue> memberValues) {
+			List<JvmMemberFunction> memberFunctions, List<JvmMemberValue> memberValues,
+//			List<ClassExecutorFunction> classExecutorFunctions
+			List<FunctionClass> classExecutorFunctions
+			) {
 		super();
 		this.reporter = reporter;
 		this.qName = qName;
@@ -48,6 +55,16 @@ public class JvmClass {
 		this.descriptorFactory = descriptorFactory;
 		this.memberFunctions = memberFunctions;
 		this.memberValues = memberValues;
+		this.classExecutorFunctions = classExecutorFunctions.stream()
+				.map((FunctionClass fc)-> {
+					QName fctQName = fc.getQName();
+					List<Statement> body = fc.getBodyStatements();
+					Type returnType = fc.getReturnType();
+//					List<Statement> body = List.<Statement>of();
+					ClassExecutorFunction cef = new ClassExecutorFunction(qName/*class QName*/, body, returnType);
+					return cef;
+				})
+				.toList();
 	}
 	
 	public JvmClass(Reporter reporter, ClassType cd, BackendOptions backendOptions, DescriptorFactory descriptorFactory) {
@@ -58,6 +75,8 @@ public class JvmClass {
 				cd.getMemberValues().stream()
 					.map((mv) -> new JvmMemberValue(mv, descriptorFactory, reporter))
 					.collect(Collectors.toUnmodifiableList())
+				,
+				List.of() // class executor functions
 				);
 	}
 	
@@ -67,7 +86,9 @@ public class JvmClass {
 				packageFuncs.stream()
 					.map(func->new JvmMemberFunction(reporter, backendOptions,descriptorFactory,func, true /*isStatic*/))
 					.collect(Collectors.toUnmodifiableList()), 
-					List.<JvmMemberValue>of());
+					List.<JvmMemberValue>of(),
+					List.<FunctionClass>of() // class executor functions
+					);
 	}
 	
 	@Override
@@ -127,6 +148,10 @@ public class JvmClass {
 		
 		for(JvmMemberValue mf: this.memberValues) {
 			mf.writeBytecode(classWriter);
+		}
+
+		for(ClassExecutorFunction cef: this.classExecutorFunctions) {
+			cef.writeBytecode(classWriter, reporter, descriptorFactory);
 		}
 
 		// -- Terminate class

@@ -7,4 +7,7 @@ public interface Constants {
 	
 	public static String SIRIUS_RUNTIME_VERSION = SIRIUS_ARTEFACTS_VERSION;
 	public static String SIRIUS_SDK_VERSION = SIRIUS_ARTEFACTS_VERSION;
+
+	/** Executable class execute() function name */
+	public static String SIRIUS_EXECCLASS_EXEC_FUNC_NAME = "$sir$execute$";
 }
