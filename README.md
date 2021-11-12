@@ -8,7 +8,7 @@ To compile it, you need java 11+, maven 3.6.0+ and some recent git.
 To install the full JDK (the JRE alone is not enough):
 
 ```bash
-sudo apt install openjdk-11-jdk git maven
+sudo apt install openjdk-17-jdk git maven
 ```
 
 If you want to (re)create the doc site, you will need a few more packages:
