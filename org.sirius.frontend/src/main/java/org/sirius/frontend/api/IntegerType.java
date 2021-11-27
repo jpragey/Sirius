@@ -20,9 +20,5 @@ public interface IntegerType extends ClassType {
 		return List.of();
 	}
 
-	@Override
-	default boolean isAncestorOrSame(Type type) {
-		throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-	}
 
 }

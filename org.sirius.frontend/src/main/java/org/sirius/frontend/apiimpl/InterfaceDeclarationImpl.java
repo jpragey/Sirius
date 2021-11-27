@@ -49,10 +49,6 @@ public class InterfaceDeclarationImpl implements ClassType {
 	public QName getQName() {
 		return qName;
 	}
-	@Override
-	public boolean isAncestorOrSame(Type type) {
-		throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-	}
 	
 	@Override
 	public Optional<ExecutionEnvironment> getExecutionEnvironment() {

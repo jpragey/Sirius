@@ -15,10 +15,6 @@ public interface StringConstantExpression extends Expression {
 		public QName getQName() {
 			return SdkContent.siriusLangStringQName;
 		}
-		@Override
-		public boolean isAncestorOrSame(Type type) {
-			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-		}
 		// TODO: check ???
 		@Override
 		public List<MemberValue> getMemberValues() {
