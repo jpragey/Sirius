@@ -107,8 +107,8 @@ public class JvmExpression {
 		
 		// TODO Implement it
 		if(sourceType instanceof ClassType && targetType instanceof ClassType) {
-			QName srcQName = ((ClassType)sourceType).getQName();
-			QName targetQName = ((ClassType)targetType).getQName();
+			QName srcQName = ((ClassType)sourceType).qName();
+			QName targetQName = ((ClassType)targetType).qName();
 			if(srcQName .equals(targetQName)) {
 				new JvmExpression(reporter, descriptorFactory, sourceExpr).writeExpressionBytecode(mv, scope);
 				return;

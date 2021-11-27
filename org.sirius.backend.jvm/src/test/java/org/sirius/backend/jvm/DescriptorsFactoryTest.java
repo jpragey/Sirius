@@ -35,7 +35,7 @@ public class DescriptorsFactoryTest {
 		}
 
 		@Override
-		public QName getQName() {
+		public QName qName() {
 			return qname;
 		}
 //		@Override
@@ -44,16 +44,16 @@ public class DescriptorsFactoryTest {
 //		}
 
 		@Override
-		public List<MemberValue> getMemberValues() {
+		public List<MemberValue> memberValues() {
 			return List.of();
 		}
 
 		@Override
-		public List<AbstractFunction> getFunctions() {
+		public List<AbstractFunction> memberFunctions() {
 			return List.of();
 		}
 		@Override
-		public Optional<ExecutionEnvironment> getExecutionEnvironment() {
+		public Optional<ExecutionEnvironment> executionEnvironment() {
 			return Optional.empty();
 		}
 

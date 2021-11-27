@@ -29,7 +29,7 @@ public class DescriptorFactory {
 	public String fieldDescriptor(Type type) {
 		if(type instanceof ClassType) {
 			ClassType classType = (ClassType)type;
-			String descriptor = classType.getQName().getStringElements().stream().collect(Collectors.joining("/", "L", ";"));
+			String descriptor = classType.qName().getStringElements().stream().collect(Collectors.joining("/", "L", ";"));
 			return descriptor;
 			
 		} else if(type instanceof VoidType) {

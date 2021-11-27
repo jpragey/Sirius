@@ -32,16 +32,16 @@ public class InterfaceTest {
 		
 		// -- check interface
 		ClassType cd = pack.getInterfaces().get(0);
-		assertEquals(cd.getQName(), new QName("p", "k", "I"));
+		assertEquals(cd.qName(), new QName("p", "k", "I"));
 		
-		AbstractFunction func = cd.getFunctions().get(0);
+		AbstractFunction func = cd.memberFunctions().get(0);
 		assertEquals(func.getQName(), new QName("p", "k", "I", "f"));
 		
 		// -- check implementation
 		ClassType implClass = pack.getClasses().get(0);
-		assertEquals(implClass.getQName(), new QName("p", "k", "C"));
+		assertEquals(implClass.qName(), new QName("p", "k", "C"));
 		
-		AbstractFunction inheritedFunc = implClass.getFunctions().get(0);
+		AbstractFunction inheritedFunc = implClass.memberFunctions().get(0);
 		assertEquals(inheritedFunc.getQName(), new QName("p", "k", "I", "f"));
 		
 	}

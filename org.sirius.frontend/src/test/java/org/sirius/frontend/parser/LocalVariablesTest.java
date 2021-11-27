@@ -31,16 +31,16 @@ public class LocalVariablesTest {
 		
 		
 		ClassType cd = pack.getClasses().get(0);
-		assertEquals(cd.getQName(), new QName("p", "k", "C"));
+		assertEquals(cd.qName(), new QName("p", "k", "C"));
 		
-		assertEquals(cd.getMemberValues().size(), 1);
-		MemberValue lvs = cd.getMemberValues().get(0);
+		assertEquals(cd.memberValues().size(), 1);
+		MemberValue lvs = cd.memberValues().get(0);
 
 		assertEquals(lvs.getName().getText(), "s");
 		
 		Type type = lvs.getType();
 		assert(type instanceof ClassType);
-		assertEquals( ((ClassType)type).getQName(), new QName("p", "k", "C"));
+		assertEquals( ((ClassType)type).qName(), new QName("p", "k", "C"));
 
 	}
 	
@@ -57,10 +57,10 @@ public class LocalVariablesTest {
 		
 		
 		ClassType cd = pack.getClasses().get(0);
-		assertEquals(cd.getQName(), new QName("p", "k", "C"));
+		assertEquals(cd.qName(), new QName("p", "k", "C"));
 
-		assertEquals(cd.getFunctions().size(), 1);
-		AbstractFunction func = cd.getFunctions().get(0);
+		assertEquals(cd.memberFunctions().size(), 1);
+		AbstractFunction func = cd.memberFunctions().get(0);
 		
 		assertEquals(func.getBodyStatements().get().size(), 1);
 		LocalVariableStatement lvs = (LocalVariableStatement)func.getBodyStatements().get().get(0);
@@ -69,7 +69,7 @@ public class LocalVariablesTest {
 
 		Type type = lvs.getType();
 		assert(type instanceof ClassType);
-		assertEquals( ((ClassType)type).getQName(), new QName("p", "k", "C1"));
+		assertEquals( ((ClassType)type).qName(), new QName("p", "k", "C1"));
 //		assertEquals( ((ClassType)type).getQName(), new QName("p", "k", "C"));
 	}
 }

@@ -96,7 +96,7 @@ public class LambdaTest {
 		PackageDeclaration pd =  md.packageDeclarations().get(0);
 		ClassType classC = pd.getClasses().get(0);
 		
-		MemberValue add = classC.getMemberValues().get(0);
+		MemberValue add = classC.memberValues().get(0);
 		assertThat(add.getInitialValue().isPresent(), is(true));
 //		assertThat(add.getInitialValue(), instanceOf(LambdaDefinition.class));
 

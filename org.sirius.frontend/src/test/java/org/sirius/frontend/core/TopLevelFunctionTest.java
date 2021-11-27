@@ -221,7 +221,7 @@ public class TopLevelFunctionTest {
 		
 		assert(type instanceof ClassType);
 		ClassType classDeclaration = (ClassType)type;
-		assertEquals(classDeclaration.getQName().dotSeparated(), "sirius.lang.String");
+		assertEquals(classDeclaration.qName().dotSeparated(), "sirius.lang.String");
 	}
 	
 	@Test
@@ -242,7 +242,7 @@ public class TopLevelFunctionTest {
 		FunctionFormalArgument arg = args.get(0);
 		
 		ClassType argType = (ClassType)arg.getType();
-		assertEquals(argType.getQName().dotSeparated(), "sirius.lang.String");
+		assertEquals(argType.qName().dotSeparated(), "sirius.lang.String");
 	}
 	
 }

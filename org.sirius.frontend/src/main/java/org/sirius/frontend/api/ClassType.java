@@ -11,24 +11,24 @@ import org.sirius.common.core.QName;
  */
 public interface ClassType extends Type {
 
-	List<MemberValue> getMemberValues();
-	List<AbstractFunction> getFunctions();
+	List<MemberValue> memberValues();
+	List<AbstractFunction> memberFunctions();
 
-	QName getQName();
+	QName qName();
 	
 	/** Return the ExecutionEnvironment if class is callable.
 	 * 
 	 * @return
 	 */
-	Optional<ExecutionEnvironment> getExecutionEnvironment();
+	Optional<ExecutionEnvironment> executionEnvironment();
 	
 	default void visitContent(Visitor visitor) {
 		
-		for(MemberValue mv: getMemberValues()) {
+		for(MemberValue mv: memberValues()) {
 			mv.visitMe(visitor);
 		}
 		
-		for(AbstractFunction fct: getFunctions()) {
+		for(AbstractFunction fct: memberFunctions()) {
 			fct.visitMe(visitor);
 		}
 	}

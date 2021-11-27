@@ -59,9 +59,9 @@ public class ExpressionStatementTest {
 		
 		
 		ClassType cd = pack.getClasses().get(0);
-		assertEquals(cd.getQName(), new QName("p", "k", "C"));
+		assertEquals(cd.qName(), new QName("p", "k", "C"));
 		
-		AbstractFunction func = cd.getFunctions().get(0);
+		AbstractFunction func = cd.memberFunctions().get(0);
 		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
 
 		assertEquals(func.getBodyStatements().get().size(), 1);

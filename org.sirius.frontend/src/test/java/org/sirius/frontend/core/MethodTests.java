@@ -56,16 +56,16 @@ public class MethodTests {
 		PackageDeclaration pack = md.packageDeclarations().get(0);
 		
 		ClassType cd = pack.getClasses().get(0);
-		assertEquals(cd.getQName(), new QName("p", "k", "C"));
+		assertEquals(cd.qName(), new QName("p", "k", "C"));
 
-		assertEquals(cd.getMemberValues().size(), 1);
-		MemberValue lvs = cd.getMemberValues().get(0);
+		assertEquals(cd.memberValues().size(), 1);
+		MemberValue lvs = cd.memberValues().get(0);
 
 		assertEquals(lvs.getName().getText(), "s");
 
 		Type type = lvs.getType();
 		assert(type instanceof ClassType);
-		assertEquals( ((ClassType)type).getQName(), new QName("p", "k", "C"));
+		assertEquals( ((ClassType)type).qName(), new QName("p", "k", "C"));
 
 	}
 	
@@ -82,22 +82,22 @@ public class MethodTests {
 		
 		
 		ClassType cd = pack.getClasses().get(0);
-		assertEquals(cd.getQName(), new QName("p", "k", "C"));
+		assertEquals(cd.qName(), new QName("p", "k", "C"));
 		
-		AbstractFunction func = cd.getFunctions().get(0);
+		AbstractFunction func = cd.memberFunctions().get(0);
 		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
 
 //		assertEquals(func.getBodyStatements().size(), 1);
 //		LocalVariableStatement lvs = (LocalVariableStatement)func.getBodyStatements().get(0);
 
-		assertEquals(cd.getMemberValues().size(), 1);
-		MemberValue lvs = cd.getMemberValues().get(0);
+		assertEquals(cd.memberValues().size(), 1);
+		MemberValue lvs = cd.memberValues().get(0);
 
 		assertEquals(lvs.getName().getText(), "s");
 
 		Type type = lvs.getType();
 		assert(type instanceof ClassType);
-		assertEquals( ((ClassType)type).getQName(), new QName("p", "k", "C"));
+		assertEquals( ((ClassType)type).qName(), new QName("p", "k", "C"));
 
 	}
 	
@@ -119,7 +119,7 @@ public class MethodTests {
 		
 		List<ClassType> classes = pack.getClasses();
 		ClassType cd = classes.get(0);
-		assertEquals(cd.getQName(), new QName("A"));
+		assertEquals(cd.qName(), new QName("A"));
 		
 //		ClassDeclaration packCd = pack.getClasses().get(1);
 //		assertEquals(cd.getQName(), new QName("A"));
@@ -134,7 +134,7 @@ public class MethodTests {
 		Type locVarType = locVarStmt.getType();
 		assert(locVarType instanceof ClassType);
 		ClassType locVarCD = (ClassType)locVarType;
-		List<MemberValue> members = locVarCD.getMemberValues();
+		List<MemberValue> members = locVarCD.memberValues();
 		MemberValue member0 = members.get(0);
 		
 		Type member0Type = member0.getType();
@@ -181,10 +181,10 @@ public class MethodTests {
 		
 		
 		ClassType cd = pack.getClasses().get(0);
-		assertEquals(cd.getQName(), new QName("p", "k", "C"));
+		assertEquals(cd.qName(), new QName("p", "k", "C"));
 		
 		// -- function local value
-		AbstractFunction func = cd.getFunctions().get(0);
+		AbstractFunction func = cd.memberFunctions().get(0);
 		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
 
 		assertEquals(func.getBodyStatements().get().size(), 1);
@@ -202,8 +202,8 @@ public class MethodTests {
 
 		
 		// -- class member
-		assertEquals(cd.getMemberValues().size(), 1);
-		MemberValue lvs = cd.getMemberValues().get(0);
+		assertEquals(cd.memberValues().size(), 1);
+		MemberValue lvs = cd.memberValues().get(0);
 
 		assertEquals(lvs.getName().getText(), "s10");
 		
@@ -215,8 +215,8 @@ public class MethodTests {
 //		assertEquals( ((ClassDeclaration)type).getQName(), new QName("sirius", "lang", "Integer"));
 		
 		// -- class method
-		assertEquals(cd.getFunctions().size(), 1);
-		AbstractFunction apiMethod = cd.getFunctions().get(0);
+		assertEquals(cd.memberFunctions().size(), 1);
+		AbstractFunction apiMethod = cd.memberFunctions().get(0);
 		assertThat(apiMethod.getQName().dotSeparated(), is("p.k.C.f"));
 
 	}

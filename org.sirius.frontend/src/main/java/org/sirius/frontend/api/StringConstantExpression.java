@@ -12,22 +12,22 @@ public interface StringConstantExpression extends Expression {
 	static Type type = new ClassType() {
 		
 		@Override
-		public QName getQName() {
+		public QName qName() {
 			return SdkContent.siriusLangStringQName;
 		}
 		// TODO: check ???
 		@Override
-		public List<MemberValue> getMemberValues() {
+		public List<MemberValue> memberValues() {
 			return List.of();
 		}
 
 		// TODO: check ???
 		@Override
-		public List<AbstractFunction> getFunctions() {
+		public List<AbstractFunction> memberFunctions() {
 			return List.of();
 		}
 		@Override
-		public Optional<ExecutionEnvironment> getExecutionEnvironment() {
+		public Optional<ExecutionEnvironment> executionEnvironment() {
 			return Optional.empty();
 		}
 

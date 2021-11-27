@@ -68,11 +68,11 @@ public class JvmClass {
 	}
 	
 	public JvmClass(Reporter reporter, ClassType cd, BackendOptions backendOptions, DescriptorFactory descriptorFactory) {
-		this(reporter, cd.getQName(), backendOptions, descriptorFactory,
-				cd.getFunctions().stream()
+		this(reporter, cd.qName(), backendOptions, descriptorFactory,
+				cd.memberFunctions().stream()
 					.map(mf -> new JvmMemberFunction(reporter, backendOptions,  descriptorFactory, mf, false /*isStatic*/))
 					.collect(Collectors.toUnmodifiableList()), 
-				cd.getMemberValues().stream()
+				cd.memberValues().stream()
 					.map((mv) -> new JvmMemberValue(mv, descriptorFactory, reporter))
 					.collect(Collectors.toUnmodifiableList())
 				,

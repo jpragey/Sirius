@@ -5,35 +5,23 @@ import java.util.Optional;
 public interface Type {
 
 	public static IntegerType integerType = new IntegerType() {
-//		@Override
-//		public boolean isAncestorOrSame(Type type) {
-//			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-//		}
 		@Override
 		public String toString() {
 			return "Type.integerType";
 		}
 
 		@Override
-		public Optional<ExecutionEnvironment> getExecutionEnvironment() {
+		public Optional<ExecutionEnvironment> executionEnvironment() {
 			return Optional.empty();
 		}
 	};
 	public static FloatType floatType = new FloatType() {
-//		@Override
-//		public boolean isAncestorOrSame(Type type) {
-//			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-//		}
 		@Override
 		public String toString() {
 			return "Type.floatType";
 		}
 	};
 	public static BooleanType booleanType = new BooleanType() {
-//		@Override
-//		public boolean isAncestorOrSame(Type type) {
-//			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-//		}
 		@Override
 		public String toString() {
 			return "Type.booleanType";
@@ -46,9 +34,5 @@ public interface Type {
 			return "Type.voidType";
 		}
 	};
-	
-//	default boolean isAncestorOrSame(Type type) {
-//		throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-//	}
 	
 }

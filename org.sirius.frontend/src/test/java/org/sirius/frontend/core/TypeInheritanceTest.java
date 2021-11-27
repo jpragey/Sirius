@@ -43,14 +43,14 @@ public class TypeInheritanceTest {
 			List<ClassType> classes = pd.getClasses();
 			assertEquals(classes.size(), 1);
 			ClassType classD = classes.get(0);
-			assertEquals(classD.getQName().dotSeparated(), "p.a.C");
+			assertEquals(classD.qName().dotSeparated(), "p.a.C");
 //			assertEquals(classA.isInterface(), true);
 			
 			List<ClassType> interfaces = pd.getInterfaces();
 			assertEquals(interfaces.size(), 1);
 
 			ClassType classA = interfaces.get(0);
-			assertEquals(classA.getQName().dotSeparated(), "p.a.I");
+			assertEquals(classA.qName().dotSeparated(), "p.a.I");
 			
 			////assertTrue(classA.isAncestorOrSame(classD));
 			
@@ -85,10 +85,10 @@ public class TypeInheritanceTest {
 		
 		// -- Check API 
 		ClassType apiC = astClassC.getClassDeclaration();
-		assertThat(apiC.getQName().dotSeparated(), is("p.a.C"));
+		assertThat(apiC.qName().dotSeparated(), is("p.a.C"));
 
 		ClassType apiI = astClassI.getInterfaceDeclaration();
-		assertThat(apiI.getQName().dotSeparated(), is("p.a.I"));
+		assertThat(apiI.qName().dotSeparated(), is("p.a.I"));
 		
 		assertThat(astClassC.getInterfaces(), hasSize(1));
 //		assertThat(apiC.getInterface(), hasSize(1));

@@ -7,16 +7,16 @@ import org.sirius.frontend.sdk.SdkContent;
 
 public interface IntegerType extends ClassType {
 
-	default QName getQName() {return SdkContent.siriusLangIntegerQName;}
+	default QName qName() {return SdkContent.siriusLangIntegerQName;}
 	// TODO: check ???
 	@Override
-	default List<MemberValue> getMemberValues() {
+	default List<MemberValue> memberValues() {
 		return List.of();
 	}
 
 	// TODO: check ???
 	@Override
-	default List<AbstractFunction> getFunctions() {
+	default List<AbstractFunction> memberFunctions() {
 		return List.of();
 	}
 

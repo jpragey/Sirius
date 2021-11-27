@@ -14,26 +14,15 @@ import org.sirius.frontend.api.Type;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
 
-public class InterfaceDeclarationImpl implements ClassType {
-	private QName qName;
-	private MapOfList<QName, FunctionDefinition> allFctMap;
-	private List<MemberValue> memberValues; 
-
-	public InterfaceDeclarationImpl(QName qName, MapOfList<QName, FunctionDefinition> allFctMap,
-			List<MemberValue> memberValues) {
-		super();
-		this.qName = qName;
-		this.allFctMap = allFctMap;
-		this.memberValues = memberValues;
-	}
+public record InterfaceDeclarationImpl(
+		QName qName, 
+		MapOfList<QName, FunctionDefinition> allFctMap,
+		List<MemberValue> memberValues
+) implements ClassType 
+{
 
 	@Override
-	public List<MemberValue> getMemberValues() {
-		return memberValues;
-	}
-
-	@Override
-	public List<AbstractFunction> getFunctions() {
+	public List<AbstractFunction> memberFunctions() {
 		List<AbstractFunction> functions = new ArrayList<>();
 		for(QName qn: allFctMap.keySet()) {
 			List<FunctionDefinition> functionDefs = allFctMap.get(qn);
@@ -46,12 +35,12 @@ public class InterfaceDeclarationImpl implements ClassType {
 		return functions;
 	}
 	@Override
-	public QName getQName() {
+	public QName qName() {
 		return qName;
 	}
 	
 	@Override
-	public Optional<ExecutionEnvironment> getExecutionEnvironment() {
+	public Optional<ExecutionEnvironment> executionEnvironment() {
 		return Optional.empty();// TODO ???
 	}
 }

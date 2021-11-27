@@ -17,7 +17,7 @@ public class Util {
 		 * The internal name of a class is its fully qualified name (as returned by Class.getName(), where '.' are replaced by '/'). 
 		 * This method should only be used for an object or array type.
 		 */
-		return classInternalName(classDeclaration.getQName());
+		return classInternalName(classDeclaration.qName());
 	}
 	public static boolean debugMainClass = false;
 	
