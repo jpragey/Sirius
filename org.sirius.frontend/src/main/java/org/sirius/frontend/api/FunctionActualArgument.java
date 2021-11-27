@@ -6,7 +6,7 @@ public interface FunctionActualArgument extends Expression {
 
 	Token nameToken();
 	/** index in argument list */
-	int getIndex();
+	int paramIndex();
 	
 	default void visitMe(Visitor visitor) {
 		visitor.startFunctionActualArgument(this);

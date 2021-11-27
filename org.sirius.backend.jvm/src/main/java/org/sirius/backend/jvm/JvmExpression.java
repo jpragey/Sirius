@@ -76,7 +76,7 @@ public class JvmExpression {
 	}
 
 	private void processFunctionArgument(MethodVisitor mv, FunctionActualArgument expression, JvmScope scope/* TODO: ???*/) {
-		int argIndex = expression.getIndex();
+		int argIndex = expression.paramIndex();
 		mv.visitVarInsn(Opcodes.ALOAD, argIndex /*0 = this  locvarIndex*/);
 
 		// -- put value

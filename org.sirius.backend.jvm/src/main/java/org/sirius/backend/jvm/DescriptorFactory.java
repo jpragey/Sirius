@@ -36,7 +36,7 @@ public class DescriptorFactory {
 			return "V";
 		} else if(type instanceof ArrayType) {
 			ArrayType arrayType = (ArrayType)type;
-			return "[" + fieldDescriptor(arrayType.getElementType());
+			return "[" + fieldDescriptor(arrayType.elementType());
 		} else {
 			reporter.error("JVM backend: internal error creating fieldDescriptor, type " + type + ":" + type.getClass() + " has no mapping to JVM type descriptor.");
 			return "";

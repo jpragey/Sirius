@@ -177,8 +177,8 @@ public class TopLevelFunctionTest {
 		
 //		System.out.println("API arg type qname: " + argType.getElementType());
 		
-		assert (argType.getElementType() instanceof ClassType);
-		ClassType classType = (ClassType)argType.getElementType();
+		assert (argType.elementType() instanceof ClassType);
+		ClassType classType = (ClassType)argType.elementType();
 //		System.out.println("API element type: " + classType.getQName());
 	}
 	

@@ -24,13 +24,6 @@ public record FunctionCallImpl(
 		SymbolTable symbolTable
 		) implements FunctionCall 
 {
-
-//	@Override
-//	public Optional<Expression> getThis() {
-//		//			return thisExpression.map(expr -> expr.getExpression());
-//		return thisExpression;
-//	}
-
 	@Override
 	public List<Expression> arguments() {
 		return arguments;

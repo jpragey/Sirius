@@ -6,5 +6,5 @@ package org.sirius.frontend.api;
  *
  */
 public interface ArrayType extends Type {
-	Type getElementType();
+	Type elementType();
 }

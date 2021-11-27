@@ -5,32 +5,14 @@ import org.sirius.frontend.api.FunctionActualArgument;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.ast.AstFunctionParameter;
 
-public class FunctionActualArgumentImpl implements FunctionActualArgument {
-	private Type type;
-	private Token name;
-	private int paramIndex;
+public record FunctionActualArgumentImpl(Type type, Token nameToken, int paramIndex) implements FunctionActualArgument {
+
 	public FunctionActualArgumentImpl(AstFunctionParameter param) {
-		this.type = param.getType().getApiType();
-		this.name = param.getName().asToken();
-		this.paramIndex = param.getIndex();
+		this(param.getType().getApiType(), param.getName().asToken(), param.getIndex());
 	}
 	
 	@Override
-	public Type type() {
-		return type;
-	}
-
-	@Override
-	public Token nameToken() {
-		return name;
-	}
-	@Override
 	public String toString() {
-		return "arg: " + type.toString() + " " + name.getText();
-	}
-
-	@Override
-	public int getIndex() {
-		return paramIndex;
+		return "arg: " + type.toString() + " " + nameToken.getText();
 	}
 }
