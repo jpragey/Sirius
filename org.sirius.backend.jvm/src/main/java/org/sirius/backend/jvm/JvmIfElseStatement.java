@@ -48,9 +48,9 @@ public class JvmIfElseStatement implements JvmStatement {
 		 */
 
 
-		Expression expr = statement.getExpression();
-		Statement ifStmt = statement.getIfStatement();
-		Optional<Statement> elseStmt = statement.getElseStatement();
+		Expression expr = statement.expression();
+		Statement ifStmt = statement.ifStatement();
+		Optional<Statement> elseStmt = statement.elseStatement();
 
 		new JvmExpression(reporter, descriptorFactory, expr).writeExpressionBytecode(mv, scope);
 		// -- IFEQ

@@ -4,7 +4,7 @@ import org.sirius.common.core.Token;
 
 public interface FunctionActualArgument extends Expression {
 
-	Token getName();
+	Token nameToken();
 	/** index in argument list */
 	int getIndex();
 	

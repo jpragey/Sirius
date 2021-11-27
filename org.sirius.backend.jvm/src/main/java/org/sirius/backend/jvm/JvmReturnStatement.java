@@ -29,7 +29,7 @@ public class JvmReturnStatement implements JvmStatement {
 	public void writeBytecode(ClassWriter classWriter, MethodVisitor mv) {
 
 		// -- write return expression
-		JvmExpression expr = new JvmExpression(reporter, descriptorFactory, statement.getExpression());
+		JvmExpression expr = new JvmExpression(reporter, descriptorFactory, statement.expression());
 		expr.writeExpressionBytecode(mv, scope);
 
 		// -- write return

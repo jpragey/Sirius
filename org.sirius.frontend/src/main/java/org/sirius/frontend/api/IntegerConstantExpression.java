@@ -1,7 +1,7 @@
 package org.sirius.frontend.api;
 
 public interface IntegerConstantExpression extends Expression {
-	int getValue();
+	int value();
 
 	default void visitMe(Visitor visitor) {
 		visitor.start(this);

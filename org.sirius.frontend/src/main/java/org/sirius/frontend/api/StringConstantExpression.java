@@ -40,7 +40,7 @@ public interface StringConstantExpression extends Expression {
 	String getText();
 
 	@Override
-	default Type getType() {
+	default Type type() {
 		return type;
 	}
 	

@@ -3,22 +3,10 @@ package org.sirius.frontend.apiimpl;
 import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.Type;
 
-public class IntegerConstantExpressionImpl implements IntegerConstantExpression {
-	int value;
-	
-	public IntegerConstantExpressionImpl(int value) {
-		super();
-		this.value = value;
-	}
+public record IntegerConstantExpressionImpl(int value) implements IntegerConstantExpression {
 
 	@Override
-	public Type getType() {
+	public Type type() {
 		return Type.integerType;
 	}
-
-	@Override
-	public int getValue() {
-		return value;
-	}
-
 }

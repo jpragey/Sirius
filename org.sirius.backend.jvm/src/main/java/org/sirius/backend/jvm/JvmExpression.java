@@ -101,7 +101,7 @@ public class JvmExpression {
 	}
 	
 	private void processTypeCast(MethodVisitor mv, TypeCastExpression expression, JvmScope scope) {
-		Type sourceType = expression.getType();
+		Type sourceType = expression.type();
 		Type targetType = expression.targetType();
 		Expression sourceExpr = expression.expression();
 		
@@ -123,7 +123,7 @@ public class JvmExpression {
 	}
 	
 	private void processIntegerConstant(MethodVisitor mv, IntegerConstantExpression expression) {
-		int expessionVal = expression.getValue();
+		int expessionVal = expression.value();
 		boolean debugUseJavaInt = false;
 		if(debugUseJavaInt) {
 		    mv.visitLdcInsn(expessionVal);
@@ -189,7 +189,7 @@ public class JvmExpression {
 	}
 	public void processConstructorCall(MethodVisitor mv, ConstructorCall expression) {
 
-		Type type = expression.getType();
+		Type type = expression.type();
 		if(type instanceof IntegerType) {
 			String internalName = "sirius/lang/Integer";
 
@@ -215,15 +215,15 @@ public class JvmExpression {
 		JvmExpression jvmContainerExpr = new JvmExpression(reporter, descriptorFactory, containerExpr);
 		jvmContainerExpr.writeExpressionBytecode(mv, scope);
 		
-		Type containerType = containerExpr.getType();
+		Type containerType = containerExpr.type();
 		MemberValue memberValue = expression.getMemberValue();
 		
 		String owner = Util.classInternalName((ClassType)containerType); // internal name x/y/A
 
 		
-		String name = memberValue.getName().getText();
+		String name = memberValue.nameToken().getText();
 		
-		String descriptor = descriptorFactory.fieldDescriptor(memberValue.getType());
+		String descriptor = descriptorFactory.fieldDescriptor(memberValue.type());
 		
 		mv.visitFieldInsn(Opcodes.GETFIELD, owner, name, descriptor);
 		
@@ -234,7 +234,7 @@ public class JvmExpression {
 		
 		Optional<JvmScope.JvmLocalVariable> jvmLocalVar = scope.getVarByName(varName);
 		jvmLocalVar.ifPresentOrElse( (locVar) -> {
-			Type type = varRef.getType();
+			Type type = varRef.type();
 			int varIndex = locVar.getIndex();
 
 			if(type instanceof IntegerType) {
@@ -251,19 +251,19 @@ public class JvmExpression {
 	}
 
 	private void processFunctionCall(MethodVisitor mv, FunctionCall call, JvmScope scope) {
-		String funcName = call.getFunctionName().getText();
+		String funcName = call.nameToken().getText();
 
 		AbstractFunction func = call.getDeclaration().get();	// TODO: check for absence
 			if(func.getClassOrInterfaceContainerQName().isPresent()) {
 			}
 			int invokeOpcode;
-			if(call.getThis().isPresent()) {
+			if(call.thisExpression().isPresent()) {
 				invokeOpcode = INVOKEVIRTUAL;
 			} else {
 				invokeOpcode = INVOKESTATIC;
 			}
 			
-			for(Expression expr: call.getArguments()) {
+			for(Expression expr: call.arguments()) {
 				JvmExpression jvmExpr = new JvmExpression(reporter, descriptorFactory, expr);
 				jvmExpr.writeExpressionBytecode(mv, scope);
 			}
@@ -303,7 +303,7 @@ public class JvmExpression {
 				mv.visitMethodInsn(
 						invokeOpcode,		// opcode 
 						owner,		// owner "java/io/PrintStream", 
-						call.getFunctionName().getText(), //"println", 
+						call.nameToken().getText(), //"println", 
 						methodDescriptor,			// "(Ljava/lang/String;)V",	// method descriptor 
 						false 				// isInterface
 						);

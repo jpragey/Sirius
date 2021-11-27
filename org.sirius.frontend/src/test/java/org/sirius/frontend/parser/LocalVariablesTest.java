@@ -36,9 +36,9 @@ public class LocalVariablesTest {
 		assertEquals(cd.memberValues().size(), 1);
 		MemberValue lvs = cd.memberValues().get(0);
 
-		assertEquals(lvs.getName().getText(), "s");
+		assertEquals(lvs.nameToken().getText(), "s");
 		
-		Type type = lvs.getType();
+		Type type = lvs.type();
 		assert(type instanceof ClassType);
 		assertEquals( ((ClassType)type).qName(), new QName("p", "k", "C"));
 
@@ -65,9 +65,9 @@ public class LocalVariablesTest {
 		assertEquals(func.bodyStatements().get().size(), 1);
 		LocalVariableStatement lvs = (LocalVariableStatement)func.bodyStatements().get().get(0);
 		
-		assertEquals(lvs.getName().getText(), "s");
+		assertEquals(lvs.nameToken().getText(), "s");
 
-		Type type = lvs.getType();
+		Type type = lvs.type();
 		assert(type instanceof ClassType);
 		assertEquals( ((ClassType)type).qName(), new QName("p", "k", "C1"));
 //		assertEquals( ((ClassType)type).getQName(), new QName("p", "k", "C"));

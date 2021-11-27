@@ -92,11 +92,11 @@ public class DummyApiToJvmConverter {
 	void parse(Reporter reporter, FunctionClass functionClass ) {
 		DescriptorFactory descriptorFactory = new DescriptorFactory(reporter);
 		
-		QName functionQName = functionClass.getQName();
-		Type apiType = functionClass.getReturnType();
+		QName functionQName = functionClass.qName();
+		Type apiType = functionClass.returnType();
 		JvmType jvmType = mapToJvmType(reporter, apiType);
 		
-		List<Statement> apiStatements = functionClass.getBodyStatements();
+		List<Statement> apiStatements = functionClass.bodyStatements();
 		for(Statement st: apiStatements) {
 			JvmStatement stmt = mapToJvmStatement(st, reporter, descriptorFactory);
 			

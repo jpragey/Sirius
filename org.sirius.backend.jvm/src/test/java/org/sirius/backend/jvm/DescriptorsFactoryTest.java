@@ -38,10 +38,6 @@ public class DescriptorsFactoryTest {
 		public QName qName() {
 			return qname;
 		}
-//		@Override
-//		public boolean isAncestorOrSame(Type type) {
-//			throw new UnsupportedOperationException("isAncestorOrSame not supported for type " + this.getClass());
-//		}
 
 		@Override
 		public List<MemberValue> memberValues() {
@@ -59,8 +55,6 @@ public class DescriptorsFactoryTest {
 
 	}
 
-	
-	
 	@BeforeEach
 	public void setup() {
 		this.reporter = new AccumulatingReporter(new ShellReporter());

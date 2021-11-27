@@ -97,7 +97,7 @@ public class LambdaTest {
 		ClassType classC = pd.getClasses().get(0);
 		
 		MemberValue add = classC.memberValues().get(0);
-		assertThat(add.getInitialValue().isPresent(), is(true));
+		assertThat(add.initialValue().isPresent(), is(true));
 //		assertThat(add.getInitialValue(), instanceOf(LambdaDefinition.class));
 
 	}

@@ -93,7 +93,7 @@ public class AstMemberAccessExpression implements AstExpression, Scoped {
 
 
 		@Override
-		public Type getType() {
+		public Type type() {
 			return type;
 		}
 

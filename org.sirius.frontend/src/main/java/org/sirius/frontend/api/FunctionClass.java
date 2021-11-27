@@ -7,10 +7,10 @@ import org.sirius.common.core.QName;
 
 public interface FunctionClass {
 
-	QName getQName();
+	QName qName();
 
-	Type getReturnType();
+	Type returnType();
 
-	List<Statement> getBodyStatements();
+	List<Statement> bodyStatements();
 
 }

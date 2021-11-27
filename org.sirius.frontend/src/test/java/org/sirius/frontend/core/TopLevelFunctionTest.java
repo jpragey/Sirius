@@ -96,11 +96,11 @@ public class TopLevelFunctionTest {
 //		assertEquals(functionCall.getFunctionName().getText(), "println");
 		
 		
-		assertEquals(functionCall.getFunctionName().getText(), "println");
-		assertEquals(functionCall.getArguments().size(), 1);
+		assertEquals(functionCall.nameToken().getText(), "println");
+		assertEquals(functionCall.arguments().size(), 1);
 
 		// -- arg 0 is a TypeCastExpression because println requires an Stringifiable
-		Expression arg0TypeCastExpr = functionCall.getArguments().get(0);
+		Expression arg0TypeCastExpr = functionCall.arguments().get(0);
 		assert(arg0TypeCastExpr instanceof TypeCastExpression);
 		TypeCastExpression strTypeCastExpr = (TypeCastExpression)arg0TypeCastExpr;
 		

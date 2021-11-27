@@ -103,7 +103,7 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 		}
 
 		@Override
-		public Type getType() {
+		public Type type() {
 			return astStmt.getType().getApiType();
 		}
 

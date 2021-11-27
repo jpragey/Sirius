@@ -66,7 +66,7 @@ public class BooleanExpressionTest {
 		LocalVariableStatement localVarST = (LocalVariableStatement)fd.bodyStatements().get().get(0); 
 //		assertEquals(localVarST.getName().getText(), "b");
 ////		assert(lvst.getType().toString(), "");
-		Type t = localVarST.getType();
+		Type t = localVarST.type();
 //		assertThat(t,  instanceOf(ClassDeclaration.class));
 		assertThat(t,  instanceOf(BooleanType.class));
 		

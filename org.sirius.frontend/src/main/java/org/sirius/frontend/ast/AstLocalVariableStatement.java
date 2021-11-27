@@ -3,6 +3,7 @@ package org.sirius.frontend.ast;
 import java.util.Optional;
 
 import org.sirius.common.core.QName;
+import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
@@ -63,7 +64,6 @@ public class AstLocalVariableStatement implements AstStatement {
 	@Override
 	public Optional<Statement> toAPI() {
 		if(impl == null) {
-//			impl = new LocalVariableStatementImpl(this);	// TODO: restore
 			Optional<Symbol> optSymbol = symbolTable.lookupBySimpleName(varName.getText());
 			if(optSymbol.isPresent()) {
 				Symbol symbol = optSymbol.get();
@@ -71,7 +71,7 @@ public class AstLocalVariableStatement implements AstStatement {
 				if(lvs.isPresent()) {
 					AstLocalVariableStatement stmt = lvs.get();
 					Type type = AstLocalVariableStatement.this.type.getApiType();
-					LocalVariableStatementImpl lvStmt =new LocalVariableStatementImpl(stmt, varName, initialValue, type);
+					LocalVariableStatementImpl lvStmt = new LocalVariableStatementImpl(stmt, varName, initialValue, type);
 					this.impl = Optional.of(lvStmt);
 				}
 			}

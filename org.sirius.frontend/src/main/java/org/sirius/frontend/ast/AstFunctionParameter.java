@@ -45,11 +45,6 @@ public class AstFunctionParameter implements Verifiable {
 		visitor.endFunctionParameter(this);
 	}
 	
-//	/** index in argument list */
-//	public int getIndex() {
-//		return index;
-//	}
-	
 	public AstType getType() {
 		return type;
 	}

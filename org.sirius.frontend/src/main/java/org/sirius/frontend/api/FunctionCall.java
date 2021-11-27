@@ -14,17 +14,17 @@ public interface FunctionCall extends Expression {
 	
 	Optional<AbstractFunction> getDeclaration();
 	
-	Token getFunctionName(); 
+	Token nameToken(); 
 	
-	List<Expression> getArguments();
+	List<Expression> arguments();
 	
 	/** 'this', for instance methods */
-	Optional<Expression> getThis();
+	Optional<Expression> thisExpression();
 	
 	default void visitMe(Visitor visitor) {
 		visitor.start(this);
 		
-		for(Expression e: getArguments())
+		for(Expression e: arguments())
 			e.visitMe(visitor);
 		
 		visitor.end(this);

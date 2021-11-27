@@ -61,9 +61,9 @@ public class MethodTests {
 		assertEquals(cd.memberValues().size(), 1);
 		MemberValue lvs = cd.memberValues().get(0);
 
-		assertEquals(lvs.getName().getText(), "s");
+		assertEquals(lvs.nameToken().getText(), "s");
 
-		Type type = lvs.getType();
+		Type type = lvs.type();
 		assert(type instanceof ClassType);
 		assertEquals( ((ClassType)type).qName(), new QName("p", "k", "C"));
 
@@ -93,9 +93,9 @@ public class MethodTests {
 		assertEquals(cd.memberValues().size(), 1);
 		MemberValue lvs = cd.memberValues().get(0);
 
-		assertEquals(lvs.getName().getText(), "s");
+		assertEquals(lvs.nameToken().getText(), "s");
 
-		Type type = lvs.getType();
+		Type type = lvs.type();
 		assert(type instanceof ClassType);
 		assertEquals( ((ClassType)type).qName(), new QName("p", "k", "C"));
 
@@ -131,17 +131,17 @@ public class MethodTests {
 		assertEquals(body.size(), 2);
 		
 		LocalVariableStatement locVarStmt = (LocalVariableStatement)body.get(0);
-		Type locVarType = locVarStmt.getType();
+		Type locVarType = locVarStmt.type();
 		assert(locVarType instanceof ClassType);
 		ClassType locVarCD = (ClassType)locVarType;
 		List<MemberValue> members = locVarCD.memberValues();
 		MemberValue member0 = members.get(0);
 		
-		Type member0Type = member0.getType();
+		Type member0Type = member0.type();
 		
 		ReturnStatement retStmt = (ReturnStatement)body.get(1);
 		
-		Expression retExpr = retStmt.getExpression();
+		Expression retExpr = retStmt.expression();
 		MemberValueAccessExpression maccExpr = (MemberValueAccessExpression)retExpr;
 		
 		Expression ex = maccExpr.getContainerExpression();
@@ -189,11 +189,11 @@ public class MethodTests {
 
 		assertEquals(func.bodyStatements().get().size(), 1);
 		LocalVariableStatement funcLvs = (LocalVariableStatement)func.bodyStatements().get().get(0);
-		assertEquals(funcLvs.getName().getText(), "s11");
+		assertEquals(funcLvs.nameToken().getText(), "s11");
 
-		assertTrue(funcLvs.getInitialValue().isPresent());
+		assertTrue(funcLvs.initialValue().isPresent());
 
-		Type funcLvstype = funcLvs.getType();
+		Type funcLvstype = funcLvs.type();
 		assertThat(funcLvstype, instanceOf(IntegerType.class));
 //		assert(funcLvstype instanceof ClassDeclaration);
 //		
@@ -205,11 +205,11 @@ public class MethodTests {
 		assertEquals(cd.memberValues().size(), 1);
 		MemberValue lvs = cd.memberValues().get(0);
 
-		assertEquals(lvs.getName().getText(), "s10");
+		assertEquals(lvs.nameToken().getText(), "s10");
 		
-		assertTrue(lvs.getInitialValue().isPresent());
+		assertTrue(lvs.initialValue().isPresent());
 
-		Type type = lvs.getType();
+		Type type = lvs.type();
 		assertThat(type, instanceOf(IntegerType.class));
 //		assert(type instanceof ClassDeclaration);
 //		assertEquals( ((ClassDeclaration)type).getQName(), new QName("sirius", "lang", "Integer"));
@@ -319,14 +319,14 @@ public class MethodTests {
 		assertNotNull(apiAddFunc.bodyStatements());
 		assertEquals(apiAddFunc.bodyStatements().get().size(), 1);
 		ReturnStatement retStmt = (ReturnStatement)apiAddFunc.bodyStatements().get().get(0);
-		Expression retExpr = retStmt.getExpression();
+		Expression retExpr = retStmt.expression();
 //		assertThat(retExpr, instanceOf(LocalVariableReference.class /* FunctionActualArgument.class*/));
 		assertThat(retExpr, instanceOf(FunctionActualArgument.class));
 		FunctionActualArgument refToXExpress = (FunctionActualArgument)retExpr;
 //		LocalVariableReference refToXExpress = (LocalVariableReference)retExpr;
 		
-		assertEquals(refToXExpress.getName().getText(), "x");
-		Type xArgType = refToXExpress.getType();
+		assertEquals(refToXExpress.nameToken().getText(), "x");
+		Type xArgType = refToXExpress.type();
 		assert(xArgType instanceof IntegerType);
 //		ClassDeclaration xClassDecl = (ClassDeclaration)xArgType;
 //		assertEquals(xClassDecl.getQName().dotSeparated(), "sirius.lang.Integer");

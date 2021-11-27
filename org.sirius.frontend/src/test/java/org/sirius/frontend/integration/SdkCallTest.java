@@ -39,13 +39,13 @@ public class SdkCallTest {
 		assert(callExpression instanceof FunctionCall);
 		FunctionCall functionCall = (FunctionCall)callExpression;
 		
-		assertEquals(functionCall.getArguments().size(), 1);
-		Expression argExpression = functionCall.getArguments().get(0);
+		assertEquals(functionCall.arguments().size(), 1);
+		Expression argExpression = functionCall.arguments().get(0);
 
 		TypeCastExpression argTypeCast = (TypeCastExpression) argExpression;
 		IntegerConstantExpression argIntConstant = (IntegerConstantExpression)argTypeCast.expression();
 		
-		assertEquals(argIntConstant.getValue(), 42);
+		assertEquals(argIntConstant.value(), 42);
 		
 		Symbol symbol = session.getCompilationUnit().getScope().getSymbolTable()/*.getGlobalSymbolTable()*/.lookupByQName(new QName("sirius", "lang", "println")).get();
 		

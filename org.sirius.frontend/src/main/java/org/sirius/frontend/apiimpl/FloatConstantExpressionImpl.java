@@ -5,7 +5,7 @@ import org.sirius.frontend.api.Type;
 
 public record FloatConstantExpressionImpl() implements FloatConstantExpression {
 	@Override
-	public Type getType() {
+	public Type type() {
 		return Type.floatType;
 	}
 }

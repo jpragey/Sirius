@@ -16,12 +16,12 @@ public class FunctionActualArgumentImpl implements FunctionActualArgument {
 	}
 	
 	@Override
-	public Type getType() {
+	public Type type() {
 		return type;
 	}
 
 	@Override
-	public Token getName() {
+	public Token nameToken() {
 		return name;
 	}
 	@Override

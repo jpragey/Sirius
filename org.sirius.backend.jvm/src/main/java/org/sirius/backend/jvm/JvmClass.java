@@ -57,9 +57,9 @@ public class JvmClass {
 		this.memberValues = memberValues;
 		this.classExecutorFunctions = classExecutorFunctions.stream()
 				.map((FunctionClass fc)-> {
-					QName fctQName = fc.getQName();
-					List<Statement> body = fc.getBodyStatements();
-					Type returnType = fc.getReturnType();
+					QName fctQName = fc.qName();
+					List<Statement> body = fc.bodyStatements();
+					Type returnType = fc.returnType();
 //					List<Statement> body = List.<Statement>of();
 					ClassExecutorFunction cef = new ClassExecutorFunction(qName/*class QName*/, body, returnType);
 					return cef;

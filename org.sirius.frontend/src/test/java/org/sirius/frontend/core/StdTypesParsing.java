@@ -39,7 +39,7 @@ public class StdTypesParsing {
 		AstExpression astExpr = st.getExpression();
 		IntegerConstantExpression expr = (IntegerConstantExpression)astExpr.getExpression().get();
 		
-		assertThat(expr.getType(), is(Type.integerType));
+		assertThat(expr.type(), is(Type.integerType));
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class StdTypesParsing {
 		AstExpression astExpr = st.getExpression();
 		FloatConstantExpression expr = (FloatConstantExpression)astExpr.getExpression().get();
 		
-		assertThat(expr.getType(), is(Type.floatType));
+		assertThat(expr.type(), is(Type.floatType));
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class StdTypesParsing {
 		AstExpression astExpr = st.getExpression();
 		BooleanConstantExpression expr = (BooleanConstantExpression)astExpr.getExpression().get();
 		
-		assertThat(expr.getType(), is(Type.booleanType));
+		assertThat(expr.type(), is(Type.booleanType));
 	}
 
 }

@@ -42,9 +42,9 @@ public class JvmMemberValue {
 		if(isFinal)
 			access |= ACC_FINAL;
 		
-		String name = memberValue.getName().getText();
+		String name = memberValue.nameToken().getText();
 		
-		Type type = memberValue.getType();
+		Type type = memberValue.type();
 		String descriptor = descriptorFactory.fieldDescriptor(type);
 		String signature = null;	// Used for generics
 		Object value = 666;
@@ -60,7 +60,7 @@ public class JvmMemberValue {
 	 * @param qName
 	 */
 	public void writeInitBytecode(ClassWriter classWriter, MethodVisitor mv, JvmScope scope, QName qName) {
-		Optional<Expression> optExpr = memberValue.getInitialValue();
+		Optional<Expression> optExpr = memberValue.initialValue();
 		if(optExpr.isEmpty())
 			return;
 		Expression expression = optExpr.get(); // TODO
@@ -72,8 +72,8 @@ public class JvmMemberValue {
 		new JvmExpression(reporter, descriptorFactory, expression).writeExpressionBytecode(mv,  scope);
 				
 		String owner = Util.classInternalName(qName); // internal name x/y/A
-		String name = memberValue.getName().getText();
-		String descriptor = descriptorFactory.fieldDescriptor(memberValue.getType());
+		String name = memberValue.nameToken().getText();
+		String descriptor = descriptorFactory.fieldDescriptor(memberValue.type());
 
 		mv.visitFieldInsn(Opcodes.PUTFIELD, owner, name, descriptor);
 	}

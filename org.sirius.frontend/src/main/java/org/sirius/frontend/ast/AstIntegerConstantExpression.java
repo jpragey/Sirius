@@ -71,12 +71,12 @@ public class AstIntegerConstantExpression implements AstExpression {
 		}
 
 		@Override
-		public int getValue() {
+		public int value() {
 			return value;
 		}
 
 		@Override
-		public Type getType() {
+		public Type type() {
 			return Type.integerType;
 		}
 

@@ -82,7 +82,7 @@ public class ConstructorCallExpression implements AstExpression, Scoped {
 	private class ConstructorCallImpl implements ConstructorCall {
 
 		@Override
-		public Type getType() {
+		public Type type() {
 			String simpleName = name.getText();
 			Optional<Symbol> s = scope.lookupSymbol(simpleName);
 			if(s.isPresent()) {

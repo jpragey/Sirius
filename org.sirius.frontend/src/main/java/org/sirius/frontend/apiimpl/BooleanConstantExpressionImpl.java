@@ -6,7 +6,7 @@ import org.sirius.frontend.api.Type;
 public record BooleanConstantExpressionImpl(boolean value) implements BooleanConstantExpression {
 
 	@Override
-	public Type getType() {
+	public Type type() {
 		return Type.booleanType;
 	}
 

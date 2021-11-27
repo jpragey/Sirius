@@ -106,7 +106,7 @@ public class JvmScope {
 			this.initExp = initExp;
 		}
 		public JvmLocalVariable(LocalVariableStatement statement, int index) {
-			this(statement.getType(), statement.getName().getText(), statement.getInitialValue(), index);
+			this(statement.type(), statement.nameToken().getText(), statement.initialValue(), index);
 		}
 		
 		public JvmLocalVariable(FunctionParameter statement, int index) {
@@ -163,7 +163,7 @@ public class JvmScope {
 	public JvmLocalVariable addLocalVariable(LocalVariableStatement st) {
 		JvmLocalVariable h = new JvmLocalVariable(st, this.varIndex++);
 		locVarsStmts.add(h);
-		varByName.put(st.getName().getText(), h);
+		varByName.put(st.nameToken().getText(), h);
 		return h;
 	}
 	public JvmLocalVariable addFunctionArgument(FunctionParameter st) {

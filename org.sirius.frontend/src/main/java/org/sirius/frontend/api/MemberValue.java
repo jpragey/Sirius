@@ -9,7 +9,7 @@ import java.util.Optional;
  */
 public interface MemberValue extends AbstractValue {
 	
-	Optional<Expression> getInitialValue();
+	Optional<Expression> initialValue();
 	
 	default void visitMe(Visitor visitor) {
 		visitor.start(this);

@@ -132,12 +132,12 @@ public class AstFunctionCallExpression implements AstExpression, Scoped {
 				}
 
 				@Override
-				public Type getType() {
-					return expr.getType();
+				public Type type() {
+					return expr.type();
 				}
 				@Override
 				public String toString() {
-					return "TypeCastExpression " + expr.getType().toString() + " -> " + targetType().toString();
+					return "TypeCastExpression " + expr.type().toString() + " -> " + targetType().toString();
 				}};
 			return Optional.of(castExpression);
 		}

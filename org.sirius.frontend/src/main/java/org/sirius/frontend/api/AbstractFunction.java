@@ -27,25 +27,14 @@ public interface AbstractFunction {
 
 	default void visitMe(Visitor visitor) {
 		visitor.startAbstractFunction(this);
-//		visitor.start(this);
 		
-//		getArguments().forEach(arg -> arg.visitMe(visitor));
 		parameters().forEach(arg -> arg.visitMe(visitor));
 		
 		bodyStatements().ifPresent(
-				stmtList -> stmtList.forEach(arg -> {
-					arg.visitMe(visitor);
-					})
-				);
-//		getBodyStatements().ifPresent(
-//				stmtList -> stmtList.forEach(arg -> arg.visitMe(visitor))
-//				);
-		
-//		for(Statement stmt: getBodyStatements()) {
-//			stmt.visitMe(visitor);
-//		}
-
-		//		visitor.end(this);
+			stmtList -> stmtList.forEach(arg -> {
+				arg.visitMe(visitor);
+				})
+			);
 		visitor.endAbstractFunction(this);
 	}
 
