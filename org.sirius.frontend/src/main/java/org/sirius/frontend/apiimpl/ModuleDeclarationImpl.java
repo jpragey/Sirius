@@ -7,42 +7,17 @@ import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.core.PhysicalPath;
 
-public class ModuleDeclarationImpl implements ModuleDeclaration {
-	private QName moduleQName;
-	private String version;
-	private PhysicalPath physicalPath;
-	private List<PackageDeclaration> packageDeclarationList;
-	
 
-	public ModuleDeclarationImpl(QName moduleQName, String version, PhysicalPath physicalPath, List<PackageDeclaration> packageDeclarationList) {
-		super();
-		this.moduleQName = moduleQName;
-		this.version = version;
-		this.physicalPath = physicalPath;
-		this.packageDeclarationList = packageDeclarationList;
-	}
-
-	@Override
-	public List<PackageDeclaration> getPackages() {
-		return packageDeclarationList;
-	}
-
-	@Override
-	public QName getQName() {
-		return moduleQName;
-	}
-
-	@Override
-	public PhysicalPath getPhysicalPath() {
-		return physicalPath;
-	}
+public record ModuleDeclarationImpl(
+		QName qName, 
+		String version, 
+		PhysicalPath physicalPath, 
+		List<PackageDeclaration> packageDeclarations) 
+	implements ModuleDeclaration 
+{
 	@Override
 	public String toString() {
-		return "\"" + getQName().toString() + "\"";
+		return "\"" + qName().toString() + "\"";
 	}
 
-	@Override
-	public String getVersion() {
-		return version;
-	}
 }

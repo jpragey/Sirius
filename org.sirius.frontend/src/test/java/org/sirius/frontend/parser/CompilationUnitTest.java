@@ -45,7 +45,7 @@ public class CompilationUnitTest {
 		List<ModuleDeclaration> modules = session.getModuleDeclarations();
 		assertEquals(modules.size(), 1);
 				
-		List<PackageDeclaration> packageDeclarations = modules.get(0).getPackages();
+		List<PackageDeclaration> packageDeclarations = modules.get(0).packageDeclarations();
 		assertEquals(packageDeclarations.size(), 1);
 				
 		List<AbstractFunction> fds = packageDeclarations.get(0).getFunctions();

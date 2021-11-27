@@ -93,7 +93,7 @@ public class LambdaTest {
 		ScriptSession session = Compiler.compileScript(sourceCode);
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
-		PackageDeclaration pd =  md.getPackages().get(0);
+		PackageDeclaration pd =  md.packageDeclarations().get(0);
 		ClassType classC = pd.getClasses().get(0);
 		
 		MemberValue add = classC.getMemberValues().get(0);

@@ -20,7 +20,7 @@ public class ScriptSessionTest {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {} ");
 
 		assertEquals(session.getModuleDeclarations().size(), 1);
-		assertEquals(session.getModuleDeclarations().get(0).getQName().toString(), "a.b");
+		assertEquals(session.getModuleDeclarations().get(0).qName().toString(), "a.b");
 		
 	}
 	
@@ -30,7 +30,7 @@ public class ScriptSessionTest {
 		ScriptSession session = Compiler.compileScript("#!\n package p.k; ");
 
 		assertEquals(session.getModuleDeclarations().size(), 1);
-		assertEquals(session.getModuleDeclarations().get(0).getQName().toString(), "");
+		assertEquals(session.getModuleDeclarations().get(0).qName().toString(), "");
 	}
 	
 	@Test
@@ -47,10 +47,10 @@ public class ScriptSessionTest {
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 
-		List<PackageDeclaration> packDecls = md.getPackages();
+		List<PackageDeclaration> packDecls = md.packageDeclarations();
 		assertEquals(packDecls.size(), 1);
 
-		PackageDeclaration pack = md.getPackages().get(0);
+		PackageDeclaration pack = md.packageDeclarations().get(0);
 		assertEquals(pack.getQName().dotSeparated(), "p.k");
 		
 		

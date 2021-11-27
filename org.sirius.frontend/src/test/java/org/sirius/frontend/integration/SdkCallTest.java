@@ -29,7 +29,7 @@ public class SdkCallTest {
 		assertEquals(session.getModuleDeclarations().size(), 1);
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
-		PackageDeclaration pack = md.getPackages().get(0);
+		PackageDeclaration pack = md.packageDeclarations().get(0);
 		AbstractFunction runFunction = pack.getFunctions().get(0);
 		
 		Statement callExprStatement = runFunction.getBodyStatements().get().get(0);

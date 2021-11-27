@@ -179,7 +179,7 @@ public class JarCreatorListener implements ClassWriterListener {
 	@Override
 	public void start(ModuleDeclaration moduleDeclaration) {
 //		System.out.println(" ++ Start module creation in " + modulePath + " for module '" + moduleQName + "'");
-		QName moduleQName = moduleDeclaration.getQName();
+		QName moduleQName = moduleDeclaration.qName();
 		outputWriter.open(moduleQName);
 	}
 

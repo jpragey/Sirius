@@ -46,14 +46,14 @@ public class JvmModule {
 		this.moduleDeclaration = moduleDeclaration;
 		this.backendOptions = backendOptions;
 		
-		for(PackageDeclaration pd: moduleDeclaration.getPackages()) {
+		for(PackageDeclaration pd: moduleDeclaration.packageDeclarations()) {
 			jvmPackages.add(new JvmPackage(reporter, pd, backendOptions));
 		}
 	}
 	
 	private void writeModuleDeclaratorBytecode(List<ClassWriterListener> listeners) {
 		QName classQname = new QName("module-info");
-		String moduleQname = moduleDeclaration.getQName().dotSeparated();
+		String moduleQname = moduleDeclaration.qName().dotSeparated();
 		
 		ClassWriter classWriter = new ClassWriter(
 				ClassWriter.COMPUTE_FRAMES | // No need to 
@@ -69,7 +69,7 @@ public class JvmModule {
 		
 //		int access = ACC_OPEN | ACC_SYNTHETIC | ACC_MANDATED;
 		int moduleAccess =  ACC_PUBLIC;
-		String moduleVersion = moduleDeclaration.getVersion();
+		String moduleVersion = moduleDeclaration.version();
 //		System.out.println("Module qname: '" + moduleQname + "', version: '" + moduleVersion + "'.");
 
 		ModuleVisitor mv = classWriter.visitModule(moduleQname, moduleAccess, moduleVersion);
@@ -80,7 +80,7 @@ public class JvmModule {
 		
 		// -- exports
 		List<JvmModuleExport> jvmModuleExports = List.of(
-				new JvmModuleExport(moduleDeclaration.getQName())
+				new JvmModuleExport(moduleDeclaration.qName())
 				);
 		for(JvmModuleExport me: jvmModuleExports) {
 			int flags = ACC_MANDATED;// valid values are among ACC_SYNTHETIC and ACC_MANDATED.

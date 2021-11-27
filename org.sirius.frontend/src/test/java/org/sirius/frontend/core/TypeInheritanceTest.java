@@ -38,7 +38,7 @@ public class TypeInheritanceTest {
 			assertEquals(moduleDeclarations.size(), 1);
 			
 			ModuleDeclaration md = session.getModuleDeclarations().get(0);
-			PackageDeclaration pd = md.getPackages().get(0);
+			PackageDeclaration pd = md.packageDeclarations().get(0);
 			
 			List<ClassType> classes = pd.getClasses();
 			assertEquals(classes.size(), 1);

@@ -56,7 +56,7 @@ public class BooleanExpressionTest {
 		assertEquals(moduleDeclarations.size(), 1);
 		
 		ModuleDeclaration md = moduleDeclarations.get(0);
-		PackageDeclaration pd = md.getPackages().get(0);
+		PackageDeclaration pd = md.packageDeclarations().get(0);
 		
 		assertEquals(pd.getFunctions().size(), 1);
 		AbstractFunction fd = pd.getFunctions().get(0);
@@ -77,8 +77,8 @@ public class BooleanExpressionTest {
 		
 		
 		// -- As API
-		assertEquals(md.getPackages().size(), 1);
-		PackageDeclaration apiPd = md.getPackages().get(0);
+		assertEquals(md.packageDeclarations().size(), 1);
+		PackageDeclaration apiPd = md.packageDeclarations().get(0);
 		
 		assertEquals(apiPd.getFunctions().size(), 1);
 		AbstractFunction tlf = apiPd.getFunctions().get(0);

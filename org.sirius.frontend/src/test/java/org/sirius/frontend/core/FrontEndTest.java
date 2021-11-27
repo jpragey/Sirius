@@ -31,7 +31,7 @@ public class FrontEndTest {
 
 		List<ModuleDeclaration> moduleContents = session.getModuleDeclarations();
 		assertEquals(moduleContents.size(), 1);
-		assertEquals(moduleContents.get(0).getPhysicalPath().getElements(), Arrays.asList("a", "b"));
+		assertEquals(moduleContents.get(0).physicalPath().getElements(), Arrays.asList("a", "b"));
 	}
 	
 	@Test
@@ -47,8 +47,8 @@ public class FrontEndTest {
 		assertEquals(moduleContents.size(), 1);
 		
 		ModuleDeclaration mc = moduleContents.get(0);
-		assertEquals(mc.getPackages().size(), 1);
-		PackageDeclaration pd = mc.getPackages().get(0);
+		assertEquals(mc.packageDeclarations().size(), 1);
+		PackageDeclaration pd = mc.packageDeclarations().get(0);
 		
 		assertEquals(pd.getQName().getStringElements(), Arrays.asList("a", "b"));
 	}
@@ -66,8 +66,8 @@ public class FrontEndTest {
 		assertEquals(moduleDeclarations.size(), 1);
 		
 		ModuleDeclaration mc = moduleDeclarations.get(0);
-		assertEquals(1, mc.getPackages().size());
-		PackageDeclaration pc = mc.getPackages().get(0);
+		assertEquals(1, mc.packageDeclarations().size());
+		PackageDeclaration pc = mc.packageDeclarations().get(0);
 		
 		assertEquals(pc.getQName().getStringElements(), Arrays.asList("a", "b"));
 	}
@@ -93,11 +93,11 @@ public class FrontEndTest {
 		assertEquals(moduleContents.size(), 1);
 		ModuleDeclaration module = moduleContents.get(0);
 
-		List<PackageDeclaration> packageDeclarations = module.getPackages();
+		List<PackageDeclaration> packageDeclarations = module.packageDeclarations();
 		assertEquals(packageDeclarations.size(), 1);
 		
 		
-		List<PackageDeclaration> pkgs = module.getPackages();
+		List<PackageDeclaration> pkgs = module.packageDeclarations();
 
 		assertEquals(pkgs.size(), 1);
 		PackageDeclaration pkg = pkgs.get(0);

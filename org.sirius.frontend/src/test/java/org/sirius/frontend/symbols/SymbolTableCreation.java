@@ -24,8 +24,8 @@ public class SymbolTableCreation {
 		
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
-		assertEquals(md.getPackages().size(), 1);
-		PackageDeclaration pd = md.getPackages().get(0);
+		assertEquals(md.packageDeclarations().size(), 1);
+		PackageDeclaration pd = md.packageDeclarations().get(0);
 		
 		AbstractFunction fd = pd.getFunctions().get(0);
 //		

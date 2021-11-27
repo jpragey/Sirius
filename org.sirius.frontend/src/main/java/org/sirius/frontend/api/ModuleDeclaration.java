@@ -13,21 +13,22 @@ import org.sirius.frontend.core.PhysicalPath;
  */
 public interface ModuleDeclaration {
 
-	List<PackageDeclaration> getPackages();
+	List<PackageDeclaration> packageDeclarations();
 	
-	QName getQName();
+	QName qName();
 	
-	String getVersion();
-	
+	String version();
+
+	PhysicalPath physicalPath();
+
 	default String getQNameString() {
-		return getQName().dotSeparated();
+		return qName().dotSeparated();
 	}
 	
-	PhysicalPath getPhysicalPath();
 	
 	default void visitMe(Visitor visitor) {
 		visitor.start(this);
-		getPackages().stream().forEach(v -> v.visitMe(visitor));
+		packageDeclarations().stream().forEach(v -> v.visitMe(visitor));
 		visitor.end(this);
 	}
 
