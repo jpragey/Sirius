@@ -1,7 +1,7 @@
 package org.sirius.frontend.api;
 
 public interface BooleanConstantExpression extends Expression {
-	boolean getValue();
+	boolean value();
 	
 	default void visitMe(Visitor visitor) {
 		visitor.start(this);

@@ -82,7 +82,7 @@ public class JvmClass {
 	
 	public static JvmClass createPackageClass(Reporter reporter, PackageDeclaration pd, BackendOptions backendOptions, DescriptorFactory descriptorFactory,
 			Collection<AbstractFunction> packageFuncs) {
-		return new JvmClass(reporter, pd.getQName().child(Util.jvmPackageClassName), backendOptions, descriptorFactory,
+		return new JvmClass(reporter, pd.qName().child(Util.jvmPackageClassName), backendOptions, descriptorFactory,
 				packageFuncs.stream()
 					.map(func->new JvmMemberFunction(reporter, backendOptions,descriptorFactory,func, true /*isStatic*/))
 					.collect(Collectors.toUnmodifiableList()), 

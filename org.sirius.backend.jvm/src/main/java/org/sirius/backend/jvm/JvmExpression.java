@@ -143,15 +143,15 @@ public class JvmExpression {
 		}
 	}
 	private void processBooleanConstant(MethodVisitor mv, BooleanConstantExpression expression) {
-		boolean expessionVal = expression.getValue();
+		boolean expessionVal = expression.value();
 		int opcode = expessionVal ?
 				Opcodes.ICONST_1:
 				Opcodes.ICONST_0;
 		mv.visitInsn(opcode);
 	}
 	private void processBinaryOpExpression(MethodVisitor mv, BinaryOpExpression expression, JvmScope scope) {
-		JvmExpression leftExpr  = new JvmExpression(reporter, descriptorFactory, expression.getLeft());
-		JvmExpression rightExpr = new JvmExpression(reporter, descriptorFactory, expression.getRight());
+		JvmExpression leftExpr  = new JvmExpression(reporter, descriptorFactory, expression.left());
+		JvmExpression rightExpr = new JvmExpression(reporter, descriptorFactory, expression.right());
 		
 		leftExpr .writeExpressionBytecode(mv, scope);
 		rightExpr.writeExpressionBytecode(mv, scope);
@@ -159,7 +159,7 @@ public class JvmExpression {
 //		writeExpressionBytecode(mv, expression.getLeft(), scope);
 //		writeExpressionBytecode(mv, expression.getRight(), scope);
 		
-		BinaryOpExpression.Operator operator = expression.getOperator();
+		BinaryOpExpression.Operator operator = expression.operator();
 		String opFuncName;
 		switch(operator) {
 		case Add:

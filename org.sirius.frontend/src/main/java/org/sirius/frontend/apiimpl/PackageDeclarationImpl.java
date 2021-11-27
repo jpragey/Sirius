@@ -7,21 +7,13 @@ import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.PackageDeclaration;
 
-public class PackageDeclarationImpl implements PackageDeclaration {
-	private QName qName;
-	private List<ClassType> classDeclarations;
-	private List<ClassType> interfaceDeclarations;
-	private List<AbstractFunction> functions;
-	
-	public PackageDeclarationImpl(QName qName, List<ClassType> classDeclarations,
-			List<ClassType> interfaceDeclarations, 
-			List<AbstractFunction> functions) {
-		super();
-		this.qName = qName;
-		this.classDeclarations = classDeclarations;
-		this.interfaceDeclarations = interfaceDeclarations;
-		this.functions = functions;
-	}
+public record PackageDeclarationImpl(
+		QName qName, 
+		List<ClassType> classDeclarations,
+		List<ClassType> interfaceDeclarations, 
+		List<AbstractFunction> functions
+) implements PackageDeclaration 
+{
 
 	@Override
 	public List<ClassType> getClasses() {
@@ -38,10 +30,6 @@ public class PackageDeclarationImpl implements PackageDeclaration {
 		return functions;
 	}
 
-	@Override
-	public QName getQName() {
-		return qName;
-	}
 	@Override
 	public String toString() {
 		return "Pack: \"" + qName + "\"";

@@ -6,7 +6,7 @@ import org.sirius.common.core.QName;
 
 public interface PackageDeclaration {
 
-	QName getQName(); 
+	QName qName(); 
 
 	List<ClassType> getClasses();
 	List<ClassType> getInterfaces();

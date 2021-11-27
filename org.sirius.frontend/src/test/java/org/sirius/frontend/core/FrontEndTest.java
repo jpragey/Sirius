@@ -50,7 +50,7 @@ public class FrontEndTest {
 		assertEquals(mc.packageDeclarations().size(), 1);
 		PackageDeclaration pd = mc.packageDeclarations().get(0);
 		
-		assertEquals(pd.getQName().getStringElements(), Arrays.asList("a", "b"));
+		assertEquals(pd.qName().getStringElements(), Arrays.asList("a", "b"));
 	}
 	
 	@Test
@@ -69,7 +69,7 @@ public class FrontEndTest {
 		assertEquals(1, mc.packageDeclarations().size());
 		PackageDeclaration pc = mc.packageDeclarations().get(0);
 		
-		assertEquals(pc.getQName().getStringElements(), Arrays.asList("a", "b"));
+		assertEquals(pc.qName().getStringElements(), Arrays.asList("a", "b"));
 	}
 	
 	
@@ -101,7 +101,7 @@ public class FrontEndTest {
 
 		assertEquals(pkgs.size(), 1);
 		PackageDeclaration pkg = pkgs.get(0);
-		assertEquals(pkg.getQName().dotSeparated(), "a.b");
+		assertEquals(pkg.qName().dotSeparated(), "a.b");
 		
 		/**
 		assertEquals(cu0.getClassDeclarations().get(0).getName().getText(), "A");

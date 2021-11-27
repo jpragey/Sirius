@@ -78,7 +78,7 @@ public class MethodTests {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration pack = md.packageDeclarations().get(0);
-		assertEquals(pack.getQName().dotSeparated(), "p.k");
+		assertEquals(pack.qName().dotSeparated(), "p.k");
 		
 		
 		ClassType cd = pack.getClasses().get(0);
@@ -115,7 +115,7 @@ public class MethodTests {
 		
 		List<PackageDeclaration> packages = md.packageDeclarations();
 		PackageDeclaration pack = packages.get(0);
-		assertEquals(pack.getQName().dotSeparated(), "");
+		assertEquals(pack.qName().dotSeparated(), "");
 		
 		List<ClassType> classes = pack.getClasses();
 		ClassType cd = classes.get(0);
@@ -177,7 +177,7 @@ public class MethodTests {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration pack = md.packageDeclarations().get(0);
-		assertEquals(pack.getQName().dotSeparated(), "p.k");
+		assertEquals(pack.qName().dotSeparated(), "p.k");
 		
 		
 		ClassType cd = pack.getClasses().get(0);
@@ -306,7 +306,7 @@ public class MethodTests {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration apiPack = md.packageDeclarations().get(0);
-		assertEquals(apiPack.getQName().dotSeparated(), "");
+		assertEquals(apiPack.qName().dotSeparated(), "");
 		
 		AbstractFunction apiAddFunc = apiPack.getFunctions().get(2);
 		assertEquals(apiAddFunc.getQName().dotSeparated(), "add");

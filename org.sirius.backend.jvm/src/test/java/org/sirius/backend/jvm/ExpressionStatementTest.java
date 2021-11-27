@@ -55,7 +55,7 @@ public class ExpressionStatementTest {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration pack = md.packageDeclarations().get(0);
-		assertEquals(pack.getQName().dotSeparated(), "p.k");
+		assertEquals(pack.qName().dotSeparated(), "p.k");
 		
 		
 		ClassType cd = pack.getClasses().get(0);

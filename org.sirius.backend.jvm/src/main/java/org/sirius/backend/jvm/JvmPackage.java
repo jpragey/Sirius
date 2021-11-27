@@ -38,7 +38,7 @@ public class JvmPackage {
 
 	@Override
 	public String toString() {
-		return "Package '" + packageDeclaration.getQName().dotSeparated() + "'";
+		return "Package '" + packageDeclaration.qName().dotSeparated() + "'";
 	}
 	
 	// TODO: remove
