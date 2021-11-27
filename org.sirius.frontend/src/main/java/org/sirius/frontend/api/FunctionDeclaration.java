@@ -4,8 +4,8 @@ import java.util.List;
 
 public interface FunctionDeclaration extends Type {
 
-	Type getReturnType();
+	Type returnType();
 
-	List<Type> getParameterTypes();
+	List<Type> parameterTypes();
 
 }

@@ -142,9 +142,9 @@ public class SimpleReferenceExpression implements AstExpression, Scoped {
 		}
 
 		if(this.impl == null) {
-			Optional<AstFunctionArgument> functionParamDecl = scope.getFunctionArgument(simpleName);
+			Optional<AstFunctionParameter> functionParamDecl = scope.getFunctionArgument(simpleName);
 			if(functionParamDecl.isPresent()) {
-				AstFunctionArgument st = functionParamDecl.get();
+				AstFunctionParameter st = functionParamDecl.get();
 				FunctionActualArgumentImpl actualArg = new FunctionActualArgumentImpl(st);
 				this.impl = Optional.of(actualArg);
 			}

@@ -10,7 +10,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.sirius.frontend.api.Expression;
-import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.FunctionParameter;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.Type;
 
@@ -109,7 +109,7 @@ public class JvmScope {
 			this(statement.getType(), statement.getName().getText(), statement.getInitialValue(), index);
 		}
 		
-		public JvmLocalVariable(FunctionFormalArgument statement, int index) {
+		public JvmLocalVariable(FunctionParameter statement, int index) {
 			this(statement.getType(), statement.getQName().getLast(), Optional.empty() /* TODO */, index);
 		}
 		
@@ -166,7 +166,7 @@ public class JvmScope {
 		varByName.put(st.getName().getText(), h);
 		return h;
 	}
-	public JvmLocalVariable addFunctionArgument(FunctionFormalArgument st) {
+	public JvmLocalVariable addFunctionArgument(FunctionParameter st) {
 		JvmLocalVariable h = new JvmLocalVariable(st, this.varIndex++);
 		locVarsStmts.add(h);
 		varByName.put(h.localVarName, h);

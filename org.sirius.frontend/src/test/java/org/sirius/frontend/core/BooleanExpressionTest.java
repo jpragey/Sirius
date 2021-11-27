@@ -61,9 +61,9 @@ public class BooleanExpressionTest {
 		assertEquals(pd.getFunctions().size(), 1);
 		AbstractFunction fd = pd.getFunctions().get(0);
 		
-		assertEquals(fd.getQName().getLast(), "f");
-		assertEquals(fd.getBodyStatements().get().size(), 1);
-		LocalVariableStatement localVarST = (LocalVariableStatement)fd.getBodyStatements().get().get(0); 
+		assertEquals(fd.qName().getLast(), "f");
+		assertEquals(fd.bodyStatements().get().size(), 1);
+		LocalVariableStatement localVarST = (LocalVariableStatement)fd.bodyStatements().get().get(0); 
 //		assertEquals(localVarST.getName().getText(), "b");
 ////		assert(lvst.getType().toString(), "");
 		Type t = localVarST.getType();
@@ -83,7 +83,7 @@ public class BooleanExpressionTest {
 		assertEquals(apiPd.getFunctions().size(), 1);
 		AbstractFunction tlf = apiPd.getFunctions().get(0);
 		
-		assertEquals(tlf.getQName().dotSeparated(), "f");
+		assertEquals(tlf.qName().dotSeparated(), "f");
 	}
 
 }

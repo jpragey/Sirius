@@ -16,7 +16,7 @@ import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.ExpressionStatement;
 import org.sirius.frontend.api.FunctionCall;
-import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.FunctionParameter;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
@@ -50,7 +50,7 @@ public class TopLevelFunctionTest {
 		assertEquals(pd.getFunctions().size(), 1);
 		AbstractFunction fd = pd.getFunctions().get(0);
 		
-		assertEquals(fd.getQName().getLast(), "f");
+		assertEquals(fd.qName().getLast(), "f");
 		
 		// -- As API
 		assertEquals(md.packageDeclarations().size(), 1);
@@ -59,7 +59,7 @@ public class TopLevelFunctionTest {
 		assertEquals(apiPd.getFunctions().size(), 1);
 		AbstractFunction tlf = apiPd.getFunctions().get(0);
 		
-		assertEquals(tlf.getQName().dotSeparated(), "a.b.f");
+		assertEquals(tlf.qName().dotSeparated(), "a.b.f");
 	}
 
 	@Test
@@ -68,9 +68,9 @@ public class TopLevelFunctionTest {
 
 		AbstractFunction tlf = session.getModuleDeclarations().get(0).packageDeclarations().get(0).getFunctions().get(2);
 		
-		assertEquals(tlf.getArguments().size(), 2);
-		assertEquals(tlf.getArguments().get(0).getQName().dotSeparated(), "a.b.f.i");
-		assertEquals(tlf.getArguments().get(1).getQName().dotSeparated(), "a.b.f.j");
+		assertEquals(tlf.parameters().size(), 2);
+		assertEquals(tlf.parameters().get(0).getQName().dotSeparated(), "a.b.f.i");
+		assertEquals(tlf.parameters().get(1).getQName().dotSeparated(), "a.b.f.j");
 	}
 
 	@Test
@@ -87,12 +87,12 @@ public class TopLevelFunctionTest {
 		List<AbstractFunction> funcs = pd.getFunctions();
 		AbstractFunction fd = funcs.get(0);
 
-		List<Statement> statements = fd.getBodyStatements().get();
+		List<Statement> statements = fd.bodyStatements().get();
 		assertEquals(statements.size(), 1);
 		Statement statement0 = statements.get(0);
 		ExpressionStatement printCallStmt = (ExpressionStatement)statement0;	// NOTE: type casting is used as an assertion
 		//Expression fctCallExpr = printCallStmt.getExpression();
-		FunctionCall functionCall = (FunctionCall)printCallStmt.getExpression();
+		FunctionCall functionCall = (FunctionCall)printCallStmt.expression();
 //		assertEquals(functionCall.getFunctionName().getText(), "println");
 		
 		
@@ -125,15 +125,15 @@ public class TopLevelFunctionTest {
 		PackageDeclaration pd = md.packageDeclarations().get(0);
 		AbstractFunction fd = pd.getFunctions().get(1);
 		
-		assertThat(fd.getArguments().size(), is(1));
-		FunctionFormalArgument fctArg0 = fd.getArguments().get(0);
+		assertThat(fd.parameters().size(), is(1));
+		FunctionParameter fctArg0 = fd.parameters().get(0);
 		
 //		System.out.println("Arg: type=" + fctArg0.getType().getClass() + " : " + fctArg0.getType() + ", name=" + fctArg0.getQName().getLast());
 		
 		// -- API
-		List<FunctionFormalArgument> apiArgs = moduleDeclarations.get(0).packageDeclarations().get(0).getFunctions().get(1).getArguments();
+		List<FunctionParameter> apiArgs = moduleDeclarations.get(0).packageDeclarations().get(0).getFunctions().get(1).parameters();
 		assertEquals(apiArgs.size(), 1);
-		FunctionFormalArgument apiArg0 = apiArgs.get(0);
+		FunctionParameter apiArg0 = apiArgs.get(0);
 		
 //		System.out.println("Arg: type=" + apiArg0.getType().getClass() + " : " + apiArg0.getType() + ", name=" + apiArg0.getQName());
 		assertThat(apiArg0.getType(),  instanceOf(ClassType.class));
@@ -155,8 +155,8 @@ public class TopLevelFunctionTest {
 		PackageDeclaration pd = md.packageDeclarations().get(0);
 		AbstractFunction fd = pd.getFunctions().get(1);
 		
-		assertEquals(fd.getArguments().size(), 1);
-		FunctionFormalArgument fctArg0 = fd.getArguments().get(0);
+		assertEquals(fd.parameters().size(), 1);
+		FunctionParameter fctArg0 = fd.parameters().get(0);
 		
 		
 //		System.out.println("Arg: type=" + fctArg0.getType().getClass() + " : " + fctArg0.getType() + ", name=" + fctArg0.getQName().getLast());
@@ -164,12 +164,12 @@ public class TopLevelFunctionTest {
 		// -- API
 		List<AbstractFunction> apiFunc = moduleDeclarations.get(0).packageDeclarations().get(0).getFunctions();
 
-		assertEquals(apiFunc.get(0).getArguments().size(), 0);
-		assertEquals(apiFunc.get(1).getArguments().size(), 1);
+		assertEquals(apiFunc.get(0).parameters().size(), 0);
+		assertEquals(apiFunc.get(1).parameters().size(), 1);
 		
-		List<FunctionFormalArgument> apiArgs = apiFunc.get(1).getArguments();
+		List<FunctionParameter> apiArgs = apiFunc.get(1).parameters();
 		assertEquals(apiArgs.size(), 1);
-		FunctionFormalArgument apiArg0 = apiArgs.get(0);
+		FunctionParameter apiArg0 = apiArgs.get(0);
 		
 //		System.out.println("Arg: type=" + apiArg0.getType().getClass() + " : " + apiArg0.getType() + ", name=" + apiArg0.getQName());
 		assert (apiArg0.getType() instanceof ArrayType);
@@ -193,8 +193,8 @@ public class TopLevelFunctionTest {
 		PackageDeclaration pd = md.packageDeclarations().get(0);
 		AbstractFunction fd = pd.getFunctions().get(0);
 
-		assertEquals(fd.getBodyStatements().get().size(), 1);
-		Statement st0 = fd.getBodyStatements().get().get(0);
+		assertEquals(fd.bodyStatements().get().size(), 1);
+		Statement st0 = fd.bodyStatements().get().get(0);
 		assert(st0 instanceof LocalVariableStatement);
 	}
 	
@@ -217,7 +217,7 @@ public class TopLevelFunctionTest {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		PackageDeclaration pd = md.packageDeclarations().get(0);
 		AbstractFunction fd = pd.getFunctions().get(0);
-		Type type = fd.getReturnType();
+		Type type = fd.returnType();
 		
 		assert(type instanceof ClassType);
 		ClassType classDeclaration = (ClassType)type;
@@ -237,9 +237,9 @@ public class TopLevelFunctionTest {
 		assertEquals(pd.getFunctions().size(), 2);
 		AbstractFunction fd = pd.getFunctions().get(1);
 		
-		List<FunctionFormalArgument> args = fd.getArguments();
+		List<FunctionParameter> args = fd.parameters();
 		assertEquals(args.size(), 1);
-		FunctionFormalArgument arg = args.get(0);
+		FunctionParameter arg = args.get(0);
 		
 		ClassType argType = (ClassType)arg.getType();
 		assertEquals(argType.qName().dotSeparated(), "sirius.lang.String");

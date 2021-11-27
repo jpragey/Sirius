@@ -2,7 +2,7 @@ package org.sirius.frontend.api;
 
 import org.sirius.common.core.QName;
 
-public interface FunctionFormalArgument {
+public interface FunctionParameter {
 
 	Type getType(/*Scope scope*/);
 	

@@ -20,7 +20,7 @@ import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionActualArgument;
-import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.FunctionParameter;
 import org.sirius.frontend.api.IntegerType;
 import org.sirius.frontend.api.LocalVariableStatement;
 import org.sirius.frontend.api.MemberValue;
@@ -32,7 +32,7 @@ import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.FunctionImpl;
 import org.sirius.frontend.apiimpl.ScopeImpl;
-import org.sirius.frontend.ast.AstFunctionArgument;
+import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstReturnStatement;
@@ -85,7 +85,7 @@ public class MethodTests {
 		assertEquals(cd.qName(), new QName("p", "k", "C"));
 		
 		AbstractFunction func = cd.memberFunctions().get(0);
-		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
+		assertEquals(func.qName(), new QName("p", "k", "C", "f"));
 
 //		assertEquals(func.getBodyStatements().size(), 1);
 //		LocalVariableStatement lvs = (LocalVariableStatement)func.getBodyStatements().get(0);
@@ -125,9 +125,9 @@ public class MethodTests {
 //		assertEquals(cd.getQName(), new QName("A"));
 		List<AbstractFunction> tlFuncs = pack.getFunctions();
 		AbstractFunction mainFunc = tlFuncs.get(0);
-		assertEquals(mainFunc.getQName().dotSeparated(), "main");
+		assertEquals(mainFunc.qName().dotSeparated(), "main");
 		
-		List<Statement> body = mainFunc.getBodyStatements().get();
+		List<Statement> body = mainFunc.bodyStatements().get();
 		assertEquals(body.size(), 2);
 		
 		LocalVariableStatement locVarStmt = (LocalVariableStatement)body.get(0);
@@ -185,10 +185,10 @@ public class MethodTests {
 		
 		// -- function local value
 		AbstractFunction func = cd.memberFunctions().get(0);
-		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
+		assertEquals(func.qName(), new QName("p", "k", "C", "f"));
 
-		assertEquals(func.getBodyStatements().get().size(), 1);
-		LocalVariableStatement funcLvs = (LocalVariableStatement)func.getBodyStatements().get().get(0);
+		assertEquals(func.bodyStatements().get().size(), 1);
+		LocalVariableStatement funcLvs = (LocalVariableStatement)func.bodyStatements().get().get(0);
 		assertEquals(funcLvs.getName().getText(), "s11");
 
 		assertTrue(funcLvs.getInitialValue().isPresent());
@@ -217,12 +217,12 @@ public class MethodTests {
 		// -- class method
 		assertEquals(cd.memberFunctions().size(), 1);
 		AbstractFunction apiMethod = cd.memberFunctions().get(0);
-		assertThat(apiMethod.getQName().dotSeparated(), is("p.k.C.f"));
+		assertThat(apiMethod.qName().dotSeparated(), is("p.k.C.f"));
 
 	}
 	
 	void assertIsFctArgInteger(int argIndex, String expectedName,  AbstractFunction apiFunc) {
-		FunctionFormalArgument arg1 = apiFunc.getArguments().get(argIndex);
+		FunctionParameter arg1 = apiFunc.parameters().get(argIndex);
 		assertEquals(arg1.getQName().getLast(), expectedName);
 //		assert(arg1.getType() instanceof ClassDeclaration);
 		assertThat(arg1.getType(), instanceOf(IntegerType.class));
@@ -284,9 +284,9 @@ public class MethodTests {
 		assertEquals(allArgsPartial.getArgs().size(), 2);
 		
 		SymbolTableImpl partialSymbolTable = allArgsPartial.getSymbolTable();
-		Optional<AstFunctionArgument> optArg = partialSymbolTable.lookupFunctionArgument("x");
+		Optional<AstFunctionParameter> optArg = partialSymbolTable.lookupFunctionArgument("x");
 		assert(optArg.isPresent());
-		Optional<AstFunctionArgument> opt1Arg = partialSymbolTable.lookupFunctionArgument("y");
+		Optional<AstFunctionParameter> opt1Arg = partialSymbolTable.lookupFunctionArgument("y");
 		assert(opt1Arg.isPresent());
 		
 		AstReturnStatement returnStatement = (AstReturnStatement)func.getBody().getStatement(0);
@@ -309,16 +309,16 @@ public class MethodTests {
 		assertEquals(apiPack.qName().dotSeparated(), "");
 		
 		AbstractFunction apiAddFunc = apiPack.getFunctions().get(2);
-		assertEquals(apiAddFunc.getQName().dotSeparated(), "add");
-		assertEquals(apiAddFunc.getArguments().size(), 2);
+		assertEquals(apiAddFunc.qName().dotSeparated(), "add");
+		assertEquals(apiAddFunc.parameters().size(), 2);
 
 		
 		assertIsFctArgInteger(0, "x",  apiAddFunc);
 		assertIsFctArgInteger(1, "y",  apiAddFunc);
 
-		assertNotNull(apiAddFunc.getBodyStatements());
-		assertEquals(apiAddFunc.getBodyStatements().get().size(), 1);
-		ReturnStatement retStmt = (ReturnStatement)apiAddFunc.getBodyStatements().get().get(0);
+		assertNotNull(apiAddFunc.bodyStatements());
+		assertEquals(apiAddFunc.bodyStatements().get().size(), 1);
+		ReturnStatement retStmt = (ReturnStatement)apiAddFunc.bodyStatements().get().get(0);
 		Expression retExpr = retStmt.getExpression();
 //		assertThat(retExpr, instanceOf(LocalVariableReference.class /* FunctionActualArgument.class*/));
 		assertThat(retExpr, instanceOf(FunctionActualArgument.class));
@@ -370,15 +370,15 @@ public class MethodTests {
 
 		Partial partial0 = func.getPartials().get(0);
 		FunctionImpl partial0Api = partial0.toAPI();
-		assertThat(partial0Api.getArguments(), hasSize(0));
+		assertThat(partial0Api.parameters(), hasSize(0));
 		
 		Partial partial1 = func.getPartials().get(1);
 		FunctionImpl partial1Api = partial1.toAPI();
-		assertEquals(partial1Api.getArguments().size(), 1);
+		assertEquals(partial1Api.parameters().size(), 1);
 		
 		Partial partial2 = func.getPartials().get(2);
 		FunctionImpl partial2Api = partial2.toAPI();
-		assertEquals(partial2Api.getArguments().size(), 2);
+		assertEquals(partial2Api.parameters().size(), 2);
 		
 		
 	}

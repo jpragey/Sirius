@@ -32,10 +32,10 @@ public class SdkCallTest {
 		PackageDeclaration pack = md.packageDeclarations().get(0);
 		AbstractFunction runFunction = pack.getFunctions().get(0);
 		
-		Statement callExprStatement = runFunction.getBodyStatements().get().get(0);
+		Statement callExprStatement = runFunction.bodyStatements().get().get(0);
 		assert(callExprStatement instanceof ExpressionStatement);
 
-		Expression callExpression = ((ExpressionStatement)callExprStatement).getExpression();
+		Expression callExpression = ((ExpressionStatement)callExprStatement).expression();
 		assert(callExpression instanceof FunctionCall);
 		FunctionCall functionCall = (FunctionCall)callExpression;
 		

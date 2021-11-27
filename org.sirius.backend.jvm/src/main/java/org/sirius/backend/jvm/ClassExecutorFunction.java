@@ -13,7 +13,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.sirius.backend.jvm.JvmScope.JvmLocalVariable;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.FunctionParameter;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
 
@@ -23,7 +23,7 @@ public record ClassExecutorFunction(QName classQName, List<Statement> body, Type
 	
 	public void writeBytecode(ClassWriter classWriter, Reporter reporter, DescriptorFactory descriptorFactory) {
 		boolean isStatic = false; // TODO ???
-		List<FunctionFormalArgument> currentArgs = List.of();
+		List<FunctionParameter> currentArgs = List.of();
 		String functionDescriptor = descriptorFactory.methodDescriptor(returnType, currentArgs /* TODO: args*/);	// eg (Ljava/lang/String;)V
 		int access = ACC_PUBLIC;
 		if(isStatic)
@@ -47,7 +47,7 @@ public record ClassExecutorFunction(QName classQName, List<Statement> body, Type
 		mv.visitEnd();
 	}
 	
-	private void writeFunctionContent(ClassWriter classWriter, MethodVisitor mv, List<FunctionFormalArgument> remainingParams,
+	private void writeFunctionContent(ClassWriter classWriter, MethodVisitor mv, List<FunctionParameter> remainingParams,
 			ScopeManager scopeManager, Reporter reporter, DescriptorFactory descriptorFactory) {
 
 		QName functionQName = classQName.child(functionSName);
@@ -66,7 +66,7 @@ public record ClassExecutorFunction(QName classQName, List<Statement> body, Type
 			
 		} else {
 			// -- manage first param and recurse
-			FunctionFormalArgument param = remainingParams.remove(0);
+			FunctionParameter param = remainingParams.remove(0);
 			JvmLocalVariable varHolder = scope.addFunctionArgument(param);
 			
 			writeFunctionContent(classWriter, mv, remainingParams, scopeManager, reporter, descriptorFactory);

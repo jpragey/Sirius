@@ -24,7 +24,7 @@ public class Partial implements Visitable, Verifiable, Scoped {
 	private FunctionImpl functionImpl = null;
 	
 	public Partial(AstToken name,
-			List<AstFunctionArgument> args, 
+			List<AstFunctionParameter> args, 
 			boolean member,
 			AstType returnType,
 			List<AstStatement> body) 
@@ -40,7 +40,7 @@ public class Partial implements Visitable, Verifiable, Scoped {
 
 	public void assignSymbolTable(SymbolTableImpl symbolTable) {
 		this.symbolTable = symbolTable;
-		for(AstFunctionArgument arg: lambdaDefinition.getArgs()) {
+		for(AstFunctionParameter arg: lambdaDefinition.getArgs()) {
 			this.symbolTable.addFunctionArgument(arg);
 		}
 	}
@@ -53,11 +53,11 @@ public class Partial implements Visitable, Verifiable, Scoped {
 		return name;
 	}
 
-	public List<AstFunctionArgument> getArgs() {
+	public List<AstFunctionParameter> getArgs() {
 		return lambdaDefinition.getArgs();
 	}
-	public AstFunctionArgument getArg(int argIndex) {
-		List<AstFunctionArgument> args = getArgs();
+	public AstFunctionParameter getArg(int argIndex) {
+		List<AstFunctionParameter> args = getArgs();
 		
 		if(argIndex<0 || argIndex > args.size())
 			throw new IllegalArgumentException("Trying to get arg " + argIndex + " of function of " + args.size() + " args; function " + toString());
@@ -70,7 +70,7 @@ public class Partial implements Visitable, Verifiable, Scoped {
 	}
 	@Override
 	public String toString() {
-		List<AstFunctionArgument> args = getArgs();
+		List<AstFunctionParameter> args = getArgs();
 		String text =
 				name.getText() + 
 				"_" + args.size() + "_" +
@@ -91,14 +91,14 @@ public class Partial implements Visitable, Verifiable, Scoped {
 
 	public FunctionImpl toAPI() {
 		
-		List<AstFunctionArgument> args = getArgs();
+		List<AstFunctionParameter> args = getArgs();
 		if(functionImpl == null) {
 			APIFunctionInfo functionInfo = lambdaDefinition.toAPI(qName);
 			this.functionImpl = functionInfo.getFunctionType();	// TODO
-			assert(functionImpl.getArguments().size() == args.size());
+			assert(functionImpl.parameters().size() == args.size());
 		}
 
-		assert(functionImpl.getArguments().size() == args.size());
+		assert(functionImpl.parameters().size() == args.size());
 
 		return functionImpl;
 	}
@@ -114,7 +114,7 @@ public class Partial implements Visitable, Verifiable, Scoped {
 	public void assignScope(Scope scope) {
 		this.scope = scope;
 
-		for(AstFunctionArgument arg: lambdaDefinition.getArgs())
+		for(AstFunctionParameter arg: lambdaDefinition.getArgs())
 			this.scope.addFunctionArgument(arg);
 
 		for(AstStatement stmt: lambdaDefinition.getBody().getStatements()) {

@@ -15,7 +15,7 @@ import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFunctionArgument;
+import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
@@ -121,7 +121,7 @@ public class SdkToolsTest {
 		assertThat(allArgsPartial.getArgs(), hasSize(1));
 		
 //		AstFunctionFormalArgument arg0 = func.getFormalArguments().get(0); 
-		AstFunctionArgument arg0 = allArgsPartial.getArg(0); 
+		AstFunctionParameter arg0 = allArgsPartial.getArg(0); 
 		assertEquals(arg0.getName().getText(), "text"); // TODO
 		assert(arg0.getType() instanceof QNameRefType);
 		QNameRefType arg0Type = (QNameRefType)arg0.getType();

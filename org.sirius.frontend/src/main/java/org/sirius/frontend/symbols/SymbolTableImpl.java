@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFunctionArgument;
+import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
@@ -110,7 +110,7 @@ public class SymbolTableImpl implements SymbolTable {
 	}
 
 	/** Local variable */
-	public void addFunctionArgument(AstFunctionArgument functionArgument) {
+	public void addFunctionArgument(AstFunctionParameter functionArgument) {
 		AstToken simpleName = functionArgument.getName();
 
 		// TODO: add symbol in qname-based 'symbols' map 
@@ -152,7 +152,7 @@ public class SymbolTableImpl implements SymbolTable {
 		return symbol.getClassDeclaration();
 	}
 
-	public Optional<AstFunctionArgument> lookupFunctionArgument(String simpleName) {
+	public Optional<AstFunctionParameter> lookupFunctionArgument(String simpleName) {
 		Symbol symbol = symbolsBySimpleName.get(simpleName);
 
 		if(symbol == null && parent.isPresent()) {

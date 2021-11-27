@@ -22,7 +22,7 @@ public class JvmExpressionStatement implements JvmStatement {
 	
 	@Override
 	public void writeBytecode(ClassWriter classWriter, MethodVisitor mv) {
-		Expression expression = statement.getExpression();
+		Expression expression = statement.expression();
 		JvmExpression jvmExpression = new JvmExpression(reporter, descriptorFactory, expression);
 		jvmExpression.writeExpressionBytecode(mv, scope);
 	}

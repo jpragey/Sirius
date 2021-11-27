@@ -7,7 +7,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ArrayType;
 import org.sirius.frontend.api.ClassType;
-import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.FunctionParameter;
 import org.sirius.frontend.api.Scope;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.api.VoidType;
@@ -43,16 +43,16 @@ public class DescriptorFactory {
 		}
 	}
 	
-	public String methodDescriptor(Type returnType, List<FunctionFormalArgument> arguments) {
+	public String methodDescriptor(Type returnType, List<FunctionParameter> arguments) {
 		String descr = arguments.stream()
-			.map((FunctionFormalArgument arg) -> fieldDescriptor(arg.getType()) )
+			.map((FunctionParameter arg) -> fieldDescriptor(arg.getType()) )
 			.collect(Collectors.joining("", "(", ")"))
 			+ (returnType instanceof VoidType ? "V" : fieldDescriptor(returnType))
 			;
 		return descr;
 	}
 	public String methodDescriptor(AbstractFunction function) {
-		String descr = methodDescriptor(function.getReturnType(), function.getArguments());
+		String descr = methodDescriptor(function.returnType(), function.parameters());
 		return descr;
 	}
 	

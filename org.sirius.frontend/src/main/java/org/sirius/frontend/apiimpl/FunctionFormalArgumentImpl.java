@@ -1,31 +1,24 @@
 package org.sirius.frontend.apiimpl;
 
 import org.sirius.common.core.QName;
-import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.FunctionParameter;
 import org.sirius.frontend.api.Scope;
 import org.sirius.frontend.api.Type;
 
-public class FunctionFormalArgumentImpl implements FunctionFormalArgument {
-	private QName argQName;
-	private Type type;
-	
-	public FunctionFormalArgumentImpl(QName argQName, Type type) {
-		super();
-		this.argQName = argQName;
-		this.type = type;
-	}
+public record FunctionFormalArgumentImpl(QName qName, Type type) implements FunctionParameter {
 
 	@Override
-	public QName getQName() {
-		return argQName;
+	public String toString() {
+		return "param. " + qName.dotSeparated();
 	}
 
 	@Override
 	public Type getType() {
 		return type;
 	}
+
 	@Override
-	public String toString() {
-		return "param. " + argQName.dotSeparated();
+	public QName getQName() {
+		return qName;
 	}
 }

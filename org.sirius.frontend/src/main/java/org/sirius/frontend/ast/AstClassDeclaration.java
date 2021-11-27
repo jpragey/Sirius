@@ -33,7 +33,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	private List<FunctionDefinition> functionDefinitions;
 	
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
-	private List<AstFunctionArgument> anonConstructorArguments = new ArrayList<>(); 
+	private List<AstFunctionParameter> anonConstructorArguments = new ArrayList<>(); 
 
 	private Scope scope = null;
 	
@@ -54,7 +54,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			List<TypeParameter> typeParameters,
 			List<FunctionDefinition> functionDeclarations,
 			List<AstMemberValueDeclaration> valueDeclarations,
-			List<AstFunctionArgument> anonConstructorArguments,
+			List<AstFunctionParameter> anonConstructorArguments,
 			List<AstToken> ancestorInfos) 
 	{
 		super();
@@ -75,7 +75,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 			List.of(),					//<TypeFormalParameterDeclaration> typeParameters,
 			List.of(), 					//<AstFunctionDeclaration>(), // functionDeclarations,
 			new ArrayList<AstMemberValueDeclaration>(), //List valueDeclarations,
-			new ArrayList<AstFunctionArgument>() 		//List anonConstructorArguments
+			new ArrayList<AstFunctionParameter>() 		//List anonConstructorArguments
 			, new ArrayList<AstToken>()
 		);
 	}
@@ -131,7 +131,7 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		for(AstMemberValueDeclaration memberValueDeclaration: this.valueDeclarations) {
 			scope.addMemberValue(memberValueDeclaration);
 		}
-		for(AstFunctionArgument constructorArg : this.anonConstructorArguments) {
+		for(AstFunctionParameter constructorArg : this.anonConstructorArguments) {
 			
 		}
 	}
@@ -203,11 +203,11 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	public List<AstMemberValueDeclaration> getValueDeclarations() {
 		return valueDeclarations;
 	}
-	public void addAnonConstructorArgument(AstFunctionArgument argument) {
+	public void addAnonConstructorArgument(AstFunctionParameter argument) {
 		this.anonConstructorArguments.add(argument);
 	}
 
-	public List<AstFunctionArgument> getAnonConstructorArguments() {
+	public List<AstFunctionParameter> getAnonConstructorArguments() {
 		return anonConstructorArguments;
 	}
 	public List<AstToken> getAncestors() {

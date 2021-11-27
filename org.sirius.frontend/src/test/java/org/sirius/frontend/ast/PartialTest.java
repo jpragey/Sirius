@@ -14,8 +14,8 @@ public class PartialTest {
 	
 	@Test
 	public void partialToStringTest() {
-		AstFunctionArgument par0 = new AstFunctionArgument(AstType.noType, AstToken.internal("param 0"));
-		AstFunctionArgument par1 = new AstFunctionArgument(AstType.noType, AstToken.internal("param 1"));
+		AstFunctionParameter par0 = new AstFunctionParameter(AstType.noType, AstToken.internal("param 0"));
+		AstFunctionParameter par1 = new AstFunctionParameter(AstType.noType, AstToken.internal("param 1"));
 		Partial partial = new Partial (
 				AstToken.internal("partial") ,
 				Arrays.asList(par0, par1), 

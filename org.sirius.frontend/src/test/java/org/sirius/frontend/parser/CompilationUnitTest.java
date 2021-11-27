@@ -51,9 +51,9 @@ public class CompilationUnitTest {
 		List<AbstractFunction> fds = packageDeclarations.get(0).getFunctions();
 		
 		assertEquals(fds.size(), 3);
-		assertEquals(fds.get(0).getQName().getLast(), "ff");
-		assertEquals(fds.get(1).getQName().getLast(), "gg");
-		assertEquals(fds.get(2).getQName().getLast(), "hh");
+		assertEquals(fds.get(0).qName().getLast(), "ff");
+		assertEquals(fds.get(1).qName().getLast(), "gg");
+		assertEquals(fds.get(2).qName().getLast(), "hh");
 	}
 	
 	@Test

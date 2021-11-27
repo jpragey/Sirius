@@ -3,7 +3,7 @@ package org.sirius.frontend.ast;
 import java.util.List;
 
 import org.sirius.common.core.QName;
-import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.FunctionParameter;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.apiimpl.FunctionFormalArgumentImpl;
 import org.sirius.frontend.symbols.SymbolTableImpl;
@@ -13,7 +13,7 @@ import org.sirius.frontend.symbols.SymbolTableImpl;
  * @author jpragey
  *
  */
-public class AstFunctionArgument implements Verifiable {
+public class AstFunctionParameter implements Verifiable {
 	
 	private AstType type;
 	private AstToken name;
@@ -21,7 +21,7 @@ public class AstFunctionArgument implements Verifiable {
 	/** index in arg list (set *after* construction */
 	private int index;
 
-	public AstFunctionArgument(AstType type, AstToken name) {
+	public AstFunctionParameter(AstType type, AstToken name) {
 		super();
 		this.type = type;
 		this.name = name;
@@ -40,9 +40,9 @@ public class AstFunctionArgument implements Verifiable {
 
 
 	public void visit(AstVisitor visitor) {
-		visitor.startFunctionFormalArgument(this);
+		visitor.startFunctionParameter(this);
 		type.visit(visitor);
-		visitor.endFunctionFormalArgument(this);
+		visitor.endFunctionParameter(this);
 	}
 	
 //	/** index in argument list */
@@ -69,7 +69,7 @@ public class AstFunctionArgument implements Verifiable {
 	
 	private FunctionFormalArgumentImpl impl = null;
 	
-	public FunctionFormalArgument toAPI(QName functionQName) {
+	public FunctionParameter toAPI(QName functionQName) {
 		if(impl == null) {
 			Type paramType = type.getApiType();
 			QName paramQName = functionQName.child(name.getText());

@@ -89,8 +89,8 @@ public interface Visitor {
 	public default void end(PackageDeclaration declaration) {}
 	
 	
-	public default void start(FunctionFormalArgument declaration) {}
-	public default void end(FunctionFormalArgument declaration) {}
+	public default void start(FunctionParameter declaration) {}
+	public default void end(FunctionParameter declaration) {}
 	
 	
 	

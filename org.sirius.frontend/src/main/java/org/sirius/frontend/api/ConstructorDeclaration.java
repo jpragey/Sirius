@@ -13,7 +13,7 @@ public interface ConstructorDeclaration {
 
 	QName getQName();
 
-	List<FunctionFormalArgument> getArguments();
+	List<FunctionParameter> getArguments();
 	
 	List<Statement> getBodyStatements();
 	

@@ -80,8 +80,8 @@ public class DescriptorsFactoryTest {
 				funcQName, 
 				new MockClassType(new QName("RetVal")));
 		
-		func.getArguments().add(new MockFunctionFormalArgument(funcQName.child("arg0"), new MockClassType(new QName("zz", "Arg0"))));
-		func.getArguments().add(new MockFunctionFormalArgument(funcQName.child("arg1"), new MockClassType(new QName("zz", "Arg1"))));
+		func.parameters().add(new MockFunctionFormalArgument(funcQName.child("arg0"), new MockClassType(new QName("zz", "Arg0"))));
+		func.parameters().add(new MockFunctionFormalArgument(funcQName.child("arg1"), new MockClassType(new QName("zz", "Arg1"))));
 		
 		assertEquals(factory.methodDescriptor(func), "(Lzz/Arg0;Lzz/Arg1;)LRetVal;");
 	}

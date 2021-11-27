@@ -58,7 +58,7 @@ public class ScriptSessionTest {
 		assertEquals(cd.qName(), new QName("p", "k", "C"));
 		
 		AbstractFunction func = cd.memberFunctions().get(0);
-		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
+		assertEquals(func.qName(), new QName("p", "k", "C", "f"));
 		
 	}
 	

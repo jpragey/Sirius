@@ -6,26 +6,26 @@ import java.util.stream.Collectors;
 import org.sirius.frontend.api.FunctionDeclaration;
 import org.sirius.frontend.api.Type;
 
-public class FunctionDeclarationImpl implements FunctionDeclaration {
+public record FunctionDeclarationImpl(Type returnType, List<Type> parameterTypes) implements FunctionDeclaration {
 	
-	private Type returnType;
-	private List<Type> parameterTypes;
-	
-	public FunctionDeclarationImpl(Type returnType, List<Type> parameterTypes) {
-		super();
-		this.returnType = returnType;
-		this.parameterTypes = parameterTypes;
-	}
-
-	@Override
-	public Type getReturnType() {
-		return returnType;
-	}
-
-	@Override
-	public List<Type> getParameterTypes() {
-		return parameterTypes;
-	}
+////	private Type returnType;
+////	private List<Type> parameterTypes;
+////	
+////	public FunctionDeclarationImpl(Type returnType, List<Type> parameterTypes) {
+////		super();
+////		this.returnType = returnType;
+////		this.parameterTypes = parameterTypes;
+////	}
+//
+//	@Override
+//	public Type getReturnType() {
+//		return returnType;
+//	}
+//
+//	@Override
+//	public List<Type> getParameterTypes() {
+//		return parameterTypes;
+//	}
 
 	@Override
 	public String toString() {

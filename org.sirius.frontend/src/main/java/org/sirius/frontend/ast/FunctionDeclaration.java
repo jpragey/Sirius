@@ -15,12 +15,12 @@ public class FunctionDeclaration implements Visitable, Verifiable {
 	private AstToken name;
 	
 	private LambdaDeclaration lambdaDeclaration;
-	private List<AstFunctionArgument> args; // TODO: remove redundancy args / lambdaDeclaration  
+	private List<AstFunctionParameter> args; // TODO: remove redundancy args / lambdaDeclaration  
 	
 	private boolean member /* ie is an instance method*/;
 	
 	
-	public FunctionDeclaration(List<AstFunctionArgument> args, AstType returnType, 
+	public FunctionDeclaration(List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/,             
 			AstToken name) 
 	{
@@ -61,7 +61,7 @@ public class FunctionDeclaration implements Visitable, Verifiable {
 		return name.getText();
 	}
 
-	public List<AstFunctionArgument> getArgs() {
+	public List<AstFunctionParameter> getArgs() {
 		return args;
 	}
 

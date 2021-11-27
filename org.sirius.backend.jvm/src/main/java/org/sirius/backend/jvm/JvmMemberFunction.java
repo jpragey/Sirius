@@ -16,7 +16,7 @@ import org.sirius.backend.jvm.JvmScope.JvmLocalVariable;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.FunctionFormalArgument;
+import org.sirius.frontend.api.FunctionParameter;
 import org.sirius.frontend.api.Statement;
 
 public class JvmMemberFunction {
@@ -38,7 +38,7 @@ public class JvmMemberFunction {
 		this.backendOptions = backendOptions;
 		this.descriptorFactory = descriptorFactory;
 		this.memberFunction = memberFunction;
-		this.functionQName = memberFunction.getQName();
+		this.functionQName = memberFunction.qName();
 //		this.containerScope = containerScope;
 		this.isStatic = isStatic;
 
@@ -69,7 +69,7 @@ public class JvmMemberFunction {
 		mv.visitInsn(RETURN);
 	}
 
-	private void writeFunctionContent(ClassWriter classWriter, MethodVisitor mv, List<FunctionFormalArgument> remainingParams) {
+	private void writeFunctionContent(ClassWriter classWriter, MethodVisitor mv, List<FunctionParameter> remainingParams) {
 		JvmScope scope = scopeManager.enterNewScope(
 				this.functionQName.getLast() +
 				"-" + remainingParams.size() + "-args"
@@ -78,14 +78,14 @@ public class JvmMemberFunction {
 		if(remainingParams.isEmpty()) {
 			// -- all params are manages, handle statements
 
-			JvmStatementBlock bodyBlock = new JvmStatementBlock(reporter, descriptorFactory, scopeManager, memberFunction.getBodyStatements().get());
+			JvmStatementBlock bodyBlock = new JvmStatementBlock(reporter, descriptorFactory, scopeManager, memberFunction.bodyStatements().get());
 			bodyBlock.writeBytecode(classWriter, mv);
 
 			writeDummyDefaultReturn(mv);
 			
 		} else {
 			// -- manage first param and recurse
-			FunctionFormalArgument param = remainingParams.remove(0);
+			FunctionParameter param = remainingParams.remove(0);
 			JvmLocalVariable varHolder = scope.addFunctionArgument(param);
 			
 			writeFunctionContent(classWriter, mv, remainingParams);
@@ -109,7 +109,7 @@ public class JvmMemberFunction {
 				null /* String signature */,
 				null /* String[] exceptions */);
 		// -- call function (no arguments)
-		if(memberFunction.getArguments().isEmpty()) {
+		if(memberFunction.parameters().isEmpty()) {
 			
 			int invokeOpcode = INVOKESTATIC;
 			String methodDescriptor = "()V";
@@ -131,7 +131,7 @@ public class JvmMemberFunction {
 					);
 
 		} else {
-			reporter.error("Error creating JVM main(){}: the function " + memberFunction.getQName().dotSeparated() + " has arguments (not supported yet).");
+			reporter.error("Error creating JVM main(){}: the function " + memberFunction.qName().dotSeparated() + " has arguments (not supported yet).");
 		}
 		
 		
@@ -150,7 +150,7 @@ public class JvmMemberFunction {
 //		QName functionQName = memberFunction.getQName();
 		
 		String functionName = functionQName.getLast();
-		Optional<List<Statement>> optBody = memberFunction.getBodyStatements();
+		Optional<List<Statement>> optBody = memberFunction.bodyStatements();
 		if(optBody.isEmpty()) {
 			reporter.error("Can't generate bytecode for function " + functionQName.dotSeparated() + ", body is missing."); // TODO add function location to message
 		}
@@ -167,7 +167,7 @@ public class JvmMemberFunction {
 		JvmScope scope = scopeManager.enterNewScope(this.functionQName.getLast());
 		
 		
-		List<FunctionFormalArgument> currentArgs = new ArrayList<>(memberFunction.getArguments()); // TODO: shouldn't be mutable
+		List<FunctionParameter> currentArgs = new ArrayList<>(memberFunction.parameters()); // TODO: shouldn't be mutable
 		writeFunctionContent(classWriter, mv, currentArgs);
 
 		scopeManager.leaveScope();
@@ -189,7 +189,7 @@ public class JvmMemberFunction {
 	@Override
 	public String toString() {
 		return functionQName.dotSeparated() + 
-				"(" + memberFunction.getArguments().size() + " params)";
+				"(" + memberFunction.parameters().size() + " params)";
 	}
 
 	public QName getQName() {

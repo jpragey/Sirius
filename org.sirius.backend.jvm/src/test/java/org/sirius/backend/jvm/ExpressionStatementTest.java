@@ -62,10 +62,10 @@ public class ExpressionStatementTest {
 		assertEquals(cd.qName(), new QName("p", "k", "C"));
 		
 		AbstractFunction func = cd.memberFunctions().get(0);
-		assertEquals(func.getQName(), new QName("p", "k", "C", "f"));
+		assertEquals(func.qName(), new QName("p", "k", "C", "f"));
 
-		assertEquals(func.getBodyStatements().get().size(), 1);
-		ExpressionStatement statement = (ExpressionStatement)func.getBodyStatements().get().get(0);
+		assertEquals(func.bodyStatements().get().size(), 1);
+		ExpressionStatement statement = (ExpressionStatement)func.bodyStatements().get().get(0);
 		
 		JvmBackend backend = new JvmBackend(reporter /*, Optional.empty()*//* classDir*/ /*, Optional.empty()*/ /* module*/, false /*verboseAst*/
 				, new BackendOptions(reporter, Optional.empty() /* jvmMain */));

@@ -22,7 +22,7 @@ import org.sirius.frontend.symbols.SymbolTableImpl;
 public class LambdaDefinition implements AstExpression, Verifiable, Visitable, Scoped {
 
 	private AstType returnType; 
-	private List<AstFunctionArgument> args;
+	private List<AstFunctionParameter> args;
 
 	private FunctionBody body;
 	
@@ -49,7 +49,7 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 
 	private Optional<QName> qName = Optional.empty();
 
-	public LambdaDefinition(List<AstFunctionArgument> args, AstType returnType, FunctionBody body) {
+	public LambdaDefinition(List<AstFunctionParameter> args, AstType returnType, FunctionBody body) {
 		this.args = args;
 		this.returnType = returnType;
 		this.body = body;
@@ -68,7 +68,7 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 		return returnType;
 	}
 
-	public List<AstFunctionArgument> getArgs() {
+	public List<AstFunctionParameter> getArgs() {
 		return args;
 	}
 
@@ -99,7 +99,7 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 	}
 	private FunctionImpl toFunctionAPI(QName lambdaQName) {
 
-		List<AstFunctionArgument> args = getArgs();
+		List<AstFunctionParameter> args = getArgs();
 		Type resolvedReturnType = returnType.getApiType();
 
 		List<AstStatement> bodyStmts = body.getStatements();
@@ -114,7 +114,7 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 		}
 		boolean member = false;	// TODO: ???
 		FunctionImpl functionImpl = new FunctionImpl(lambdaQName, args, resolvedReturnType, apiStatements, member);
-		assert(functionImpl.getArguments().size() == args.size());
+		assert(functionImpl.parameters().size() == args.size());
 
 		return functionImpl;
 	}

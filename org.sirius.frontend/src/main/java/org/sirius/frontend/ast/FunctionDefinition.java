@@ -34,7 +34,7 @@ public class FunctionDefinition implements Visitable, Verifiable, Scoped {
 	
 	private boolean member;
 	
-	public FunctionDefinition(List<AstFunctionArgument> args, AstType returnType, 
+	public FunctionDefinition(List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/, AstToken name, List<AstStatement> body) {
 		this(new LambdaClosure(), args, returnType, 
 			member /* ie is an instance method*/,             
@@ -42,7 +42,7 @@ public class FunctionDefinition implements Visitable, Verifiable, Scoped {
 			body);
 	}
 
-	public FunctionDefinition(LambdaClosure closure, List<AstFunctionArgument> args, AstType returnType, 
+	public FunctionDefinition(LambdaClosure closure, List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/,             
 			AstToken name, 
 			List<AstStatement> body) 
@@ -57,7 +57,7 @@ public class FunctionDefinition implements Visitable, Verifiable, Scoped {
 		int argSize = args.size();
 		for(int from = 0; from <= argSize; from++) 
 		{
-			List<AstFunctionArgument> partialArgs = args.subList(0, from);
+			List<AstFunctionParameter> partialArgs = args.subList(0, from);
 			
 			Partial partial = new Partial(
 					name,
@@ -74,14 +74,14 @@ public class FunctionDefinition implements Visitable, Verifiable, Scoped {
 		this.firstArgAppliedFuncDef = applyOneArgToClosure(args, this.closure, body);
 	}
 	 
-	private Optional<FunctionDefinition> applyOneArgToClosure(List<AstFunctionArgument> currentArgs, LambdaClosure /* List<ClosureElement>*/ closure, //FunctionDeclaration functionDeclaration,
+	private Optional<FunctionDefinition> applyOneArgToClosure(List<AstFunctionParameter> currentArgs, LambdaClosure /* List<ClosureElement>*/ closure, //FunctionDeclaration functionDeclaration,
 			List<AstStatement> body) {
 		
 		if(currentArgs.isEmpty()) {
 			return Optional.empty();
 		}
 		
-		List<AstFunctionArgument> nextArgs = currentArgs.subList(1, currentArgs.size()); 
+		List<AstFunctionParameter> nextArgs = currentArgs.subList(1, currentArgs.size()); 
 		
 		LambdaClosure nextClosure = closure.appendEntry(new ClosureElement(currentArgs.get(0)));
 				
@@ -158,7 +158,7 @@ public class FunctionDefinition implements Visitable, Verifiable, Scoped {
 		return firstArgAppliedFuncDef;
 	}
 	
-	public List<AstFunctionArgument> getArgs() {
+	public List<AstFunctionParameter> getArgs() {
 		return lambdaDefinition.getArgs();
 	}
 

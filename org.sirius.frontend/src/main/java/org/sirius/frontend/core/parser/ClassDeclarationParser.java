@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstFunctionArgument;
+import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.FunctionDefinition;
@@ -43,7 +43,7 @@ public class ClassDeclarationParser {
 			
 			// -- Constructor arguments
 			FunctionDeclarationParser.FunctionParameterListVisitor parameterVisitor = new FunctionDeclarationParser.FunctionParameterListVisitor(reporter);
-			List<AstFunctionArgument> anonConstructorArguments = parameterVisitor.visitFunctionDefinitionParameterList(ctx.functionDefinitionParameterList());
+			List<AstFunctionParameter> anonConstructorArguments = parameterVisitor.visitFunctionDefinitionParameterList(ctx.functionDefinitionParameterList());
 			
 			// -- Implemented interfaces
 			List<AstToken> ancestors = ctx.TYPE_ID().stream()

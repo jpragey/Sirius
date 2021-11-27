@@ -45,7 +45,7 @@ public class JvmPackage {
 	private Collection<AbstractFunction> retainOnlyAllArgsFunctions(Collection<AbstractFunction> allFunctions) {
 		TreeMap<String, AbstractFunction> map = new TreeMap<>();
 		for(AbstractFunction func: allFunctions) {
-			String name = func.getQName().getLast();
+			String name = func.qName().getLast();
 			map.put(name, func);
 		}
 		return map.values();

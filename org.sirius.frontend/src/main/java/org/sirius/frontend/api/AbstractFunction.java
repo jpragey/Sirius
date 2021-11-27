@@ -7,7 +7,7 @@ import org.sirius.common.core.QName;
 
 public interface AbstractFunction {
 
-	QName getQName();
+	QName qName();
 
 	/** for member function only
 	 * 
@@ -19,20 +19,20 @@ public interface AbstractFunction {
 	 * 
 	 * @return
 	 */
-	List<FunctionFormalArgument> getArguments();
+	List<FunctionParameter> parameters();
 	
-	Type getReturnType();
+	Type returnType();
 
-	Optional<List<Statement> > getBodyStatements();
+	Optional<List<Statement> > bodyStatements();
 
 	default void visitMe(Visitor visitor) {
 		visitor.startAbstractFunction(this);
 //		visitor.start(this);
 		
 //		getArguments().forEach(arg -> arg.visitMe(visitor));
-		getArguments().forEach(arg -> arg.visitMe(visitor));
+		parameters().forEach(arg -> arg.visitMe(visitor));
 		
-		getBodyStatements().ifPresent(
+		bodyStatements().ifPresent(
 				stmtList -> stmtList.forEach(arg -> {
 					arg.visitMe(visitor);
 					})
