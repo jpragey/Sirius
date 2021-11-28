@@ -12,7 +12,6 @@ import java.util.Optional;
  */
 public class CompileOptionsValues {
 
-//	private String moduleDir =
 	/** '--help' option */
 	private Boolean help = false;
 
@@ -23,6 +22,18 @@ public class CompileOptionsValues {
 	private Optional<String> jvmMain = Optional.empty();
 
 	private ArrayList<String> sources = new ArrayList<String>();
+
+	// Builder pattern, facilitate tests
+	public static class Builder {
+		CompileOptionsValues cov = new CompileOptionsValues();
+		public Builder() {}
+		public Builder withHelp(Boolean help) {cov.help = help; return this;}
+		public Builder withClassDir(String classDir) {cov.classDir = Optional.of(classDir); return this;}
+		public Builder withModuleDir(String moduleDir) {cov.moduleDir = Optional.of(moduleDir); return this;}
+		public Builder withJvmMain(String jvmMain) {cov.jvmMain = Optional.of(jvmMain); return this;}
+		public Builder addSource(String source) {cov.sources.add(source); return this;}
+		public CompileOptionsValues get() {return cov;}
+	}
 	
 	public void setHelp() {
 		this.help = true;
