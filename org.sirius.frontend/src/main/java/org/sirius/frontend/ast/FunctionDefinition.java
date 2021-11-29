@@ -33,21 +33,23 @@ public class FunctionDefinition implements Visitable, Verifiable, Scoped {
 	private Scope scope = null;
 	
 	private boolean member;
+	private AnnotationList annotationList;
 	
-	public FunctionDefinition(List<AstFunctionParameter> args, AstType returnType, 
+	public FunctionDefinition(AnnotationList annotationList, List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/, AstToken name, List<AstStatement> body) {
-		this(new LambdaClosure(), args, returnType, 
+		this(annotationList, new LambdaClosure(), args, returnType, 
 			member /* ie is an instance method*/,             
 			name, 
 			body);
 	}
 
-	public FunctionDefinition(LambdaClosure closure, List<AstFunctionParameter> args, AstType returnType, 
+	public FunctionDefinition(AnnotationList annotationList, LambdaClosure closure, List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/,             
 			AstToken name, 
 			List<AstStatement> body) 
 	{
 		super();
+		this.annotationList = annotationList;
 		this.member = member;
 		this.closure = closure;
 		this.partials = new ArrayList<>(args.size() + 1);
@@ -85,7 +87,7 @@ public class FunctionDefinition implements Visitable, Verifiable, Scoped {
 		
 		LambdaClosure nextClosure = closure.appendEntry(new ClosureElement(currentArgs.get(0)));
 				
-		FunctionDefinition applied = new FunctionDefinition(nextClosure, nextArgs, 
+		FunctionDefinition applied = new FunctionDefinition(annotationList, nextClosure, nextArgs, 
 				lambdaDefinition.getReturnType(),
 				member,
 				name,
@@ -148,6 +150,14 @@ public class FunctionDefinition implements Visitable, Verifiable, Scoped {
 	}
 	public String getNameString() {
 		return getName().getText();
+	}
+
+	public AnnotationList getAnnotationList() {
+		return annotationList;
+	}
+
+	public void setAnnotationList(AnnotationList annotationList) {
+		this.annotationList = annotationList;
 	}
 
 	public FunctionBody getBody() {

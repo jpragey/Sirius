@@ -212,7 +212,7 @@ public class SdkTools {
 		boolean member = !annotationList.contains("static");
 		
 		// TODO: -> FunctionDeclaration ???
-		FunctionDefinition partialfunctionDefinitionList = new FunctionDefinition(args, returnType, member, AstToken.internal(methodName), Collections.emptyList() /*body statements*/); 
+		FunctionDefinition partialfunctionDefinitionList = new FunctionDefinition(annotationList, args, returnType, member, AstToken.internal(methodName), Collections.emptyList() /*body statements*/); 
 		
 		return partialfunctionDefinitionList;
 	}

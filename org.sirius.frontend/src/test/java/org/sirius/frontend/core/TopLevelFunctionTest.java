@@ -87,7 +87,7 @@ public class TopLevelFunctionTest {
 		List<AbstractFunction> funcs = pd.getFunctions();
 		AbstractFunction fd = funcs.get(0);
 
-		List<Statement> statements = fd.bodyStatements().get();
+		List<Statement> statements = fd.bodyStatements();
 		assertEquals(statements.size(), 1);
 		Statement statement0 = statements.get(0);
 		ExpressionStatement printCallStmt = (ExpressionStatement)statement0;	// NOTE: type casting is used as an assertion
@@ -193,8 +193,8 @@ public class TopLevelFunctionTest {
 		PackageDeclaration pd = md.packageDeclarations().get(0);
 		AbstractFunction fd = pd.getFunctions().get(0);
 
-		assertEquals(fd.bodyStatements().get().size(), 1);
-		Statement st0 = fd.bodyStatements().get().get(0);
+		assertEquals(fd.bodyStatements().size(), 1);
+		Statement st0 = fd.bodyStatements().get(0);
 		assert(st0 instanceof LocalVariableStatement);
 	}
 	

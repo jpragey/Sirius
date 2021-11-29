@@ -127,7 +127,7 @@ public class MethodTests {
 		AbstractFunction mainFunc = tlFuncs.get(0);
 		assertEquals(mainFunc.qName().dotSeparated(), "main");
 		
-		List<Statement> body = mainFunc.bodyStatements().get();
+		List<Statement> body = mainFunc.bodyStatements();
 		assertEquals(body.size(), 2);
 		
 		LocalVariableStatement locVarStmt = (LocalVariableStatement)body.get(0);
@@ -187,8 +187,8 @@ public class MethodTests {
 		AbstractFunction func = cd.memberFunctions().get(0);
 		assertEquals(func.qName(), new QName("p", "k", "C", "f"));
 
-		assertEquals(func.bodyStatements().get().size(), 1);
-		LocalVariableStatement funcLvs = (LocalVariableStatement)func.bodyStatements().get().get(0);
+		assertEquals(func.bodyStatements().size(), 1);
+		LocalVariableStatement funcLvs = (LocalVariableStatement)func.bodyStatements().get(0);
 		assertEquals(funcLvs.nameToken().getText(), "s11");
 
 		assertTrue(funcLvs.initialValue().isPresent());
@@ -317,8 +317,8 @@ public class MethodTests {
 		assertIsFctArgInteger(1, "y",  apiAddFunc);
 
 		assertNotNull(apiAddFunc.bodyStatements());
-		assertEquals(apiAddFunc.bodyStatements().get().size(), 1);
-		ReturnStatement retStmt = (ReturnStatement)apiAddFunc.bodyStatements().get().get(0);
+		assertEquals(apiAddFunc.bodyStatements().size(), 1);
+		ReturnStatement retStmt = (ReturnStatement)apiAddFunc.bodyStatements().get(0);
 		Expression retExpr = retStmt.expression();
 //		assertThat(retExpr, instanceOf(LocalVariableReference.class /* FunctionActualArgument.class*/));
 		assertThat(retExpr, instanceOf(FunctionActualArgument.class));

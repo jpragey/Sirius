@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstToken;
@@ -133,6 +134,9 @@ public class FunctionDeclarationParser {
 		@Override
 		public FunctionDeclaration visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 			
+			// -- Annotation List
+			AnnotationList annoList = new AnnotationListParser.AnnotationListVisitor().visit(ctx.annotationList());
+			
 			AstToken name = new AstToken(ctx.name);
 			
 			// -- Function parameters
@@ -150,7 +154,7 @@ public class FunctionDeclarationParser {
 			
 			boolean member = false; 
 			
-			return new FunctionDeclaration(functionParams, returnType, member, name) ;
+			return new FunctionDeclaration(annoList, functionParams, returnType, member, name) ;
 		}
 	}
 	public static class FunctionDefinitionVisitor extends SiriusBaseVisitor<FunctionDefinition> {
@@ -164,7 +168,10 @@ public class FunctionDeclarationParser {
 		
 		@Override
 		public FunctionDefinition visitFunctionDefinition(FunctionDefinitionContext ctx) {
-		
+
+			// -- Annotation List
+			AnnotationList annoList = new AnnotationListParser.AnnotationListVisitor().visit(ctx.annotationList());
+
 			AstToken name = new AstToken(ctx.name);
 			
 			// -- Function parameters
@@ -187,7 +194,7 @@ public class FunctionDeclarationParser {
 			
 			boolean member = false; 
 			
-			return new FunctionDefinition(functionParams, returnType, member, name, bodyStatements) ;
+			return new FunctionDefinition(annoList, functionParams, returnType, member, name, bodyStatements) ;
 		}
 	}
 

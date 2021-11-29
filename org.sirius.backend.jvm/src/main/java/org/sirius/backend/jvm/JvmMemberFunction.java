@@ -78,7 +78,7 @@ public class JvmMemberFunction {
 		if(remainingParams.isEmpty()) {
 			// -- all params are manages, handle statements
 
-			JvmStatementBlock bodyBlock = new JvmStatementBlock(reporter, descriptorFactory, scopeManager, memberFunction.bodyStatements().get());
+			JvmStatementBlock bodyBlock = new JvmStatementBlock(reporter, descriptorFactory, scopeManager, memberFunction.bodyStatements());
 			bodyBlock.writeBytecode(classWriter, mv);
 
 			writeDummyDefaultReturn(mv);
@@ -150,10 +150,10 @@ public class JvmMemberFunction {
 //		QName functionQName = memberFunction.getQName();
 		
 		String functionName = functionQName.getLast();
-		Optional<List<Statement>> optBody = memberFunction.bodyStatements();
-		if(optBody.isEmpty()) {
-			reporter.error("Can't generate bytecode for function " + functionQName.dotSeparated() + ", body is missing."); // TODO add function location to message
-		}
+		List<Statement> optBody = memberFunction.bodyStatements();
+//		if(optBody.isEmpty()) {
+//			reporter.error("Can't generate bytecode for function " + functionQName.dotSeparated() + ", body is missing."); // TODO add function location to message
+//		}
 
 		String functionDescriptor = descriptorFactory.methodDescriptor(memberFunction);	// eg (Ljava/lang/String;)V
 		int access = ACC_PUBLIC;

@@ -23,18 +23,23 @@ public interface AbstractFunction {
 	
 	Type returnType();
 
-	Optional<List<Statement> > bodyStatements();
+	List<Statement > bodyStatements();
 
 	default void visitMe(Visitor visitor) {
 		visitor.startAbstractFunction(this);
 		
 		parameters().forEach(arg -> arg.visitMe(visitor));
 		
-		bodyStatements().ifPresent(
-			stmtList -> stmtList.forEach(arg -> {
-				arg.visitMe(visitor);
-				})
-			);
+//		bodyStatements().ifPresent(
+//				stmtList -> stmtList.forEach(arg -> {
+//					arg.visitMe(visitor);
+//					})
+//				);
+//		bodyStatements().ifPresent(
+		bodyStatements().forEach(arg -> {
+					arg.visitMe(visitor);
+					})
+				;
 		visitor.endAbstractFunction(this);
 	}
 

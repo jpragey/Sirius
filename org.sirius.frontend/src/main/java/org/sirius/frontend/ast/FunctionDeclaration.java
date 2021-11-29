@@ -18,13 +18,14 @@ public class FunctionDeclaration implements Visitable, Verifiable {
 	private List<AstFunctionParameter> args; // TODO: remove redundancy args / lambdaDeclaration  
 	
 	private boolean member /* ie is an instance method*/;
+	private AnnotationList annotationList;
 	
-	
-	public FunctionDeclaration(List<AstFunctionParameter> args, AstType returnType, 
+	public FunctionDeclaration(AnnotationList annotationList, List<AstFunctionParameter> args, AstType returnType, 
 			boolean member /* ie is an instance method*/,             
 			AstToken name) 
 	{
 		super();
+		this.annotationList = annotationList;
 		this.member = member;
 		this.name = name;
 		this.args = args;
@@ -71,6 +72,10 @@ public class FunctionDeclaration implements Visitable, Verifiable {
 
 	public AstType getReturnType() {
 		return lambdaDeclaration.getReturnType();
+	}
+	
+	public AnnotationList getAnnotationList() {
+		return annotationList;
 	}
 	@Override
 	public void verify(int featureFlags) {

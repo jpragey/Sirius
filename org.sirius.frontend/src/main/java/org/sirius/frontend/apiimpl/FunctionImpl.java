@@ -11,27 +11,19 @@ import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.ast.AstFunctionParameter;
 
+/** Function implementation
+ * 
+ * @author jpragey
+ *
+ */
 public record FunctionImpl(
 		QName qName,
 		List<FunctionParameter> parameters,
 		Type returnType,
-		Optional<List<Statement>> bodyStatements,
+		List<Statement> bodyStatements,
 		boolean member
 		) implements AbstractFunction 
 {
-
-	public FunctionImpl(
-			QName functionQName, 
-			List<AstFunctionParameter> formalArguments, 
-			Type returnType, 
-			List<Statement> bodyStatements, boolean member) 
-	{
-		this(functionQName, 
-                formalArguments.stream().map(afa->afa.toAPI(functionQName)).collect(Collectors.toList()), 
-				returnType, 
-				Optional.of(bodyStatements), 
-				member);
-	}
 	@Override
 	public String toString() {
 		return "API function " + qName.dotSeparated() + "(" + parameters.size() + " args)";

@@ -16,6 +16,7 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
+import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
@@ -88,7 +89,9 @@ public class SymbolExportVisitorTest {
 	}
 
 	private FunctionDefinition newFunctionDefinition(String nameStr) {
-		FunctionDefinition pl = new FunctionDefinition(List.of() , 
+		FunctionDefinition pl = new FunctionDefinition(
+				new AnnotationList(),
+				List.of() , 
 				AstType.noType,// returnType, 
 				false /*member*/,             
 				AstToken.internal(nameStr), 

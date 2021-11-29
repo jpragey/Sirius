@@ -144,4 +144,23 @@ public class FunctionDeclarationParserTest {
 		
 //		assertThat(fd.getAllArgsPartial().getBodyStatements().isPresent(), is(false));
 	}
+
+	@Test
+	@DisplayName("Function declaration with no-arg annotations: check annotations are parsed")
+	public void functionWithAnnotaionsAreParsed() {
+		FunctionDeclaration fd = parseTypeDeclaration("anno0 anno1 void f()" /*, new QName()*/);
+		assertThat(fd.getAnnotationList().getAnnotations().toArray().length, is(2));
+		assertThat(fd.getAnnotationList().getAnnotations().stream().map(anno -> anno.getName().getText()).toArray(), 
+				is(new String[] {"anno0", "anno1"}));
+//		assertThat(fd.getAllArgsPartial().getBodyStatements().isPresent(), is(false));
+	}
+	@Test
+	@DisplayName("Function definition with no-arg annotations: check annotations are parsed")
+	public void functionDefinitionWithAnnotaionsAreParsed() {
+		FunctionDefinition fd = parseTypeDefinition("anno0 anno1 void f() {}");
+		assertThat(fd.getAnnotationList().getAnnotations().toArray().length, is(2));
+		assertThat(fd.getAnnotationList().getAnnotations().stream().map(anno -> anno.getName().getText()).toArray(), 
+				is(new String[] {"anno0", "anno1"}));
+//		assertThat(fd.getAllArgsPartial().getBodyStatements().isPresent(), is(false));
+	}
 }

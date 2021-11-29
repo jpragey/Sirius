@@ -62,8 +62,8 @@ public class LocalVariablesTest {
 		assertEquals(cd.memberFunctions().size(), 1);
 		AbstractFunction func = cd.memberFunctions().get(0);
 		
-		assertEquals(func.bodyStatements().get().size(), 1);
-		LocalVariableStatement lvs = (LocalVariableStatement)func.bodyStatements().get().get(0);
+		assertEquals(func.bodyStatements().size(), 1);
+		LocalVariableStatement lvs = (LocalVariableStatement)func.bodyStatements().get(0);
 		
 		assertEquals(lvs.nameToken().getText(), "s");
 

@@ -42,8 +42,8 @@ public class MockAbstractFunction implements AbstractFunction {
 	}
 
 	@Override
-	public Optional<List<Statement>> bodyStatements() {
-		return Optional.of(bodyStatements);
+	public List<Statement> bodyStatements() {
+		return bodyStatements;
 	}
 
 	@Override

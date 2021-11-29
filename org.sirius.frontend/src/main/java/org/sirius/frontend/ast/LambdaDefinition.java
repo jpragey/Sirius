@@ -10,6 +10,7 @@ import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ExecutionEnvironment;
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.api.FunctionParameter;
 import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
@@ -113,7 +114,9 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 			apiStatements.add(st);
 		}
 		boolean member = false;	// TODO: ???
-		FunctionImpl functionImpl = new FunctionImpl(lambdaQName, args, resolvedReturnType, apiStatements, member);
+//		FunctionImpl functionImpl = new FunctionImpl(lambdaQName, args, resolvedReturnType, apiStatements, member);
+		List<FunctionParameter> fctApiParams = args.stream().map(astFctParam -> astFctParam.toAPI(lambdaQName)).toList(); 
+		FunctionImpl functionImpl = new FunctionImpl(lambdaQName,fctApiParams, resolvedReturnType, apiStatements, member);
 		assert(functionImpl.parameters().size() == args.size());
 
 		return functionImpl;
