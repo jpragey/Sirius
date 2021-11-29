@@ -22,14 +22,16 @@ public class Partial implements Visitable, Verifiable, Scoped {
 	private Scope scope = null;
 
 	private FunctionImpl functionImpl = null;
-	
-	public Partial(AstToken name,
+
+	private AnnotationList annotationList;
+	public Partial(AnnotationList annotationList, AstToken name,
 			List<AstFunctionParameter> args, 
 			boolean member,
 			AstType returnType,
 			List<AstStatement> body) 
 	{
 		super();
+		this.annotationList = annotationList;
 		this.name = name;
 
 		this.lambdaDefinition = new LambdaDefinition(args, returnType, new FunctionBody(body));
@@ -102,6 +104,11 @@ public class Partial implements Visitable, Verifiable, Scoped {
 
 		return functionImpl;
 	}
+	
+	public AnnotationList getAnnotationList() {
+		return annotationList;
+	}
+
 	public AstType getReturnType() {
 		return lambdaDefinition.getReturnType();
 	}

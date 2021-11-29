@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
+import org.sirius.frontend.api.Annotation;
 import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
@@ -152,15 +153,18 @@ public class FunctionDeclarationParserTest {
 		assertThat(fd.getAnnotationList().getAnnotations().toArray().length, is(2));
 		assertThat(fd.getAnnotationList().getAnnotations().stream().map(anno -> anno.getName().getText()).toArray(), 
 				is(new String[] {"anno0", "anno1"}));
-//		assertThat(fd.getAllArgsPartial().getBodyStatements().isPresent(), is(false));
 	}
 	@Test
 	@DisplayName("Function definition with no-arg annotations: check annotations are parsed")
 	public void functionDefinitionWithAnnotaionsAreParsed() {
 		FunctionDefinition fd = parseTypeDefinition("anno0 anno1 void f() {}");
 		assertThat(fd.getAnnotationList().getAnnotations().toArray().length, is(2));
+		// -- Check AST
 		assertThat(fd.getAnnotationList().getAnnotations().stream().map(anno -> anno.getName().getText()).toArray(), 
 				is(new String[] {"anno0", "anno1"}));
-//		assertThat(fd.getAllArgsPartial().getBodyStatements().isPresent(), is(false));
+		
+		// -- Check API
+		assertThat(fd.getAllArgsPartial().getAnnotationList().getAnnotations().stream().map (an ->an.getName().getText()).toArray(),
+				is(new String[] {"anno0", "anno1"}));
 	}
 }

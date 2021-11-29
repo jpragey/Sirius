@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
+import org.sirius.frontend.api.Annotation;
 import org.sirius.frontend.api.FunctionParameter;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
@@ -17,6 +18,7 @@ import org.sirius.frontend.ast.AstFunctionParameter;
  *
  */
 public record FunctionImpl(
+		List<Annotation> annotations,
 		QName qName,
 		List<FunctionParameter> parameters,
 		Type returnType,

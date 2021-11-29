@@ -61,7 +61,7 @@ public class FunctionDefinition implements Visitable, Verifiable, Scoped {
 		{
 			List<AstFunctionParameter> partialArgs = args.subList(0, from);
 			
-			Partial partial = new Partial(
+			Partial partial = new Partial(annotationList,
 					name,
 					partialArgs, 
 					member,
@@ -156,9 +156,9 @@ public class FunctionDefinition implements Visitable, Verifiable, Scoped {
 		return annotationList;
 	}
 
-	public void setAnnotationList(AnnotationList annotationList) {
-		this.annotationList = annotationList;
-	}
+//	public void setAnnotationList(AnnotationList annotationList) {
+//		this.annotationList = annotationList;
+//	}
 
 	public FunctionBody getBody() {
 		return lambdaDefinition.getBody();

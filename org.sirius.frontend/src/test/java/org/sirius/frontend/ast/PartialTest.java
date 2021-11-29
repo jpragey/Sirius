@@ -17,6 +17,7 @@ public class PartialTest {
 		AstFunctionParameter par0 = new AstFunctionParameter(AstType.noType, AstToken.internal("param 0"));
 		AstFunctionParameter par1 = new AstFunctionParameter(AstType.noType, AstToken.internal("param 1"));
 		Partial partial = new Partial (
+				new AnnotationList(),
 				AstToken.internal("partial") ,
 				Arrays.asList(par0, par1), 
 				false, //boolean member,
