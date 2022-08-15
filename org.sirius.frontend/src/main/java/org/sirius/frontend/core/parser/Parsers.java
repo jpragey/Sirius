@@ -33,6 +33,9 @@ import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListConte
 
 public record Parsers(Reporter reporter) {
 
+	/****************************************************************************/
+	/** 							QName		 								*/
+	/****************************************************************************/
 	
 	public static class QNameVisitor extends SiriusBaseVisitor<QualifiedName> {
 		public QualifiedName visitQname(QnameContext ctx) 
@@ -45,6 +48,9 @@ public record Parsers(Reporter reporter) {
 			return qName;
 		};
 	}
+	/****************************************************************************/
+	/** 							Annotations 								*/
+	/****************************************************************************/
 
 	public static class AnnotationVisitor extends SiriusBaseVisitor<Annotation> {
 		@Override
@@ -67,16 +73,16 @@ public record Parsers(Reporter reporter) {
 		}
 	}
 
-	public void f() {
-		reporter.error("");
-	}
+	/****************************************************************************/
+	/** 							Functions	 								*/
+	/****************************************************************************/
 	public class FunctionParameterListVisitor extends SiriusBaseVisitor< List<AstFunctionParameter> > {
-		private Reporter reporter;
+//		private Reporter reporter;
 		
-		public FunctionParameterListVisitor(Reporter reporter) {
-			super();
-			this.reporter = reporter;
-		}
+//		public FunctionParameterListVisitor(Reporter reporter) {
+//			super();
+//			this.reporter = reporter;
+//		}
 		
 		@Override
 		public List<AstFunctionParameter> visitFunctionDefinitionParameterList(FunctionDefinitionParameterListContext ctx) {
@@ -97,14 +103,7 @@ public record Parsers(Reporter reporter) {
 	}
 
 	public class FunctionDeclarationVisitor extends SiriusBaseVisitor<FunctionDeclaration> {
-		private Reporter reporter;
 
-		public FunctionDeclarationVisitor(Reporter reporter) {
-			super();
-			this.reporter = reporter;
-		}
-
-		
 		@Override
 		public FunctionDeclaration visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 			
@@ -114,7 +113,7 @@ public record Parsers(Reporter reporter) {
 			AstToken name = new AstToken(ctx.name);
 			
 			// -- Function parameters
-			Parsers.FunctionParameterListVisitor argListVisitor = new FunctionParameterListVisitor(reporter);
+			Parsers.FunctionParameterListVisitor argListVisitor = new FunctionParameterListVisitor();
 			
 			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
 			

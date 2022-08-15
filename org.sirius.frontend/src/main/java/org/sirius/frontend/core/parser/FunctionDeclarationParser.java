@@ -178,7 +178,7 @@ public class FunctionDeclarationParser {
 			AstToken name = new AstToken(ctx.name);
 			
 			// -- Function parameters
-			Parsers.FunctionParameterListVisitor argListVisitor = (new Parsers(reporter)).new FunctionParameterListVisitor(reporter);
+			Parsers.FunctionParameterListVisitor argListVisitor = (new Parsers(reporter)).new FunctionParameterListVisitor();
 			
 			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
 			

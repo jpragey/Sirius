@@ -46,7 +46,7 @@ public class FunctionDeclarationParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.functionDeclaration();
 				
-		Parsers.FunctionDeclarationVisitor fdeclVisitor = parsers.new FunctionDeclarationVisitor(reporter /*, containerQName*/);
+		Parsers.FunctionDeclarationVisitor fdeclVisitor = parsers.new FunctionDeclarationVisitor();
 		FunctionDeclaration functionDecl = fdeclVisitor.visit(tree);
 		
 		functionDecl.visit(new QNameSetterVisitor());

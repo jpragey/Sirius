@@ -44,7 +44,7 @@ public class ClassDeclarationParser {
 			AstToken name = new AstToken(ctx.TYPE_ID(0).getSymbol());
 			
 			// -- Constructor arguments
-			Parsers.FunctionParameterListVisitor parameterVisitor = parsers.new FunctionParameterListVisitor(reporter);
+			Parsers.FunctionParameterListVisitor parameterVisitor = parsers.new FunctionParameterListVisitor();
 			List<AstFunctionParameter> anonConstructorArguments = parameterVisitor.visitFunctionDefinitionParameterList(ctx.functionDefinitionParameterList());
 			
 			// -- Implemented interfaces

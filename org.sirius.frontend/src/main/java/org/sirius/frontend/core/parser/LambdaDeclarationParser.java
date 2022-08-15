@@ -91,7 +91,7 @@ public class LambdaDeclarationParser {
 		public LambdaDefinition visitLambdaDefinition(LambdaDefinitionContext ctx) {
 			
 			// -- Function parameters
-			Parsers.FunctionParameterListVisitor argListVisitor = parsers.new FunctionParameterListVisitor(reporter);
+			Parsers.FunctionParameterListVisitor argListVisitor = parsers.new FunctionParameterListVisitor();
 			
 			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
 			

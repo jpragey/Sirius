@@ -58,7 +58,7 @@ public class InterfaceDeclarationParser {
 			
 			
 			// -- Member functions
-			Parsers.FunctionDeclarationVisitor fctVisitor = parsers.new FunctionDeclarationVisitor(reporter);
+			Parsers.FunctionDeclarationVisitor fctVisitor = parsers.new FunctionDeclarationVisitor();
 			List<FunctionDeclaration> methods = ctx.children.stream()
 				.map(parseTree -> parseTree.accept(fctVisitor))
 				.filter(fctDecl -> fctDecl!=null)
