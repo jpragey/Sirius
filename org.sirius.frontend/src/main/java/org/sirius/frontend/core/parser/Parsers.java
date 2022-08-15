@@ -1,15 +1,18 @@
 package org.sirius.frontend.core.parser;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.Annotation;
 import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
+import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
@@ -18,6 +21,7 @@ import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionParameterVisitor;
+import org.sirius.frontend.core.parser.ModuleDeclarationParser.PackageElements;
 import org.sirius.frontend.core.parser.Parsers.FunctionParameterListVisitor;
 //import org.sirius.frontend.core.parser.AnnotationListParser.AnnotationVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
@@ -26,6 +30,7 @@ import org.sirius.frontend.parser.SiriusParser.AnnotationListContext;
 import org.sirius.frontend.parser.SiriusParser.ClassDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionParameterListContext;
+import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.QnameContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
 import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListContext;
@@ -37,7 +42,8 @@ public record Parsers(Reporter reporter) {
 	/** 							QName		 								*/
 	/****************************************************************************/
 	
-	public static class QNameVisitor extends SiriusBaseVisitor<QualifiedName> {
+	/** Qualified name qname with position information (Tokens) */
+	public class QualifiedNameVisitor extends SiriusBaseVisitor<QualifiedName> {
 		public QualifiedName visitQname(QnameContext ctx) 
 		{
 			List<AstToken> elements = ctx.LOWER_ID().stream()
@@ -48,6 +54,20 @@ public record Parsers(Reporter reporter) {
 			return qName;
 		};
 	}
+	
+	/** Qualified name (raw, no source code position information ) */
+	public static class QNameVisitor extends SiriusBaseVisitor<QName> {	// TODO: should have its own namespace
+		public QName visitQname(QnameContext ctx) 
+		{
+			List<String> elements = ctx.LOWER_ID().stream()
+					.map(termNode -> termNode.getSymbol().getText())
+					.collect(Collectors.toList());
+
+			QName qName = new QName(elements);
+			return qName;
+	};
+}
+
 	/****************************************************************************/
 	/** 							Annotations 								*/
 	/****************************************************************************/
@@ -77,12 +97,6 @@ public record Parsers(Reporter reporter) {
 	/** 							Functions	 								*/
 	/****************************************************************************/
 	public class FunctionParameterListVisitor extends SiriusBaseVisitor< List<AstFunctionParameter> > {
-//		private Reporter reporter;
-		
-//		public FunctionParameterListVisitor(Reporter reporter) {
-//			super();
-//			this.reporter = reporter;
-//		}
 		
 		@Override
 		public List<AstFunctionParameter> visitFunctionDefinitionParameterList(FunctionDefinitionParameterListContext ctx) {
@@ -128,6 +142,37 @@ public record Parsers(Reporter reporter) {
 			boolean member = false; 
 			
 			return new FunctionDeclaration(annoList, functionParams, returnType, member, name) ;
+		}
+	}
+
+	
+	
+	public class PackageDeclarationVisitor extends SiriusBaseVisitor<AstPackageDeclaration> {
+
+		@Override
+		public AstPackageDeclaration visitPackageDeclaration(PackageDeclarationContext ctx) {
+			
+			QNameVisitor visitor = new QNameVisitor();
+			QName packageQName = ctx.qname().accept(visitor);
+			
+			List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
+//			List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
+//			List<AstClassDeclaration> classDeclarations = new ArrayList<>();
+//			List<PartialList> partialLists = new ArrayList<>();
+			
+			PackageElements packageElements = new PackageElements();
+
+			ModuleDeclarationParser.PackageElementVisitor mcVisitor = new ModuleDeclarationParser.PackageElementVisitor(reporter, 
+					packageDeclarations, packageElements /*interfaceDeclarations, classDeclarations, partialLists*/);
+			ctx.packageElement().forEach(mcContext -> mcContext.accept(mcVisitor));
+			
+			
+			return new AstPackageDeclaration(reporter, packageQName,
+					packageElements.functiondefinitions, 
+					packageElements.classDeclarations, 
+					packageElements.interfaceDeclarations, 
+					List.of()// <AstMemberValueDeclaration> valueDeclarations
+					);
 		}
 	}
 

@@ -41,7 +41,7 @@ public class ModuleDeclarationParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.moduleImport();
 				
-		ModuleDeclarationParser.ModuleImportVisitor visitor = new ModuleDeclarationParser.ModuleImportVisitor();
+		ModuleDeclarationParser.ModuleImportVisitor visitor = new ModuleDeclarationParser(reporter).new ModuleImportVisitor();
 		ModuleImport moduleImport = visitor.visit(tree);
 		return moduleImport;
 		

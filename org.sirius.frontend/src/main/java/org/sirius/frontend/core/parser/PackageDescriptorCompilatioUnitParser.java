@@ -33,7 +33,7 @@ public class PackageDescriptorCompilatioUnitParser {
 		public PackageDescriptorCompilationUnit visitPackageDescriptorCompilationUnit(
 				PackageDescriptorCompilationUnitContext ctx) {
 
-			PackageDeclarationParser.PackageDeclarationVisitor visitor = new PackageDeclarationParser.PackageDeclarationVisitor(reporter);
+			Parsers.PackageDeclarationVisitor visitor = new Parsers(reporter).new PackageDeclarationVisitor();
 			AstPackageDeclaration pd = ctx.packageDeclaration().accept(visitor);
 	
 			return new PackageDescriptorCompilationUnit(reporter, pd);

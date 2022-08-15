@@ -17,7 +17,10 @@ import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
+import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionDefinitionVisitor;
+import org.sirius.frontend.core.parser.Parsers;
+import org.sirius.frontend.core.parser.Parsers.QualifiedNameVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.ClassDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.ConcreteModuleContext;
@@ -35,8 +38,12 @@ import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
  *
  */
 public class ModuleDeclarationParser {
+	private Reporter reporter;
+	public ModuleDeclarationParser(Reporter reporter) {
+		this.reporter = reporter;
+	}
 
-	public static class ModuleImportVisitor extends SiriusBaseVisitor<ModuleImport> {
+	public class ModuleImportVisitor extends SiriusBaseVisitor<ModuleImport> {
 		@Override
 		public ModuleImport visitModuleImport(ModuleImportContext ctx) {
 			
@@ -49,7 +56,7 @@ public class ModuleDeclarationParser {
 					Optional.of(new AstToken(ctx.origin));
 					
 			// -- qname
-			Parsers.QNameVisitor nameVisitor = new Parsers.QNameVisitor();
+			Parsers.QualifiedNameVisitor nameVisitor = new Parsers(reporter).new QualifiedNameVisitor();
 			Optional<QName> qname = Optional.empty();
 			if(ctx.nameQName != null )
 				qname = Optional.of(ctx.nameQName.accept(nameVisitor).toQName());
@@ -105,7 +112,7 @@ public class ModuleDeclarationParser {
 		}
 			@Override
 		public Void visitPackageDeclaration(PackageDeclarationContext ctx) {
-				PackageDeclarationParser.PackageDeclarationVisitor v = new PackageDeclarationParser.PackageDeclarationVisitor(reporter);
+				Parsers.PackageDeclarationVisitor v = new Parsers(reporter).new PackageDeclarationVisitor();
 				AstPackageDeclaration partialList = ctx.accept(v);
 				this.packageDeclarations.add(partialList);
 				return null;
@@ -239,18 +246,21 @@ public class ModuleDeclarationParser {
 	
 	public static class ModuleDeclarationVisitor extends SiriusBaseVisitor<AstModuleDeclarationBuilder> {
 		private Reporter reporter;
+		private Parsers parsers;
 
 		public ModuleDeclarationVisitor(Reporter reporter) {
 			super();
 			this.reporter = reporter;
+			this.parsers = new Parsers(reporter);
+
 		}
 
 		@Override
 		public AstModuleDeclarationBuilder visitModuleDeclaration(ModuleDeclarationContext ctx) {
 			
 			// -- name
-			PackageDeclarationParser.QNameVisitor nameVisitor = new PackageDeclarationParser.QNameVisitor();
-			QName qualifiedName = ctx.qname().accept(nameVisitor);
+			Parsers.QualifiedNameVisitor nameVisitor = parsers.new QualifiedNameVisitor();
+			QualifiedName qualifiedName = ctx.qname().accept(nameVisitor);
 			
 			// -- version
 			AstToken version = new AstToken(ctx.version);
@@ -261,13 +271,13 @@ public class ModuleDeclarationParser {
 			ctx.moduleVersionEquivalent().stream().forEach(equivCtxt ->{equivCtxt.accept(equivalentVisitor);});
 			
 			// -- imports
-			ModuleImportVisitor moduleImportVisitor = new ModuleImportVisitor();
+			ModuleImportVisitor moduleImportVisitor = new ModuleDeclarationParser(reporter).new ModuleImportVisitor();
 			List<ModuleImport> moduleImports = ctx.children.stream()
 				.map(tree -> tree.accept(moduleImportVisitor))
 				.filter(modImport -> modImport!=null)
 				.collect(Collectors.toList());
 			
-			return new AstModuleDeclarationBuilder(reporter, qualifiedName, version, equivalents, moduleImports/*, packageDeclarations*/);
+			return new AstModuleDeclarationBuilder(reporter, qualifiedName.toQName(), version, equivalents, moduleImports/*, packageDeclarations*/);
 		}
 	}
 }

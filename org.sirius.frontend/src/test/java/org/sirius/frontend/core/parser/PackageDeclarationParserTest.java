@@ -38,7 +38,7 @@ public class PackageDeclarationParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.packageDeclaration();
 				
-		PackageDeclarationParser.PackageDeclarationVisitor visitor = new PackageDeclarationParser.PackageDeclarationVisitor(reporter);
+		Parsers.PackageDeclarationVisitor visitor = new Parsers(reporter).new PackageDeclarationVisitor();
 		AstPackageDeclaration interfaceDeclaration = visitor.visit(tree);
 		return interfaceDeclaration;
 	}

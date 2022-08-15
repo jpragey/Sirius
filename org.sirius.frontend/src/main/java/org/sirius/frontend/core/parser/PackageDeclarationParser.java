@@ -19,51 +19,51 @@ import org.sirius.frontend.parser.SiriusParser.QnameContext;
  */
 public class PackageDeclarationParser {
 
-	public static class QNameVisitor extends SiriusBaseVisitor<QName> {	// TODO: should have its own namespace
-		public QName visitQname(QnameContext ctx) 
-		{
-			List<String> elements = ctx.LOWER_ID().stream()
-					.map(termNode -> termNode.getSymbol().getText())
-					.collect(Collectors.toList());
-			
-			QName qName = new QName(elements);
-			return qName;
-		};
-	}
+//	public static class QNameVisitor extends SiriusBaseVisitor<QName> {	// TODO: should have its own namespace
+//		public QName visitQname(QnameContext ctx) 
+//		{
+//			List<String> elements = ctx.LOWER_ID().stream()
+//					.map(termNode -> termNode.getSymbol().getText())
+//					.collect(Collectors.toList());
+//			
+//			QName qName = new QName(elements);
+//			return qName;
+//		};
+//	}
 	
 	
-	public static class PackageDeclarationVisitor extends SiriusBaseVisitor<AstPackageDeclaration> {
-		private Reporter reporter;
-
-		public PackageDeclarationVisitor(Reporter reporter) {
-			super();
-			this.reporter = reporter;
-		}
-
-		@Override
-		public AstPackageDeclaration visitPackageDeclaration(PackageDeclarationContext ctx) {
-			
-			QNameVisitor visitor = new QNameVisitor();
-			QName packageQName = ctx.qname().accept(visitor);
-			
-			List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
-//			List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
-//			List<AstClassDeclaration> classDeclarations = new ArrayList<>();
-//			List<PartialList> partialLists = new ArrayList<>();
-			
-			PackageElements packageElements = new PackageElements();
-
-			ModuleDeclarationParser.PackageElementVisitor mcVisitor = new ModuleDeclarationParser.PackageElementVisitor(reporter, 
-					packageDeclarations, packageElements /*interfaceDeclarations, classDeclarations, partialLists*/);
-			ctx.packageElement().forEach(mcContext -> mcContext.accept(mcVisitor));
-			
-			
-			return new AstPackageDeclaration(reporter, packageQName,
-					packageElements.functiondefinitions, 
-					packageElements.classDeclarations, 
-					packageElements.interfaceDeclarations, 
-					List.of()// <AstMemberValueDeclaration> valueDeclarations
-					);
-		}
-	}
+//	public static class PackageDeclarationVisitor extends SiriusBaseVisitor<AstPackageDeclaration> {
+//		private Reporter reporter;
+//
+//		public PackageDeclarationVisitor(Reporter reporter) {
+//			super();
+//			this.reporter = reporter;
+//		}
+//
+//		@Override
+//		public AstPackageDeclaration visitPackageDeclaration(PackageDeclarationContext ctx) {
+//			
+//			QNameVisitor visitor = new QNameVisitor();
+//			QName packageQName = ctx.qname().accept(visitor);
+//			
+//			List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
+////			List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
+////			List<AstClassDeclaration> classDeclarations = new ArrayList<>();
+////			List<PartialList> partialLists = new ArrayList<>();
+//			
+//			PackageElements packageElements = new PackageElements();
+//
+//			ModuleDeclarationParser.PackageElementVisitor mcVisitor = new ModuleDeclarationParser.PackageElementVisitor(reporter, 
+//					packageDeclarations, packageElements /*interfaceDeclarations, classDeclarations, partialLists*/);
+//			ctx.packageElement().forEach(mcContext -> mcContext.accept(mcVisitor));
+//			
+//			
+//			return new AstPackageDeclaration(reporter, packageQName,
+//					packageElements.functiondefinitions, 
+//					packageElements.classDeclarations, 
+//					packageElements.interfaceDeclarations, 
+//					List.of()// <AstMemberValueDeclaration> valueDeclarations
+//					);
+//		}
+//	}
 }
