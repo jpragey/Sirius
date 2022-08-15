@@ -51,7 +51,7 @@ public class ImportDeclarationParser {
 
 		@Override
 		public ImportDeclaration visitImportDeclaration(ImportDeclarationContext ctx) {
-			QNameParser.QNameVisitor nameVisitor = new QNameParser.QNameVisitor();
+			Parsers.QNameVisitor nameVisitor = new Parsers.QNameVisitor();
 			QualifiedName pack = ctx.qname().accept(nameVisitor);
 
 			ImportDeclarationElementVisitor elementVisitor = new ImportDeclarationElementVisitor();

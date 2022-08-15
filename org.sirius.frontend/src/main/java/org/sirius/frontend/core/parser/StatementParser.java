@@ -59,7 +59,7 @@ public class StatementParser {
 
 		@Override
 		public AstReturnStatement visitReturnStatement(ReturnStatementContext ctx) {
-			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser.ExpressionVisitor(reporter);
+			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser(reporter).new ExpressionVisitor();
 			AstExpression returnStatement = ctx.expression().accept(visitor);
 			
 			return new AstReturnStatement(returnStatement);
@@ -67,7 +67,7 @@ public class StatementParser {
 		
 		@Override
 		public AstExpressionStatement visitIsExpressionStatement(IsExpressionStatementContext ctx) {
-			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser.ExpressionVisitor(reporter);
+			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser(reporter).new ExpressionVisitor();
 			AstExpression expression = ctx.expression().accept(visitor);
 			
 			return new AstExpressionStatement(expression);
@@ -81,7 +81,7 @@ public class StatementParser {
 			AstType type = ctx.type().accept(typeVisitor);
 			AstToken varName = new AstToken(ctx.LOWER_ID().getSymbol());
 
-			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser.ExpressionVisitor(reporter);
+			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser(reporter).new ExpressionVisitor();
 			
 			Optional<AstExpression> initExpression = Optional.empty();
 			ExpressionContext exprCtxt = ctx.expression();
@@ -96,7 +96,7 @@ public class StatementParser {
 		@Override
 		public AstIfElseStatement visitIfElseStatement(IfElseStatementContext ctx) {
 
-			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser.ExpressionVisitor(reporter);
+			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser(reporter).new ExpressionVisitor();
 			AstExpression ifExpression = ctx.ifExpression.accept(visitor);
 			
 			StatementParser.StatementVisitor stmtVisitor = new StatementParser.StatementVisitor(reporter);

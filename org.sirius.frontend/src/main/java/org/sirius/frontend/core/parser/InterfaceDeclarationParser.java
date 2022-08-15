@@ -21,18 +21,20 @@ import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListConte
  */
 public class InterfaceDeclarationParser {
 	private Reporter reporter;
+	private Parsers parsers;
 	
 	public InterfaceDeclarationParser(Reporter reporter) {
 		super();
 		this.reporter = reporter;
+		this.parsers = new Parsers(reporter);
 	}
 
-	public static class InterfaceDeclarationVisitor extends SiriusBaseVisitor<AstInterfaceDeclaration> {
-		private Reporter reporter;
+	public class InterfaceDeclarationVisitor extends SiriusBaseVisitor<AstInterfaceDeclaration> {
+//		private Reporter reporter;
 
-		public InterfaceDeclarationVisitor(Reporter reporter) {
+		public InterfaceDeclarationVisitor(/*Reporter reporter*/) {
 			super();
-			this.reporter = reporter;
+//			this.reporter = reporter;
 		}
 
 		@Override
@@ -56,7 +58,7 @@ public class InterfaceDeclarationParser {
 			
 			
 			// -- Member functions
-			FunctionDeclarationParser.FunctionDeclarationVisitor fctVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter);
+			Parsers.FunctionDeclarationVisitor fctVisitor = parsers.new FunctionDeclarationVisitor(reporter);
 			List<FunctionDeclaration> methods = ctx.children.stream()
 				.map(parseTree -> parseTree.accept(fctVisitor))
 				.filter(fctDecl -> fctDecl!=null)

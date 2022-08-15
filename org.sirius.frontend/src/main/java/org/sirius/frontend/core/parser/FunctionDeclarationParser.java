@@ -20,6 +20,7 @@ import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionParameterContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionParameterListContext;
+import org.sirius.frontend.parser.SiriusParser.NewCompilationUnitContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
 import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListContext;
 
@@ -30,10 +31,12 @@ import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListConte
  */
 public class FunctionDeclarationParser {
 	private Reporter reporter;
+	private Parsers parsers;
 	
 	public FunctionDeclarationParser(Reporter reporter) {
 		super();
 		this.reporter = reporter;
+		this.parsers = new Parsers(reporter);
 	}
 
 	public static class FunctionParameterVisitor extends SiriusBaseVisitor<AstFunctionParameter> {
@@ -76,31 +79,31 @@ public class FunctionDeclarationParser {
 		}
 	}
 
-	public static class FunctionParameterListVisitor extends SiriusBaseVisitor< List<AstFunctionParameter> > {
-		private Reporter reporter;
-		
-		public FunctionParameterListVisitor(Reporter reporter) {
-			super();
-			this.reporter = reporter;
-		}
-		
-		@Override
-		public List<AstFunctionParameter> visitFunctionDefinitionParameterList(FunctionDefinitionParameterListContext ctx) {
-			FunctionParameterVisitor v = new FunctionParameterVisitor(reporter);
-			
-			List<AstFunctionParameter> functionParameters = 
-			ctx.functionDefinitionParameter().stream()
-				.map(formalArgCtx -> v.visit(formalArgCtx))
-				.collect(Collectors.toList());
-			
-			int currentArgIndex = 0; // index in argument list
-			for(var fp: functionParameters) {
-				fp.setIndex(currentArgIndex++);
-			}
-
-			return functionParameters;
-		}
-	}
+//	public static class FunctionParameterListVisitor extends SiriusBaseVisitor< List<AstFunctionParameter> > {
+//		private Reporter reporter;
+//		
+//		public FunctionParameterListVisitor(Reporter reporter) {
+//			super();
+//			this.reporter = reporter;
+//		}
+//		
+//		@Override
+//		public List<AstFunctionParameter> visitFunctionDefinitionParameterList(FunctionDefinitionParameterListContext ctx) {
+//			FunctionParameterVisitor v = new FunctionParameterVisitor(reporter);
+//			
+//			List<AstFunctionParameter> functionParameters = 
+//			ctx.functionDefinitionParameter().stream()
+//				.map(formalArgCtx -> v.visit(formalArgCtx))
+//				.collect(Collectors.toList());
+//			
+//			int currentArgIndex = 0; // index in argument list
+//			for(var fp: functionParameters) {
+//				fp.setIndex(currentArgIndex++);
+//			}
+//
+//			return functionParameters;
+//		}
+//	}
 	
 	public static class TypeParameterListVisitor extends SiriusBaseVisitor< List<TypeParameter> > {
 		private Reporter reporter;
@@ -122,41 +125,41 @@ public class FunctionDeclarationParser {
 		}
 	}
 	
-	public static class FunctionDeclarationVisitor extends SiriusBaseVisitor<FunctionDeclaration> {
-		private Reporter reporter;
-
-		public FunctionDeclarationVisitor(Reporter reporter) {
-			super();
-			this.reporter = reporter;
-		}
-
-		
-		@Override
-		public FunctionDeclaration visitFunctionDeclaration(FunctionDeclarationContext ctx) {
-			
-			// -- Annotation List
-			AnnotationList annoList = new AnnotationListParser.AnnotationListVisitor().visit(ctx.annotationList());
-			
-			AstToken name = new AstToken(ctx.name);
-			
-			// -- Function parameters
-			FunctionParameterListVisitor argListVisitor = new FunctionParameterListVisitor(reporter);
-			
-			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
-			
-			// -- Return type
-			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
-			
-			TypeContext returnContext = ctx.returnType;
-			AstType returnType =  (returnContext == null) ?
-				AstVoidType.instance :
-				typeVisitor.visit(returnContext);
-			
-			boolean member = false; 
-			
-			return new FunctionDeclaration(annoList, functionParams, returnType, member, name) ;
-		}
-	}
+//	public class FunctionDeclarationVisitor extends SiriusBaseVisitor<FunctionDeclaration> {
+//		private Reporter reporter;
+//
+//		public FunctionDeclarationVisitor(Reporter reporter) {
+//			super();
+//			this.reporter = reporter;
+//		}
+//
+//		
+//		@Override
+//		public FunctionDeclaration visitFunctionDeclaration(FunctionDeclarationContext ctx) {
+//			
+//			// -- Annotation List
+//			AnnotationList annoList = new Parsers.AnnotationListVisitor().visit(ctx.annotationList());
+//			
+//			AstToken name = new AstToken(ctx.name);
+//			
+//			// -- Function parameters
+//			Parsers.FunctionParameterListVisitor argListVisitor = parsers.new FunctionParameterListVisitor(reporter);
+//			
+//			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
+//			
+//			// -- Return type
+//			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
+//			
+//			TypeContext returnContext = ctx.returnType;
+//			AstType returnType =  (returnContext == null) ?
+//				AstVoidType.instance :
+//				typeVisitor.visit(returnContext);
+//			
+//			boolean member = false; 
+//			
+//			return new FunctionDeclaration(annoList, functionParams, returnType, member, name) ;
+//		}
+//	}
 	public static class FunctionDefinitionVisitor extends SiriusBaseVisitor<FunctionDefinition> {
 		private Reporter reporter;
 
@@ -170,12 +173,12 @@ public class FunctionDeclarationParser {
 		public FunctionDefinition visitFunctionDefinition(FunctionDefinitionContext ctx) {
 
 			// -- Annotation List
-			AnnotationList annoList = new AnnotationListParser.AnnotationListVisitor().visit(ctx.annotationList());
+			AnnotationList annoList = new Parsers.AnnotationListVisitor().visit(ctx.annotationList());
 
 			AstToken name = new AstToken(ctx.name);
 			
 			// -- Function parameters
-			FunctionParameterListVisitor argListVisitor = new FunctionParameterListVisitor(reporter);
+			Parsers.FunctionParameterListVisitor argListVisitor = (new Parsers(reporter)).new FunctionParameterListVisitor(reporter);
 			
 			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
 			

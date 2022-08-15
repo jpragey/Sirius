@@ -49,7 +49,7 @@ public class ModuleDeclarationParser {
 					Optional.of(new AstToken(ctx.origin));
 					
 			// -- qname
-			QNameParser.QNameVisitor nameVisitor = new QNameParser.QNameVisitor();
+			Parsers.QNameVisitor nameVisitor = new Parsers.QNameVisitor();
 			Optional<QName> qname = Optional.empty();
 			if(ctx.nameQName != null )
 				qname = Optional.of(ctx.nameQName.accept(nameVisitor).toQName());
@@ -129,7 +129,7 @@ public class ModuleDeclarationParser {
 		
 		@Override
 		public Void visitClassDeclaration(ClassDeclarationContext ctx) {
-			ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser.ClassDeclarationVisitor (reporter/*, new QName()*/ /* containerQName */);
+			ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser(reporter).new ClassDeclarationVisitor (reporter/*TODO: remove*/ /*, new QName()*/ /* containerQName */);
 
 			AstClassDeclaration cd = ctx.accept(visitor);
 			this.packageElements.classDeclarations.add(cd);
@@ -137,7 +137,7 @@ public class ModuleDeclarationParser {
 		}
 		@Override
 		public Void visitInterfaceDeclaration(InterfaceDeclarationContext ctx) {
-			InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser.InterfaceDeclarationVisitor(reporter);
+			InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser(reporter).new InterfaceDeclarationVisitor();
 
 			AstInterfaceDeclaration id = ctx.accept(visitor);
 			this.packageElements.interfaceDeclarations.add(id);

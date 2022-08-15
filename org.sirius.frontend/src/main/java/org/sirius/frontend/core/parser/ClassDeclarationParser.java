@@ -22,13 +22,15 @@ import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListConte
  */
 public class ClassDeclarationParser {
 	private Reporter reporter;
-	
+	private Parsers parsers;
+
 	public ClassDeclarationParser(Reporter reporter) {
 		super();
 		this.reporter = reporter;
+		this.parsers = new Parsers(reporter);
 	}
 
-	public static class ClassDeclarationVisitor extends SiriusBaseVisitor<AstClassDeclaration> {
+	public class ClassDeclarationVisitor extends SiriusBaseVisitor<AstClassDeclaration> {
 		private Reporter reporter;
 
 		public ClassDeclarationVisitor(Reporter reporter) {
@@ -42,7 +44,7 @@ public class ClassDeclarationParser {
 			AstToken name = new AstToken(ctx.TYPE_ID(0).getSymbol());
 			
 			// -- Constructor arguments
-			FunctionDeclarationParser.FunctionParameterListVisitor parameterVisitor = new FunctionDeclarationParser.FunctionParameterListVisitor(reporter);
+			Parsers.FunctionParameterListVisitor parameterVisitor = parsers.new FunctionParameterListVisitor(reporter);
 			List<AstFunctionParameter> anonConstructorArguments = parameterVisitor.visitFunctionDefinitionParameterList(ctx.functionDefinitionParameterList());
 			
 			// -- Implemented interfaces

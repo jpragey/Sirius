@@ -34,7 +34,7 @@ public class AnnotationListParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.annotationList();
 				
-		AnnotationListParser.AnnotationListVisitor typeVisitor = new AnnotationListParser.AnnotationListVisitor();
+		Parsers.AnnotationListVisitor typeVisitor = new Parsers.AnnotationListVisitor();
 		AnnotationList myAnnoList = typeVisitor.visit(tree);
 		return myAnnoList;
 	}

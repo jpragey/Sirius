@@ -39,18 +39,19 @@ import org.sirius.frontend.symbols.Scope;
  */
 public class ExpressionParser {
 	private Reporter reporter;
-	
+	private LambdaDeclarationParser lambdaDeclarationParser;
 	public ExpressionParser(Reporter reporter) {
 		super();
 		this.reporter = reporter;
+		this.lambdaDeclarationParser = new LambdaDeclarationParser(reporter);
 	}
 
-	public static class ExpressionVisitor extends SiriusBaseVisitor<AstExpression> {
-		private Reporter reporter;
+	public class ExpressionVisitor extends SiriusBaseVisitor<AstExpression> {
+//		private Reporter reporter;
 		
-		public ExpressionVisitor(Reporter reporter) {
+		public ExpressionVisitor(/*Reporter reporter*/) {
 			super();
-			this.reporter = reporter;
+//			this.reporter = reporter;
 		}
 		
 		
@@ -95,7 +96,7 @@ public class ExpressionParser {
 		public AstFunctionCallExpression visitFunctionCallExpression(FunctionCallExpressionContext ctx) {
 			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
 			
-			ExpressionVisitor argVisitor = new ExpressionVisitor(reporter);
+			ExpressionVisitor argVisitor = new ExpressionVisitor(/*reporter*/);
 			
 			List<AstExpression> actualArguments = ctx.children.stream()
 					.map(tree -> tree.accept(argVisitor))
@@ -112,7 +113,7 @@ public class ExpressionParser {
 		@Override
 		public AstExpression visitIsMethodCallExpression(IsMethodCallExpressionContext ctx) {
 
-			ExpressionVisitor argVisitor = new ExpressionVisitor(reporter);
+			ExpressionVisitor argVisitor = new ExpressionVisitor(/*reporter*/);
 			ExpressionContext thisExprContext = ctx.thisExpr;
 			AstExpression thisExpr = thisExprContext.accept(argVisitor);
 			assert(thisExpr != null); // TODO: implements all this-expressions...
@@ -129,7 +130,7 @@ public class ExpressionParser {
 		public AstExpression visitClassInstanciationExpression(ClassInstanciationExpressionContext ctx) {
 			AstToken name = new AstToken(ctx.name);
 			
-			ExpressionVisitor argVisitor = new ExpressionVisitor(reporter);
+			ExpressionVisitor argVisitor = new ExpressionVisitor(/*reporter*/);
 			
 			List<AstExpression> actualArguments = ctx.children.stream()
 					.map(tree -> tree.accept(argVisitor))
@@ -157,7 +158,7 @@ public class ExpressionParser {
 		
 		@Override
 		public AstExpression visitLambdaDefinition(LambdaDefinitionContext ctx) {
-			LambdaDefinitionVisitor v = new LambdaDefinitionVisitor(reporter);
+			LambdaDefinitionVisitor v = lambdaDeclarationParser.new LambdaDefinitionVisitor();
 			LambdaDefinition ld = v.visit(ctx);
 			
 			return ld;

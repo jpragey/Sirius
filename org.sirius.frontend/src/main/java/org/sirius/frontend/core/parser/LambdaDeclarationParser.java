@@ -1,6 +1,5 @@
 package org.sirius.frontend.core.parser;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,15 +12,10 @@ import org.sirius.frontend.ast.FunctionBody;
 import org.sirius.frontend.ast.LambdaClosure;
 import org.sirius.frontend.ast.LambdaDeclaration;
 import org.sirius.frontend.ast.LambdaDefinition;
-import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionParameterListVisitor;
-import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionParameterVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.SiriusParser.FunctionBodyContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionParameterContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionParameterListContext;
 import org.sirius.frontend.parser.SiriusParser.LambdaDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.LambdaDefinitionContext;
-import org.sirius.frontend.parser.SiriusParser.LambdaFormalArgumentContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
@@ -83,19 +77,21 @@ public class LambdaDeclarationParser {
 		}
 	}
 
-	public static class LambdaDefinitionVisitor extends SiriusBaseVisitor<LambdaDefinition> {
-		private Reporter reporter;
+	public class LambdaDefinitionVisitor extends SiriusBaseVisitor<LambdaDefinition> {
+//		private Reporter reporter;
+		private Parsers parsers;
 
-		public LambdaDefinitionVisitor(Reporter reporter) {
+		public LambdaDefinitionVisitor(/*Reporter reporter*/) {
 			super();
-			this.reporter = reporter;
+//			this.reporter = reporter;
+			this.parsers = new Parsers(reporter);
 		}
 		
 		@Override
 		public LambdaDefinition visitLambdaDefinition(LambdaDefinitionContext ctx) {
 			
 			// -- Function parameters
-			FunctionParameterListVisitor argListVisitor = new FunctionParameterListVisitor(reporter);
+			Parsers.FunctionParameterListVisitor argListVisitor = parsers.new FunctionParameterListVisitor(reporter);
 			
 			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
 			

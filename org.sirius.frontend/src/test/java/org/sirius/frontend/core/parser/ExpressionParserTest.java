@@ -49,7 +49,7 @@ public class ExpressionParserTest {
 //		ParseTree tree = parser.constantExpression();
 		ParseTree tree = parser.expression();
 				
-		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser.ExpressionVisitor(reporter);
+		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser(reporter).new ExpressionVisitor();
 		AstExpression expression = typeVisitor.visit(tree);
 		return expression;
 	}
@@ -145,7 +145,7 @@ public class ExpressionParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.expression();
 				
-		ExpressionParser.ExpressionVisitor expressionVisitor = new ExpressionParser.ExpressionVisitor(reporter);
+		ExpressionParser.ExpressionVisitor expressionVisitor = new ExpressionParser(reporter).new ExpressionVisitor();
 		AstExpression expression = expressionVisitor.visit(tree);
 		return expression;
 	}
@@ -174,7 +174,7 @@ public class ExpressionParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		FunctionCallExpressionContext tree = parser.functionCallExpression();
 				
-		ExpressionParser.ExpressionVisitor expressionVisitor = new ExpressionParser.ExpressionVisitor(reporter);
+		ExpressionParser.ExpressionVisitor expressionVisitor = new ExpressionParser(reporter).new ExpressionVisitor();
 		
 		AstExpression expression = expressionVisitor.visitFunctionCallExpression(tree);
 
@@ -203,7 +203,7 @@ public class ExpressionParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.expression();
 		
-		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser.ExpressionVisitor(reporter);
+		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser(reporter).new ExpressionVisitor();
 		AstExpression expression = typeVisitor.visit(tree);
 
 		assertThat(expression, instanceOf(AstFunctionCallExpression.class) );	// ???
@@ -231,7 +231,7 @@ public class ExpressionParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.expression();
 		
-		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser.ExpressionVisitor(reporter);
+		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser(reporter).new ExpressionVisitor();
 		AstExpression expression = typeVisitor.visit(tree);
 
 		assertThat(expression, instanceOf(ConstructorCallExpression.class) );	// ???
@@ -250,7 +250,7 @@ public class ExpressionParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.expression();
 		
-		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser.ExpressionVisitor(reporter);
+		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser(reporter).new ExpressionVisitor();
 		AstExpression expression = typeVisitor.visit(tree);
 
 		assertThat(expression, instanceOf(AstMemberAccessExpression.class) );
@@ -269,7 +269,7 @@ public class ExpressionParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.expression();
 		
-		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser.ExpressionVisitor(reporter);
+		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser(reporter).new ExpressionVisitor();
 		AstExpression expression = typeVisitor.visit(tree);
 
 		assertThat(expression, instanceOf(SimpleReferenceExpression.class) );

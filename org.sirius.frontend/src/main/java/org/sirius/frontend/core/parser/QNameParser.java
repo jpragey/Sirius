@@ -26,15 +26,15 @@ import org.sirius.frontend.parser.SiriusParser.QnameContext;
 public class QNameParser {
 
 	
-	public static class QNameVisitor extends SiriusBaseVisitor<QualifiedName> {
-		public QualifiedName visitQname(QnameContext ctx) 
-		{
-			List<AstToken> elements = ctx.LOWER_ID().stream()
-					.map(termNode -> new AstToken(termNode.getSymbol()))
-					.collect(Collectors.toList());
-			
-			QualifiedName qName = new QualifiedName(elements);
-			return qName;
-		};
-	}
+//	public static class QNameVisitor extends SiriusBaseVisitor<QualifiedName> {
+//		public QualifiedName visitQname(QnameContext ctx) 
+//		{
+//			List<AstToken> elements = ctx.LOWER_ID().stream()
+//					.map(termNode -> new AstToken(termNode.getSymbol()))
+//					.collect(Collectors.toList());
+//			
+//			QualifiedName qName = new QualifiedName(elements);
+//			return qName;
+//		};
+//	}
 }

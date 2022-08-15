@@ -50,7 +50,7 @@ public class SymbolExportVisitorTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.interfaceDeclaration();
 				
-		InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser.InterfaceDeclarationVisitor(reporter);
+		InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser(reporter).new InterfaceDeclarationVisitor();
 		AstInterfaceDeclaration interfaceDeclaration = visitor.visit(tree);
 		return interfaceDeclaration;
 	}

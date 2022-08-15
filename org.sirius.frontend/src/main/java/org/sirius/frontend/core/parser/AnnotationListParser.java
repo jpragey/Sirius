@@ -27,27 +27,27 @@ import org.sirius.frontend.parser.SiriusParser.QnameContext;
  * @author jpragey
  *
  */
-public class AnnotationListParser {
+//public class AnnotationListParser() {
 
-	public static class AnnotationVisitor extends SiriusBaseVisitor<Annotation> {
-		@Override
-		public Annotation visitAnnotation(AnnotationContext ctx) {
-			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
-			return new Annotation(name);
-		}
-	}
-
-	public static class AnnotationListVisitor extends SiriusBaseVisitor<AnnotationList> {
-		@Override
-		public AnnotationList visitAnnotationList(AnnotationListContext ctx) {
-			
-			AnnotationVisitor visitor = new AnnotationVisitor();
-			List<Annotation> annotations = ctx.annotation().stream()
-					.map(annoCtxt -> annoCtxt.accept(visitor))
-					.collect(Collectors.toList());
-			
-			return new AnnotationList(annotations);
-		}
-	}
+//	public static class AnnotationVisitor extends SiriusBaseVisitor<Annotation> {
+//		@Override
+//		public Annotation visitAnnotation(AnnotationContext ctx) {
+//			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
+//			return new Annotation(name);
+//		}
+//	}
+//
+//	public static class AnnotationListVisitor extends SiriusBaseVisitor<AnnotationList> {
+//		@Override
+//		public AnnotationList visitAnnotationList(AnnotationListContext ctx) {
+//			
+//			AnnotationVisitor visitor = new AnnotationVisitor();
+//			List<Annotation> annotations = ctx.annotation().stream()
+//					.map(annoCtxt -> annoCtxt.accept(visitor))
+//					.collect(Collectors.toList());
+//			
+//			return new AnnotationList(annotations);
+//		}
+//	}
 	
-}
+//}

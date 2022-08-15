@@ -48,7 +48,7 @@ public class LambdaDefinitionParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.lambdaDefinition();
 				
-		LambdaDeclarationParser.LambdaDefinitionVisitor typeVisitor = new LambdaDeclarationParser.LambdaDefinitionVisitor(reporter /*, containerQName*/);
+		LambdaDeclarationParser.LambdaDefinitionVisitor typeVisitor = new LambdaDeclarationParser(reporter).new LambdaDefinitionVisitor();
 		LambdaDefinition myType = typeVisitor.visit(tree);
 		
 		return myType;
@@ -112,7 +112,7 @@ public class LambdaDefinitionParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.expression();
 
-		ExpressionParser.ExpressionVisitor v = new ExpressionParser.ExpressionVisitor(reporter);
+		ExpressionParser.ExpressionVisitor v = new ExpressionParser(reporter).new ExpressionVisitor();
 		AstExpression lambdaExpr =  v.visit(tree);
 		
 		assertThat(lambdaExpr, notNullValue());

@@ -29,10 +29,11 @@ import org.sirius.frontend.symbols.QNameSetterVisitor;
 public class FunctionDeclarationParserTest {
 
 	private Reporter reporter ;
-	
+	private Parsers parsers;
 	@BeforeEach
 	public void setup() {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
+		this.parsers = new Parsers(this.reporter);
 	}
 	@AfterEach
 	public void tearDown() {
@@ -45,7 +46,7 @@ public class FunctionDeclarationParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.functionDeclaration();
 				
-		FunctionDeclarationParser.FunctionDeclarationVisitor fdeclVisitor = new FunctionDeclarationParser.FunctionDeclarationVisitor(reporter /*, containerQName*/);
+		Parsers.FunctionDeclarationVisitor fdeclVisitor = parsers.new FunctionDeclarationVisitor(reporter /*, containerQName*/);
 		FunctionDeclaration functionDecl = fdeclVisitor.visit(tree);
 		
 		functionDecl.visit(new QNameSetterVisitor());

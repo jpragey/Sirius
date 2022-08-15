@@ -17,10 +17,12 @@ public class MemberValueDeclarationParser {
 
 	public static class MemberValueVisitor extends SiriusBaseVisitor<AstMemberValueDeclaration> {
 		private Reporter reporter;
+		private ExpressionParser expressionParser;
 
 		public MemberValueVisitor(Reporter reporter) {
 			super();
 			this.reporter = reporter;
+			this.expressionParser = new ExpressionParser(reporter); 
 		}
 
 		@Override
@@ -32,7 +34,7 @@ public class MemberValueDeclarationParser {
 			AstType type = ctx.type().accept(typeVisitor);
 			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
 			
-			ExpressionParser.ExpressionVisitor expressionVisitor = new ExpressionParser.ExpressionVisitor(reporter);
+			ExpressionParser.ExpressionVisitor expressionVisitor = this.expressionParser.new ExpressionVisitor(/*reporter*/);
 			ExpressionContext initValueContext = ctx.expression();
 			Optional<AstExpression> initialValue = (initValueContext == null) ?  
 					Optional.empty() : Optional.of(initValueContext.accept(expressionVisitor));
