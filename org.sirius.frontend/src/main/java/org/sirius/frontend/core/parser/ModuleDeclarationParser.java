@@ -136,7 +136,7 @@ public class ModuleDeclarationParser {
 		
 		@Override
 		public Void visitClassDeclaration(ClassDeclarationContext ctx) {
-			ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser(reporter).new ClassDeclarationVisitor (reporter/*TODO: remove*/ /*, new QName()*/ /* containerQName */);
+			ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser(reporter).new ClassDeclarationVisitor();
 
 			AstClassDeclaration cd = ctx.accept(visitor);
 			this.packageElements.classDeclarations.add(cd);

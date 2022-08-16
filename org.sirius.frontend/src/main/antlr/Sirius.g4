@@ -391,14 +391,12 @@ packageDeclaration
 //
 classDeclaration 
 	: 'class' 		
-	  TYPE_ID		
+	  className=TYPE_ID		
 	  '('
 			functionDefinitionParameterList
 	  ')'
-	  ( typeParameterDeclarationList )? 
-	  ( 'implements' implementedInterface=TYPE_ID  
-	  	
-	  )?
+	  ( typeParameterDeclarationList )?
+	  implementedInterfaces ? 
 			  
 	  '{'
 		  (
@@ -408,6 +406,11 @@ classDeclaration
 		  )*
 	  '}'
 	;
+implementedInterfaces :
+	  'implements' TYPE_ID
+	  	(',' TYPE_ID)*
+;
+	
 interfaceDeclaration 
 @init {
 }
