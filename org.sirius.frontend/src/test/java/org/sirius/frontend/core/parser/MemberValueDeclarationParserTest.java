@@ -69,4 +69,26 @@ public class MemberValueDeclarationParserTest {
 		verify.accept(memberValue);
 		return memberValue;
 	}
+
+	@Test
+	@DisplayName("Parsing annotations on member values")
+	public void memberValue_annotations() {
+		parseMemberValue("anno0 anno1 Integer i;",      ((AstMemberValueDeclaration memberValue) -> {
+			assertThat(memberValue.getNameString(), equalTo("i") );
+			assertThat(memberValue.getApiInitialValue().isPresent(), equalTo(false) );
+			assertThat(memberValue.getType(), instanceOf(SimpleType.class));
+			assertThat(memberValue.getAnnotations().size(), equalTo(2));
+			assertThat(memberValue.getAnnotations().get(0).getName().getText(), equalTo("anno0"));
+			assertThat(memberValue.getAnnotations().get(1).getName().getText(), equalTo("anno1"));
+			assertThat(((SimpleType)memberValue.getType()).getNameString(), equalTo("Integer"));
+			}) );
+//		parseMemberValue("Integer i = 42;",      ((AstMemberValueDeclaration memberValue) -> {
+//			assertThat(memberValue.getApiInitialValue().isPresent(), equalTo(true) );
+//			AstExpression initExpr = memberValue.getInitialValue().get();
+//			assertThat(initExpr, instanceOf(AstIntegerConstantExpression.class));
+//			assertThat(((AstIntegerConstantExpression)initExpr).getValue(), equalTo(42));
+//			}) );
+	}
+
+
 }

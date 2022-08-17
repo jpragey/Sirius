@@ -155,7 +155,7 @@ memberValueDeclaration
 	:
 		annotationList
 		type
-		LOWER_ID		
+		name=LOWER_ID		
 		('=' expression	
 			
 		)?

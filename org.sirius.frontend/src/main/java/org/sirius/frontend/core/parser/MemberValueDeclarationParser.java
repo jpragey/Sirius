@@ -28,18 +28,22 @@ public class MemberValueDeclarationParser {
 		@Override
 		public AstMemberValueDeclaration visitMemberValueDeclaration(MemberValueDeclarationContext ctx) {
 			// TODO: annotationList
-			AnnotationList annotations = new AnnotationList(); // TODO
+//			AnnotationList annotations = new AnnotationList(); // TODO
+			
+			Parsers.AnnotationListVisitor annoVisitor = new Parsers.AnnotationListVisitor();
+			AnnotationList annotations = annoVisitor.visit(ctx.annotationList());
 			
 			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
-			AstType type = ctx.type().accept(typeVisitor);
-			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
-			
+			AstType type = typeVisitor.visit(ctx.type());
+			AstToken name = new AstToken(ctx.name);
+
 			ExpressionParser.ExpressionVisitor expressionVisitor = this.expressionParser.new ExpressionVisitor(/*reporter*/);
 			ExpressionContext initValueContext = ctx.expression();
 			Optional<AstExpression> initialValue = (initValueContext == null) ?  
-					Optional.empty() : Optional.of(initValueContext.accept(expressionVisitor));
+					Optional.empty() : 
+					Optional.of(initValueContext.accept(expressionVisitor));
 
-			return new AstMemberValueDeclaration(annotations, type, name, initialValue);
+			return new AstMemberValueDeclaration(/*annotationList*/ annotations, type, name, initialValue);
 		}
 		
 		
