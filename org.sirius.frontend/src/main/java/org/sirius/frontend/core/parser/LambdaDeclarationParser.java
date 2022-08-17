@@ -41,7 +41,7 @@ public class LambdaDeclarationParser {
 
 		@Override
 		public List<AstStatement> visitFunctionBody(FunctionBodyContext ctx) {
-			StatementParser.StatementVisitor statementVisitor = new StatementParser.StatementVisitor(reporter);
+			StatementParser.StatementVisitor statementVisitor = new StatementParser(reporter).new StatementVisitor();
 			
 			List<AstStatement> statements =  ctx.statement().stream()
 				.map(statementVisitor::visit /*stmtCtxt -> stmtCtxt.accept(statementVisitor)*/)

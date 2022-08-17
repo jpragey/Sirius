@@ -1,6 +1,7 @@
 package org.sirius.frontend.core.parser;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -35,21 +36,23 @@ public class ScriptCompilatioUnitParser {
 			
 			// -- Shebang
 			ShebangDeclarationParser.ShebangVisitor shebangVisitor = new ShebangDeclarationParser.ShebangVisitor();
-			Optional<ShebangDeclaration> shebangDeclaration = Optional.empty();
-			if(ctx.shebangDeclaration() != null)
-				shebangDeclaration = Optional.of(ctx.shebangDeclaration().accept(shebangVisitor));
+
+			Optional<ShebangDeclaration> shebangDeclaration = Optional.ofNullable(ctx.shebangDeclaration())
+					.map(shebangVisitor::visit);
 			
 			// -- Import declarations
 			ImportDeclarationParser.ImportDeclarationVisitor importVisitor = new ImportDeclarationParser.ImportDeclarationVisitor(reporter);
 			List<ImportDeclaration> imports = ctx.importDeclaration().stream()
-					.map(importDeclCtx -> importDeclCtx.accept(importVisitor))
+//					.map(importDeclCtx -> importDeclCtx.accept(importVisitor))
+					.map(importVisitor::visit)
 					.collect(Collectors.toList());
 			
 			// -- module declarations
 			ModuleDeclarationParser.ConcreteModuleVisitor moduleVisitor = new ModuleDeclarationParser(reporter).new ConcreteModuleVisitor();
 			List<AstModuleDeclaration> modules = ctx.concreteModule().stream()
-					.map(mCtx -> mCtx.accept(moduleVisitor))
-					.filter(md -> md!=null)
+//					.map(mCtx -> mCtx.accept(moduleVisitor))
+					.map(moduleVisitor::visit)
+					.filter(Objects::nonNull)
 					.collect(Collectors.toList());
 			
 			return new ScriptCompilationUnit(reporter, globalScope, shebangDeclaration, imports, modules);

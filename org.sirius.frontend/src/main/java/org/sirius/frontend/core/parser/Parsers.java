@@ -175,7 +175,8 @@ public record Parsers(Reporter reporter) {
 
 			ModuleDeclarationParser.PackageElementVisitor mcVisitor = new ModuleDeclarationParser(reporter) .new PackageElementVisitor(//reporter, 
 					packageDeclarations, packageElements /*interfaceDeclarations, classDeclarations, partialLists*/);
-			ctx.packageElement().forEach(mcContext -> mcContext.accept(mcVisitor));
+//			ctx.packageElement().forEach(mcContext -> mcContext.accept(mcVisitor));
+			ctx.packageElement().forEach(mcContext -> mcVisitor.visit(mcContext));
 			
 			
 			return new AstPackageDeclaration(reporter, packageQName,

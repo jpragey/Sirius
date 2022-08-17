@@ -69,7 +69,7 @@ public class FunctionDeclarationParser {
 
 		@Override
 		public List<AstStatement> visitFunctionBody(FunctionBodyContext ctx) {
-			StatementParser.StatementVisitor statementVisitor = new StatementParser.StatementVisitor(reporter);
+			StatementParser.StatementVisitor statementVisitor = new StatementParser(reporter).new StatementVisitor();
 			
 			List<AstStatement> statements =  ctx.statement().stream()
 				.map(stmtCtxt -> stmtCtxt.accept(statementVisitor))
@@ -89,7 +89,7 @@ public class FunctionDeclarationParser {
 		
 		@Override
 		public List<TypeParameter> visitTypeParameterDeclarationList(TypeParameterDeclarationListContext ctx) {
-			TypeParameterParser.TypeParameterVisitor typeParameterVisitor = new TypeParameterParser.TypeParameterVisitor(reporter);
+			TypeParameterParser.TypeParameterVisitor typeParameterVisitor = new TypeParameterParser(reporter).new TypeParameterVisitor();
 			
 			List<TypeParameter> typeParameters = ctx.typeParameterDeclaration().stream()
 					.map(typeParameterVisitor::visit)

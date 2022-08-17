@@ -61,7 +61,7 @@ public class StatementParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.returnStatement();
 		
-		StatementParser.StatementVisitor visitor = new StatementParser.StatementVisitor(reporter);
+		StatementParser.StatementVisitor visitor = new StatementParser(reporter).new StatementVisitor();
 		AstStatement stmt = visitor.visit(tree);
 
 		assertThat(stmt, instanceOf(AstReturnStatement.class) );
@@ -88,7 +88,7 @@ public class StatementParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.statement();
 		
-		StatementParser.StatementVisitor visitor = new StatementParser.StatementVisitor(reporter);
+		StatementParser.StatementVisitor visitor = new StatementParser(reporter).new StatementVisitor();
 		AstStatement stmt = visitor.visit(tree);
 
 		assertThat(stmt, instanceOf(AstExpressionStatement.class) );
@@ -120,7 +120,7 @@ public class StatementParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.statement();
 		
-		StatementParser.StatementVisitor visitor = new StatementParser.StatementVisitor(reporter);
+		StatementParser.StatementVisitor visitor = new StatementParser(reporter).new StatementVisitor();
 		AstStatement stmt = visitor.visit(tree);
 
 		assertThat(stmt, instanceOf(AstLocalVariableStatement.class) );
@@ -149,7 +149,7 @@ public class StatementParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.statement();
 		
-		StatementParser.StatementVisitor visitor = new StatementParser.StatementVisitor(reporter);
+		StatementParser.StatementVisitor visitor = new StatementParser(reporter).new StatementVisitor();
 		AstStatement stmt = visitor.visit(tree);
 
 		assertThat(stmt, instanceOf(AstIfElseStatement.class) );

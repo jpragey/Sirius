@@ -36,7 +36,7 @@ public class TypeParameterParserTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.typeParameterDeclaration();
 				
-		TypeParameterVisitor typeVisitor = new TypeParameterVisitor(reporter);
+		TypeParameterVisitor typeVisitor = new TypeParameterParser(reporter).new TypeParameterVisitor();
 		AstType myType = typeVisitor.visit(tree);
 		return myType;
 	}

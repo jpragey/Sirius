@@ -1,6 +1,7 @@
 package org.sirius.frontend.core.parser;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.sirius.common.error.Reporter;
@@ -44,26 +45,26 @@ public class TypeParser {
 
 		@Override
 		public AstType visitUnionType(UnionTypeContext ctx) {
-			AstType leftType = ctx.first.accept(this);
-			AstType rightType = ctx.second.accept(this);
+			AstType leftType = visit(ctx.first);
+			AstType rightType = visit(ctx.second);
 			return new UnionType(leftType, rightType);
 		}
 
 		@Override
 		public AstType visitIntersectionType(IntersectionTypeContext ctx) {
-			AstType leftType = ctx.first.accept(this);
-			AstType rightType = ctx.second.accept(this);
+			AstType leftType = visit(ctx.first);
+			AstType rightType = visit(ctx.second);
 			return new IntersectionType(leftType, rightType);
 		}
 
 		@Override
 		public AstType visitArrayType(ArrayTypeContext ctx) {
-			return new AstArrayType(ctx.type().accept(this));
+			return new AstArrayType(visit(ctx.type()));
 		}
 
 		@Override
 		public AstType visitBracketedType(BracketedTypeContext ctx) {
-			return ctx.type().accept(this);
+			return visit(ctx.type());
 		}
 
 		@Override
@@ -72,8 +73,8 @@ public class TypeParser {
 			AstToken name = new AstToken(ctx.TYPE_ID().getSymbol());
 			
 			List<AstType> typeParams = ctx.children.stream()
-					.map(parseTree -> parseTree.accept(this /* Osé !*/))
-				.filter(myType -> myType!=null)
+					.map(this::visit)
+				.filter(Objects::nonNull)
 				.collect(Collectors.toUnmodifiableList())
 				;
 			

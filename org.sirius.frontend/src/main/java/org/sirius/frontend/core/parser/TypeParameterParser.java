@@ -25,22 +25,16 @@ public class TypeParameterParser {
 		this.reporter = reporter;
 	}
 
-	public static class TypeParameterVisitor extends SiriusBaseVisitor<TypeParameter> {
-		private Reporter reporter;
+	public class TypeParameterVisitor extends SiriusBaseVisitor<TypeParameter> {
 
-		public TypeParameterVisitor(Reporter reporter) {
+		public TypeParameterVisitor() {
 			super();
-			this.reporter = reporter;
 		}
 
 		@Override
 		public TypeParameter visitTypeParameterDeclaration(TypeParameterDeclarationContext ctx) {
 			Variance variance;
 			
-			ParseTree varianceTree = ctx.children.get(0);
-			String varianceString = varianceTree.getText();
-//			System.out.println(varianceString);
-
 			if(ctx.IN() != null) {
 				variance = Variance.IN;
 			}
@@ -50,13 +44,10 @@ public class TypeParameterParser {
 				variance = Variance.INVARIANT;
 			}
 			
-			Optional<AstType> defaultType = Optional.empty();
-			
+			TypeParser.TypeVisitor typeVisitor = new TypeParser.TypeVisitor(reporter);
 			TypeContext defaultTypeContext =  ctx.type();
-			if(defaultTypeContext != null) {	// Thre's a default value
-				TypeParser.TypeVisitor visitor = new TypeParser.TypeVisitor(reporter);
-				defaultType = Optional.of(defaultTypeContext.accept(visitor));
-			}
+			Optional<AstType> defaultType = Optional.ofNullable(defaultTypeContext)
+					.map(typeVisitor::visit);
 			
 			AstToken name = new AstToken(ctx.TYPE_ID().getSymbol());
 

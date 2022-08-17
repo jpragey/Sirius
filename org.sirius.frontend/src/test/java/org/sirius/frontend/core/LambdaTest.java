@@ -55,7 +55,7 @@ public class LambdaTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.localVariableStatement();
 				
-		StatementParser.StatementVisitor typeVisitor = new StatementParser.StatementVisitor(reporter);
+		StatementParser.StatementVisitor typeVisitor = new StatementParser(reporter).new StatementVisitor();
 		AstStatement myType = typeVisitor.visit(tree);
 		
 		return myType;
