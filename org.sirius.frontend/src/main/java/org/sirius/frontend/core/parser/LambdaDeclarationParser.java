@@ -44,7 +44,7 @@ public class LambdaDeclarationParser {
 			StatementParser.StatementVisitor statementVisitor = new StatementParser.StatementVisitor(reporter);
 			
 			List<AstStatement> statements =  ctx.statement().stream()
-				.map(stmtCtxt -> stmtCtxt.accept(statementVisitor))
+				.map(statementVisitor::visit /*stmtCtxt -> stmtCtxt.accept(statementVisitor)*/)
 				.collect(Collectors.toList());
 			
 			return statements;
@@ -66,7 +66,8 @@ public class LambdaDeclarationParser {
 			TypeParser.TypeVisitor argTypeVisitor = new TypeParser.TypeVisitor(reporter);
 
 			List<AstType> args = ctx.functionDeclarationParameterList().functionDeclarationParameter().stream()
-					.map(typeContext -> argTypeVisitor.visit(typeContext))
+					.map(argTypeVisitor::visit)
+//					.map(typeContext -> argTypeVisitor.visit(typeContext))
 					.collect(Collectors.toList());
 			
 			TypeParser.TypeVisitor returnTypeVisitor = new TypeParser.TypeVisitor(reporter);
@@ -78,12 +79,10 @@ public class LambdaDeclarationParser {
 	}
 
 	public class LambdaDefinitionVisitor extends SiriusBaseVisitor<LambdaDefinition> {
-//		private Reporter reporter;
 		private Parsers parsers;
 
-		public LambdaDefinitionVisitor(/*Reporter reporter*/) {
+		public LambdaDefinitionVisitor() {
 			super();
-//			this.reporter = reporter;
 			this.parsers = new Parsers(reporter);
 		}
 		
@@ -95,7 +94,8 @@ public class LambdaDeclarationParser {
 			
 			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
 			
-			int currentArgIndex = 0; // index in argument list
+			// assign index in argument list
+			int currentArgIndex = 0; 
 			for(var fp: functionParams) {
 				fp.setIndex(currentArgIndex++);
 			}
@@ -110,7 +110,8 @@ public class LambdaDeclarationParser {
 			
 			// -- Body
 			FunctionBodyVisitor bodyVisitor = new FunctionBodyVisitor(reporter);
-			List<AstStatement> statements = ctx.functionBody().accept(bodyVisitor);
+//			List<AstStatement> statements = ctx.functionBody().accept(bodyVisitor);
+			List<AstStatement> statements = bodyVisitor.visit(ctx);
 			
 			return new LambdaDefinition(functionParams, returnType, new FunctionBody(statements));
 		}

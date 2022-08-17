@@ -101,12 +101,12 @@ public record Parsers(Reporter reporter) {
 		
 		@Override
 		public List<AstFunctionParameter> visitFunctionDefinitionParameterList(FunctionDefinitionParameterListContext ctx) {
-			FunctionParameterVisitor v = new FunctionParameterVisitor(reporter);
-			
+			FunctionParameterVisitor fpVisitor = new FunctionParameterVisitor(reporter);
+
 			List<AstFunctionParameter> functionParameters = 
-			ctx.functionDefinitionParameter().stream()
-				.map(formalArgCtx -> v.visit(formalArgCtx))
-				.collect(Collectors.toList());
+					ctx.functionDefinitionParameter().stream()
+					.map(fpVisitor::visit)
+					.collect(Collectors.toList());
 			
 			int currentArgIndex = 0; // index in argument list
 			for(var fp: functionParameters) {
