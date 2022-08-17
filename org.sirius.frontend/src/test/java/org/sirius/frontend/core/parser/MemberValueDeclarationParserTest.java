@@ -15,6 +15,7 @@ import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.api.Expression;
+import org.sirius.frontend.ast.Annotation;
 import org.sirius.frontend.ast.AstExpression;
 import org.sirius.frontend.ast.AstIntegerConstantExpression;
 import org.sirius.frontend.ast.AstInterfaceDeclaration;
@@ -77,11 +78,15 @@ public class MemberValueDeclarationParserTest {
 			assertThat(memberValue.getNameString(), equalTo("i") );
 			assertThat(memberValue.getApiInitialValue().isPresent(), equalTo(false) );
 			assertThat(memberValue.getType(), instanceOf(SimpleType.class));
-			assertThat(memberValue.getAnnotations().size(), equalTo(2));
-			assertThat(memberValue.getAnnotations().get(0).getName().getText(), equalTo("anno0"));
-			assertThat(memberValue.getAnnotations().get(1).getName().getText(), equalTo("anno1"));
 			assertThat(((SimpleType)memberValue.getType()).getNameString(), equalTo("Integer"));
-			}) );
+
+			assertThat(memberValue.getAnnotations().stream()
+					.map((Annotation anno) -> anno.getName()
+					.getText()) 
+					.toArray(), 
+					is(new String[] {"anno0", "anno1"} ));
+
+		}) );
 //		parseMemberValue("Integer i = 42;",      ((AstMemberValueDeclaration memberValue) -> {
 //			assertThat(memberValue.getApiInitialValue().isPresent(), equalTo(true) );
 //			AstExpression initExpr = memberValue.getInitialValue().get();
