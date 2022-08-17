@@ -81,14 +81,14 @@ public class ClassDeclarationParserTest {
 	@Test
 	@DisplayName("Class declarations satisfying interfaces")
 	public void classDeclarationsImplementingInterfaces() {
-		AstClassDeclaration myClass = parseClassDeclaration("class I() implements I0 {}" /*, new QName ()*/);
+		AstClassDeclaration myClass = parseClassDeclaration("class I() implements I0, I1, I2 {}" /*, new QName ()*/);
 
-		assertEquals(myClass.getAncestors().size(), 1);
+//		assertEquals(myClass.getAncestors().size(), 3);
 		
 		assertThat(myClass.getAncestors().stream()
 				.map(interf -> interf.getText())
 				.toArray(), 
-				is(new String[]{"I0"}));
+				is(new String[]{"I0", "I1", "I2"}));
 	}
 
 	@Test

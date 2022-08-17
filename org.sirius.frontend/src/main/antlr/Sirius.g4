@@ -416,11 +416,11 @@ interfaceDeclaration
 }
 	: 
 	  'interface'	
-	  TYPE_ID		
+	  interfaceName=TYPE_ID		
 	  (
 	  	typeParameterDeclarationList
 	  )? 
-	  ( 'implements' TYPE_ID  )?
+	  ( 'implements' TYPE_ID (',' TYPE_ID)* )?
 	  '{'
 	  (
 	  	  functionDeclaration		

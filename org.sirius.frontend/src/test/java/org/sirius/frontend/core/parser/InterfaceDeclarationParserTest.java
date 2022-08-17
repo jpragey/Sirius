@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -110,6 +111,15 @@ public class InterfaceDeclarationParserTest {
 		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I {Integer v0; Integer v1;}");
 
 		assertEquals(myInterface.getValueDeclarations().size(), 2);
+	}
+
+	@Test
+	@DisplayName("Interface implements several interfaces")
+	public void interfaceHavingMultipleImplementClauses() {
+		AstInterfaceDeclaration myInterface = parseInterfaceDeclaration("interface I implements I0, I1, I2 {}");
+
+		assertEquals(myInterface.getAncestors().size(), 3);
+		assertEquals(myInterface.getAncestors().stream().map(ancestorTk -> ancestorTk.getText()).toList(), List.of("I0", "I1", "I2"));
 	}
 
 }

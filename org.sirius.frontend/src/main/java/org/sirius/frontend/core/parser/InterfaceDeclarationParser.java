@@ -30,18 +30,17 @@ public class InterfaceDeclarationParser {
 	}
 
 	public class InterfaceDeclarationVisitor extends SiriusBaseVisitor<AstInterfaceDeclaration> {
-//		private Reporter reporter;
 
-		public InterfaceDeclarationVisitor(/*Reporter reporter*/) {
+		public InterfaceDeclarationVisitor() {
 			super();
-//			this.reporter = reporter;
 		}
 
 		@Override
 		public AstInterfaceDeclaration visitInterfaceDeclaration(InterfaceDeclarationContext ctx) {
 			
-			AstToken name = new AstToken(ctx.TYPE_ID(0).getSymbol());
-			
+//			AstToken name = new AstToken(ctx.TYPE_ID(0).getSymbol());
+			AstToken name = new AstToken(ctx.interfaceName);
+					
 			List<AstToken> intfList = ctx.TYPE_ID().stream()
 				.skip(1)
 				.map(terminalNode -> new AstToken(terminalNode.getSymbol()))
