@@ -173,7 +173,7 @@ public record Parsers(Reporter reporter) {
 			
 			PackageElements packageElements = new PackageElements();
 
-			ModuleDeclarationParser.PackageElementVisitor mcVisitor = new ModuleDeclarationParser.PackageElementVisitor(reporter, 
+			ModuleDeclarationParser.PackageElementVisitor mcVisitor = new ModuleDeclarationParser(reporter) .new PackageElementVisitor(//reporter, 
 					packageDeclarations, packageElements /*interfaceDeclarations, classDeclarations, partialLists*/);
 			ctx.packageElement().forEach(mcContext -> mcContext.accept(mcVisitor));
 			

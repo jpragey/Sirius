@@ -87,13 +87,6 @@ public class MemberValueDeclarationParserTest {
 					is(new String[] {"anno0", "anno1"} ));
 
 		}) );
-//		parseMemberValue("Integer i = 42;",      ((AstMemberValueDeclaration memberValue) -> {
-//			assertThat(memberValue.getApiInitialValue().isPresent(), equalTo(true) );
-//			AstExpression initExpr = memberValue.getInitialValue().get();
-//			assertThat(initExpr, instanceOf(AstIntegerConstantExpression.class));
-//			assertThat(((AstIntegerConstantExpression)initExpr).getValue(), equalTo(42));
-//			}) );
 	}
-
 
 }

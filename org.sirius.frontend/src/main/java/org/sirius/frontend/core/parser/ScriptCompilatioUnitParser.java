@@ -46,7 +46,7 @@ public class ScriptCompilatioUnitParser {
 					.collect(Collectors.toList());
 			
 			// -- module declarations
-			ModuleDeclarationParser.ConcreteModuleVisitor moduleVisitor = new ModuleDeclarationParser.ConcreteModuleVisitor(reporter);
+			ModuleDeclarationParser.ConcreteModuleVisitor moduleVisitor = new ModuleDeclarationParser(reporter).new ConcreteModuleVisitor();
 			List<AstModuleDeclaration> modules = ctx.concreteModule().stream()
 					.map(mCtx -> mCtx.accept(moduleVisitor))
 					.filter(md -> md!=null)

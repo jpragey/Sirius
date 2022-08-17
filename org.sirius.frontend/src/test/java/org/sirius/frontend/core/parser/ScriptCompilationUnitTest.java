@@ -104,7 +104,7 @@ public class ScriptCompilationUnitTest {
 		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.concreteModule();
 				
-		ModuleDeclarationParser.ConcreteModuleVisitor visitor = new ModuleDeclarationParser.ConcreteModuleVisitor(reporter);
+		ModuleDeclarationParser.ConcreteModuleVisitor visitor = new ModuleDeclarationParser(reporter).new ConcreteModuleVisitor();
 		AstModuleDeclaration md = visitor.visit(tree);
 		return md;
 		

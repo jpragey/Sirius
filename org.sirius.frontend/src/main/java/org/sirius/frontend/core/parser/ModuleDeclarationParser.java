@@ -3,6 +3,7 @@ package org.sirius.frontend.core.parser;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,8 +40,10 @@ import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
  */
 public class ModuleDeclarationParser {
 	private Reporter reporter;
+	private Parsers parsers;
 	public ModuleDeclarationParser(Reporter reporter) {
 		this.reporter = reporter;
+		this.parsers = new Parsers(reporter);
 	}
 
 	public class ModuleImportVisitor extends SiriusBaseVisitor<ModuleImport> {
@@ -59,20 +62,21 @@ public class ModuleDeclarationParser {
 			Parsers.QualifiedNameVisitor nameVisitor = new Parsers(reporter).new QualifiedNameVisitor();
 			Optional<QName> qname = Optional.empty();
 			if(ctx.nameQName != null )
-				qname = Optional.of(ctx.nameQName.accept(nameVisitor).toQName());
-				
-			Optional<String> qnameString = Optional.empty();
-			if(ctx.nameString != null) {
-				String rawText = ctx.nameString.getText();
+				qname = Optional.of(nameVisitor.visit(ctx.nameQName).toQName());
+
+			// -- qnameString
+			Optional<String> qnameString = Optional.ofNullable(ctx.nameString).map( (Token tk) -> {
+				String rawText = tk.getText();
 				String trimmedName = 
 						rawText.substring(1, rawText.length()-1)	// remove double quotes
 						.trim();
-				qnameString = Optional.of(trimmedName);
-			}
+				return trimmedName;
+				
+			} );
+
 			// -- version
 			Token versionToken = ctx.version;
 			Token versionStringTk = ctx.versionString;
-
 			
 			ModuleImport moduleImport = new ModuleImport(shared, origin, qname, qnameString, versionToken, versionStringTk);
 			return moduleImport;
@@ -96,32 +100,31 @@ public class ModuleDeclarationParser {
 		}
 	}	
 	
-	public static class PackageElementVisitor extends SiriusBaseVisitor<Void> {
-		private Reporter reporter; 
+	public class PackageElementVisitor extends SiriusBaseVisitor<Void> {
 		private List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
 		private PackageElements packageElements;
 		
-		public PackageElementVisitor(Reporter reporter,
+		public PackageElementVisitor(
 				List<AstPackageDeclaration> packageDeclarations,
 				PackageElements packageElements) 
 		{
 			super();
-			this.reporter = reporter;
 			this.packageDeclarations = packageDeclarations;
 			this.packageElements = packageElements;
 		}
-			@Override
+		
+		@Override
 		public Void visitPackageDeclaration(PackageDeclarationContext ctx) {
-				Parsers.PackageDeclarationVisitor v = new Parsers(reporter).new PackageDeclarationVisitor();
-				AstPackageDeclaration partialList = ctx.accept(v);
-				this.packageDeclarations.add(partialList);
-				return null;
+			Parsers.PackageDeclarationVisitor v = parsers.new PackageDeclarationVisitor();
+			AstPackageDeclaration partialList = v.visit(ctx);
+			this.packageDeclarations.add(partialList);
+			return null;
 		}
 		@Override
 		public Void visitFunctionDeclaration(FunctionDeclarationContext ctx) {
 			FunctionDefinitionVisitor v = new FunctionDefinitionVisitor(reporter);
 			
-			FunctionDefinition functionDefinition = ctx.accept(v);
+			FunctionDefinition functionDefinition = v.visit(ctx);
 			this.packageElements.functiondefinitions.add(functionDefinition);
 			return null;
 		}
@@ -129,7 +132,8 @@ public class ModuleDeclarationParser {
 		public Void visitFunctionDefinition(FunctionDefinitionContext ctx) {
 			FunctionDefinitionVisitor v = new FunctionDefinitionVisitor(reporter);
 			
-			FunctionDefinition functionDefinition = ctx.accept(v);
+			FunctionDefinition functionDefinition = v.visit(ctx);
+//			FunctionDefinition functionDefinition = ctx.accept(v);
 			this.packageElements.functiondefinitions.add(functionDefinition);
 			return null;
 		}
@@ -138,7 +142,8 @@ public class ModuleDeclarationParser {
 		public Void visitClassDeclaration(ClassDeclarationContext ctx) {
 			ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser(reporter).new ClassDeclarationVisitor();
 
-			AstClassDeclaration cd = ctx.accept(visitor);
+//			AstClassDeclaration cd = ctx.accept(visitor);
+			AstClassDeclaration cd = visitor.visit(ctx);
 			this.packageElements.classDeclarations.add(cd);
 			return null;
 		}
@@ -146,7 +151,8 @@ public class ModuleDeclarationParser {
 		public Void visitInterfaceDeclaration(InterfaceDeclarationContext ctx) {
 			InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser(reporter).new InterfaceDeclarationVisitor();
 
-			AstInterfaceDeclaration id = ctx.accept(visitor);
+//			AstInterfaceDeclaration id = ctx.accept(visitor);
+			AstInterfaceDeclaration id = visitor.visit(ctx);
 			this.packageElements.interfaceDeclarations.add(id);
 			return null;
 		}
@@ -163,12 +169,10 @@ public class ModuleDeclarationParser {
 		}
 	}
 	
-	public static class ConcreteModuleVisitor extends SiriusBaseVisitor<AstModuleDeclaration> {
-		private Reporter reporter;
+	public class ConcreteModuleVisitor extends SiriusBaseVisitor<AstModuleDeclaration> {
 
-		public ConcreteModuleVisitor(Reporter reporter) {
+		public ConcreteModuleVisitor() {
 			super();
-			this.reporter = reporter;
 		}
 		@Override
 		public AstModuleDeclaration visitConcreteModule(ConcreteModuleContext ctx) {
@@ -176,9 +180,10 @@ public class ModuleDeclarationParser {
 			
 			// -- package content
 			LinkedList<AstPackageDeclaration> packageDeclarations = new LinkedList<>();
-			PackageElementVisitor packageElementVisitor = new PackageElementVisitor(reporter, packageDeclarations, packageElements);
+			PackageElementVisitor packageElementVisitor = new PackageElementVisitor(packageDeclarations, packageElements);
 			
-			ctx.packageElement().forEach(peContext -> peContext.accept(packageElementVisitor));
+//			ctx.packageElement().forEach(peContext -> peContext.accept(packageElementVisitor));
+			ctx.packageElement().forEach(peContext -> packageElementVisitor.visit(peContext));
 			
 			
 			// -- Module declaration
@@ -186,15 +191,14 @@ public class ModuleDeclarationParser {
 			ModuleDeclarationContext moduleDeclarationContext = ctx.moduleDeclaration();
 			if(moduleDeclarationContext != null) {	// Explicit module
 				ModuleDeclarationVisitor mdVisitor = new ModuleDeclarationVisitor(reporter /*, pds*/);
-				AstModuleDeclarationBuilder mdBuilder = moduleDeclarationContext.accept(mdVisitor);
+				AstModuleDeclarationBuilder mdBuilder = mdVisitor.visit(moduleDeclarationContext);
 
 				
 				List<AstPackageDeclaration> pds;
-				AstPackageDeclaration defaultPackageDeclaration = null;
 				if(packageDeclarations.isEmpty()) {
 					// -- Create default package
 					QName pkgQName = mdBuilder.getQualifiedName();	// use module qname as package qname
-					defaultPackageDeclaration = new AstPackageDeclaration(reporter, pkgQName, packageElements.functiondefinitions, packageElements.classDeclarations, 
+					AstPackageDeclaration defaultPackageDeclaration = new AstPackageDeclaration(reporter, pkgQName, packageElements.functiondefinitions, packageElements.classDeclarations, 
 									packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/);
 					pds = List.of(defaultPackageDeclaration);
 				} else {
@@ -274,7 +278,8 @@ public class ModuleDeclarationParser {
 			ModuleImportVisitor moduleImportVisitor = new ModuleDeclarationParser(reporter).new ModuleImportVisitor();
 			List<ModuleImport> moduleImports = ctx.children.stream()
 				.map(tree -> tree.accept(moduleImportVisitor))
-				.filter(modImport -> modImport!=null)
+//				.filter(modImport -> modImport!=null)
+				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 			
 			return new AstModuleDeclarationBuilder(reporter, qualifiedName.toQName(), version, equivalents, moduleImports/*, packageDeclarations*/);

@@ -8,7 +8,6 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 
 public class ModuleImport implements Verifiable {
-//		private Reporter reporter; 
 	private boolean shared = false; 
 	private Optional<AstToken> origin;
 	
