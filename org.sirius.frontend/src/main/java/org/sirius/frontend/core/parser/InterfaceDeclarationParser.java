@@ -60,21 +60,21 @@ public class InterfaceDeclarationParser {
 			// -- Member functions
 			Parsers.FunctionDeclarationVisitor fctVisitor = parsers.new FunctionDeclarationVisitor();
 			List<FunctionDeclaration> methods = ctx.children.stream()
-				.map(parseTree -> parseTree.accept(fctVisitor))
-				.filter(fctDecl -> fctDecl!=null)
-				.collect(Collectors.toList());
+					.map(fctVisitor::visit)
+					.filter(fctDecl -> fctDecl!=null)
+					.collect(Collectors.toList());
 			
 			FunctionDeclarationParser.FunctionDefinitionVisitor fctdefVisitor = new FunctionDeclarationParser.FunctionDefinitionVisitor(reporter);
 			List<FunctionDefinition> methodDefinitions = ctx.children.stream()
-				.map(parseTree -> parseTree.accept(fctdefVisitor))
-				.filter(fctDef -> fctDef!=null)
-				.collect(Collectors.toList());
-			
+					.map(fctdefVisitor::visit)
+					.filter(fctDef -> fctDef!=null)
+					.collect(Collectors.toList());
+
 			MemberValueDeclarationParser.MemberValueVisitor memberValuesVisitor = new MemberValueDeclarationParser.MemberValueVisitor(reporter);
 			List<AstMemberValueDeclaration> memberValues = ctx.children.stream()
-				.map(parseTree -> parseTree.accept(memberValuesVisitor))
-				.filter(partialList -> partialList!=null)
-				.collect(Collectors.toList());
+					.map(memberValuesVisitor::visit)
+					.filter(partialList -> partialList!=null)
+					.collect(Collectors.toList());
 			
 			
 			AstInterfaceDeclaration interfaceDeclaration = new AstInterfaceDeclaration(reporter, name, 
