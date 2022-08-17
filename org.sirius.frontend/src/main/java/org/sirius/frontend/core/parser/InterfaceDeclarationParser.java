@@ -11,6 +11,7 @@ import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
+import org.sirius.frontend.parser.SiriusParser.ImplementedInterfacesContext;
 import org.sirius.frontend.parser.SiriusParser.InterfaceDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListContext;
 
@@ -38,13 +39,13 @@ public class InterfaceDeclarationParser {
 		@Override
 		public AstInterfaceDeclaration visitInterfaceDeclaration(InterfaceDeclarationContext ctx) {
 			
-//			AstToken name = new AstToken(ctx.TYPE_ID(0).getSymbol());
 			AstToken name = new AstToken(ctx.interfaceName);
 					
-			List<AstToken> intfList = ctx.TYPE_ID().stream()
-				.skip(1)
-				.map(terminalNode -> new AstToken(terminalNode.getSymbol()))
-				.collect(Collectors.toList());
+			// -- Implemented interfaces
+			ImplementedInterfacesContext intfCtx = ctx.implementedInterfaces();
+			List<AstToken> intfList = (intfCtx == null) ?
+					List.of() :
+					parsers.new ImplementClauseVisitor().visit(intfCtx);
 			
 			// -- type parameters
 			FunctionDeclarationParser.TypeParameterListVisitor typeParameterListVisitor = new FunctionDeclarationParser.TypeParameterListVisitor(reporter);

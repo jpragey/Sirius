@@ -30,6 +30,7 @@ import org.sirius.frontend.parser.SiriusParser.AnnotationListContext;
 import org.sirius.frontend.parser.SiriusParser.ClassDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionParameterListContext;
+import org.sirius.frontend.parser.SiriusParser.ImplementedInterfacesContext;
 import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
 import org.sirius.frontend.parser.SiriusParser.QnameContext;
 import org.sirius.frontend.parser.SiriusParser.TypeContext;
@@ -145,7 +146,17 @@ public record Parsers(Reporter reporter) {
 		}
 	}
 
-	
+	/****************************************************************************/
+	/** 							Class/interface aux							*/
+	/****************************************************************************/
+	public class ImplementClauseVisitor extends SiriusBaseVisitor<List<AstToken>> {
+		@Override
+		public List<AstToken> visitImplementedInterfaces(ImplementedInterfacesContext ctx) {
+			List<AstToken> interfaceNames = ctx.TYPE_ID().stream().map(termNode -> new AstToken(termNode.getSymbol())).toList();
+			return interfaceNames;
+		}
+	}
+
 	
 	public class PackageDeclarationVisitor extends SiriusBaseVisitor<AstPackageDeclaration> {
 

@@ -406,7 +406,9 @@ classDeclaration
 		  )*
 	  '}'
 	;
-implementedInterfaces :
+	
+ 	
+implementedInterfaces :	 /** 'implements' clause, for classes and interfaces */
 	  'implements' TYPE_ID
 	  	(',' TYPE_ID)*
 ;
@@ -420,7 +422,7 @@ interfaceDeclaration
 	  (
 	  	typeParameterDeclarationList
 	  )? 
-	  ( 'implements' TYPE_ID (',' TYPE_ID)* )?
+	  implementedInterfaces ? 
 	  '{'
 	  (
 	  	  functionDeclaration		
