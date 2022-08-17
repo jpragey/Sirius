@@ -25,7 +25,8 @@ public class ModuleDescriptorCompilatioUnitParser {
 		public AstModuleDeclaration visitModuleDescriptorCompilationUnit(ModuleDescriptorCompilationUnitContext ctx) {
 			
 			ModuleDeclarationParser.ModuleDeclarationVisitor visitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter);
-			AstModuleDeclaration moduleDeclaration = ctx.moduleDeclaration().accept(visitor).build(List.of() /*AstPackageDeclaration*/ );
+//			AstModuleDeclaration moduleDeclaration = ctx.moduleDeclaration().accept(visitor).build(List.of() /*AstPackageDeclaration*/ );
+			AstModuleDeclaration moduleDeclaration = visitor.visit(ctx.moduleDeclaration()).build(List.of() /*AstPackageDeclaration*/ );
 			
 			return moduleDeclaration;
 		}
