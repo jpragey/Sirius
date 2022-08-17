@@ -52,7 +52,8 @@ public class ImportDeclarationParser {
 		@Override
 		public ImportDeclaration visitImportDeclaration(ImportDeclarationContext ctx) {
 			Parsers.QualifiedNameVisitor nameVisitor = new Parsers(reporter).new QualifiedNameVisitor();
-			QualifiedName pack = ctx.qname().accept(nameVisitor);
+//			QualifiedName pack = ctx.qname().accept(nameVisitor);
+			QualifiedName pack = nameVisitor.visit(ctx.qname());
 
 			ImportDeclarationElementVisitor elementVisitor = new ImportDeclarationElementVisitor();
 			List<ImportDeclarationElement> elements = ctx.importDeclarationElement().stream()

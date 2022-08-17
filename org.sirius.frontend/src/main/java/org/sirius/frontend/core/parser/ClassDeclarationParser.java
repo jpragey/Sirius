@@ -32,7 +32,7 @@ public class ClassDeclarationParser {
 		this.reporter = reporter;
 		this.parsers = new Parsers(reporter);
 	}
-//	public static 
+
 	public class ImplementClauseVisitor extends SiriusBaseVisitor<List<AstToken>> {
 		@Override
 		public List<AstToken> visitImplementedInterfaces(ImplementedInterfacesContext ctx) {
@@ -41,12 +41,6 @@ public class ClassDeclarationParser {
 		}
 	}
 	public class ClassDeclarationVisitor extends SiriusBaseVisitor<AstClassDeclaration> {
-//		private Reporter reporter;
-//
-//		public ClassDeclarationVisitor(Reporter reporter) {
-//			super();
-//			this.reporter = reporter;
-//		}
 
 		@Override
 		public AstClassDeclaration visitClassDeclaration(ClassDeclarationContext ctx) {
@@ -58,25 +52,8 @@ public class ClassDeclarationParser {
 			List<AstFunctionParameter> anonConstructorArguments = parameterVisitor.visitFunctionDefinitionParameterList(ctx.functionDefinitionParameterList());
 			
 			// -- Implemented interfaces
-//			List<AstToken> ancestors = ctx.TYPE_ID().stream()
-//				.skip(1)
-//				.map(terminalNode -> new AstToken(terminalNode.getSymbol()))
-//				.collect(Collectors.toList());
-			
-//			ctx.implementedInterface().interfaceName
 			ImplementedInterfacesContext ict =  ctx.implementedInterfaces();
-			if(ict != null) {
-				new ImplementClauseVisitor().visit(ict);
-			}
 			List<AstToken> ancestors = (ict == null) ? List.of() : new ImplementClauseVisitor().visit(ict);
-			
-//			List<AstToken> ancestors = ctx.TYPE_ID().stream()
-//					.skip(1)
-//					.map(terminalNode -> new AstToken(terminalNode.getSymbol()))
-//					.collect(Collectors.toList());
-//			
-//			List<AstToken> ancestors = ImplementClauseVisitor()
-			
 			
 			// -- type parameters
 			FunctionDeclarationParser.TypeParameterListVisitor typeParameterListVisitor = new FunctionDeclarationParser.TypeParameterListVisitor(reporter);

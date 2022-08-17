@@ -47,19 +47,17 @@ public class ExpressionParser {
 	}
 
 	public class ExpressionVisitor extends SiriusBaseVisitor<AstExpression> {
-//		private Reporter reporter;
 		
-		public ExpressionVisitor(/*Reporter reporter*/) {
+		public ExpressionVisitor() {
 			super();
-//			this.reporter = reporter;
 		}
 		
 		
 
 		@Override
 		public AstExpression visitIsBinaryExpression(IsBinaryExpressionContext ctx) {
-			AstExpression left = ctx.left.accept(this);
-			AstExpression right = ctx.right.accept(this);
+			AstExpression left = visit(ctx.left);
+			AstExpression right = visit(ctx.right);
 			AstToken opToken = new AstToken(ctx.op);
 			
 			return new AstBinaryOpExpression(left, right, opToken);
@@ -96,14 +94,14 @@ public class ExpressionParser {
 		public AstFunctionCallExpression visitFunctionCallExpression(FunctionCallExpressionContext ctx) {
 			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
 			
-			ExpressionVisitor argVisitor = new ExpressionVisitor(/*reporter*/);
+			ExpressionVisitor argVisitor = new ExpressionVisitor();
 			
 			List<AstExpression> actualArguments = ctx.children.stream()
 					.map(tree -> tree.accept(argVisitor))
 					.filter(tree -> tree!=null)
 					.collect(Collectors.toList());
 
-			Optional<AstExpression> thisExpression = Optional.empty();
+			Optional<AstExpression> thisExpression = Optional.empty(); /*TODO : ????*/
 			
 			return new AstFunctionCallExpression(reporter, name, actualArguments, thisExpression );
 		}
@@ -113,9 +111,8 @@ public class ExpressionParser {
 		@Override
 		public AstExpression visitIsMethodCallExpression(IsMethodCallExpressionContext ctx) {
 
-			ExpressionVisitor argVisitor = new ExpressionVisitor(/*reporter*/);
-			ExpressionContext thisExprContext = ctx.thisExpr;
-			AstExpression thisExpr = thisExprContext.accept(argVisitor);
+			ExpressionVisitor argVisitor = new ExpressionVisitor();
+			AstExpression thisExpr = argVisitor.visit(ctx.thisExpr);
 			assert(thisExpr != null); // TODO: implements all this-expressions...
 
 			AstFunctionCallExpression fctCallExpr = visitFunctionCallExpression(ctx.functionCallExpression());
@@ -130,11 +127,12 @@ public class ExpressionParser {
 		public AstExpression visitClassInstanciationExpression(ClassInstanciationExpressionContext ctx) {
 			AstToken name = new AstToken(ctx.name);
 			
-			ExpressionVisitor argVisitor = new ExpressionVisitor(/*reporter*/);
+			ExpressionVisitor argVisitor = new ExpressionVisitor();
 			
 			List<AstExpression> actualArguments = ctx.children.stream()
-					.map(tree -> tree.accept(argVisitor))
-					.filter(tree -> tree!=null)
+//					.map(tree -> tree.accept(argVisitor))
+					.map(tree -> argVisitor.visit(tree)/* tree.accept(argVisitor)*/)
+					.filter(express -> express != null)
 					.collect(Collectors.toList());
 
 			return new ConstructorCallExpression(reporter, name, actualArguments);
@@ -143,7 +141,7 @@ public class ExpressionParser {
 		@Override
 		public AstExpression visitIsFieldAccessExpression(IsFieldAccessExpressionContext ctx) {
 			
-			AstExpression thisExpression = ctx.lhs.accept(this /*Osé*/ );
+			AstExpression thisExpression = visit(ctx.lhs);
 			AstToken valueName = new AstToken(ctx.LOWER_ID().getSymbol());
 			
 			return new AstMemberAccessExpression(reporter, thisExpression, valueName);

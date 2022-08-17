@@ -359,7 +359,7 @@ functionCallExpression
 	;
 
 
-constantExpression returns [AstExpression express]
+constantExpression //returns [AstExpression express]
 	: STRING	
 	| INTEGER	
 	| FLOAT		

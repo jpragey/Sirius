@@ -79,32 +79,6 @@ public class FunctionDeclarationParser {
 		}
 	}
 
-//	public static class FunctionParameterListVisitor extends SiriusBaseVisitor< List<AstFunctionParameter> > {
-//		private Reporter reporter;
-//		
-//		public FunctionParameterListVisitor(Reporter reporter) {
-//			super();
-//			this.reporter = reporter;
-//		}
-//		
-//		@Override
-//		public List<AstFunctionParameter> visitFunctionDefinitionParameterList(FunctionDefinitionParameterListContext ctx) {
-//			FunctionParameterVisitor v = new FunctionParameterVisitor(reporter);
-//			
-//			List<AstFunctionParameter> functionParameters = 
-//			ctx.functionDefinitionParameter().stream()
-//				.map(formalArgCtx -> v.visit(formalArgCtx))
-//				.collect(Collectors.toList());
-//			
-//			int currentArgIndex = 0; // index in argument list
-//			for(var fp: functionParameters) {
-//				fp.setIndex(currentArgIndex++);
-//			}
-//
-//			return functionParameters;
-//		}
-//	}
-	
 	public static class TypeParameterListVisitor extends SiriusBaseVisitor< List<TypeParameter> > {
 		private Reporter reporter;
 		
@@ -117,8 +91,8 @@ public class FunctionDeclarationParser {
 		public List<TypeParameter> visitTypeParameterDeclarationList(TypeParameterDeclarationListContext ctx) {
 			TypeParameterParser.TypeParameterVisitor typeParameterVisitor = new TypeParameterParser.TypeParameterVisitor(reporter);
 			
-			List<TypeParameter> typeParameters = 
-					ctx.typeParameterDeclaration().stream().map(tpdc -> typeParameterVisitor.visit(tpdc))
+			List<TypeParameter> typeParameters = ctx.typeParameterDeclaration().stream()
+					.map(typeParameterVisitor::visit)
 					.collect(Collectors.toUnmodifiableList());
 			
 			return typeParameters;

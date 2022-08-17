@@ -30,7 +30,7 @@
     
     <additionalparam>-Xdoclint:none</additionalparam>
     
-    <libs.antlr4.version>4.9.1</libs.antlr4.version>
+    <libs.antlr4.version>4.10.1</libs.antlr4.version>
     <libs.asm.version>9.1</libs.asm.version>
     
   </properties>
