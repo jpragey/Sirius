@@ -408,7 +408,7 @@ classDeclaration
 	;
 	
  	
-implementedInterfaces :	 /** 'implements' clause, for classes and interfaces */
+implementedInterfaces :	 // 'implements' clause, for classes and interfaces
 	  'implements' TYPE_ID
 	  	(',' TYPE_ID)*
 ;
