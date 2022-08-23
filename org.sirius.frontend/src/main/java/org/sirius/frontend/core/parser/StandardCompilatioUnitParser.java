@@ -3,7 +3,7 @@ package org.sirius.frontend.core.parser;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.StandardCompilationUnitContext;
+import org.sirius.frontend.parser.Sirius.StandardCompilationUnitContext;
 import org.sirius.frontend.symbols.Scope;
 
 /** Visitor-based parser for the 'scriptCompilationUnit' rule.

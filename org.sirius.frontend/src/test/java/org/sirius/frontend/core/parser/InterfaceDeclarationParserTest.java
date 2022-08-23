@@ -24,7 +24,7 @@ import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.ast.Variance;
 import org.sirius.frontend.core.parser.TypeParameterParser.TypeParameterVisitor;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 
 public class InterfaceDeclarationParserTest {
 
@@ -42,7 +42,7 @@ public class InterfaceDeclarationParserTest {
 	
 	private AstInterfaceDeclaration parseInterfaceDeclaration(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.interfaceDeclaration();
 				
 		InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser(reporter).new InterfaceDeclarationVisitor();

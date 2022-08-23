@@ -26,8 +26,8 @@ import org.sirius.frontend.ast.AstMemberAccessExpression;
 import org.sirius.frontend.ast.AstStringConstantExpression;
 import org.sirius.frontend.ast.ConstructorCallExpression;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
-import org.sirius.frontend.parser.SiriusParser;
-import org.sirius.frontend.parser.SiriusParser.FunctionCallExpressionContext;
+import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.Sirius.FunctionCallExpressionContext;
 
 public class ExpressionParserTest {
 
@@ -45,7 +45,7 @@ public class ExpressionParserTest {
 	
 	private AstExpression parseExpression(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 //		ParseTree tree = parser.constantExpression();
 		ParseTree tree = parser.expression();
 				
@@ -142,7 +142,7 @@ public class ExpressionParserTest {
 
 	private AstExpression parseBinaryExpression(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.expression();
 				
 		ExpressionParser.ExpressionVisitor expressionVisitor = new ExpressionParser(reporter).new ExpressionVisitor();
@@ -171,7 +171,7 @@ public class ExpressionParserTest {
 
 	private AstFunctionCallExpression parseFunctioCallExpression(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		FunctionCallExpressionContext tree = parser.functionCallExpression();
 				
 		ExpressionParser.ExpressionVisitor expressionVisitor = new ExpressionParser(reporter).new ExpressionVisitor();
@@ -200,7 +200,7 @@ public class ExpressionParserTest {
 	}
 
 	private AstFunctionCallExpression parseMethodCallExpression(String inputText) {
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.expression();
 		
 		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser(reporter).new ExpressionVisitor();
@@ -228,7 +228,7 @@ public class ExpressionParserTest {
 	}
 
 	private ConstructorCallExpression parseConstructorCallExpression(String inputText, Consumer<ConstructorCallExpression> verify) {
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.expression();
 		
 		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser(reporter).new ExpressionVisitor();
@@ -247,7 +247,7 @@ public class ExpressionParserTest {
 	}
 
 	private AstMemberAccessExpression parseMemberAccessExpression(String inputText, Consumer<AstMemberAccessExpression> verify) {
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.expression();
 		
 		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser(reporter).new ExpressionVisitor();
@@ -266,7 +266,7 @@ public class ExpressionParserTest {
 	}
 
 	private SimpleReferenceExpression parseSimpleReferenceExpression(String inputText, Consumer<SimpleReferenceExpression> verify) {
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.expression();
 		
 		ExpressionParser.ExpressionVisitor typeVisitor = new ExpressionParser(reporter).new ExpressionVisitor();

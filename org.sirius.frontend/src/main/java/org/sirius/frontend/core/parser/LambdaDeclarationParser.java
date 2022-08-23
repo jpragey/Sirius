@@ -13,10 +13,10 @@ import org.sirius.frontend.ast.LambdaClosure;
 import org.sirius.frontend.ast.LambdaDeclaration;
 import org.sirius.frontend.ast.LambdaDefinition;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.FunctionBodyContext;
-import org.sirius.frontend.parser.SiriusParser.LambdaDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.LambdaDefinitionContext;
-import org.sirius.frontend.parser.SiriusParser.TypeContext;
+import org.sirius.frontend.parser.Sirius.FunctionBodyContext;
+import org.sirius.frontend.parser.Sirius.LambdaDeclarationContext;
+import org.sirius.frontend.parser.Sirius.LambdaDefinitionContext;
+import org.sirius.frontend.parser.Sirius.TypeContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 

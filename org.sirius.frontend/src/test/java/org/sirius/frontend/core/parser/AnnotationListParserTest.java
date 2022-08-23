@@ -13,7 +13,7 @@ import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.AnnotationList;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 
 public class AnnotationListParserTest {
 
@@ -31,7 +31,7 @@ public class AnnotationListParserTest {
 	
 	private AnnotationList parseAnnotationList(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.annotationList();
 				
 		Parsers.AnnotationListVisitor typeVisitor = new Parsers.AnnotationListVisitor();

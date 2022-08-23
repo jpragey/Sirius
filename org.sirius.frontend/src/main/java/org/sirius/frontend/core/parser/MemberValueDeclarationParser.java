@@ -10,8 +10,8 @@ import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.ExpressionContext;
-import org.sirius.frontend.parser.SiriusParser.MemberValueDeclarationContext;
+import org.sirius.frontend.parser.Sirius.ExpressionContext;
+import org.sirius.frontend.parser.Sirius.MemberValueDeclarationContext;
 
 public class MemberValueDeclarationParser {
 

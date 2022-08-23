@@ -24,7 +24,7 @@ import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.LambdaDeclaration;
 import org.sirius.frontend.ast.LambdaDefinition;
 import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 
 public class LambdaDeclarationParserTest {
 
@@ -42,7 +42,7 @@ public class LambdaDeclarationParserTest {
 	
 	private LambdaDeclaration parseLambdaDeclaration(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.lambdaDeclaration();
 				
 		LambdaDeclarationParser.LambdaDeclarationVisitor typeVisitor = new LambdaDeclarationParser.LambdaDeclarationVisitor(reporter);
@@ -59,7 +59,7 @@ public class LambdaDeclarationParserTest {
 	@Test
 	@DisplayName("Lambda declaration, 3 parameters, template form")
 	public void functionWithParameters_genericForm() {
-		functionWithParameters("Function < Integer , [A, B, C] > ");
+		functionWithParameters("function < Integer , [A, B, C] > ");
 	}
 	private void functionWithParameters(String sourceCode) {
 		LambdaDeclaration lambda = parseLambdaDeclaration(sourceCode);

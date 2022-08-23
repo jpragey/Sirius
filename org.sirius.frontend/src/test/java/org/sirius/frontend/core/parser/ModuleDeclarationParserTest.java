@@ -18,7 +18,7 @@ import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ModuleImport;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -38,7 +38,7 @@ public class ModuleDeclarationParserTest {
 	
 	// -- Test of Module import
 	private ModuleImport parseModuleImport(String inputText) {
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.moduleImport();
 				
 		ModuleDeclarationParser.ModuleImportVisitor visitor = new ModuleDeclarationParser(reporter).new ModuleImportVisitor();
@@ -119,7 +119,7 @@ public class ModuleDeclarationParserTest {
 	// -- Test of Module declaration
 	private AstModuleDeclaration parseModuleDeclaration(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.moduleDeclaration();
 				
 		ModuleDeclarationParser.ModuleDeclarationVisitor visitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter

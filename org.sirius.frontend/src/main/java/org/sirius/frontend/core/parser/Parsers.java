@@ -25,16 +25,16 @@ import org.sirius.frontend.core.parser.ModuleDeclarationParser.PackageElements;
 import org.sirius.frontend.core.parser.Parsers.FunctionParameterListVisitor;
 //import org.sirius.frontend.core.parser.AnnotationListParser.AnnotationVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.AnnotationContext;
-import org.sirius.frontend.parser.SiriusParser.AnnotationListContext;
-import org.sirius.frontend.parser.SiriusParser.ClassDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionParameterListContext;
-import org.sirius.frontend.parser.SiriusParser.ImplementedInterfacesContext;
-import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.QnameContext;
-import org.sirius.frontend.parser.SiriusParser.TypeContext;
-import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListContext;
+import org.sirius.frontend.parser.Sirius.AnnotationContext;
+import org.sirius.frontend.parser.Sirius.AnnotationListContext;
+import org.sirius.frontend.parser.Sirius.ClassDeclarationContext;
+import org.sirius.frontend.parser.Sirius.FunctionDeclarationContext;
+import org.sirius.frontend.parser.Sirius.FunctionDefinitionParameterListContext;
+import org.sirius.frontend.parser.Sirius.ImplementedInterfacesContext;
+import org.sirius.frontend.parser.Sirius.PackageDeclarationContext;
+import org.sirius.frontend.parser.Sirius.QnameContext;
+import org.sirius.frontend.parser.Sirius.TypeContext;
+import org.sirius.frontend.parser.Sirius.TypeParameterDeclarationListContext;
 
 
 public record Parsers(Reporter reporter) {

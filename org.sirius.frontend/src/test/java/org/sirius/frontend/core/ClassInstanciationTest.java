@@ -43,7 +43,7 @@ import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.core.parser.ParserUtil;
 import org.sirius.frontend.core.parser.StatementParser;
 import org.sirius.frontend.parser.Compiler;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 
 public class ClassInstanciationTest {
 

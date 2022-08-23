@@ -16,7 +16,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ImportDeclarationElement;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 
 public class ImportDeclarationParserTest {
 
@@ -34,7 +34,7 @@ public class ImportDeclarationParserTest {
 	
 	private ImportDeclaration parseImportDeclaration(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.importDeclaration();
 				
 		ImportDeclarationParser.ImportDeclarationVisitor visitor = new ImportDeclarationParser.ImportDeclarationVisitor(reporter);

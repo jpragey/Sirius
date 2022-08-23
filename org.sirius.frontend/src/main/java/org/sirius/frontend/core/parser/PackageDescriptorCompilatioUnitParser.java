@@ -8,9 +8,9 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.PackageDescriptorCompilationUnitContext;
-import org.sirius.frontend.parser.SiriusParser.QnameContext;
+import org.sirius.frontend.parser.Sirius.PackageDeclarationContext;
+import org.sirius.frontend.parser.Sirius.PackageDescriptorCompilationUnitContext;
+import org.sirius.frontend.parser.Sirius.QnameContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 

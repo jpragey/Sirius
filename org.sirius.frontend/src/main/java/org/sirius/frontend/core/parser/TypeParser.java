@@ -13,12 +13,12 @@ import org.sirius.frontend.ast.LambdaDeclaration;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.UnionType;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.ArrayTypeContext;
-import org.sirius.frontend.parser.SiriusParser.BracketedTypeContext;
-import org.sirius.frontend.parser.SiriusParser.IntersectionTypeContext;
-import org.sirius.frontend.parser.SiriusParser.LambdaDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.SimpleType0Context;
-import org.sirius.frontend.parser.SiriusParser.UnionTypeContext;
+import org.sirius.frontend.parser.Sirius.ArrayTypeContext;
+import org.sirius.frontend.parser.Sirius.BracketedTypeContext;
+import org.sirius.frontend.parser.Sirius.IntersectionTypeContext;
+import org.sirius.frontend.parser.Sirius.LambdaDeclarationContext;
+import org.sirius.frontend.parser.Sirius.SimpleType0Context;
+import org.sirius.frontend.parser.Sirius.UnionTypeContext;
 
 /** Visitor-based parser for the 'type' rule.
  * 

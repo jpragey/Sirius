@@ -15,7 +15,7 @@ import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.ast.Variance;
 import org.sirius.frontend.core.parser.TypeParameterParser.TypeParameterVisitor;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 
 public class TypeParameterParserTest {
 
@@ -33,7 +33,7 @@ public class TypeParameterParserTest {
 	
 	private AstType parseTypeDeclaration(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.typeParameterDeclaration();
 				
 		TypeParameterVisitor typeVisitor = new TypeParameterParser(reporter).new TypeParameterVisitor();

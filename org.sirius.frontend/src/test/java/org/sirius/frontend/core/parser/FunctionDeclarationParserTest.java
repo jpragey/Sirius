@@ -23,7 +23,7 @@ import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 import org.sirius.frontend.symbols.QNameSetterVisitor;
 
 public class FunctionDeclarationParserTest {
@@ -43,7 +43,7 @@ public class FunctionDeclarationParserTest {
 	
 	private FunctionDeclaration parseTypeDeclaration(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.functionDeclaration();
 				
 		Parsers.FunctionDeclarationVisitor fdeclVisitor = parsers.new FunctionDeclarationVisitor();
@@ -56,7 +56,7 @@ public class FunctionDeclarationParserTest {
 	
 	private FunctionDefinition parseTypeDefinition(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		
 		FunctionDeclarationParser.FunctionDefinitionVisitor fdefinitionVisitor = new FunctionDeclarationParser.FunctionDefinitionVisitor(reporter /*, containerQName*/);
 		FunctionDefinition functionDef = fdefinitionVisitor.visit(parser.functionDefinition());

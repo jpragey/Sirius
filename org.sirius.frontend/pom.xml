@@ -120,6 +120,11 @@
         	
 <!--         	<sourceDirectory>src/main/antlr/org/sirius/frontend/parser</sourceDirectory> -->
         	<sourceDirectory>src/main/antlr</sourceDirectory>
+<!--        	<libDirectory>src/main/antlr/imports</libDirectory>-->
+        	<libDirectory>src/main/antlr</libDirectory>
+        	
+<!--        	<libDirectory>src/main/antlr</libDirectory>-->
+    
         	<visitor>true</visitor>
         </configuration>
       </plugin>

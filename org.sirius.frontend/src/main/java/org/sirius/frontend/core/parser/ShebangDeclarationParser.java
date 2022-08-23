@@ -16,12 +16,12 @@ import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.ModuleDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.ModuleImportContext;
-import org.sirius.frontend.parser.SiriusParser.ModuleVersionEquivalentContext;
-import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.QnameContext;
-import org.sirius.frontend.parser.SiriusParser.ShebangDeclarationContext;
+import org.sirius.frontend.parser.Sirius.ModuleDeclarationContext;
+import org.sirius.frontend.parser.Sirius.ModuleImportContext;
+import org.sirius.frontend.parser.Sirius.ModuleVersionEquivalentContext;
+import org.sirius.frontend.parser.Sirius.PackageDeclarationContext;
+import org.sirius.frontend.parser.Sirius.QnameContext;
+import org.sirius.frontend.parser.Sirius.ShebangDeclarationContext;
 
 /** Visitor-based parser for the 'shebangDeclaration' rule.
  * 

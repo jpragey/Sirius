@@ -20,16 +20,16 @@ import org.sirius.frontend.ast.LambdaDefinition;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.core.parser.LambdaDeclarationParser.LambdaDefinitionVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.ClassInstanciationExpressionContext;
-import org.sirius.frontend.parser.SiriusParser.ConstantExpressionContext;
-import org.sirius.frontend.parser.SiriusParser.ExpressionContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionCallExpressionContext;
-import org.sirius.frontend.parser.SiriusParser.IsBinaryExpressionContext;
-import org.sirius.frontend.parser.SiriusParser.IsConstructorCallExpressionContext;
-import org.sirius.frontend.parser.SiriusParser.IsFieldAccessExpressionContext;
-import org.sirius.frontend.parser.SiriusParser.IsMethodCallExpressionContext;
-import org.sirius.frontend.parser.SiriusParser.IsVariableRefExpressionContext;
-import org.sirius.frontend.parser.SiriusParser.LambdaDefinitionContext;
+import org.sirius.frontend.parser.Sirius.ClassInstanciationExpressionContext;
+import org.sirius.frontend.parser.Sirius.ConstantExpressionContext;
+import org.sirius.frontend.parser.Sirius.ExpressionContext;
+import org.sirius.frontend.parser.Sirius.FunctionCallExpressionContext;
+import org.sirius.frontend.parser.Sirius.IsBinaryExpressionContext;
+import org.sirius.frontend.parser.Sirius.IsConstructorCallExpressionContext;
+import org.sirius.frontend.parser.Sirius.IsFieldAccessExpressionContext;
+import org.sirius.frontend.parser.Sirius.IsMethodCallExpressionContext;
+import org.sirius.frontend.parser.Sirius.IsVariableRefExpressionContext;
+import org.sirius.frontend.parser.Sirius.LambdaDefinitionContext;
 import org.sirius.frontend.symbols.Scope;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.

@@ -5,7 +5,7 @@ import java.util.List;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.ModuleDescriptorCompilationUnitContext;
+import org.sirius.frontend.parser.Sirius.ModuleDescriptorCompilationUnitContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 

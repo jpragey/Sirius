@@ -20,7 +20,7 @@ import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.StandardCompilationUnit;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 import org.sirius.frontend.symbols.Scope;
 
 
@@ -38,7 +38,7 @@ public class StandardCompilationUnitTest {
 	}
 	
 	private StandardCompilationUnit parseScriptCU(String inputText) {
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.standardCompilationUnit();
 				
 		StandardCompilatioUnitParser.StandardCompilationUnitVisitor visitor = new StandardCompilatioUnitParser.StandardCompilationUnitVisitor(reporter, new Scope("Test global"));

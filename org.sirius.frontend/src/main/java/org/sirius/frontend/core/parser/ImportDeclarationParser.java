@@ -13,10 +13,10 @@ import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ImportDeclarationElement;
 import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.ImportDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.ImportDeclarationElementContext;
-import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.QnameContext;
+import org.sirius.frontend.parser.Sirius.ImportDeclarationContext;
+import org.sirius.frontend.parser.Sirius.ImportDeclarationElementContext;
+import org.sirius.frontend.parser.Sirius.PackageDeclarationContext;
+import org.sirius.frontend.parser.Sirius.QnameContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 

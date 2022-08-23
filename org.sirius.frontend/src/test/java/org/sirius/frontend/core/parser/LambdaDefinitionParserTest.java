@@ -27,7 +27,7 @@ import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.LambdaDeclaration;
 import org.sirius.frontend.ast.LambdaDefinition;
 import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 
 public class LambdaDefinitionParserTest {
 
@@ -45,7 +45,7 @@ public class LambdaDefinitionParserTest {
 	
 	private LambdaDefinition parseLambdaDefinition(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.lambdaDefinition();
 				
 		LambdaDeclarationParser.LambdaDefinitionVisitor typeVisitor = new LambdaDeclarationParser(reporter).new LambdaDefinitionVisitor();
@@ -109,7 +109,7 @@ public class LambdaDefinitionParserTest {
 	@DisplayName("Lambda definition is an expression")
 	public void lambdaDefinitionAsExpression() {
 		String inputText = "(A a) : void {}";
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.expression();
 
 		ExpressionParser.ExpressionVisitor v = new ExpressionParser(reporter).new ExpressionVisitor();

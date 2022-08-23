@@ -23,10 +23,9 @@ import org.sirius.frontend.core.parser.PackageDescriptorCompilatioUnitParser;
 import org.sirius.frontend.core.parser.StandardCompilatioUnitParser;
 import org.sirius.frontend.core.stdlayout.ModuleFiles;
 import org.sirius.frontend.core.stdlayout.PackageFiles;
-import org.sirius.frontend.parser.SiriusLexer;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.SLexer;
+import org.sirius.frontend.parser.Sirius;
 import org.sirius.frontend.symbols.Scope;
-import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class StandardSession implements Session {
 
@@ -48,15 +47,15 @@ public class StandardSession implements Session {
 		return reporter;
 	}
 
-	private SiriusParser createParser(InputTextProvider input) {
+	private Sirius createParser(InputTextProvider input) {
 		String sourceCode = input.getText();
 		
 		CharStream stream = CharStreams.fromString(sourceCode); 
 		
-		SiriusLexer lexer = new SiriusLexer(stream);
+		SLexer lexer = new SLexer(stream);
 		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 		
-		SiriusParser parser = new SiriusParser(tokenStream);
+		Sirius parser = new Sirius(tokenStream);
 
 		parser.removeErrorListeners();
 		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
@@ -65,7 +64,7 @@ public class StandardSession implements Session {
 	}
 	
 	private AstModuleDeclaration parseModuleDescriptor(InputTextProvider input) {
-		SiriusParser parser = createParser(input);
+		Sirius parser = createParser(input);
 		
 		ModuleDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor v = new ModuleDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor(reporter);
 		
@@ -74,7 +73,7 @@ public class StandardSession implements Session {
 	}
 
 	private void parseStandardInput(InputTextProvider input) {
-		SiriusParser parser = createParser(input);
+		Sirius parser = createParser(input);
 
 		ParseTree tree = parser.standardCompilationUnit();
 		
@@ -110,7 +109,7 @@ public class StandardSession implements Session {
 	}
 
 	private AstPackageDeclaration parsePackageDescriptor(InputTextProvider input) {
-		SiriusParser parser = createParser(input);
+		Sirius parser = createParser(input);
 		ParseTree tree = parser.packageDescriptorCompilationUnit();
 				
 		PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor visitor = new PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor(reporter);

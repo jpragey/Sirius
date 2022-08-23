@@ -20,7 +20,7 @@ import org.sirius.frontend.ast.IntersectionType;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.UnionType;
 import org.sirius.frontend.core.parser.TypeParser.TypeVisitor;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -40,7 +40,7 @@ public class TypeParserTest {
 	
 	private AstType parseTypeDeclaration(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.type();
 				
 		TypeVisitor typeVisitor = new TypeVisitor(reporter);

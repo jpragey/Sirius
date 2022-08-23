@@ -11,7 +11,7 @@ import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.ScriptCompilationUnitContext;
+import org.sirius.frontend.parser.Sirius.ScriptCompilationUnitContext;
 import org.sirius.frontend.symbols.Scope;
 
 /** Visitor-based parser for the 'scriptCompilationUnit' rule.

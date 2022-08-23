@@ -16,12 +16,12 @@ import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.BlockStatementContext;
-import org.sirius.frontend.parser.SiriusParser.ExpressionContext;
-import org.sirius.frontend.parser.SiriusParser.IfElseStatementContext;
-import org.sirius.frontend.parser.SiriusParser.IsExpressionStatementContext;
-import org.sirius.frontend.parser.SiriusParser.LocalVariableStatementContext;
-import org.sirius.frontend.parser.SiriusParser.ReturnStatementContext;
+import org.sirius.frontend.parser.Sirius.BlockStatementContext;
+import org.sirius.frontend.parser.Sirius.ExpressionContext;
+import org.sirius.frontend.parser.Sirius.IfElseStatementContext;
+import org.sirius.frontend.parser.Sirius.IsExpressionStatementContext;
+import org.sirius.frontend.parser.Sirius.LocalVariableStatementContext;
+import org.sirius.frontend.parser.Sirius.ReturnStatementContext;
 import org.sirius.frontend.symbols.SymbolTable;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 

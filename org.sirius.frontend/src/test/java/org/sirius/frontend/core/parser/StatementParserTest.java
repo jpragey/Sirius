@@ -27,7 +27,7 @@ import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 
 public class StatementParserTest {
 
@@ -58,7 +58,7 @@ public class StatementParserTest {
 	}
 
 	private AstReturnStatement parseReturnStatement(String inputText, Consumer<AstReturnStatement> verify) {
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.returnStatement();
 		
 		StatementParser.StatementVisitor visitor = new StatementParser(reporter).new StatementVisitor();
@@ -85,7 +85,7 @@ public class StatementParserTest {
 	}
 
 	private AstExpressionStatement parseExpressionStatement(String inputText, Consumer<AstExpressionStatement> verify) {
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.statement();
 		
 		StatementParser.StatementVisitor visitor = new StatementParser(reporter).new StatementVisitor();
@@ -117,7 +117,7 @@ public class StatementParserTest {
 	}
 
 	private AstLocalVariableStatement parseLocalVariableStatement(String inputText, Consumer<AstLocalVariableStatement> verify) {
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.statement();
 		
 		StatementParser.StatementVisitor visitor = new StatementParser(reporter).new StatementVisitor();
@@ -146,7 +146,7 @@ public class StatementParserTest {
 	}
 
 	private AstIfElseStatement parseIfElseStatement(String inputText, Consumer<AstIfElseStatement> verify) {
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.statement();
 		
 		StatementParser.StatementVisitor visitor = new StatementParser(reporter).new StatementVisitor();

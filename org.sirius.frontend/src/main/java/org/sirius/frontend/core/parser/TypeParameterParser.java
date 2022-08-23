@@ -9,8 +9,8 @@ import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.ast.Variance;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.TypeContext;
-import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationContext;
+import org.sirius.frontend.parser.Sirius.TypeContext;
+import org.sirius.frontend.parser.Sirius.TypeParameterDeclarationContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 

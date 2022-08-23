@@ -34,7 +34,7 @@ import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.core.parser.ParserUtil;
 import org.sirius.frontend.core.parser.StatementParser;
 import org.sirius.frontend.parser.Compiler;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 
 public class LambdaTest {
 
@@ -52,7 +52,7 @@ public class LambdaTest {
 	
 	private AstStatement parseLambdaDefinition(String inputText) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.localVariableStatement();
 				
 		StatementParser.StatementVisitor typeVisitor = new StatementParser(reporter).new StatementVisitor();

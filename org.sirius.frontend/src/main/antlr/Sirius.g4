@@ -1,10 +1,15 @@
 /**
  * Define a grammar called Hello
  */
-grammar Sirius;
+parser grammar Sirius;
 
 
-import SLexer;
+//import SLexer;
+options {
+	tokenVocab = SLexer;
+}
+
+
 
 //@lexer::header {
 ////package org.sirius.frontend.parser;
@@ -90,7 +95,7 @@ moduleDescriptorCompilationUnit
 // -------------------- MODULE DECLARATION
 
 moduleDeclaration 
-	: 'module' qname version=STRING				{}
+	: MODULE /*'module'*/ qname version=STRING				{}
 	  '{'
 	  		( 
 	  			  moduleVersionEquivalent
@@ -100,13 +105,13 @@ moduleDeclaration
 	;
 
 moduleVersionEquivalent 
-	: key=LOWER_ID '=' value=STRING ';'	
+	: key=LOWER_ID EQUAL value=STRING ';'	
 	;
 
 moduleImport
 	: 
-		( shared='shared' 			)? 
-		'import'    		 
+		( shared= SHARED /*  'shared'*/ 			)? 
+		IMPORT    		 
 		
 		(origin=STRING ':' )?
 		
@@ -123,7 +128,7 @@ moduleImport
 
 qname 
 	: LOWER_ID		
-	('.' LOWER_ID	)*
+	(DOT LOWER_ID	)*
 	;
 
 // -------------------- SHEBANG
@@ -137,7 +142,7 @@ importDeclaration
 	  qname		
 	  (('{'
 	  	  ( e=importDeclarationElement		
-	  	    (',' e=importDeclarationElement	)*
+	  	    (COMA e=importDeclarationElement	)*
 	  	  )?
 	  '}')
 	  | ';'
@@ -147,7 +152,7 @@ importDeclaration
 
 importDeclarationElement 
 	: 	importName=(LOWER_ID | TYPE_ID)
-	|	alias=(LOWER_ID | TYPE_ID) '=' importName=(LOWER_ID | TYPE_ID)
+	|	alias=(LOWER_ID | TYPE_ID) EQUAL importName=(LOWER_ID | TYPE_ID)
 	    ( '{' '}')?
 	;
 
@@ -157,7 +162,7 @@ memberValueDeclaration
 		annotationList
 		type
 		name=LOWER_ID		
-		('=' expression	
+		(EQUAL expression	
 			
 		)?
 		';'
@@ -168,7 +173,7 @@ memberValueDeclaration
 functionDeclaration 
 	: annotationList
 	  (	  returnType=type	 
-	  	| 'void' 	
+	  	| VOID 	
 	  )
 	  name=LOWER_ID		
 	  (
@@ -182,7 +187,7 @@ functionDeclaration
 functionDefinition 
 	: annotationList
 	  (	  returnType=type	 
-	  	| 'void' 	
+	  	| VOID
 	  )
 	  name=LOWER_ID		
 	  (
@@ -197,23 +202,23 @@ functionDefinition
 	
 functionDefinitionParameterList
 	:   ( functionDefinitionParameter		
-	  	  (  ',' functionDefinitionParameter	)*
+	  	  (  COMA functionDefinitionParameter	)*
 	    )?
 	;
 
 functionDeclarationParameterList
 	:   ( functionDeclarationParameter		
-	  	  (  ',' functionDeclarationParameter	)*
+	  	  (  COMA functionDeclarationParameter	)*
 	    )?
 	;
 
 typeParameterDeclarationList
 	:
-	'<'	
+	LT	
 	 ( 		typeParameterDeclaration 		
-	  		( ',' typeParameterDeclaration )*
+	  		( COMA typeParameterDeclaration )*
 	 )?
-	 '>'
+	 GT
 	;
 	
 functionBody
@@ -236,10 +241,10 @@ functionDeclarationParameter :
 lambdaDeclaration :
 	// []
 	'('  functionDeclarationParameterList ')'
-	 '->' returnType=type 
+	 ARROW returnType=type 
 	 
 	 | // Temp., to be replaced by template class
-	 	'Function' '<' returnType=type ',' '[' functionDeclarationParameterList ']' '>'
+	 	FUNCTION LT returnType=type COMA LBRACK functionDeclarationParameterList RBRACK GT
 	; 
 	
 
@@ -249,11 +254,11 @@ lambdaDefinition
 //	  (	  returnType=type	 
 //	  	| 'void' 	
 //	  )
-	  // ( '<' ( d=typeParameterDeclaration ( ',' d=typeParameterDeclaration )* )? '>')? // ???
+	  // ( LT ( d=typeParameterDeclaration ( COMA d=typeParameterDeclaration )* )? GT)? // ???
 	  '(' functionDefinitionParameterList ')'
 	  
 	  (':' (	  returnType=type	 
-	  	| 'void' 	
+	  	| VOID
 	  ) )?
 	  
 	   
@@ -276,7 +281,7 @@ statement
 	;
 
 returnStatement 
-	: 'return' expression ';' 
+	: RETURN expression ';' 
 	; 
 
 localVariableStatement 
@@ -284,17 +289,17 @@ localVariableStatement
 		annotationList
 		type
 		LOWER_ID		
-		('=' expression	
+		(EQUAL expression	
 			
 		)?
 		';'
 	;
 
 ifElseStatement  
-	: 'if' '(' ifExpression = expression ')'
+	: IF '(' ifExpression = expression ')'
 		ifBlock = statement 
 		(
-			'else' elseBlock = statement 
+			ELSE elseBlock = statement 
 		)?
 	;
 
@@ -309,30 +314,30 @@ blockStatement
 expression 
 	: constantExpression 									# isConstantExpression
 	
-	| <assoc=right> left=expression op='^' right=expression # isBinaryExpression 
+	| <assoc=right> left=expression op=XOR right=expression # isBinaryExpression 
 	
-	| left=expression op=('*'|'/') right=expression 	# isBinaryExpression
-	| left=expression op=('+'|'-') right=expression 	# isBinaryExpression
+	| left=expression op=( STAR | SLASH ) right=expression 	# isBinaryExpression
+	| left=expression op=( PLUS | MINUS ) right=expression 	# isBinaryExpression
 	
-	| left=expression op=('<'|'>'|'<='|'>=') right=expression 	# isBinaryExpression
+	| left=expression op=(LT | GT | LOWER_EQUAL | GREATER_EQUAL ) right=expression 	# isBinaryExpression
 
-	| left=expression op=('=='|'!=') right=expression 	# isBinaryExpression
-	| left=expression op='&&' right=expression 	# isBinaryExpression
-	| left=expression op='||' right=expression 	# isBinaryExpression
-	| left=expression op=('='|'+='|'-='|'*='|'/=') right=expression 	# isBinaryExpression
+	| left=expression op=( EQUAL_EQUAL | NOT_EQUAL ) right=expression 	# isBinaryExpression
+	| left=expression op=AND_AND right=expression 	# isBinaryExpression
+	| left=expression op=OR_OR right=expression 	# isBinaryExpression
+	| left=expression op=( EQUAL | PLUS_EQUAL | MINUS_EQUAL | MUL_EQUAL | DIV_EQUAL ) right=expression 	# isBinaryExpression
 	
 	// -- Function call
 	| 
 	  functionCallExpression 		# isFunctionCallExpression
 	| lambdaDefinition 		# isLambdaDefinition
 	| 
-	    thisExpr=expression '.' functionCallExpression 		# isMethodCallExpression
+	    thisExpr=expression DOT functionCallExpression 		# isMethodCallExpression
 	
 	|  // -- Constructor call
 	   classInstanciationExpression		# isConstructorCallExpression
 	| 
 	  // -- Field access
-	  lhs = expression '.' LOWER_ID		# isFieldAccessExpression
+	  lhs = expression DOT LOWER_ID		# isFieldAccessExpression
 	| 
 		// -- Local/member/global variable, function parameter
  		ref = LOWER_ID                  # isVariableRefExpression
@@ -342,7 +347,7 @@ classInstanciationExpression :
 	name=TYPE_ID '('		
 		
 		(arg0=expression 	
-			( ',' arg1=expression)*
+			( COMA arg1=expression)*
 		)?
 	  ')'	;
 
@@ -350,7 +355,7 @@ functionCallExpression
 	: 
 		LOWER_ID '('	
 		(arg0=expression
-			( ',' arg1=expression )*
+			( COMA arg1=expression )*
 		)?
 	  ')'
 	;
@@ -380,14 +385,14 @@ annotationList
 // -------------------- PACKAGE 
 
 packageDeclaration 
-	: 'package' qname ';'
+	: PACKAGE /*'package'*/ qname ';'
 	packageElement *
 	;
 	
 // -------------------- CLASS 
 //
 classDeclaration 
-	: 'class' 		
+	: CLASS
 	  className=TYPE_ID		
 	  '('
 			functionDefinitionParameterList
@@ -406,13 +411,13 @@ classDeclaration
 	
  	
 implementedInterfaces :	 // 'implements' clause, for classes and interfaces
-	  'implements' TYPE_ID
-	  	(',' TYPE_ID)*
+	  IMPLEMENTS TYPE_ID
+	  	(COMA TYPE_ID)*
 ;
 	
 interfaceDeclaration 
 	: 
-	  'interface'	
+	  INTERFACE	
 	  interfaceName=TYPE_ID		
 	  (
 	  	typeParameterDeclarationList
@@ -434,7 +439,7 @@ typeParameterDeclaration
 		| OUT	
 	  )?
 	  TYPE_ID	
-	  ( '=' type  )?
+	  ( EQUAL type  )?
 	;
 
 
@@ -444,15 +449,15 @@ type
 	:
 	  TYPE_ID						
 	  (
-	  	'<'
+	  	LT
 	  		type					
-	  		( ',' type				)*
-	  	'>'
+	  		( COMA type				)*
+	  	GT
 	  )?							# simpleType0	
-	| first=type '|' second=type	# unionType
-	| first=type '&' second=type	# intersectionType
-	| '<' type '>'					# bracketedType
-	| el=type '[' ']'				# arrayType
+	| first=type  OR  second=type	# unionType
+	| first=type AMPERSAND second=type	# intersectionType
+	| LT type GT					# bracketedType
+	| el=type LBRACK RBRACK				# arrayType
 	| lambdaDeclaration				# lambdaType
 ////	| '{' type '*' '}'				{ $declaration = factory.createIterable($type.declaration); }
 	;

@@ -23,15 +23,15 @@ import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionDefinit
 import org.sirius.frontend.core.parser.Parsers;
 import org.sirius.frontend.core.parser.Parsers.QualifiedNameVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.ClassDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.ConcreteModuleContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionContext;
-import org.sirius.frontend.parser.SiriusParser.InterfaceDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.ModuleDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.ModuleImportContext;
-import org.sirius.frontend.parser.SiriusParser.ModuleVersionEquivalentContext;
-import org.sirius.frontend.parser.SiriusParser.PackageDeclarationContext;
+import org.sirius.frontend.parser.Sirius.ClassDeclarationContext;
+import org.sirius.frontend.parser.Sirius.ConcreteModuleContext;
+import org.sirius.frontend.parser.Sirius.FunctionDeclarationContext;
+import org.sirius.frontend.parser.Sirius.FunctionDefinitionContext;
+import org.sirius.frontend.parser.Sirius.InterfaceDeclarationContext;
+import org.sirius.frontend.parser.Sirius.ModuleDeclarationContext;
+import org.sirius.frontend.parser.Sirius.ModuleImportContext;
+import org.sirius.frontend.parser.Sirius.ModuleVersionEquivalentContext;
+import org.sirius.frontend.parser.Sirius.PackageDeclarationContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 

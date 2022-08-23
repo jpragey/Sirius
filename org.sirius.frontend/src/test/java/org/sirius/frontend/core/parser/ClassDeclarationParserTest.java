@@ -21,7 +21,7 @@ import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.ast.Variance;
 import org.sirius.frontend.core.parser.TypeParameterParser.TypeParameterVisitor;
-import org.sirius.frontend.parser.SiriusParser;
+import org.sirius.frontend.parser.Sirius;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -42,7 +42,7 @@ public class ClassDeclarationParserTest {
 	
 	private AstClassDeclaration parseClassDeclaration(String inputText/*, QName containerQName*/) {
 		
-		SiriusParser parser = ParserUtil.createParser(reporter, inputText);
+		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.classDeclaration();
 				
 		ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser(reporter).new ClassDeclarationVisitor();

@@ -15,14 +15,14 @@ import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.SiriusParser.FunctionBodyContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionDeclarationContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionParameterContext;
-import org.sirius.frontend.parser.SiriusParser.FunctionDefinitionParameterListContext;
-import org.sirius.frontend.parser.SiriusParser.NewCompilationUnitContext;
-import org.sirius.frontend.parser.SiriusParser.TypeContext;
-import org.sirius.frontend.parser.SiriusParser.TypeParameterDeclarationListContext;
+import org.sirius.frontend.parser.Sirius.FunctionBodyContext;
+import org.sirius.frontend.parser.Sirius.FunctionDeclarationContext;
+import org.sirius.frontend.parser.Sirius.FunctionDefinitionContext;
+import org.sirius.frontend.parser.Sirius.FunctionDefinitionParameterContext;
+import org.sirius.frontend.parser.Sirius.FunctionDefinitionParameterListContext;
+import org.sirius.frontend.parser.Sirius.NewCompilationUnitContext;
+import org.sirius.frontend.parser.Sirius.TypeContext;
+import org.sirius.frontend.parser.Sirius.TypeParameterDeclarationListContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
