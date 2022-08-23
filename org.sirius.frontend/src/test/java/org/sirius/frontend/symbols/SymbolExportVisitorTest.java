@@ -60,7 +60,8 @@ public class SymbolExportVisitorTest {
 				AstToken.internal("1.0"), 
 				new ModuleImportEquivalents(), 
 				Collections.emptyList() /*moduleImports*/,
-				packageDeclarations);
+				packageDeclarations,
+				List.<AstToken>of(/* comments */));
 		return md;
 	}
 

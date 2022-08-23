@@ -47,33 +47,42 @@ public class StandardSession implements Session {
 		return reporter;
 	}
 
-	private Sirius createParser(InputTextProvider input) {
+	private static record ParseEnvironment(Reporter reporter, CommonTokenStream tokenStream) {
+		public Sirius createParser() {
+			Sirius parser = new Sirius(tokenStream);
+
+			parser.removeErrorListeners();
+			parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
+			
+			return parser;
+		}
+	}
+
+	private ParseEnvironment createParser(InputTextProvider input) {
 		String sourceCode = input.getText();
 		
 		CharStream stream = CharStreams.fromString(sourceCode); 
 		
 		SLexer lexer = new SLexer(stream);
 		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-		
-		Sirius parser = new Sirius(tokenStream);
 
-		parser.removeErrorListeners();
-		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
-		
-		return parser;
+		ParseEnvironment parseEnv = new ParseEnvironment(reporter, tokenStream);
+		return parseEnv;
 	}
 	
 	private AstModuleDeclaration parseModuleDescriptor(InputTextProvider input) {
-		Sirius parser = createParser(input);
+		ParseEnvironment pe = createParser(input);
+		Sirius parser = pe.createParser();
 		
-		ModuleDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor v = new ModuleDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor(reporter);
+		ModuleDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor v = new ModuleDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor(reporter, pe.tokenStream);
 		
 		AstModuleDeclaration md = parser.moduleDescriptorCompilationUnit().accept(v);
 		return md;
 	}
 
 	private void parseStandardInput(InputTextProvider input) {
-		Sirius parser = createParser(input);
+		ParseEnvironment pe = createParser(input);
+		Sirius parser = pe.createParser();
 
 		ParseTree tree = parser.standardCompilationUnit();
 		
@@ -97,19 +106,9 @@ public class StandardSession implements Session {
 		}
 	}
 	
-	private List<AstModuleDeclaration> parseModuleDescriptors_old(List<InputTextProvider> inputs) { // TODO delete
-		List<AstModuleDeclaration> moduleDeclarations = new ArrayList<>();
-		for(InputTextProvider input: inputs) {
-			if(input.isModuleDescriptor()) {
-				AstModuleDeclaration md = parseModuleDescriptor(input);
-				moduleDeclarations.add(md);
-			}
-		}
-		return moduleDeclarations;
-	}
-
 	private AstPackageDeclaration parsePackageDescriptor(InputTextProvider input) {
-		Sirius parser = createParser(input);
+		ParseEnvironment pe = createParser(input);
+		Sirius parser = pe.createParser();
 		ParseTree tree = parser.packageDescriptorCompilationUnit();
 				
 		PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor visitor = new PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor(reporter);

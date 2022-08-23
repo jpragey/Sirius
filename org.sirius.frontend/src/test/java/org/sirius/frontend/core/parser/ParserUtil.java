@@ -9,18 +9,29 @@ import org.sirius.frontend.parser.SLexer;
 import org.sirius.frontend.parser.Sirius;
 
 public class ParserUtil {
-
-	public static Sirius createParser(Reporter reporter, String inputText) {
+	
+	public static record ParserFactory(Reporter reporter, CommonTokenStream tokenStream) {
+		public Sirius create() {
+			Sirius parser = new Sirius(tokenStream);
+			
+			parser.removeErrorListeners();
+			parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
+			
+			return parser;
+		}		
+	};
+	
+	public static ParserFactory createParserFactory(Reporter reporter, String inputText) {
 		CharStream charStream = CharStreams.fromString(inputText);
 		SLexer lexer = new SLexer(charStream);
 		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 		
-		Sirius parser = new Sirius(tokenStream);
-		
-		parser.removeErrorListeners();
-		parser.addErrorListener(new AntlrErrorListenerProxy(reporter));
-		
-		return parser;
+		ParserFactory parserFactory = new ParserFactory(reporter, tokenStream);
+		return parserFactory;
+	}
+
+	public static Sirius createParser(Reporter reporter, String inputText) {
+		return createParserFactory(reporter, inputText).create();
 	}
 
 }

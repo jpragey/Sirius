@@ -7,7 +7,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.BufferedTokenStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
@@ -22,6 +25,7 @@ import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionDefinitionVisitor;
 import org.sirius.frontend.core.parser.Parsers;
 import org.sirius.frontend.core.parser.Parsers.QualifiedNameVisitor;
+import org.sirius.frontend.parser.SLexer;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.Sirius.ClassDeclarationContext;
 import org.sirius.frontend.parser.Sirius.ConcreteModuleContext;
@@ -133,7 +137,6 @@ public class ModuleDeclarationParser {
 			FunctionDefinitionVisitor v = new FunctionDefinitionVisitor(reporter);
 			
 			FunctionDefinition functionDefinition = v.visit(ctx);
-//			FunctionDefinition functionDefinition = ctx.accept(v);
 			this.packageElements.functiondefinitions.add(functionDefinition);
 			return null;
 		}
@@ -142,7 +145,6 @@ public class ModuleDeclarationParser {
 		public Void visitClassDeclaration(ClassDeclarationContext ctx) {
 			ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser(reporter).new ClassDeclarationVisitor();
 
-//			AstClassDeclaration cd = ctx.accept(visitor);
 			AstClassDeclaration cd = visitor.visit(ctx);
 			this.packageElements.classDeclarations.add(cd);
 			return null;
@@ -151,7 +153,6 @@ public class ModuleDeclarationParser {
 		public Void visitInterfaceDeclaration(InterfaceDeclarationContext ctx) {
 			InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser(reporter).new InterfaceDeclarationVisitor();
 
-//			AstInterfaceDeclaration id = ctx.accept(visitor);
 			AstInterfaceDeclaration id = visitor.visit(ctx);
 			this.packageElements.interfaceDeclarations.add(id);
 			return null;
@@ -170,9 +171,10 @@ public class ModuleDeclarationParser {
 	}
 	
 	public class ConcreteModuleVisitor extends SiriusBaseVisitor<AstModuleDeclaration> {
-
-		public ConcreteModuleVisitor() {
+		CommonTokenStream tokens;
+		public ConcreteModuleVisitor(CommonTokenStream tokens) {
 			super();
+			this.tokens = tokens;
 		}
 		@Override
 		public AstModuleDeclaration visitConcreteModule(ConcreteModuleContext ctx) {
@@ -182,7 +184,6 @@ public class ModuleDeclarationParser {
 			LinkedList<AstPackageDeclaration> packageDeclarations = new LinkedList<>();
 			PackageElementVisitor packageElementVisitor = new PackageElementVisitor(packageDeclarations, packageElements);
 			
-//			ctx.packageElement().forEach(peContext -> peContext.accept(packageElementVisitor));
 			ctx.packageElement().forEach(peContext -> packageElementVisitor.visit(peContext));
 			
 			
@@ -190,7 +191,7 @@ public class ModuleDeclarationParser {
 			AstModuleDeclaration result;
 			ModuleDeclarationContext moduleDeclarationContext = ctx.moduleDeclaration();
 			if(moduleDeclarationContext != null) {	// Explicit module
-				ModuleDeclarationVisitor mdVisitor = new ModuleDeclarationVisitor(reporter /*, pds*/);
+				ModuleDeclarationVisitor mdVisitor = new ModuleDeclarationVisitor(reporter, tokens);
 				AstModuleDeclarationBuilder mdBuilder = mdVisitor.visit(moduleDeclarationContext);
 
 				
@@ -230,37 +231,58 @@ public class ModuleDeclarationParser {
 		private AstToken version;
 		private ModuleImportEquivalents equivalents; 
 		private List<ModuleImport> moduleImports;
+		private List<AstToken> comments;
 
 		public AstModuleDeclarationBuilder(Reporter reporter, QName qualifiedName, AstToken version,
-				ModuleImportEquivalents equivalents, List<ModuleImport> moduleImports) {
+				ModuleImportEquivalents equivalents, List<ModuleImport> moduleImports, List<AstToken> comments) {
 			super();
 			this.qualifiedName = qualifiedName;
 			this.reporter = reporter;
 			this.version = version;
 			this.equivalents = equivalents;
 			this.moduleImports = moduleImports;
+			this.comments = comments;
 		}
 		public QName getQualifiedName() {
 			return qualifiedName;
 		}
 		public AstModuleDeclaration build(List<AstPackageDeclaration> packageDeclarations) {
-			return new AstModuleDeclaration(reporter, qualifiedName, version, equivalents, moduleImports, packageDeclarations);
+			return new AstModuleDeclaration(reporter, qualifiedName, version, equivalents, moduleImports, packageDeclarations, comments);
 		}
 	}
 	
 	public static class ModuleDeclarationVisitor extends SiriusBaseVisitor<AstModuleDeclarationBuilder> {
 		private Reporter reporter;
 		private Parsers parsers;
+		private CommonTokenStream tokens;
 
-		public ModuleDeclarationVisitor(Reporter reporter) {
+		public ModuleDeclarationVisitor(Reporter reporter, CommonTokenStream tokens) {
 			super();
 			this.reporter = reporter;
 			this.parsers = new Parsers(reporter);
-
+			this.tokens = tokens;
 		}
 
 		@Override
 		public AstModuleDeclarationBuilder visitModuleDeclaration(ModuleDeclarationContext ctx) {
+			
+			// -- Initial comment(s)
+			Token semi = ctx.getStart(); // start = comment on first ModuleDeclaration token ('module')
+			int i = semi.getTokenIndex();
+//			List<Token> cmtChannel = tokens.getHiddenTokensToRight(i, SLexer.CommentChannel);
+			List<Token> cmtChannel = tokens.getHiddenTokensToLeft(i, SLexer.CommentChannel);
+			List<AstToken> commentTokens;
+			if(cmtChannel != null) {
+				String allComments = cmtChannel.stream().map(token -> token.getText()).collect(Collectors.joining());
+				commentTokens = cmtChannel.stream().map(token -> new AstToken(token)).toList();
+				System.out.println(" -- Comment channel found: comments = " + allComments);
+				
+			} else {
+				commentTokens= List.of();
+				System.out.println(" -- No comment (channel == null).");
+			}
+
+			
 			
 			// -- name
 			Parsers.QualifiedNameVisitor nameVisitor = parsers.new QualifiedNameVisitor();
@@ -282,7 +304,8 @@ public class ModuleDeclarationParser {
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 			
-			return new AstModuleDeclarationBuilder(reporter, qualifiedName.toQName(), version, equivalents, moduleImports/*, packageDeclarations*/);
+			return new AstModuleDeclarationBuilder(reporter, qualifiedName.toQName(), version, equivalents, moduleImports/*, packageDeclarations*/
+					,commentTokens);
 		}
 	}
 }

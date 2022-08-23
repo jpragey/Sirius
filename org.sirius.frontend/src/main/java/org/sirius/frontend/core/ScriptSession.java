@@ -83,7 +83,7 @@ public class ScriptSession implements Session {
 		// -- Parsing
 		ScriptCompilationUnitContext unitContext = parser.scriptCompilationUnit();
 
-		ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor visitor = new ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor(reporter, sdkScope);
+		ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor visitor = new ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor(reporter, sdkScope, tokenStream);
 		ScriptCompilationUnit compilationUnit = visitor.visit(unitContext);
 
 		return compilationUnit;

@@ -35,9 +35,10 @@ public class AstModuleDeclaration implements Visitable, Verifiable {
 	private String versionString;
 
 	private ModuleDeclaration cachedModuleDeclaration = null;
+	private List<AstToken> comments;
 
 	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, AstToken version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports,
-			List<AstPackageDeclaration> packageDeclarations) {
+			List<AstPackageDeclaration> packageDeclarations, List<AstToken> comments) {
 		super();
 		this.reporter = reporter;
 
@@ -55,12 +56,15 @@ public class AstModuleDeclaration implements Visitable, Verifiable {
 		String vs = version.getText();
 		assert(vs.length() >=2);	// contains start/end double quotes
 		this.versionString = vs.substring(1, vs.length()-1).trim();
+		
+		this.comments = comments;
 	}
 
 	public static AstModuleDeclaration createUnnamed(Reporter reporter, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports, 
 			List<AstPackageDeclaration> packageDeclarations) 
 	{
-		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, new QName(), new AstToken(0,0,0,0,"\"\"",""), equiv, moduleImports, packageDeclarations);
+		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, new QName(), new AstToken(0,0,0,0,"\"\"",""), equiv, moduleImports, packageDeclarations,
+				List.<AstToken>of() /*comments*/);
 		return mod;
 	}
 
@@ -109,6 +113,10 @@ public class AstModuleDeclaration implements Visitable, Verifiable {
 		return qName.dotSeparated();
 	}
 
+
+	public List<AstToken> getComments() {
+		return comments;
+	}
 
 	public List<ModuleImport> getModuleImports() {
 		return moduleImports;

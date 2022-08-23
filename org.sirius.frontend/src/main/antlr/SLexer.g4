@@ -1,13 +1,15 @@
 /**
- * Define a grammar called Hello
+ * Define a grammar called Sirius
  */
 lexer grammar SLexer;
 
+channels { CommentChannel }
 
 @lexer::header {
-package org.sirius.frontend.parser;
-// 	import org.sirius.frontend.ast.AstModuleDeclaration;
+	package org.sirius.frontend.parser;
 }
+
+COMMENT : '/*' .*? '*/' -> channel(CommentChannel);
 
 MODULE : 'module';
 
@@ -72,18 +74,6 @@ QuestionMark: '?';
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 //
 //
 //
@@ -133,6 +123,8 @@ QuestionMark: '?';
 
 ////////////////////////////////////////////////////
 //channels {COMMENT}
+
+
 	
 BOOLEAN : 'true' | 'false' ;
 IN : 'in';

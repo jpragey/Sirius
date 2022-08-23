@@ -106,7 +106,8 @@ public class SdkTools {
 		
 		ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO: check
 		List<ModuleImport> moduleImports = Collections.emptyList();
-		AstModuleDeclaration md = new AstModuleDeclaration(reporter, siriusLangQName, versionToken, equivalents, moduleImports, List.of(pd));
+		AstModuleDeclaration md = new AstModuleDeclaration(reporter, siriusLangQName, versionToken, equivalents, moduleImports, List.of(pd)
+				, List.<AstToken>of(/*TODO: ??? module comments expected*/));
 		
 		AbstractCompilationUnit compilationUnit = new AbstractCompilationUnit() {
 			List<AstModuleDeclaration> moduleDeclarations = List.of(md);

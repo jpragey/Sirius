@@ -38,11 +38,12 @@ public class ScriptCompilationUnitTest {
 	}
 	
 	private ScriptCompilationUnit parseScriptCU(String inputText) {
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
 		ParseTree tree = parser.scriptCompilationUnit();
 				
 		ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor visitor = new ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor(
-				reporter, new Scope("ScriptCU"));
+				reporter, new Scope("ScriptCU"), parserFactory.tokenStream());
 		ScriptCompilationUnit packageCU = visitor.visit(tree);
 		return packageCU;
 		
@@ -101,10 +102,11 @@ public class ScriptCompilationUnitTest {
 	
 	// -- concrete modules
 	private AstModuleDeclaration parseConcreteModule(String inputText) {
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
 		ParseTree tree = parser.concreteModule();
 				
-		ModuleDeclarationParser.ConcreteModuleVisitor visitor = new ModuleDeclarationParser(reporter).new ConcreteModuleVisitor();
+		ModuleDeclarationParser.ConcreteModuleVisitor visitor = new ModuleDeclarationParser(reporter).new ConcreteModuleVisitor(parserFactory.tokenStream());
 		AstModuleDeclaration md = visitor.visit(tree);
 		return md;
 		

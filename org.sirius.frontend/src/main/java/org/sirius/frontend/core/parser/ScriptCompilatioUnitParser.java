@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.ImportDeclaration;
@@ -24,10 +25,12 @@ public class ScriptCompilatioUnitParser {
 	public static class ScriptCompilationUnitVisitor extends SiriusBaseVisitor<ScriptCompilationUnit> {
 		private Reporter reporter;
 		private Scope globalScope;
+		private CommonTokenStream tokens;
 
-		public ScriptCompilationUnitVisitor(Reporter reporter, Scope sdkScope) {
+		public ScriptCompilationUnitVisitor(Reporter reporter, Scope sdkScope, CommonTokenStream tokens) {
 			super();
 			this.reporter = reporter;
+			this.tokens = tokens;
 			this.globalScope = new Scope(Optional.of(sdkScope), "ScriptCU");
 		}
 
@@ -43,14 +46,12 @@ public class ScriptCompilatioUnitParser {
 			// -- Import declarations
 			ImportDeclarationParser.ImportDeclarationVisitor importVisitor = new ImportDeclarationParser.ImportDeclarationVisitor(reporter);
 			List<ImportDeclaration> imports = ctx.importDeclaration().stream()
-//					.map(importDeclCtx -> importDeclCtx.accept(importVisitor))
 					.map(importVisitor::visit)
 					.collect(Collectors.toList());
 			
 			// -- module declarations
-			ModuleDeclarationParser.ConcreteModuleVisitor moduleVisitor = new ModuleDeclarationParser(reporter).new ConcreteModuleVisitor();
+			ModuleDeclarationParser.ConcreteModuleVisitor moduleVisitor = new ModuleDeclarationParser(reporter).new ConcreteModuleVisitor(tokens);
 			List<AstModuleDeclaration> modules = ctx.concreteModule().stream()
-//					.map(mCtx -> mCtx.accept(moduleVisitor))
 					.map(moduleVisitor::visit)
 					.filter(Objects::nonNull)
 					.collect(Collectors.toList());

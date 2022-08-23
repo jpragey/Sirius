@@ -21,6 +21,7 @@ import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.parser.Sirius;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 
 public class ModuleDeclarationParserTest {
@@ -119,13 +120,11 @@ public class ModuleDeclarationParserTest {
 	// -- Test of Module declaration
 	private AstModuleDeclaration parseModuleDeclaration(String inputText) {
 		
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
 		ParseTree tree = parser.moduleDeclaration();
 				
-		ModuleDeclarationParser.ModuleDeclarationVisitor visitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter
-//				, List.of() 
-//				new ModuleDeclarationParser.PackageElements()
-				);
+		ModuleDeclarationParser.ModuleDeclarationVisitor visitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter, parserFactory.tokenStream());
 		AstModuleDeclaration moduleDeclaration = visitor.visit(tree).build(List.of() /*No package*/);
 		return moduleDeclaration;
 	}
@@ -137,6 +136,17 @@ public class ModuleDeclarationParserTest {
 			assertThat(md.getqName().dotSeparated(), equalTo("a.b.c"));
 			assertThat(md.getVersion().getText(), equalTo("\" 1.0 \""));
 			assertThat(md.getVersionString(), equalTo("1.0"));
+		});
+	}
+	
+	@Test
+	@DisplayName("Module declaration comments are correctly parsed")
+	public void moduleDeclarationsCommentsAreParsed() {
+		simplestModuleCheck("/*Some*/ /*module*/ module a.b.c \" 1.0 \" {}", md-> {
+			assertThat(md.getqName().dotSeparated(), equalTo("a.b.c"));
+			assertThat(md.getVersion().getText(), equalTo("\" 1.0 \""));
+			assertThat(md.getVersionString(), equalTo("1.0"));
+			assertThat(md.getComments(), hasSize(2));
 		});
 	}
 	
