@@ -42,7 +42,7 @@ public class ClassDeclarationParserTest {
 	
 	private AstClassDeclaration parseClassDeclaration(String inputText/*, QName containerQName*/) {
 		
-		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 		Sirius parser = parserFactory.create();
 		ParseTree tree = parser.classDeclaration();
 				

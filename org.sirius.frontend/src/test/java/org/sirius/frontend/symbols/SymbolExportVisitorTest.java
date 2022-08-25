@@ -27,6 +27,7 @@ import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.core.parser.InterfaceDeclarationParser;
+import org.sirius.frontend.core.parser.ParserBuilder;
 import org.sirius.frontend.core.parser.ParserUtil;
 import org.sirius.frontend.parser.Sirius;
 
@@ -48,7 +49,7 @@ public class SymbolExportVisitorTest {
 	private AstInterfaceDeclaration parseInterfaceDeclaration(String inputText) {
 		
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
-		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 		Sirius parser = parserFactory.create();
 
 		ParseTree tree = parser.interfaceDeclaration();

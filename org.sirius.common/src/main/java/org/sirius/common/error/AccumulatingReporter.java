@@ -21,7 +21,8 @@ public class AccumulatingReporter implements Reporter {
 	}
 	public AccumulatingReporter() {
 		super();
-		this.delegate = new SilentReporter();
+//		this.delegate = new SilentReporter();
+		this.delegate = new ShellReporter();
 	}
 
 	@Override

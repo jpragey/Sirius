@@ -59,7 +59,7 @@ public class StatementParserTest {
 
 	private AstReturnStatement parseReturnStatement(String inputText, Consumer<AstReturnStatement> verify) {
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
-		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 		Sirius parser = parserFactory.create();
 
 		ParseTree tree = parser.returnStatement();
@@ -89,7 +89,7 @@ public class StatementParserTest {
 
 	private AstExpressionStatement parseExpressionStatement(String inputText, Consumer<AstExpressionStatement> verify) {
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
-		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 		Sirius parser = parserFactory.create();
 
 		ParseTree tree = parser.statement();
@@ -124,7 +124,7 @@ public class StatementParserTest {
 
 	private AstLocalVariableStatement parseLocalVariableStatement(String inputText, Consumer<AstLocalVariableStatement> verify) {
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
-		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 		Sirius parser = parserFactory.create();
 
 		ParseTree tree = parser.statement();
@@ -156,7 +156,7 @@ public class StatementParserTest {
 
 	private AstIfElseStatement parseIfElseStatement(String inputText, Consumer<AstIfElseStatement> verify) {
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
-		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 		Sirius parser = parserFactory.create();
 
 		ParseTree tree = parser.statement();

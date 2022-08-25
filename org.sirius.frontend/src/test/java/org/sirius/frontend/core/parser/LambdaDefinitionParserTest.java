@@ -46,7 +46,7 @@ public class LambdaDefinitionParserTest {
 	private LambdaDefinition parseLambdaDefinition(String inputText) {
 		
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
-		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 		Sirius parser = parserFactory.create();
 
 		ParseTree tree = parser.lambdaDefinition();
@@ -114,7 +114,7 @@ public class LambdaDefinitionParserTest {
 		String inputText = "(A a) : void {}";
 		
 		Sirius parser = ParserUtil.createParser(reporter, inputText);
-		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 //		Sirius parser = parserFactory.create();
 
 		ParseTree tree = parser.expression();

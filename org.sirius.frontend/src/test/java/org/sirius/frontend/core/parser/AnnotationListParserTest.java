@@ -1,8 +1,11 @@
 package org.sirius.frontend.core.parser;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterEach;
@@ -12,7 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
+import org.sirius.frontend.ast.Annotation;
 import org.sirius.frontend.ast.AnnotationList;
+import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.parser.Sirius;
 
 public class AnnotationListParserTest {
@@ -21,7 +26,8 @@ public class AnnotationListParserTest {
 	
 	@BeforeEach
 	public void setup() {
-		this.reporter = new AccumulatingReporter(new ShellReporter());
+		this.reporter = new AccumulatingReporter();
+//		Parsers.AnnotationListVisitor typeVisitor = new Parsers.AnnotationListVisitor();
 	}
 	@AfterEach
 	public void tearDown() {
@@ -42,20 +48,26 @@ public class AnnotationListParserTest {
 	@Test
 	@DisplayName("Simplest annotations")
 	public void simplestAnnotations() {
-		AnnotationList partialList = parseAnnotationList("aa bb cc");
-		assertThat(partialList.getAnnotations().size(), equalTo(3));
-		assertEquals(partialList.getAnnotations().get(0).getName().getText(), "aa");
-		assertThat(partialList.getAnnotations().stream().map(anno -> anno.getName().getText()).toArray(), 
-				equalTo(new String[]{"aa", "bb", "cc"}));
+		AnnotationList annotationList = parseAnnotationList("aa bb cc");
+		
+		List<String> strs = annotationList.getAnnotations().stream()
+				.map(Annotation::getName)
+				.map(AstToken::getText)
+				.toList();
+
+		assertThat(strs, 
+				contains("aa", "bb", "cc"));
 	}
 
 	@Test
 	@DisplayName("Annotations with parameters")
 	public void annotationsWithParameters() {
-		AnnotationList partialList = parseAnnotationList("aa() bb() cc()");
-		assertThat(partialList.getAnnotations().size(), equalTo(3));
-		assertEquals(partialList.getAnnotations().get(0).getName().getText(), "aa");
-		assertThat(partialList.getAnnotations().stream().map(anno -> anno.getName().getText()).toArray(), 
-				equalTo(new String[]{"aa", "bb", "cc"}));
+		AnnotationList annotationList = parseAnnotationList("aa() bb() cc()");
+		
+		List<String> annos = annotationList.getAnnotations().stream()
+				.map(Annotation::getName)
+				.map(AstToken::getText)
+				.toList();
+		assertThat(annos, contains("aa", "bb", "cc"));
 	}
 }

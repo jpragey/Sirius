@@ -36,7 +36,7 @@ public class PackageDeclarationParserTest {
 	private AstPackageDeclaration parsePackageDeclaration(String inputText) {
 		
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
-		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 		Sirius parser = parserFactory.create();
 
 		ParseTree tree = parser.packageDeclaration();

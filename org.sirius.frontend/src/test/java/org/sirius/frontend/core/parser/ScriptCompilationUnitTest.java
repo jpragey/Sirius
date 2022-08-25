@@ -38,7 +38,7 @@ public class ScriptCompilationUnitTest {
 	}
 	
 	private ScriptCompilationUnit parseScriptCU(String inputText) {
-		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 		Sirius parser = parserFactory.create();
 		ParseTree tree = parser.scriptCompilationUnit();
 				
@@ -102,7 +102,7 @@ public class ScriptCompilationUnitTest {
 	
 	// -- concrete modules
 	private AstModuleDeclaration parseConcreteModule(String inputText) {
-		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 		Sirius parser = parserFactory.create();
 		ParseTree tree = parser.concreteModule();
 				

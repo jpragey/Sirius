@@ -40,7 +40,7 @@ public class ModuleDeclarationParserTest {
 	
 	// -- Test of Module import
 	private ModuleImport parseModuleImport(String inputText) {
-		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 		Sirius parser = parserFactory.create();
 
 		ParseTree tree = parser.moduleImport();
@@ -123,7 +123,7 @@ public class ModuleDeclarationParserTest {
 	// -- Test of Module declaration
 	private AstModuleDeclaration parseModuleDeclaration(String inputText) {
 		
-		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 		Sirius parser = parserFactory.create();
 		ParseTree tree = parser.moduleDeclaration();
 				
