@@ -145,6 +145,10 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	public AstToken getName() {
 		return name;
 	}
+	public String getNameText() {
+		return name.getText();
+	}
+	
 	@Override
 	public List<FunctionDeclaration> getFunctionDeclarations() {
 		return Collections.emptyList();	// TODO
