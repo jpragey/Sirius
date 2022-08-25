@@ -4,6 +4,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.empty;
+//import static org.hamcrest.Matchers.contains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
@@ -16,10 +20,13 @@ import org.junit.jupiter.api.Test;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
-import org.sirius.frontend.api.Annotation;
+import org.sirius.frontend.ast.Annotation;
+//import org.sirius.frontend.api.Annotation;
 import org.sirius.frontend.ast.AstStatement;
+import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
+import org.sirius.frontend.ast.ClosureElement;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.SimpleType;
@@ -92,28 +99,33 @@ public class FunctionDeclarationParserTest {
 				equalTo(new String[] {"a", "b"}));
 		
 		// Check closures
-		assertThat(fd.getClosure().getClosureEntries().size(), is(0));
-		assertThat(fd.getArgs().size(), is(2));
+		assertThat(fd.getClosure().getClosureEntries(), empty());
+		assertThat(fd.getArgs(), hasSize(2));
 		
 		FunctionDefinition fd1 = fd.getFirstArgAppliedFunctionDef().get();
-		assertThat(fd1.getClosure().getClosureEntries().size(), is(1));
-		assertThat(fd1.getArgs().size(), is(1));
+		assertThat(fd1.getClosure().getClosureEntries(), hasSize(1));
+		assertThat(fd1.getArgs(), hasSize(1));
 		
 		assertThat(fd1.getClosure().getClosureEntries().get(0).getName().getText(), is("a"));
 		assertThat(fd1.getArgs().get(0).getName().getText(), is("b"));
 		
 		FunctionDefinition fd2 = fd1.getFirstArgAppliedFunctionDef().get();
-		assertThat(fd2.getClosure().getClosureEntries().size(), is(2));
-		assertThat(fd2.getArgs().size(), is(0));
+		assertThat(fd2.getClosure().getClosureEntries(), hasSize(2));
+		assertThat(fd2.getArgs(), empty());
 
-		assertThat(fd2.getClosure().getClosureEntries().get(0).getName().getText(), is("a"));
-		assertThat(fd2.getClosure().getClosureEntries().get(1).getName().getText(), is("b"));
+		assertThat(fd2.getClosure().getClosureEntries()
+				.stream()
+				.map(ClosureElement::getName)
+				.map(AstToken::getText).toList(),
+				contains("a", "b"));
 
+		
+		
 		assertThat(fd2.getFirstArgAppliedFunctionDef().isEmpty(), is(true));
 		
 		// Most close
-		assertThat(fd.mostClosed().getClosure().getClosureEntries().size(), is(2));
-		assertThat(fd.mostClosed().getArgs().size(), is(0));
+		assertThat(fd.mostClosed().getClosure().getClosureEntries(), hasSize(2));
+		assertThat(fd.mostClosed().getArgs(), empty());
 	}
 
 	@Test
@@ -157,21 +169,36 @@ public class FunctionDeclarationParserTest {
 	@DisplayName("Function declaration with no-arg annotations: check annotations are parsed")
 	public void functionWithAnnotaionsAreParsed() {
 		FunctionDeclaration fd = parseTypeDeclaration("anno0 anno1 void f()" /*, new QName()*/);
-		assertThat(fd.getAnnotationList().getAnnotations().toArray().length, is(2));
-		assertThat(fd.getAnnotationList().getAnnotations().stream().map(anno -> anno.getName().getText()).toArray(), 
-				is(new String[] {"anno0", "anno1"}));
+//		assertThat(fd.getAnnotationList().getAnnotations().toArray().length, is(2));
+		assertThat(fd.getAnnotationList().getAnnotations()
+				.stream()
+				.map(Annotation::getName)
+				.map(AstToken::getText)
+				.toList(), 
+				contains("anno0", "anno1"));
 	}
 	@Test
 	@DisplayName("Function definition with no-arg annotations: check annotations are parsed")
 	public void functionDefinitionWithAnnotaionsAreParsed() {
 		FunctionDefinition fd = parseTypeDefinition("anno0 anno1 void f() {}");
-		assertThat(fd.getAnnotationList().getAnnotations().toArray().length, is(2));
+//		assertThat(fd.getAnnotationList().getAnnotations().toArray().length, is(2));
 		// -- Check AST
-		assertThat(fd.getAnnotationList().getAnnotations().stream().map(anno -> anno.getName().getText()).toArray(), 
+		assertThat(fd.getAnnotationList().getAnnotations().stream()
+				.map(anno -> anno.getName().getText()).toArray(), 
 				is(new String[] {"anno0", "anno1"}));
+
+		assertThat(fd.getAnnotationList().getAnnotations().stream()
+				.map( Annotation::getName)
+				.map( AstToken::getText)
+				.toList(), 
+				contains("anno0", "anno1"));
 		
 		// -- Check API
-		assertThat(fd.getAllArgsPartial().getAnnotationList().getAnnotations().stream().map (an ->an.getName().getText()).toArray(),
-				is(new String[] {"anno0", "anno1"}));
+
+		assertThat(fd.getAllArgsPartial().getAnnotationList().getAnnotations().stream()
+				.map(Annotation::getName)
+				.map(AstToken::getText)
+				.toList(),
+				contains("anno0", "anno1"));
 	}
 }
