@@ -35,10 +35,13 @@ public class PackageDeclarationParserTest {
 	
 	private AstPackageDeclaration parsePackageDeclaration(String inputText) {
 		
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+//		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
+
 		ParseTree tree = parser.packageDeclaration();
 				
-		Parsers.PackageDeclarationVisitor visitor = new Parsers(reporter).new PackageDeclarationVisitor();
+		Parsers.PackageDeclarationVisitor visitor = new Parsers(reporter, parserFactory.tokenStream()).new PackageDeclarationVisitor();
 		AstPackageDeclaration interfaceDeclaration = visitor.visit(tree);
 		return interfaceDeclaration;
 	}

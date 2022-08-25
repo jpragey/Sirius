@@ -52,10 +52,13 @@ public class LambdaTest {
 	
 	private AstStatement parseLambdaDefinition(String inputText) {
 		
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+//		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
+		
 		ParseTree tree = parser.localVariableStatement();
 				
-		StatementParser.StatementVisitor typeVisitor = new StatementParser(reporter).new StatementVisitor();
+		StatementParser.StatementVisitor typeVisitor = new StatementParser(reporter, parserFactory.tokenStream()).new StatementVisitor();
 		AstStatement myType = typeVisitor.visit(tree);
 		
 		return myType;

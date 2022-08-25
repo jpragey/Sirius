@@ -47,10 +47,13 @@ public class SymbolExportVisitorTest {
 	
 	private AstInterfaceDeclaration parseInterfaceDeclaration(String inputText) {
 		
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+//		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
+
 		ParseTree tree = parser.interfaceDeclaration();
 				
-		InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser(reporter).new InterfaceDeclarationVisitor();
+		InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser(reporter, parserFactory.tokenStream()).new InterfaceDeclarationVisitor();
 		AstInterfaceDeclaration interfaceDeclaration = visitor.visit(tree);
 		return interfaceDeclaration;
 	}

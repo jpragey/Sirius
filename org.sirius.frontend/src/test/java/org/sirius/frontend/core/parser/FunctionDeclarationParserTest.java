@@ -29,11 +29,11 @@ import org.sirius.frontend.symbols.QNameSetterVisitor;
 public class FunctionDeclarationParserTest {
 
 	private Reporter reporter ;
-	private Parsers parsers;
+//	private Parsers parsers;
 	@BeforeEach
 	public void setup() {
 		this.reporter = new AccumulatingReporter(new ShellReporter());
-		this.parsers = new Parsers(this.reporter);
+//		this.parsers = new Parsers(this.reporter);
 	}
 	@AfterEach
 	public void tearDown() {
@@ -43,10 +43,13 @@ public class FunctionDeclarationParserTest {
 	
 	private FunctionDeclaration parseTypeDeclaration(String inputText) {
 		
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+//		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
+
 		ParseTree tree = parser.functionDeclaration();
 				
-		Parsers.FunctionDeclarationVisitor fdeclVisitor = parsers.new FunctionDeclarationVisitor();
+		Parsers.FunctionDeclarationVisitor fdeclVisitor = new Parsers(reporter, parserFactory.tokenStream()).new FunctionDeclarationVisitor();
 		FunctionDeclaration functionDecl = fdeclVisitor.visit(tree);
 		
 		functionDecl.visit(new QNameSetterVisitor());
@@ -56,9 +59,12 @@ public class FunctionDeclarationParserTest {
 	
 	private FunctionDefinition parseTypeDefinition(String inputText) {
 		
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
-		
-		FunctionDeclarationParser.FunctionDefinitionVisitor fdefinitionVisitor = new FunctionDeclarationParser.FunctionDefinitionVisitor(reporter /*, containerQName*/);
+//		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
+
+		FunctionDeclarationParser.FunctionDefinitionVisitor fdefinitionVisitor = 
+				new FunctionDeclarationParser(reporter,parserFactory.tokenStream()).new FunctionDefinitionVisitor();
 		FunctionDefinition functionDef = fdefinitionVisitor.visit(parser.functionDefinition());
 		
 		functionDef.visit(new QNameSetterVisitor());

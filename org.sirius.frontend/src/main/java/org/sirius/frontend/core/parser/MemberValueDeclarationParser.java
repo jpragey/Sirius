@@ -2,6 +2,7 @@ package org.sirius.frontend.core.parser;
 
 import java.util.Optional;
 
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstExpression;
@@ -19,10 +20,10 @@ public class MemberValueDeclarationParser {
 		private Reporter reporter;
 		private ExpressionParser expressionParser;
 
-		public MemberValueVisitor(Reporter reporter) {
+		public MemberValueVisitor(Reporter reporter, CommonTokenStream tokens) {
 			super();
 			this.reporter = reporter;
-			this.expressionParser = new ExpressionParser(reporter); 
+			this.expressionParser = new ExpressionParser(reporter, tokens); 
 		}
 
 		@Override

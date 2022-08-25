@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.Annotation;
@@ -37,7 +38,7 @@ import org.sirius.frontend.parser.Sirius.TypeContext;
 import org.sirius.frontend.parser.Sirius.TypeParameterDeclarationListContext;
 
 
-public record Parsers(Reporter reporter) {
+public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 
 	/****************************************************************************/
 	/** 							QName		 								*/
@@ -173,7 +174,7 @@ public record Parsers(Reporter reporter) {
 			
 			PackageElements packageElements = new PackageElements();
 
-			ModuleDeclarationParser.PackageElementVisitor mcVisitor = new ModuleDeclarationParser(reporter) .new PackageElementVisitor(//reporter, 
+			ModuleDeclarationParser.PackageElementVisitor mcVisitor = new ModuleDeclarationParser(reporter, tokens) .new PackageElementVisitor(//reporter, 
 					packageDeclarations, packageElements /*interfaceDeclarations, classDeclarations, partialLists*/);
 //			ctx.packageElement().forEach(mcContext -> mcContext.accept(mcVisitor));
 			ctx.packageElement().forEach(mcContext -> mcVisitor.visit(mcContext));

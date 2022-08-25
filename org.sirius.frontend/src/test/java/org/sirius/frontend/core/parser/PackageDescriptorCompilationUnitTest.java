@@ -31,10 +31,15 @@ public class PackageDescriptorCompilationUnitTest {
 	}
 	
 	private PackageDescriptorCompilationUnit parseModuleImport(String inputText) {
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+//		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
+
 		ParseTree tree = parser.packageDescriptorCompilationUnit();
 				
-		PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor visitor = new PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor(reporter);
+		PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor visitor = 
+				new PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor(reporter, parserFactory.tokenStream());
+		
 		PackageDescriptorCompilationUnit packageCU = visitor.visit(tree);
 		return packageCU;
 		

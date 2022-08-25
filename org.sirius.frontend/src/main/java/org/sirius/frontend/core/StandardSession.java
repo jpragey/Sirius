@@ -111,7 +111,8 @@ public class StandardSession implements Session {
 		Sirius parser = pe.createParser();
 		ParseTree tree = parser.packageDescriptorCompilationUnit();
 				
-		PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor visitor = new PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor(reporter);
+		PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor visitor = 
+				new PackageDescriptorCompilatioUnitParser.PackageDescriptorCompilationUnitVisitor(reporter, pe.tokenStream);
 		PackageDescriptorCompilationUnit packageCU = visitor.visit(tree);
 		
 		return packageCU.getPackageDeclaration();

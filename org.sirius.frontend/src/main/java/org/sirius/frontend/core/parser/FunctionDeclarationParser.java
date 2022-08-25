@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstFunctionParameter;
@@ -32,11 +33,13 @@ import org.sirius.frontend.parser.Sirius.TypeParameterDeclarationListContext;
 public class FunctionDeclarationParser {
 	private Reporter reporter;
 	private Parsers parsers;
+	private CommonTokenStream tokens;
 	
-	public FunctionDeclarationParser(Reporter reporter) {
+	public FunctionDeclarationParser(Reporter reporter, CommonTokenStream tokens) {
 		super();
 		this.reporter = reporter;
-		this.parsers = new Parsers(reporter);
+		this.parsers = new Parsers(reporter, tokens);
+		this.tokens = tokens;
 	}
 
 	public static class FunctionParameterVisitor extends SiriusBaseVisitor<AstFunctionParameter> {
@@ -59,7 +62,7 @@ public class FunctionDeclarationParser {
 		}
 	}
 
-	public static class FunctionBodyVisitor extends SiriusBaseVisitor<List<AstStatement> > {
+	public class FunctionBodyVisitor extends SiriusBaseVisitor<List<AstStatement> > {
 		private Reporter reporter;
 		
 		public FunctionBodyVisitor(Reporter reporter) {
@@ -69,7 +72,7 @@ public class FunctionDeclarationParser {
 
 		@Override
 		public List<AstStatement> visitFunctionBody(FunctionBodyContext ctx) {
-			StatementParser.StatementVisitor statementVisitor = new StatementParser(reporter).new StatementVisitor();
+			StatementParser.StatementVisitor statementVisitor = new StatementParser(reporter, tokens).new StatementVisitor();
 			
 			List<AstStatement> statements =  ctx.statement().stream()
 				.map(stmtCtxt -> stmtCtxt.accept(statementVisitor))
@@ -134,12 +137,12 @@ public class FunctionDeclarationParser {
 //			return new FunctionDeclaration(annoList, functionParams, returnType, member, name) ;
 //		}
 //	}
-	public static class FunctionDefinitionVisitor extends SiriusBaseVisitor<FunctionDefinition> {
-		private Reporter reporter;
+	public class FunctionDefinitionVisitor extends SiriusBaseVisitor<FunctionDefinition> {
+//		private Reporter reporter;
 
-		public FunctionDefinitionVisitor(Reporter reporter) {
+		public FunctionDefinitionVisitor(/*Reporter reporter*/) {
 			super();
-			this.reporter = reporter;
+//			this.reporter = reporter;
 		}
 
 		
@@ -152,7 +155,7 @@ public class FunctionDeclarationParser {
 			AstToken name = new AstToken(ctx.name);
 			
 			// -- Function parameters
-			Parsers.FunctionParameterListVisitor argListVisitor = (new Parsers(reporter)).new FunctionParameterListVisitor();
+			Parsers.FunctionParameterListVisitor argListVisitor = (new Parsers(reporter, tokens)).new FunctionParameterListVisitor();
 			
 			List<AstFunctionParameter> functionParams = argListVisitor.visit(ctx.functionDefinitionParameterList());
 			

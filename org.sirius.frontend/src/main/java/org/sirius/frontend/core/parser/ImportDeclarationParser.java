@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
@@ -24,8 +25,14 @@ import org.sirius.frontend.parser.Sirius.QnameContext;
  *
  */
 public class ImportDeclarationParser {
-
+	CommonTokenStream tokens;
 	
+	
+	public ImportDeclarationParser(CommonTokenStream tokens) {
+		super();
+		this.tokens = tokens;
+	}
+
 	public static class ImportDeclarationElementVisitor extends SiriusBaseVisitor<ImportDeclarationElement> {
 		@Override
 		public ImportDeclarationElement visitImportDeclarationElement(ImportDeclarationElementContext ctx) {
@@ -41,7 +48,7 @@ public class ImportDeclarationParser {
 		}
 	}
 
-	public static class ImportDeclarationVisitor extends SiriusBaseVisitor<ImportDeclaration> {
+	public class ImportDeclarationVisitor extends SiriusBaseVisitor<ImportDeclaration> {
 		private Reporter reporter;
 
 		public ImportDeclarationVisitor(Reporter reporter) {
@@ -51,7 +58,7 @@ public class ImportDeclarationParser {
 
 		@Override
 		public ImportDeclaration visitImportDeclaration(ImportDeclarationContext ctx) {
-			Parsers.QualifiedNameVisitor nameVisitor = new Parsers(reporter).new QualifiedNameVisitor();
+			Parsers.QualifiedNameVisitor nameVisitor = new Parsers(reporter, tokens).new QualifiedNameVisitor();
 			QualifiedName pack = nameVisitor.visit(ctx.qname());
 
 			ImportDeclarationElementVisitor elementVisitor = new ImportDeclarationElementVisitor();

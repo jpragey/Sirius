@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstBinaryOpExpression;
@@ -40,10 +41,12 @@ import org.sirius.frontend.symbols.Scope;
 public class ExpressionParser {
 	private Reporter reporter;
 	private LambdaDeclarationParser lambdaDeclarationParser;
-	public ExpressionParser(Reporter reporter) {
+	private CommonTokenStream tokens;
+	public ExpressionParser(Reporter reporter, CommonTokenStream tokens) {
 		super();
 		this.reporter = reporter;
-		this.lambdaDeclarationParser = new LambdaDeclarationParser(reporter);
+		this.lambdaDeclarationParser = new LambdaDeclarationParser(reporter, tokens);
+		this.tokens = tokens;
 	}
 
 	public class ExpressionVisitor extends SiriusBaseVisitor<AstExpression> {

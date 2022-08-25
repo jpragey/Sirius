@@ -35,9 +35,12 @@ public class ImportDeclarationParserTest {
 	private ImportDeclaration parseImportDeclaration(String inputText) {
 		
 		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+//		Sirius parser = parserFactory.create();
+
 		ParseTree tree = parser.importDeclaration();
 				
-		ImportDeclarationParser.ImportDeclarationVisitor visitor = new ImportDeclarationParser.ImportDeclarationVisitor(reporter);
+		ImportDeclarationParser.ImportDeclarationVisitor visitor = new ImportDeclarationParser(parserFactory.tokenStream()).new ImportDeclarationVisitor(reporter);
 		ImportDeclaration importDeclaration = visitor.visit(tree);
 		return importDeclaration;
 	}

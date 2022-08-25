@@ -58,10 +58,13 @@ public class StatementParserTest {
 	}
 
 	private AstReturnStatement parseReturnStatement(String inputText, Consumer<AstReturnStatement> verify) {
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+//		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
+
 		ParseTree tree = parser.returnStatement();
 		
-		StatementParser.StatementVisitor visitor = new StatementParser(reporter).new StatementVisitor();
+		StatementParser.StatementVisitor visitor = new StatementParser(reporter, parserFactory.tokenStream()).new StatementVisitor();
 		AstStatement stmt = visitor.visit(tree);
 
 		assertThat(stmt, instanceOf(AstReturnStatement.class) );
@@ -85,10 +88,13 @@ public class StatementParserTest {
 	}
 
 	private AstExpressionStatement parseExpressionStatement(String inputText, Consumer<AstExpressionStatement> verify) {
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+//		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
+
 		ParseTree tree = parser.statement();
 		
-		StatementParser.StatementVisitor visitor = new StatementParser(reporter).new StatementVisitor();
+		StatementParser.StatementVisitor visitor = new StatementParser(reporter, parserFactory.tokenStream()).new StatementVisitor();
 		AstStatement stmt = visitor.visit(tree);
 
 		assertThat(stmt, instanceOf(AstExpressionStatement.class) );
@@ -117,10 +123,13 @@ public class StatementParserTest {
 	}
 
 	private AstLocalVariableStatement parseLocalVariableStatement(String inputText, Consumer<AstLocalVariableStatement> verify) {
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+//		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
+
 		ParseTree tree = parser.statement();
 		
-		StatementParser.StatementVisitor visitor = new StatementParser(reporter).new StatementVisitor();
+		StatementParser.StatementVisitor visitor = new StatementParser(reporter, parserFactory.tokenStream()).new StatementVisitor();
 		AstStatement stmt = visitor.visit(tree);
 
 		assertThat(stmt, instanceOf(AstLocalVariableStatement.class) );
@@ -146,10 +155,13 @@ public class StatementParserTest {
 	}
 
 	private AstIfElseStatement parseIfElseStatement(String inputText, Consumer<AstIfElseStatement> verify) {
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+//		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
+
 		ParseTree tree = parser.statement();
 		
-		StatementParser.StatementVisitor visitor = new StatementParser(reporter).new StatementVisitor();
+		StatementParser.StatementVisitor visitor = new StatementParser(reporter, parserFactory.tokenStream()).new StatementVisitor();
 		AstStatement stmt = visitor.visit(tree);
 
 		assertThat(stmt, instanceOf(AstIfElseStatement.class) );

@@ -44,13 +44,13 @@ public class ScriptCompilatioUnitParser {
 					.map(shebangVisitor::visit);
 			
 			// -- Import declarations
-			ImportDeclarationParser.ImportDeclarationVisitor importVisitor = new ImportDeclarationParser.ImportDeclarationVisitor(reporter);
+			ImportDeclarationParser.ImportDeclarationVisitor importVisitor = new ImportDeclarationParser(tokens).new ImportDeclarationVisitor(reporter);
 			List<ImportDeclaration> imports = ctx.importDeclaration().stream()
 					.map(importVisitor::visit)
 					.collect(Collectors.toList());
 			
 			// -- module declarations
-			ModuleDeclarationParser.ConcreteModuleVisitor moduleVisitor = new ModuleDeclarationParser(reporter).new ConcreteModuleVisitor(tokens);
+			ModuleDeclarationParser.ConcreteModuleVisitor moduleVisitor = new ModuleDeclarationParser(reporter, tokens).new ConcreteModuleVisitor();
 			List<AstModuleDeclaration> modules = ctx.concreteModule().stream()
 					.map(moduleVisitor::visit)
 					.filter(Objects::nonNull)

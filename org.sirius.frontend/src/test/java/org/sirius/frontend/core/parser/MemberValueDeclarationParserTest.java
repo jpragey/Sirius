@@ -61,10 +61,13 @@ public class MemberValueDeclarationParserTest {
 	}
 
 	private AstMemberValueDeclaration parseMemberValue(String inputText, Consumer<AstMemberValueDeclaration> verify) {
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+//		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
+
 		ParseTree tree = parser.memberValueDeclaration();
 		
-		MemberValueDeclarationParser.MemberValueVisitor visitor = new MemberValueDeclarationParser.MemberValueVisitor(reporter);
+		MemberValueDeclarationParser.MemberValueVisitor visitor = new MemberValueDeclarationParser.MemberValueVisitor(reporter, parserFactory.tokenStream());
 		AstMemberValueDeclaration memberValue = visitor.visit(tree);
 		
 		verify.accept(memberValue);

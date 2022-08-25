@@ -45,9 +45,12 @@ import org.sirius.frontend.parser.Sirius.PackageDeclarationContext;
 public class ModuleDeclarationParser {
 	private Reporter reporter;
 	private Parsers parsers;
-	public ModuleDeclarationParser(Reporter reporter) {
+	private CommonTokenStream tokens;
+	
+	public ModuleDeclarationParser(Reporter reporter, CommonTokenStream tokens) {
 		this.reporter = reporter;
-		this.parsers = new Parsers(reporter);
+		this.parsers = new Parsers(reporter, tokens);
+		this.tokens = tokens;
 	}
 
 	public class ModuleImportVisitor extends SiriusBaseVisitor<ModuleImport> {
@@ -63,7 +66,7 @@ public class ModuleDeclarationParser {
 					Optional.of(new AstToken(ctx.origin));
 					
 			// -- qname
-			Parsers.QualifiedNameVisitor nameVisitor = new Parsers(reporter).new QualifiedNameVisitor();
+			Parsers.QualifiedNameVisitor nameVisitor = new Parsers(reporter, tokens).new QualifiedNameVisitor();
 			Optional<QName> qname = Optional.empty();
 			if(ctx.nameQName != null )
 				qname = Optional.of(nameVisitor.visit(ctx.nameQName).toQName());
@@ -126,7 +129,7 @@ public class ModuleDeclarationParser {
 		}
 		@Override
 		public Void visitFunctionDeclaration(FunctionDeclarationContext ctx) {
-			FunctionDefinitionVisitor v = new FunctionDefinitionVisitor(reporter);
+			FunctionDefinitionVisitor v = new FunctionDeclarationParser(reporter, tokens).new FunctionDefinitionVisitor();
 			
 			FunctionDefinition functionDefinition = v.visit(ctx);
 			this.packageElements.functiondefinitions.add(functionDefinition);
@@ -134,7 +137,7 @@ public class ModuleDeclarationParser {
 		}
 		@Override
 		public Void visitFunctionDefinition(FunctionDefinitionContext ctx) {
-			FunctionDefinitionVisitor v = new FunctionDefinitionVisitor(reporter);
+			FunctionDefinitionVisitor v = new FunctionDeclarationParser(reporter, tokens).new FunctionDefinitionVisitor();
 			
 			FunctionDefinition functionDefinition = v.visit(ctx);
 			this.packageElements.functiondefinitions.add(functionDefinition);
@@ -143,7 +146,7 @@ public class ModuleDeclarationParser {
 		
 		@Override
 		public Void visitClassDeclaration(ClassDeclarationContext ctx) {
-			ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser(reporter).new ClassDeclarationVisitor();
+			ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser(reporter, tokens).new ClassDeclarationVisitor();
 
 			AstClassDeclaration cd = visitor.visit(ctx);
 			this.packageElements.classDeclarations.add(cd);
@@ -151,7 +154,7 @@ public class ModuleDeclarationParser {
 		}
 		@Override
 		public Void visitInterfaceDeclaration(InterfaceDeclarationContext ctx) {
-			InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser(reporter).new InterfaceDeclarationVisitor();
+			InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser(reporter, tokens).new InterfaceDeclarationVisitor();
 
 			AstInterfaceDeclaration id = visitor.visit(ctx);
 			this.packageElements.interfaceDeclarations.add(id);
@@ -171,10 +174,10 @@ public class ModuleDeclarationParser {
 	}
 	
 	public class ConcreteModuleVisitor extends SiriusBaseVisitor<AstModuleDeclaration> {
-		CommonTokenStream tokens;
-		public ConcreteModuleVisitor(CommonTokenStream tokens) {
+//		CommonTokenStream tokens;
+		public ConcreteModuleVisitor(/*CommonTokenStream tokens*/) {
 			super();
-			this.tokens = tokens;
+//			this.tokens = tokens;
 		}
 		@Override
 		public AstModuleDeclaration visitConcreteModule(ConcreteModuleContext ctx) {
@@ -259,7 +262,7 @@ public class ModuleDeclarationParser {
 		public ModuleDeclarationVisitor(Reporter reporter, CommonTokenStream tokens) {
 			super();
 			this.reporter = reporter;
-			this.parsers = new Parsers(reporter);
+			this.parsers = new Parsers(reporter, tokens);
 			this.tokens = tokens;
 		}
 
@@ -275,11 +278,11 @@ public class ModuleDeclarationParser {
 			if(cmtChannel != null) {
 				String allComments = cmtChannel.stream().map(token -> token.getText()).collect(Collectors.joining());
 				commentTokens = cmtChannel.stream().map(token -> new AstToken(token)).toList();
-				System.out.println(" -- Comment channel found: comments = " + allComments);
+//				System.out.println(" -- Comment channel found: comments = " + allComments);
 				
 			} else {
 				commentTokens= List.of();
-				System.out.println(" -- No comment (channel == null).");
+//				System.out.println(" -- No comment (channel == null).");
 			}
 
 			
@@ -297,7 +300,7 @@ public class ModuleDeclarationParser {
 			ctx.moduleVersionEquivalent().stream().forEach(equivCtxt ->{equivCtxt.accept(equivalentVisitor);});
 			
 			// -- imports
-			ModuleImportVisitor moduleImportVisitor = new ModuleDeclarationParser(reporter).new ModuleImportVisitor();
+			ModuleImportVisitor moduleImportVisitor = new ModuleDeclarationParser(reporter, tokens).new ModuleImportVisitor();
 			List<ModuleImport> moduleImports = ctx.children.stream()
 				.map(tree -> tree.accept(moduleImportVisitor))
 //				.filter(modImport -> modImport!=null)

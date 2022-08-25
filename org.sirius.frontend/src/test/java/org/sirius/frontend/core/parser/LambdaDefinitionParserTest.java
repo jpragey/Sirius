@@ -45,10 +45,13 @@ public class LambdaDefinitionParserTest {
 	
 	private LambdaDefinition parseLambdaDefinition(String inputText) {
 		
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+//		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
+
 		ParseTree tree = parser.lambdaDefinition();
 				
-		LambdaDeclarationParser.LambdaDefinitionVisitor typeVisitor = new LambdaDeclarationParser(reporter).new LambdaDefinitionVisitor();
+		LambdaDeclarationParser.LambdaDefinitionVisitor typeVisitor = new LambdaDeclarationParser(reporter, parserFactory.tokenStream()).new LambdaDefinitionVisitor();
 		LambdaDefinition myType = typeVisitor.visit(tree);
 		
 		return myType;
@@ -109,10 +112,14 @@ public class LambdaDefinitionParserTest {
 	@DisplayName("Lambda definition is an expression")
 	public void lambdaDefinitionAsExpression() {
 		String inputText = "(A a) : void {}";
+		
 		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+//		Sirius parser = parserFactory.create();
+
 		ParseTree tree = parser.expression();
 
-		ExpressionParser.ExpressionVisitor v = new ExpressionParser(reporter).new ExpressionVisitor();
+		ExpressionParser.ExpressionVisitor v = new ExpressionParser(reporter, parserFactory.tokenStream()).new ExpressionVisitor();
 		AstExpression lambdaExpr =  v.visit(tree);
 		
 		assertThat(lambdaExpr, notNullValue());

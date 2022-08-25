@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstBlock;
@@ -42,10 +43,12 @@ import org.sirius.frontend.symbols.SymbolTableImpl;
  */
 public class StatementParser {
 	private Reporter reporter;
+	private CommonTokenStream tokens;
 	
-	public StatementParser(Reporter reporter) {
+	public StatementParser(Reporter reporter, CommonTokenStream tokens) {
 		super();
 		this.reporter = reporter;
+		this.tokens = tokens;
 	}
 
 	public class StatementVisitor extends SiriusBaseVisitor<AstStatement> {
@@ -56,7 +59,7 @@ public class StatementParser {
 
 		@Override
 		public AstReturnStatement visitReturnStatement(ReturnStatementContext ctx) {
-			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser(reporter).new ExpressionVisitor();
+			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser(reporter, tokens).new ExpressionVisitor();
 			AstExpression returnStatement = visitor.visit(ctx.expression());
 			
 			return new AstReturnStatement(returnStatement);
@@ -64,7 +67,7 @@ public class StatementParser {
 		
 		@Override
 		public AstExpressionStatement visitIsExpressionStatement(IsExpressionStatementContext ctx) {
-			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser(reporter).new ExpressionVisitor();
+			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser(reporter, tokens).new ExpressionVisitor();
 			AstExpression expression = visitor.visit(ctx.expression());
 			
 			return new AstExpressionStatement(expression);
@@ -78,7 +81,7 @@ public class StatementParser {
 			AstType type = typeVisitor.visit(ctx.type());
 			AstToken varName = new AstToken(ctx.LOWER_ID().getSymbol());
 
-			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser(reporter).new ExpressionVisitor();
+			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser(reporter, tokens).new ExpressionVisitor();
 			
 			ExpressionContext exprCtxt = ctx.expression();
 			Optional<AstExpression> initExpression = Optional.ofNullable(exprCtxt).map(visitor::visit);
@@ -89,10 +92,10 @@ public class StatementParser {
 		@Override
 		public AstIfElseStatement visitIfElseStatement(IfElseStatementContext ctx) {
 
-			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser(reporter).new ExpressionVisitor();
+			ExpressionParser.ExpressionVisitor visitor = new ExpressionParser(reporter, tokens).new ExpressionVisitor();
 			AstExpression ifExpression = ctx.ifExpression.accept(visitor);
 			
-			StatementParser.StatementVisitor stmtVisitor = new StatementParser(reporter).new StatementVisitor();
+			StatementParser.StatementVisitor stmtVisitor = new StatementParser(reporter, tokens).new StatementVisitor();
 			AstStatement ifBlock = ctx.ifBlock.accept(stmtVisitor);
 			
 			Optional<AstStatement> elseBlock = (ctx.elseBlock != null) ? 
@@ -103,7 +106,7 @@ public class StatementParser {
 		}
 		@Override
 		public AstStatement visitBlockStatement(BlockStatementContext ctx) {
-			StatementParser.StatementVisitor statementVisitor = new StatementParser(reporter).new StatementVisitor();
+			StatementParser.StatementVisitor statementVisitor = new StatementParser(reporter, tokens).new StatementVisitor();
 			
 			List<AstStatement> statements =  ctx.statement().stream()
 				.map(statementVisitor::visit)

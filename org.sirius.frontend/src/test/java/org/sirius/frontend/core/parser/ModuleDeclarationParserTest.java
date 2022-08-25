@@ -21,6 +21,7 @@ import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.parser.Sirius;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 
@@ -39,10 +40,12 @@ public class ModuleDeclarationParserTest {
 	
 	// -- Test of Module import
 	private ModuleImport parseModuleImport(String inputText) {
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		ParserUtil.ParserFactory parserFactory = ParserUtil.createParserFactory(reporter, inputText);
+		Sirius parser = parserFactory.create();
+
 		ParseTree tree = parser.moduleImport();
 				
-		ModuleDeclarationParser.ModuleImportVisitor visitor = new ModuleDeclarationParser(reporter).new ModuleImportVisitor();
+		ModuleDeclarationParser.ModuleImportVisitor visitor = new ModuleDeclarationParser(reporter, parserFactory.tokenStream()).new ModuleImportVisitor();
 		ModuleImport moduleImport = visitor.visit(tree);
 		return moduleImport;
 		
@@ -146,7 +149,10 @@ public class ModuleDeclarationParserTest {
 			assertThat(md.getqName().dotSeparated(), equalTo("a.b.c"));
 			assertThat(md.getVersion().getText(), equalTo("\" 1.0 \""));
 			assertThat(md.getVersionString(), equalTo("1.0"));
-			assertThat(md.getComments(), hasSize(2));
+
+//			assertThat(md.getComments(), hasSize(2));
+			
+			assertThat  (md.getComments().stream().map(tk->tk.getText()).toList(), contains("/*Some*/", "/*module*/"));
 		});
 	}
 	

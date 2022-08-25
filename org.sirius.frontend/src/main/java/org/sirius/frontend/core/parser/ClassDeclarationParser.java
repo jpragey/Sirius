@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.sirius.common.error.Reporter;
@@ -26,11 +27,12 @@ import org.sirius.frontend.parser.Sirius.TypeParameterDeclarationListContext;
 public class ClassDeclarationParser {
 	private Reporter reporter;
 	private Parsers parsers;
-
-	public ClassDeclarationParser(Reporter reporter) {
+	private CommonTokenStream tokens;
+	public ClassDeclarationParser(Reporter reporter, CommonTokenStream tokens) {
 		super();
 		this.reporter = reporter;
-		this.parsers = new Parsers(reporter);
+		this.parsers = new Parsers(reporter, tokens);
+		this.tokens = tokens;
 	}
 
 //	public class ImplementClauseVisitor extends SiriusBaseVisitor<List<AstToken>> {
@@ -65,13 +67,13 @@ public class ClassDeclarationParser {
 					: typeParameterListVisitor.visit(c);
 			
 			// -- Member functions
-			FunctionDeclarationParser.FunctionDefinitionVisitor fctVisitor = new FunctionDeclarationParser.FunctionDefinitionVisitor(reporter);
+			FunctionDeclarationParser.FunctionDefinitionVisitor fctVisitor = new FunctionDeclarationParser(reporter, tokens).new FunctionDefinitionVisitor();
 			List<FunctionDefinition> methods = ctx.children.stream()
 				.map(parseTree -> parseTree.accept(fctVisitor))
 				.filter(partialList -> partialList!=null)
 				.collect(Collectors.toList());
 			
-			MemberValueDeclarationParser.MemberValueVisitor memberValuesVisitor = new MemberValueDeclarationParser.MemberValueVisitor(reporter);
+			MemberValueDeclarationParser.MemberValueVisitor memberValuesVisitor = new MemberValueDeclarationParser.MemberValueVisitor(reporter, tokens);
 			List<AstMemberValueDeclaration> memberValues = ctx.children.stream()
 				.map(parseTree -> parseTree.accept(memberValuesVisitor))
 				.filter(partialList -> partialList!=null)

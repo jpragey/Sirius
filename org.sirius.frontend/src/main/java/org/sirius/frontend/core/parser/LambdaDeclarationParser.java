@@ -3,6 +3,7 @@ package org.sirius.frontend.core.parser;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstStatement;
@@ -25,13 +26,15 @@ import org.sirius.frontend.parser.Sirius.TypeContext;
  */
 public class LambdaDeclarationParser {
 	private Reporter reporter;
+	private CommonTokenStream tokens;
 	
-	public LambdaDeclarationParser(Reporter reporter) {
+	public LambdaDeclarationParser(Reporter reporter, CommonTokenStream tokens) {
 		super();
 		this.reporter = reporter;
+		this.tokens = tokens;
 	}
 
-	public static class FunctionBodyVisitor extends SiriusBaseVisitor<List<AstStatement> > {
+	public class FunctionBodyVisitor extends SiriusBaseVisitor<List<AstStatement> > {
 		private Reporter reporter;
 		
 		public FunctionBodyVisitor(Reporter reporter) {
@@ -41,7 +44,7 @@ public class LambdaDeclarationParser {
 
 		@Override
 		public List<AstStatement> visitFunctionBody(FunctionBodyContext ctx) {
-			StatementParser.StatementVisitor statementVisitor = new StatementParser(reporter).new StatementVisitor();
+			StatementParser.StatementVisitor statementVisitor = new StatementParser(reporter, tokens).new StatementVisitor();
 			
 			List<AstStatement> statements =  ctx.statement().stream()
 				.map(statementVisitor::visit /*stmtCtxt -> stmtCtxt.accept(statementVisitor)*/)
@@ -83,7 +86,7 @@ public class LambdaDeclarationParser {
 
 		public LambdaDefinitionVisitor() {
 			super();
-			this.parsers = new Parsers(reporter);
+			this.parsers = new Parsers(reporter, tokens);
 		}
 		
 		@Override
