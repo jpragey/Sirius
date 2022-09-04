@@ -28,14 +28,62 @@ package org.sirius.frontend.parser;
 
 /** New  */
 newCompilationUnit :
+	shebangDeclaration ?
+	
+		// unnamed module content
+		packageTopLevelDeclarations
+	
+		// explicit module declarations
+//	(freeModuleDeclaration | boundModuleDeclaration )*
+	newModuleDeclaration *
+//	(freeModuleDeclaration )*
+	
+	
+
+//	| moduleHeader '{' packageTopLevelDeclarations '}'
+	 
 //	( importDeclaration )*
-	packageContent ?	// unnamed module / unnamed package content
-	(
-		moduleDeclaration
-		packageContent ?	// named module / unnamed package content
-	)*
+//	packageContent ?	// unnamed module / unnamed package content
+//	(
+//		moduleDeclaration
+//		packageContent ?	// named module / unnamed package content
+//	)*
 		;
 
+//freeModuleDeclaration :
+//	moduleHeader ';' packageTopLevelDeclarations
+//	;
+//	
+//boundModuleDeclaration :	
+//	moduleHeader '{' packageTopLevelDeclarations '}'
+//	;	
+
+
+newModuleDeclaration :
+	moduleHeader 
+	( 
+	  ';' packageTopLevelDeclarations
+	| '{' packageTopLevelDeclarations '}'
+	)
+	;
+	
+
+moduleHeader :
+	'module' qname '{' '}'
+	;
+
+packageTopLevelDeclarations : 
+	packageTopLevelDeclaration *
+	;
+	
+packageTopLevelDeclaration : 
+    	  functionDeclaration
+    	| functionDefinition 	
+    	| classDeclaration 		
+    	| interfaceDeclaration	
+	;
+
+/////////////////
 packageContent : 
     	  functionDeclaration
     	| functionDefinition 	

@@ -1,7 +1,6 @@
 package org.sirius.frontend.core.parser;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -12,18 +11,14 @@ import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
-import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.TypeParameter;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.Sirius.FunctionBodyContext;
-import org.sirius.frontend.parser.Sirius.FunctionDeclarationContext;
 import org.sirius.frontend.parser.Sirius.FunctionDefinitionContext;
 import org.sirius.frontend.parser.Sirius.FunctionDefinitionParameterContext;
-import org.sirius.frontend.parser.Sirius.FunctionDefinitionParameterListContext;
-import org.sirius.frontend.parser.Sirius.NewCompilationUnitContext;
 import org.sirius.frontend.parser.Sirius.TypeContext;
 import org.sirius.frontend.parser.Sirius.TypeParameterDeclarationListContext;
+import org.sirius.frontend.parser.SiriusBaseVisitor;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 

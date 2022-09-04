@@ -23,6 +23,10 @@ public class ShebangDeclaration implements Visitable {
 	public String getTrimmedText() {
 		return trimmedText;
 	}
+	@Override
+	public String toString() {
+		return trimmedText;
+	}
 	public void visit(AstVisitor visitor) {
 		visitor.startShebangDeclaration(this);
 		visitor.endShebangDeclaration(this);
