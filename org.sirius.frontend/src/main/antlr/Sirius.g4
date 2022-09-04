@@ -4,17 +4,11 @@
 parser grammar Sirius;
 
 
-//import SLexer;
 options {
 	tokenVocab = SLexer;
 }
 
 
-
-//@lexer::header {
-////package org.sirius.frontend.parser;
-//// 	import org.sirius.frontend.ast.AstModuleDeclaration;
-//}
 @parser::header {
 package org.sirius.frontend.parser;
 // 	import org.sirius.frontend.ast.*;
@@ -30,34 +24,12 @@ package org.sirius.frontend.parser;
 newCompilationUnit :
 	shebangDeclaration ?
 	
-		// unnamed module content
-		packageTopLevelDeclarations
+	// unnamed module content
+	packageTopLevelDeclarations
 	
-		// explicit module declarations
-//	(freeModuleDeclaration | boundModuleDeclaration )*
+	// explicit module declarations
 	newModuleDeclaration *
-//	(freeModuleDeclaration )*
-	
-	
-
-//	| moduleHeader '{' packageTopLevelDeclarations '}'
-	 
-//	( importDeclaration )*
-//	packageContent ?	// unnamed module / unnamed package content
-//	(
-//		moduleDeclaration
-//		packageContent ?	// named module / unnamed package content
-//	)*
-		;
-
-//freeModuleDeclaration :
-//	moduleHeader ';' packageTopLevelDeclarations
-//	;
-//	
-//boundModuleDeclaration :	
-//	moduleHeader '{' packageTopLevelDeclarations '}'
-//	;	
-
+;
 
 newModuleDeclaration :
 	moduleHeader 

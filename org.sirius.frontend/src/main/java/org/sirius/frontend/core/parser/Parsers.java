@@ -1,8 +1,8 @@
 package org.sirius.frontend.core.parser;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -10,32 +10,28 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.Annotation;
 import org.sirius.frontend.ast.AnnotationList;
-import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionParameter;
-import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.FunctionDeclaration;
-import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.QualifiedName;
-import org.sirius.frontend.ast.TypeParameter;
+import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionParameterVisitor;
 import org.sirius.frontend.core.parser.ModuleDeclarationParser.PackageElements;
-import org.sirius.frontend.core.parser.Parsers.FunctionParameterListVisitor;
-//import org.sirius.frontend.core.parser.AnnotationListParser.AnnotationVisitor;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.Sirius.AnnotationContext;
 import org.sirius.frontend.parser.Sirius.AnnotationListContext;
-import org.sirius.frontend.parser.Sirius.ClassDeclarationContext;
 import org.sirius.frontend.parser.Sirius.FunctionDeclarationContext;
 import org.sirius.frontend.parser.Sirius.FunctionDefinitionParameterListContext;
 import org.sirius.frontend.parser.Sirius.ImplementedInterfacesContext;
+import org.sirius.frontend.parser.Sirius.ModuleHeaderContext;
+import org.sirius.frontend.parser.Sirius.NewCompilationUnitContext;
 import org.sirius.frontend.parser.Sirius.PackageDeclarationContext;
 import org.sirius.frontend.parser.Sirius.QnameContext;
 import org.sirius.frontend.parser.Sirius.TypeContext;
-import org.sirius.frontend.parser.Sirius.TypeParameterDeclarationListContext;
+//import org.sirius.frontend.core.parser.AnnotationListParser.AnnotationVisitor;
+import org.sirius.frontend.parser.SiriusBaseVisitor;
 
 
 public record Parsers(Reporter reporter, CommonTokenStream tokens) {
@@ -189,5 +185,43 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 		}
 	}
 
+	/****************************************************************************/
+	/** 							New CompilationUnit							*/
+	/****************************************************************************/
+
+	public static record ModuleHeader(QName qname) {}
+	public static record CompilationUnit(Optional<ShebangDeclaration> shebangDeclaration, List<ModuleHeader> modules) {}
+
+	public static SiriusBaseVisitor<ModuleHeader> moduleHeaderVisitor = new SiriusBaseVisitor<ModuleHeader>() {
+
+		@Override
+		public ModuleHeader visitModuleHeader(ModuleHeaderContext ctx) {
+			Parsers.QNameVisitor qnameVisitor = new Parsers.QNameVisitor();
+			QName qname = qnameVisitor.visitQname(ctx.qname());
+			
+			ModuleHeader mh = new ModuleHeader(qname);
+			return mh;
+		}
+		public ModuleHeader visitNewModuleDeclaration(org.sirius.frontend.parser.Sirius.NewModuleDeclarationContext ctx) {
+			return visitModuleHeader(ctx.moduleHeader());
+		};
+		
+	};
+	public static SiriusBaseVisitor<CompilationUnit> compilationUnitVisitor = new SiriusBaseVisitor<CompilationUnit>() {
+		public CompilationUnit visitNewCompilationUnit(NewCompilationUnitContext ctx) {
+
+			SiriusBaseVisitor<ShebangDeclaration> sbv = new ShebangDeclarationParser.ShebangVisitor();
+			
+			List<ModuleHeader> mods  = ctx.newModuleDeclaration().stream()
+					.map(nmdCtx -> moduleHeaderVisitor.visitNewModuleDeclaration(nmdCtx))
+					.collect(Collectors.toList());
+			
+			Optional<ShebangDeclaration> shebangDeclaration = Optional.ofNullable(
+					ctx.shebangDeclaration()).map(sbv::visitShebangDeclaration);
+			
+			return new CompilationUnit(shebangDeclaration, mods);
+			
+		};
+	};
 
 }
