@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
@@ -21,13 +21,13 @@ import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
-import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.FunctionDefinition;
+import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.QNameRefType;
-import org.sirius.frontend.core.AbstractCompilationUnit;
+import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.sdk.tooling.Inherit;
@@ -108,25 +108,14 @@ public class SdkTools {
 		List<ModuleImport> moduleImports = Collections.emptyList();
 		AstModuleDeclaration md = new AstModuleDeclaration(reporter, siriusLangQName, versionToken, equivalents, moduleImports, List.of(pd)
 				, List.<AstToken>of(/*TODO: ??? module comments expected*/));
-		
-		AbstractCompilationUnit compilationUnit = new AbstractCompilationUnit() {
-			List<AstModuleDeclaration> moduleDeclarations = List.of(md);
-			@Override
-			public void visit(AstVisitor visitor) {
-				md.visit(visitor);
-			}
 
-			@Override
-			public List<AstModuleDeclaration> getModuleDeclarations() {
-				return moduleDeclarations;
-			}
-
-			@Override
-			public Scope getScope() {
-				throw new UnsupportedOperationException("Not implemented yet"); // TODO ???
-			}
-			
-		};
+		ScriptCompilationUnit compilationUnit = new ScriptCompilationUnit(
+				
+				reporter, scope, 
+				Optional.empty() /* Optional<ShebangDeclaration> shebangDeclaration*/,
+				List.<ImportDeclaration>of(),
+				List.<AstModuleDeclaration>of(md)
+				);
 
 		// -- Transforms
 		StdAstTransforms.setQNames(compilationUnit);

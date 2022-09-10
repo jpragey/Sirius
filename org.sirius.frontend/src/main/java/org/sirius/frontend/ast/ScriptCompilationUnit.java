@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.core.AbstractCompilationUnit;
 import org.sirius.frontend.symbols.Scope;
 
-public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable, Scoped {
+public class ScriptCompilationUnit implements /*AbstractCompilationUnit,*/ Visitable, Scoped {
 
 	private Optional<ShebangDeclaration> shebangDeclaration = Optional.empty();
 
@@ -72,7 +71,6 @@ public class ScriptCompilationUnit implements AbstractCompilationUnit, Visitable
 		visitor.endScriptCompilationUnit(this);
 	}
 	
-	@Override
 	public List<AstModuleDeclaration> getModuleDeclarations() {
 		return moduleDeclarations;
 	}

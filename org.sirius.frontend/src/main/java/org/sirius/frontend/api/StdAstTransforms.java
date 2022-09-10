@@ -9,7 +9,7 @@ import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
-import org.sirius.frontend.core.AbstractCompilationUnit;
+import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.symbols.QNameSetterVisitor;
 import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.ScopeSetterVisitor;
@@ -17,7 +17,7 @@ import org.sirius.frontend.symbols.SymbolTableFillingVisitor;
 
 public class StdAstTransforms {
 	
-	private static void applyVisitors(Reporter reporter, AbstractCompilationUnit compilationUnit, AstVisitor... visitors) {
+	private static void applyVisitors(Reporter reporter, ScriptCompilationUnit compilationUnit, AstVisitor... visitors) {
 		for(AstVisitor v: visitors) {
 			compilationUnit.visit(v);
 			if(reporter.hasErrors()) {
@@ -26,7 +26,7 @@ public class StdAstTransforms {
 		}
 	}
 
-	public static void linkClassesToInterfaces(Reporter reporter, AbstractCompilationUnit compilationUnit) {
+	public static void linkClassesToInterfaces(Reporter reporter, ScriptCompilationUnit compilationUnit) {
 		HashMap<String, AstInterfaceDeclaration> interfacesByName = new HashMap<>();
 
 		AstVisitor interfaceCollectingVisitor = new AstVisitor() {
@@ -49,7 +49,7 @@ public class StdAstTransforms {
 		applyVisitors(reporter, compilationUnit, interfaceResolutionVisitor);
 	}
 	
-	public static void insertPackagesInModules(Reporter reporter, AbstractCompilationUnit compilationUnit) {
+	public static void insertPackagesInModules(Reporter reporter, ScriptCompilationUnit compilationUnit) {
 
 		AstVisitor insertPackageInModulesVisitor = new AstVisitor() {
 			Stack<AstModuleDeclaration> moduleStack = new Stack<AstModuleDeclaration>();
@@ -75,17 +75,17 @@ public class StdAstTransforms {
 
 	}
 
-	public static void setQNames(AbstractCompilationUnit compilationUnit) {
+	public static void setQNames(ScriptCompilationUnit compilationUnit) {
 		QNameSetterVisitor qNameSetterVisitor = new QNameSetterVisitor();
 		compilationUnit.visit(qNameSetterVisitor);
 	}
 
-	public static void setScopes(AbstractCompilationUnit compilationUnit, Scope globalScope) {
+	public static void setScopes(ScriptCompilationUnit compilationUnit, Scope globalScope) {
 		ScopeSetterVisitor visitor = new ScopeSetterVisitor(globalScope);
 		compilationUnit.visit(visitor);
 	}
 	
-	public static void fillSymbolTables(AbstractCompilationUnit compilationUnit, Scope scope) {
+	public static void fillSymbolTables(ScriptCompilationUnit compilationUnit, Scope scope) {
 		SymbolTableFillingVisitor fillingVisitor = new SymbolTableFillingVisitor(scope);
 		compilationUnit.visit(fillingVisitor);
 	}

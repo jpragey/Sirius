@@ -2,14 +2,12 @@ package org.sirius.frontend.ast;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.core.AbstractCompilationUnit;
 import org.sirius.frontend.symbols.Scope;
 
 /** CompilationUnit from module descriptor */
-public class ModuleDescriptor implements AbstractCompilationUnit, Visitable {
+public class ModuleDescriptor implements /*AbstractCompilationUnit,*/ Visitable {
 
 	private AstModuleDeclaration moduleDeclaration;
 	private Reporter reporter; 
@@ -33,12 +31,12 @@ public class ModuleDescriptor implements AbstractCompilationUnit, Visitable {
 		return moduleDeclaration;
 	}
 
-	@Override
+//	@Override
 	public List<AstModuleDeclaration> getModuleDeclarations() {
 		return Arrays.asList(moduleDeclaration);
 	}
 
-	@Override
+//	@Override
 	public Scope getScope() {
 		throw new UnsupportedOperationException("Not implemented yet"); // TODO ???
 	}

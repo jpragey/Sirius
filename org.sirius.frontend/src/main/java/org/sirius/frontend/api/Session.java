@@ -4,9 +4,8 @@ import java.util.List;
 
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstVisitor;
-import org.sirius.frontend.core.AbstractCompilationUnit;
+import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.core.InputTextProvider;
-import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public interface Session {
 	
@@ -19,7 +18,7 @@ public interface Session {
 	Reporter getReporter();
 
 
-	default void applyVisitors(Reporter reporter, AbstractCompilationUnit compilationUnit, AstVisitor... visitors) {
+	default void applyVisitors(Reporter reporter, ScriptCompilationUnit compilationUnit, AstVisitor... visitors) {
 		for(AstVisitor v: visitors) {
 			compilationUnit.visit(v);
 			if(reporter.hasErrors()) {
@@ -29,7 +28,7 @@ public interface Session {
 	}
 	
 
-	default void stdTransform(Reporter reporter, InputTextProvider input, AbstractCompilationUnit compilationUnit) {
+	default void stdTransform(Reporter reporter, InputTextProvider input, ScriptCompilationUnit compilationUnit) {
 		org.sirius.frontend.symbols.Scope globalScope = compilationUnit.getScope();
 		
 		StdAstTransforms.insertPackagesInModules(reporter, compilationUnit);
