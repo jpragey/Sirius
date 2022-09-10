@@ -65,22 +65,22 @@ packageContent :
 	;
 	
 /** Usual compilation unit */
-standardCompilationUnit 
-locals[
-]
-@init {     
-}
-    : 						
-    ( importDeclaration )*
-    (
-    	  moduleDeclaration 	 
-    	| packageDeclaration	
-    	| functionDeclaration 	
-    	| classDeclaration 		
-    	| interfaceDeclaration	
-    )*
-	EOF
-	;
+//standardCompilationUnit 
+//locals[
+//]
+//@init {     
+//}
+//    : 						
+//    ( importDeclaration )*
+//    (
+//    	  moduleDeclaration 	 
+//    	| packageDeclaration	
+//    	| functionDeclaration 	
+//    	| classDeclaration 		
+//    	| interfaceDeclaration	
+//    )*
+//	EOF
+//	;
 
 /** CompilationUnit from script */
 scriptCompilationUnit

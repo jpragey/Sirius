@@ -22,7 +22,6 @@ import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.ast.StandardCompilationUnit;
 import org.sirius.frontend.ast.TypeParameter;
 
 /** Visitor that sets the 'parent' symbol table field throughout the AST.
@@ -56,19 +55,11 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 		processImports(compilationUnit.getScope().getSymbolTable(), compilationUnit.getImportDeclarations());
 	}
 	
-	@Override
-	public void startCompilationUnit(StandardCompilationUnit compilationUnit) {
-		processImports(compilationUnit.getScope().getSymbolTable() /* compilationUnit.getSymbolTable()*/, compilationUnit.getImportDeclarations());
-	}
 
 	@Override
 	public void startPackageDeclaration(AstPackageDeclaration declaration) {
 	}
 	
-	@Override
-	public void endCompilationUnit(StandardCompilationUnit compilationUnit) {
-		symbolTableStack.pop();
-	}
 	
 	@Override
 	public void startClassDeclaration(AstClassDeclaration classDeclaration) {

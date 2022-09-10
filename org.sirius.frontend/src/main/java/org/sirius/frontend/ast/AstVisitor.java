@@ -5,8 +5,6 @@ public interface AstVisitor {
 	public default void startModuleDeclaration (AstModuleDeclaration declaration) {}
 	public default void endModuleDeclaration (AstModuleDeclaration declaration) {}
 
-	public default void startCompilationUnit (StandardCompilationUnit compilationUnit) {}
-	public default void endCompilationUnit (StandardCompilationUnit compilationUnit) {}
 
 	public default void startScriptCompilationUnit (ScriptCompilationUnit compilationUnit) {}
 	public default void endScriptCompilationUnit (ScriptCompilationUnit compilationUnit) {}
