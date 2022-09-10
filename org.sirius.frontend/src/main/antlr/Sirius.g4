@@ -25,7 +25,7 @@ newCompilationUnit :
 	shebangDeclaration ?
 	
 	// unnamed module content
-	packageTopLevelDeclarations
+//// /*TODO*/	packageTopLevelDeclarations
 	
 	// explicit module declarations
 	newModuleDeclaration *
@@ -45,6 +45,7 @@ moduleHeader :
 	;
 
 packageTopLevelDeclarations : 
+	importDeclaration *
 	packageTopLevelDeclaration *
 	;
 	
