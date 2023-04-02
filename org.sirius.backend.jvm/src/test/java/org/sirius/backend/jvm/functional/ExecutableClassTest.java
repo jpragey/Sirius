@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.sirius.backend.jvm.BackendOptions;
 import org.sirius.backend.jvm.Bytecode;
 import org.sirius.backend.jvm.ClassExecutorFunction;
@@ -33,6 +34,7 @@ import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
+
 
 public class ExecutableClassTest {
 	private Reporter reporter;
@@ -58,41 +60,14 @@ public class ExecutableClassTest {
 		QName qName = new QName("a", "b","MainClass");
 
 		// -- Create intermediate code
-		// TODO: Ugly !!!
-		FunctionClass functionClass = new FunctionClass() {
+		record MyConstExpression(Type type, int value) implements IntegerConstantExpression  {}
+		record MyReturnStatement(Expression expression) implements ReturnStatement {}
+		record MyFunctionClass(QName qName, Type returnType, List<Statement> bodyStatements) implements FunctionClass {}
 
-			@Override
-			public QName qName() {
-				return qName;
-			}
+		FunctionClass functionClass = new MyFunctionClass(qName,Type.integerType, 
+				List.of(new MyReturnStatement(
+						new MyConstExpression(Type.integerType, 42))));
 
-			@Override
-			public Type returnType() {
-				return Type.integerType;	
-				}
-
-			@Override
-			public List<Statement> bodyStatements() {
-				return List.of(new ReturnStatement() {
-
-					@Override
-					public Expression expression() {
-						return new IntegerConstantExpression() {
-							
-							@Override
-							public Type type() {
-								return Type.integerType;
-							}
-							
-							@Override
-							public int value() {
-								return 42;
-							}
-						};
-					}});
-			}};
-		
-		
 		BackendOptions backendOptions = new BackendOptions(reporter, Optional.of("TODO") /*TODO*/);
 		DescriptorFactory descriptorFactory = new DescriptorFactory(reporter);
 		
