@@ -1,12 +1,16 @@
 package org.sirius.backend.jvm.functional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,26 +27,12 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
-import org.sirius.frontend.api.AbstractFunction;
-import org.sirius.frontend.api.ExecutionEnvironment;
 import org.sirius.frontend.api.Expression;
 import org.sirius.frontend.api.FunctionClass;
 import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
-import org.sirius.frontend.apiimpl.ClassDeclarationImpl;
-import org.sirius.frontend.apiimpl.ExecutionEnvironmentImpl;
-import org.sirius.frontend.apiimpl.FunctionClassImpl;
-import org.sirius.frontend.apiimpl.IntegerConstantExpressionImpl;
-import org.sirius.frontend.apiimpl.ReturnStatementImpl;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.*;
 
 public class ExecutableClassTest {
 	private Reporter reporter;
@@ -54,7 +44,6 @@ public class ExecutableClassTest {
 
 	@Test
 	@DisplayName("Demo: create/run an executable class (happy path)")
-//	@Disabled("temp")
 	/**
 	 * Equivalent to:
 	 * //package p0.p1 {
@@ -69,10 +58,39 @@ public class ExecutableClassTest {
 		QName qName = new QName("a", "b","MainClass");
 
 		// -- Create intermediate code
-		FunctionClass functionClass = new FunctionClassImpl(qName, Type.integerType /*returnType*/, List.of(
-				new ReturnStatementImpl(
-						new IntegerConstantExpressionImpl(42))
-				) /*body*/);
+		// TODO: Ugly !!!
+		FunctionClass functionClass = new FunctionClass() {
+
+			@Override
+			public QName qName() {
+				return qName;
+			}
+
+			@Override
+			public Type returnType() {
+				return Type.integerType;	
+				}
+
+			@Override
+			public List<Statement> bodyStatements() {
+				return List.of(new ReturnStatement() {
+
+					@Override
+					public Expression expression() {
+						return new IntegerConstantExpression() {
+							
+							@Override
+							public Type type() {
+								return Type.integerType;
+							}
+							
+							@Override
+							public int value() {
+								return 42;
+							}
+						};
+					}});
+			}};
 		
 		
 		BackendOptions backendOptions = new BackendOptions(reporter, Optional.of("TODO") /*TODO*/);
