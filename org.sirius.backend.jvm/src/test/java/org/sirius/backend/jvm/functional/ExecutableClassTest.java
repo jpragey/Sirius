@@ -60,13 +60,13 @@ public class ExecutableClassTest {
 		QName qName = new QName("a", "b","MainClass");
 
 		// -- Create intermediate code
-		record MyConstExpression(Type type, int value) implements IntegerConstantExpression  {}
-		record MyReturnStatement(Expression expression) implements ReturnStatement {}
-		record MyFunctionClass(QName qName, Type returnType, List<Statement> bodyStatements) implements FunctionClass {}
+		record ConstExpressionStub(Type type, int value) implements IntegerConstantExpression  {}
+		record ReturnStatementStub(Expression expression) implements ReturnStatement {}
+		record FunctionClassStub(QName qName, Type returnType, List<Statement> bodyStatements) implements FunctionClass {}
 
-		FunctionClass functionClass = new MyFunctionClass(qName,Type.integerType, 
-				List.of(new MyReturnStatement(
-						new MyConstExpression(Type.integerType, 42))));
+		FunctionClass functionClass = new FunctionClassStub(qName,Type.integerType, 
+				List.of(new ReturnStatementStub(
+						new ConstExpressionStub(Type.integerType, 42))));
 
 		BackendOptions backendOptions = new BackendOptions(reporter, Optional.of("TODO") /*TODO*/);
 		DescriptorFactory descriptorFactory = new DescriptorFactory(reporter);

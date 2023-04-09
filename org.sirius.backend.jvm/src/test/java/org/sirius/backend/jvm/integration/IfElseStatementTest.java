@@ -62,24 +62,20 @@ public class IfElseStatementTest {
 	}
 
 	@Test
-	@DisplayName("")
 	public void ifThenEvaluatingFalseTest() throws Exception {
 		assertThat(runIfThenTest("if(false) return 42;"), is(100));
 	}
 	@Test
-	@DisplayName("")
 	public void ifThenEvaluatingTrueTest() throws Exception {
 		assertThat(runIfThenTest("if(true) return 42;"), is(42));
 	}
 	
 	
 	@Test
-	@DisplayName("")
 	public void ifThenElseEvaluatingFalseTest() throws Exception {
 		assertThat(runIfThenTest("if(false) return 42; else return 43;"), is(43));
 	}
 	@Test
-	@DisplayName("")
 	public void ifThenElseEvaluatingTrueTest() throws Exception {
 		assertThat(runIfThenTest("if(true) return 42; else return 43;"), is(42));
 	}

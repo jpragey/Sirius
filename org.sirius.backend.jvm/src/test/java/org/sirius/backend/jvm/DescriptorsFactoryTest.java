@@ -1,11 +1,14 @@
 package org.sirius.backend.jvm;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.mocktypes.MockAbstractFunction;
 import org.sirius.backend.jvm.mocktypes.MockFunctionFormalArgument;
@@ -17,43 +20,14 @@ import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ExecutionEnvironment;
+import org.sirius.frontend.api.FunctionParameter;
 import org.sirius.frontend.api.MemberValue;
+import org.sirius.frontend.api.Type;
 
 public class DescriptorsFactoryTest {
 
 	private Reporter reporter;
 	private DescriptorFactory factory;
-
-	
-	private class MockClassType implements ClassType {
-
-		private QName qname;
-		
-		public MockClassType(QName qname) {
-			super();
-			this.qname = qname;
-		}
-
-		@Override
-		public QName qName() {
-			return qname;
-		}
-
-		@Override
-		public List<MemberValue> memberValues() {
-			return List.of();
-		}
-
-		@Override
-		public List<AbstractFunction> memberFunctions() {
-			return List.of();
-		}
-		@Override
-		public Optional<ExecutionEnvironment> executionEnvironment() {
-			return Optional.empty();
-		}
-
-	}
 
 	@BeforeEach
 	public void setup() {
@@ -62,21 +36,67 @@ public class DescriptorsFactoryTest {
 	}
 	
 	@Test
-	public void simpleTypeDescriptorAreCorrect() {
+	public void fieldDescriptor_forVoidType_isV() {
 		assertEquals(factory.fieldDescriptor(new MockVoidType()), "V");
-		assertEquals(factory.fieldDescriptor(new MockClassType(new QName("aa", "bb", "CC"))), "Laa/bb/CC;");
+	}
+
+	@Test
+	@DisplayName("field descriptor for field 'aa.bb.CC''")
+	public void fieldDescriptor_forClassType_isLabc() {
+		ClassType classTypeMock = mock(ClassType.class);
+		when(classTypeMock.qName()).thenReturn(new QName("aa", "bb", "CC"));
+
+		assertEquals(factory.fieldDescriptor(classTypeMock), "Laa/bb/CC;");
 	}
 	
 	@Test
-	public void methodDescriptorsAreCorrect() {
-		QName funcQName = new QName("aa", "bb", "aFunc"); 
-		MockAbstractFunction func = new MockAbstractFunction(
-				funcQName, 
-				new MockClassType(new QName("RetVal")));
+	@DisplayName("Method descriptor for function 'void()' (must be '()V')")
+	public void methodDescriptors_noArg_returnVoid() {
 		
-		func.parameters().add(new MockFunctionFormalArgument(funcQName.child("arg0"), new MockClassType(new QName("zz", "Arg0"))));
-		func.parameters().add(new MockFunctionFormalArgument(funcQName.child("arg1"), new MockClassType(new QName("zz", "Arg1"))));
+		AbstractFunction func = mock(AbstractFunction.class);
+
+		when(func.returnType()).thenReturn(Type.voidType);
+		when(func.parameters()).thenReturn(List.of());
 		
-		assertEquals(factory.methodDescriptor(func), "(Lzz/Arg0;Lzz/Arg1;)LRetVal;");
+		assertEquals("()V", factory.methodDescriptor(func));
 	}
+
+	@Test
+	@DisplayName("Method descriptor for function RetVal() ")
+	public void methodDescriptors_noArg_returnAClass() {
+		
+		AbstractFunction func = mock(AbstractFunction.class);
+		ClassType returnClassMock = mock(ClassType.class);
+		when(returnClassMock.qName()).thenReturn(new QName("RetVal"));
+		
+		when(func.returnType()).thenReturn(returnClassMock);
+		when(func.parameters()).thenReturn(List.<FunctionParameter>of());
+
+		assertEquals("()LRetVal;", factory.methodDescriptor(func));
+	}
+
+	@Test
+	@DisplayName("Method descriptor for function void(zz.Arg0 arg0, zz.Arg1 arg1) ")
+	public void methodDescriptors_twoArgs_returnVoid() {
+		
+		AbstractFunction func = mock(AbstractFunction.class);
+		
+		when(func.returnType()).thenReturn(Type.voidType);
+		
+		// arg0 declaration : zz.Arg0 arg0
+		FunctionParameter arg0 = mock(FunctionParameter.class);
+		ClassType arg0ClassMock = mock(ClassType.class);
+		when(arg0ClassMock.qName()).thenReturn(new QName("zz", "Arg0"));
+		when(arg0.getType()).thenReturn(arg0ClassMock);
+		
+		// arg1 declaration : zz.Arg1 arg1
+		FunctionParameter arg1 = mock(FunctionParameter.class);
+		ClassType arg1ClassMock = mock(ClassType.class);
+		when(arg1ClassMock.qName()).thenReturn(new QName("zz", "Arg1"));
+		when(arg1.getType()).thenReturn(arg1ClassMock);
+		
+		when(func.parameters()).thenReturn(List.<FunctionParameter>of(arg0, arg1));
+		assertEquals("(Lzz/Arg0;Lzz/Arg1;)V", factory.methodDescriptor(func));
+	}
+
 }
