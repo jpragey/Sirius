@@ -5,24 +5,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.sirius.backend.jvm.mocktypes.MockAbstractFunction;
-import org.sirius.backend.jvm.mocktypes.MockFunctionFormalArgument;
-import org.sirius.backend.jvm.mocktypes.MockVoidType;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
-import org.sirius.frontend.api.ExecutionEnvironment;
 import org.sirius.frontend.api.FunctionParameter;
-import org.sirius.frontend.api.MemberValue;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.api.VoidType;
 
 public class DescriptorsFactoryTest {
 
@@ -37,7 +32,8 @@ public class DescriptorsFactoryTest {
 	
 	@Test
 	public void fieldDescriptor_forVoidType_isV() {
-		assertEquals(factory.fieldDescriptor(new MockVoidType()), "V");
+		VoidType voidType = mock(VoidType.class);
+		assertEquals(factory.fieldDescriptor(voidType), "V");
 	}
 
 	@Test
