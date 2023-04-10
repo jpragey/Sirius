@@ -6,40 +6,47 @@ import java.util.Optional;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 
+/** This backend options (stateful class).
+ * Stores:
+ * <ul>
+ * 	<li>The main function QName.
+ * </ul>
+ * It also marks/checks if the main function QName has been written to bytecode (with {@link #markJvmMainAsWritten(QName)}
+ * and {@link #checkAllJvmMainBytecodeWritten()}).
+ */
 public class BackendOptions {
 	private Reporter reporter;
-	private Optional<String> jvmMainOption;
 
 	private Optional<QName> jvmMainFunctionQName;
-	
-	public BackendOptions(Reporter reporter, Optional<String> jvmMainOption) {
+
+	private HashSet<QName> writtenJvmMain = new HashSet<>();
+
+	public BackendOptions(Reporter reporter, Optional<String> optJvmMainOption) {
 		super();
 		this.reporter = reporter;
-		this.jvmMainOption = jvmMainOption;
-		this.jvmMainFunctionQName = jvmMainOption.map(s -> toJvmMainQName(reporter, s));
-	}
-	
-	private static QName toJvmMainQName(Reporter reporter, String jvmMainOption) {
-		String [] parts = jvmMainOption.split("\\.");
-		QName qn = new QName(parts);
-		if(qn.isEmpty()) {
-			reporter.error("Invalid JVM main option: " + jvmMainOption);
-			return QName.empty;
-		}
-//		String simpleName = qn.getLast();
-//		QName fullQN = qn.parent().map(pkgName -> pkgName.child("$package$").child(simpleName)).orElse(QName.empty);
-//		return fullQN;
-		return qn;
-	}
+		
+		Optional<QName> qn =  optJvmMainOption.flatMap((String fctName) -> {
+			
+			QName qName = QName.parseDotSeparated(fctName);
+			if(qName.stream().anyMatch(String::isEmpty)) {
+				reporter.error("Main funcion name can't contain an empty element: " + optJvmMainOption);
+				return Optional.<QName>empty();
+			}
 
-	public Optional<String> getJvmMainOption() {
-		return jvmMainOption;
+			if (qName.isEmpty()) {
+				reporter.error("Invalid JVM main function option: " + optJvmMainOption);
+				return Optional.<QName>empty();
+			}
+			
+			return Optional.of(qName);
+			});
+		this.jvmMainFunctionQName = qn;
+		
 	}
-	private HashSet<String> writtenJvmMain = new HashSet<>();
 	
-	public void markJvmMainAsWritten(String functionName) {
+	public void markJvmMainAsWritten(QName functionName) {
 		if(writtenJvmMain.contains(functionName)) {
-			reporter.error("JVM main function writtent twice: " + functionName);
+			reporter.error("JVM main function writtent twice: " + functionName.dotSeparated());
 		} else {
 			writtenJvmMain.add(functionName);
 		}
@@ -48,18 +55,15 @@ public class BackendOptions {
 	 * 
 	 */
 	public void checkAllJvmMainBytecodeWritten() {
-		jvmMainOption.ifPresent(fctName -> {
+		jvmMainFunctionQName.ifPresent( (QName fctName) -> {
 			if(! writtenJvmMain.contains(fctName)) {
 				reporter.error("JVM main() specified in options (" + fctName + ") has not been written as bytecode - corresponding sirius method not found ?");
 			}
 		});
 	}
 	
-
 	public Optional<QName> getJvmMainFunctionQName() {
-		return jvmMainFunctionQName;
+		return this.jvmMainFunctionQName;
 	}
 
-	
-	
 }

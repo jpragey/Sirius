@@ -180,7 +180,8 @@ public class JvmMemberFunction {
 		backendOptions.getJvmMainFunctionQName().ifPresent(qname -> {
 			if(functionQName.equals(qname)) {
 				writeJvmMainBytecode(classWriter, qname.getLast());
-				String jvmMainName = backendOptions.getJvmMainOption().get(); // function name, as defined in options
+//				String jvmMainName = backendOptions.getJvmMainOption().get(); // function name, as defined in options
+				QName jvmMainName = backendOptions.getJvmMainFunctionQName().get(); // function name, as defined in options
 				backendOptions.markJvmMainAsWritten(jvmMainName);
 			}
 		});

@@ -48,10 +48,12 @@ public class JvmBackend implements Backend {
 		return l;
 	}
 	
-	
+	/**
+	 * @return {@link Constants#BACKEND_ID} 
+	 */
 	@Override
 	public String getBackendId() {
-		return "jvm";
+		return Constants.BACKEND_ID;
 	}
 
 	private void printIfVerbose(String s) {

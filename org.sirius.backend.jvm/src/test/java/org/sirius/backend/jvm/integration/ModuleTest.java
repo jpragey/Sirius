@@ -78,11 +78,4 @@ public class ModuleTest {
 
 	}
 	
-	@Test 
-	@Disabled("Temp, to remove")
-	public void dumpExistingModuleInfo() throws IOException {
-		byte[] bytes = Files.readAllBytes(Paths.get("/tmp/siriusDist/module-info.class"));
-		Utils.parseModuleBytecode(bytes);
-	}
-	
 }

@@ -5,13 +5,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class QName {
 
 	private List<String> elements;
 
 	private String cachedDotSeparatedString = null;
-
+	
+	public static final QName empty = new QName();
+	
 	public QName(List<String> elements) {
 		super();
 		this.elements = new ArrayList<String>(elements);
@@ -35,7 +38,6 @@ public class QName {
 		this.elements.add(child);
 	}
 	
-	public static final QName empty = new QName();
 	
 	public static QName parseDotSeparated(String dotSeparated) {
 		return new QName(dotSeparated.split("\\."));
@@ -110,5 +112,9 @@ public class QName {
 	@Override
 	public String toString() {
 		return dotSeparated();
+	}
+	
+	public Stream<String> stream() {
+		return elements.stream();
 	}
 }
