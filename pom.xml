@@ -25,9 +25,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     
 <!--    <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>-->
-    <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
 <!--    <junit-jupiter.version>5.9.1</junit-jupiter.version> -->
-    <junit-jupiter.version>5.8.1</junit-jupiter.version>
+    <junit-jupiter.version>5.9.2</junit-jupiter.version>
     
     <additionalparam>-Xdoclint:none</additionalparam>
     

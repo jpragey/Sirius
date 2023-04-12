@@ -25,21 +25,7 @@ public class BackendOptions {
 		super();
 		this.reporter = reporter;
 		
-		Optional<QName> qn =  optJvmMainOption.flatMap((String fctName) -> {
-			
-			QName qName = QName.parseDotSeparated(fctName);
-			if(qName.stream().anyMatch(String::isEmpty)) {
-				reporter.error("Main funcion name can't contain an empty element: " + optJvmMainOption);
-				return Optional.<QName>empty();
-			}
-
-			if (qName.isEmpty()) {
-				reporter.error("Invalid JVM main function option: " + optJvmMainOption);
-				return Optional.<QName>empty();
-			}
-			
-			return Optional.of(qName);
-			});
+		Optional<QName> qn =  optJvmMainOption.flatMap((String fctName) -> QName.parseAndValidate(fctName, reporter));
 		this.jvmMainFunctionQName = qn;
 		
 	}

@@ -149,7 +149,9 @@ public class SdkTools {
 		// -- ancestors/implemented interfaces
 		Inherit [] annos = clss.getAnnotationsByType(Inherit.class);
 		for(Inherit inherit: annos ) {
-			QName pkg = QName.parseDotSeparated(inherit.packageQName());
+//			QName pkg = QName.parseDotSeparated(inherit.packageQName());
+			QName pkg = QName.parseAndValidate(inherit.packageQName(), reporter).get() /* TODO: check */;
+			
 			QName inheritName = pkg.child(inherit.name());
 			classOrIntf.addAncestor(AstToken.internal(inheritName.getLast()) /*pkg, inherit.name()*/);	// TODO: WTF ???
 		}
@@ -188,7 +190,7 @@ public class SdkTools {
 				continue;
 			
 			String name = parameter.getName();
-			QNameRefType type = new QNameRefType(anno.typeQName());
+			QNameRefType type = new QNameRefType(anno.typeQName(), reporter);
 			
 			type.setSymbolTable(symbolTable);
 			

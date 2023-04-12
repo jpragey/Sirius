@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.sirius.common.core.QName;
+import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.Type;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.frontend.symbols.Symbol;
@@ -27,9 +28,11 @@ public final class QNameRefType implements AstType {
 		this.qName = name;
 	}
 
-	public QNameRefType(String dotSeparated) {
+	public QNameRefType(String dotSeparated, Reporter reporter) {
 		super();
-		this.qName = QName.parseDotSeparated(dotSeparated);
+//		this.qName = QName.parseDotSeparated(dotSeparated);
+		this.qName = QName.parseAndValidate(dotSeparated, reporter).get() /* TODO: check */;
+		
 	}
 
 	public QName getqName() {

@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.sirius.common.error.Reporter;
 
 public class QName {
 
@@ -39,8 +44,46 @@ public class QName {
 	}
 	
 	
-	public static QName parseDotSeparated(String dotSeparated) {
-		return new QName(dotSeparated.split("\\."));
+//	public static QName parseDotSeparated(String dotSeparated) {
+//		return new QName(dotSeparated.split("\\."));
+//	}
+
+	/** Parse + validate (not empty, no empty element, )
+	 * 
+	 * @param dotSeparated
+	 * @param reporter print an error if empty, if an element is empty, or if an element contains a non-id char
+	 * @return
+	 */
+	public static Optional<QName> parseAndValidate(String dotSeparated, Reporter reporter) {
+		
+		if(dotSeparated.isEmpty()) {
+			reporter.error("Empty qualified name: [" + dotSeparated + "]");
+			return Optional.empty();
+		}
+		
+		Pattern qnamePattern = Pattern.compile("(\\s)*([a-zA-Z_$][a-zA-Z0-9_$]*)(\\s)*(\\.)?");
+		Matcher m = qnamePattern.matcher(dotSeparated);
+		List<String> elements = new ArrayList<String>();
+		while(m.find()) {
+			String elementStr = m.group(2);
+			String lastDot = m.group(4);	// null at end of qname
+			
+			elements.add(elementStr);
+			
+			if(lastDot == null) { // '.' not found, end of parsing
+				int matchEnd = m.end();	// offset after last char matched
+				if(dotSeparated.length() > matchEnd) {
+					reporter.error("Extra chars in qualified name : [" + dotSeparated + "]");
+					return Optional.empty();
+				}
+				QName qName = new QName(elements);
+				return Optional.of(qName);
+			}
+		}
+		
+		reporter.error("Could not find end while parsing qualified name : [" + dotSeparated + "]");
+		return Optional.empty();
+		
 	}
 	
 	@Override
