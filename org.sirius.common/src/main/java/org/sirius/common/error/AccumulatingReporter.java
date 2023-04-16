@@ -15,6 +15,8 @@ public class AccumulatingReporter implements Reporter {
 	private List<String> errors = new ArrayList<>();
 	private List<String> fatals = new ArrayList<>();
 	
+	private List<Exception> exceptions = new ArrayList<>();
+	
 	public AccumulatingReporter(Reporter delegate) {
 		super();
 		this.delegate = delegate;
@@ -41,6 +43,9 @@ public class AccumulatingReporter implements Reporter {
 			fatals.add(message);
 			break;
 		}
+		
+		exception.ifPresent(exceptions::add);
+		
 		delegate.message(severity, message, token, exception);
 	}
 
@@ -77,5 +82,15 @@ public class AccumulatingReporter implements Reporter {
 				warnings.size() + " warnings, " + 
 				messages.size() + " messages.";
 	}
+	public List<Exception> getExceptions() {
+		return exceptions;
+	}
 	
+	public void rethrowFirst() throws Exception {
+		if(this.exceptions.isEmpty())
+			return;
+		
+		Exception e = this.exceptions.get(0);
+		throw e;
+	}
 }

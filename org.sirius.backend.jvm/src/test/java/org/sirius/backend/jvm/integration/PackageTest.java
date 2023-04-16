@@ -1,5 +1,8 @@
 package org.sirius.backend.jvm.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,8 +36,7 @@ public class PackageTest {
 	}
 
 	@Test
-	@DisplayName("")
-	public void nestedPackageTests() {
+	public void nestedPackageTests() throws Exception {
 		String script = "#!\n "
 				+ "package a.b.c ;"
 //				+ "module org.mod  \"1.0\" {} "
@@ -45,12 +47,17 @@ public class PackageTest {
 		
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
-		BackendOptions backendOptions = new BackendOptions(reporter, Optional.of("jvmMain") /* jvmMain option*/);
+		BackendOptions backendOptions = new BackendOptions(reporter, Optional.of("a.b.c.jvmMain") /* jvmMain option*/);
 		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, backendOptions);
 
 		JarCreatorListener jarOutput = backend.addFileOutput("modules" /*modulePath*/, Optional.empty() /* <String> classDir*/);
 		
 		backend.process(session);
+		
+//		this.reporter.rethrowFirst();
+		assertThat(
+				this.reporter.getErrors().isEmpty() ? "" : this.reporter.getErrors().get(0),
+				this.reporter.hasErrors(), is(false));
 
 	}
 	

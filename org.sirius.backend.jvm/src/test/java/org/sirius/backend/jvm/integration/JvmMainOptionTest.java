@@ -90,15 +90,18 @@ public class JvmMainOptionTest {
 				+ "class A() {} "
 				+ "void jvmMain(){}"
 				;
-		
+
+		// Will receive an 'JVM main() not in bytecode' error message
+		AccumulatingReporter checkingReporter = new AccumulatingReporter(new SilentReporter());
+
 		ScriptSession session = CompileTools.compileScript(script, reporter);
-		BackendOptions backendOptions = new BackendOptions(reporter, Optional.of("boom") /* jvmMain option*/);
+		BackendOptions backendOptions = new BackendOptions(checkingReporter, Optional.of("boom") /* jvmMain option*/);
 		JvmBackend backend = new JvmBackend(reporter, false /*verboseAst*/, backendOptions);
 //		InMemoryClassWriterListener l = backend.addInMemoryOutput();
 		
 		backend.process(session);
 		
-		assertThat(reporter.ok(), is(false));
-		assertThat(reporter.getErrors().get(0), allOf(containsString("JVM main"), containsString("boom")));
+		assertThat(checkingReporter.ok(), is(false));
+		assertThat(checkingReporter.getErrors().get(0), allOf(containsString("JVM main"), containsString("boom")));
 	}
 }

@@ -14,11 +14,13 @@
    	<dependency>
 	    <groupId>org.sirius</groupId>
 	    <artifactId>org.sirius.common</artifactId>
+		<version>${project.version}</version>
   	</dependency>
   
   	<dependency>
 	    <groupId>org.sirius</groupId>
 	    <artifactId>org.sirius.frontend</artifactId>
+		<version>${project.version}</version>
   	</dependency>
   
   </dependencies>

@@ -1,0 +1,23 @@
+<project>
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-fluido-skin</artifactId>
+		<version>2.0.0-M5</version>
+	</skin>
+
+	<body>
+		<menu ref="modules" />
+
+		<menu name="Overview">
+			<item name="Compiler docs" href="mydocs/index.html" />
+
+
+			<!--<item name="FAQ" href="faq.html" />-->
+			<item name="Drafts" href="mydocs/draft/draft_index.html" />
+		</menu>
+
+		<menu ref="reports" />
+		<footer><![CDATA[All rights reserved. (c) 2021 J.P.Ragey]]></footer>
+	</body>
+
+</project>

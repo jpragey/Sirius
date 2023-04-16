@@ -4,379 +4,236 @@
   ==============
   	mvn install site site:stage
   	
-  	Result in <Sirius>/target/staging/
+  	Result
+in <Sirius>/target/staging/
   	
   
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.sirius</groupId>
-  <artifactId>parent</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <url>https://github.com/jpragey/Sirius</url>
-  
-  <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <maven.compiler.compilerVersion>17</maven.compiler.compilerVersion>
-    
-    <sirius.version>0.0.1-SNAPSHOT</sirius.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    
-<!--    <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>-->
-<!--    <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>-->
-<!--    <junit-jupiter.version>5.9.1</junit-jupiter.version> -->
-    <junit-jupiter.version>5.9.2</junit-jupiter.version>
-    
-    <additionalparam>-Xdoclint:none</additionalparam>
-    
-    <libs.antlr4.version>4.10.1</libs.antlr4.version>
-    <libs.asm.version>9.1</libs.asm.version>
-    
-  </properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.sirius</groupId>
+	<artifactId>parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<url>https://github.com/jpragey/Sirius</url>
 
-  <modules>
-    <module>org.sirius.common</module>
-    
-    <module>org.sirius.sdk</module>
-    <module>org.sirius.runtime</module>
-    <module>org.sirius.frontend</module>
-    <module>org.sirius.compiler</module>
-    <module>org.sirius.backend.core</module>
-    <module>org.sirius.backend.jvm</module>
-    
-  </modules>
+	<properties>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.compilerVersion>17</maven.compiler.compilerVersion>
 
-  <dependencyManagement>
-	<dependencies>
+		<sirius.version>0.0.1-SNAPSHOT</sirius.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<dependency>
-			<groupId>org.sirius</groupId>
-			<artifactId>org.sirius.common</artifactId>
-			<version>${sirius.version}</version>
-		</dependency>
+		<!--
+		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>-->
+		<!--
+		<maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>-->
+		<!--    <junit-jupiter.version>5.9.1</junit-jupiter.version> -->
+		<junit-jupiter.version>5.9.2</junit-jupiter.version>
 
-		<dependency>
-			<groupId>org.sirius</groupId>
-			<artifactId>org.sirius.sdk</artifactId>
-			<version>${sirius.version}</version>
-		</dependency>
+		<additionalparam>-Xdoclint:none</additionalparam>
 
-		<dependency>
-			<groupId>org.sirius</groupId>
-			<artifactId>org.sirius.runtime</artifactId>
-			<version>${sirius.version}</version>
-		</dependency>
+		<libs.antlr4.version>4.10.1</libs.antlr4.version>
+		<libs.asm.version>9.1</libs.asm.version>
 
-		<dependency>
-			<groupId>org.sirius</groupId>
-			<artifactId>org.sirius.compiler</artifactId>
-			<version>${sirius.version}</version>
-		</dependency>
+	</properties>
 
-		<dependency>
-			<groupId>org.sirius</groupId>
-			<artifactId>org.sirius.frontend</artifactId>
-			<version>${sirius.version}</version>
-		</dependency>
+	<modules>
+		<module>org.sirius.common</module>
 
-		<dependency>
-			<groupId>org.sirius</groupId>
-			<artifactId>org.sirius.backend.core</artifactId>
-			<version>${sirius.version}</version>
-		</dependency>
+		<module>org.sirius.sdk</module>
+		<module>org.sirius.runtime</module>
+		<module>org.sirius.frontend</module>
+		<module>org.sirius.compiler</module>
+		<module>org.sirius.backend.core</module>
+		<module>org.sirius.backend.jvm</module>
 
-		<dependency>
-			<groupId>org.sirius</groupId>
-			<artifactId>org.sirius.backend.jvm</artifactId>
-			<version>${sirius.version}</version>
-		</dependency>
+	<!--	<module>deleteMe</module>-->
+	</modules>
 
-		<dependency>
-			<groupId>org.sirius</groupId>
-			<artifactId>runtime</artifactId>
-			<version>${sirius.version}</version>
-		</dependency>
+	<dependencyManagement>
+		<dependencies>
 
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-engine</artifactId>
+				<version>${junit-jupiter.version}</version>
+				<scope>test</scope>
+			</dependency>
 
-	    <dependency>
-	        <groupId>org.junit.jupiter</groupId>
-	        <artifactId>junit-jupiter-engine</artifactId>
-	        <version>${junit-jupiter.version}</version>
-	        <scope>test</scope>
-	    </dependency>
-	    
-	    <dependency>
-	        <groupId>org.junit.jupiter</groupId>
-	        <artifactId>junit-jupiter-api</artifactId>
-	        <version>${junit-jupiter.version}</version>
-	        <scope>test</scope>
-	    </dependency>
-	    
-	    <dependency>
-	        <groupId>org.junit.jupiter</groupId>
-	        <artifactId>junit-jupiter-params</artifactId>
-	        <version>${junit-jupiter.version}</version>
-	        <scope>test</scope>
-	    </dependency>
-	    
-		<dependency>
-    		<groupId>org.mockito</groupId>
-    		<artifactId>mockito-core</artifactId>
-    		<version>4.1.0</version>
-    		<scope>test</scope>
-  		</dependency>
-    
-		<dependency>
-		    <groupId>org.mockito</groupId>
-		    <artifactId>mockito-junit-jupiter</artifactId>
-		    <version>4.1.0</version>
-		    <scope>test</scope>
-		</dependency>
-		    
-	    <dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest</artifactId>
-			<version>2.2</version>
-			<scope>test</scope>
-		</dependency>
-	    
-	</dependencies>
-  </dependencyManagement>
-<!--  
-  <dependencies>
-  	<dependency>
-  		<groupId>org.junit.jupiter</groupId>
-  		<artifactId>junit-jupiter-engine</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.junit.jupiter</groupId>
-  		<artifactId>junit-jupiter-api</artifactId>
-  	</dependency>
-	
-  </dependencies>
--->  
-  <distributionManagement>
-  	<site>
-  		<id>staging</id>
-  		<name>Dev. snapshot (temporary - TODO)</name>
-  		<url>file:///tmp/sirius-todo</url>
-  	</site>
-  </distributionManagement>
-  
-  <build>
-  	<pluginManagement>
-  		<plugins>
-  			<plugin>
-	          <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-site-plugin</artifactId>
-              <version>4.0.0-M7</version>
-              <configuration>
-              
-<!-- 		        <asciidoc>
-		            <templateDirs>
-		                <dir>src/site/asciidoc/templates</dir>
-		            </templateDirs>
-		        </asciidoc>
- -->
- 		      </configuration>
-              <dependencies>
-              
-<!--                 <dependency>
-                    <groupId>org.asciidoctor</groupId>
-                    <artifactId>asciidoctor-maven-plugin</artifactId>
-                    <version>2.2.3</version>
-                </dependency>
-                
-                <dependency>
-		            <groupId>org.asciidoctor</groupId>
-		            <artifactId>asciidoctorj-diagram</artifactId>
-		            <version>2.2.7</version>
-		        </dependency>
--->
-               </dependencies>
-  			</plugin>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-api</artifactId>
+				<version>${junit-jupiter.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-params</artifactId>
+				<version>${junit-jupiter.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>4.1.0</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-junit-jupiter</artifactId>
+				<version>4.1.0</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest</artifactId>
+				<version>2.2</version>
+				<scope>test</scope>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+	<distributionManagement>
+		<site>
+			<id>staging</id>
+			<name>Dev. snapshot (temporary - TODO)</name>
+			<url>file:///tmp/sirius-todo</url>
+		</site>
+	</distributionManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>4.0.0-M7</version>
+					<configuration>
+					</configuration>
+					<dependencies>
+
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-project-info-reports-plugin</artifactId>
+					<version>3.4.2</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.0.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-report-plugin</artifactId>
+					<version>3.0.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.5.0</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
 			<plugin>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <artifactId>maven-project-info-reports-plugin</artifactId>
-			  <version>3.4.2</version>
-        	</plugin>
-        	
-        	<plugin>
-        	  <groupId>org.apache.maven.plugins</groupId>
-        	  <artifactId>maven-surefire-plugin</artifactId>
-        	  <version>3.0.0</version>
-        	</plugin>
-        	<plugin>
-        	  <groupId>org.apache.maven.plugins</groupId>
-        	  <artifactId>maven-surefire-report-plugin</artifactId>
-        	  <version>3.0.0</version>
-        	</plugin>
-        	<plugin>
-        	  <groupId>org.apache.maven.plugins</groupId>
-        	  <artifactId>maven-failsafe-plugin</artifactId>
-        	  <version>2.22.2</version>
-        	</plugin>
-        	<plugin>
-        	  <groupId>org.apache.maven.plugins</groupId>
-        	  <artifactId>maven-javadoc-plugin</artifactId>
-        	  <version>3.5.0</version>
-        	</plugin>
-        </plugins>
-  	</pluginManagement>
-  	
-  	<plugins>
-  	<plugin>
-		<artifactId>maven-compiler-plugin</artifactId>
-			<version>3.8.1</version>
-			<configuration>
-				<source>${maven.compiler.source}</source>
-				<target>${maven.compiler.target}</target>
-				<compilerVersion>${maven.compiler.compilerVersion}15</compilerVersion>
-				
-				<compilerArgs>
-					<arg>-parameters</arg>
-				</compilerArgs>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<compilerVersion>${maven.compiler.compilerVersion}15</compilerVersion>
 
-			</configuration>
-		</plugin>
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
 
-		<plugin>
-		 	<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-surefire-plugin</artifactId>
-	
-			<configuration>
-				<argLine>-Xmx1024m</argLine>
-			</configuration>
-		</plugin>
+				</configuration>
+			</plugin>
 
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
 
-<!--		<plugin>
+				<configuration>
+					<argLine>-Xmx1024m</argLine>
+				</configuration>
+			</plugin>
+
+<!--			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!--		<plugin>
         	<groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-site-plugin</artifactId>
+			<artifactId>maven-site-plugin</artifactId>
         </plugin>
--->	
-  	</plugins>
-  </build>
+-->
+<!--			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+			</plugin>
+-->		</plugins>
+	</build>
 
 	<reporting>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-			</plugin>
-			<plugin>
-	        	<groupId>org.apache.maven.plugins</groupId>
-	            <artifactId>maven-site-plugin</artifactId>
-	        </plugin>
-		</plugins>
-	</reporting>  
-  <!-- **** PROFILES **** -->
-  
-  <profiles>
-  	<profile>
-  		  <id>Site</id>
-  		  <activation>
-  			<activeByDefault>false</activeByDefault>
-  		  </activation>
-  		  <reporting>
-		    <plugins>
-				
-		      <plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-javadoc-plugin</artifactId>
-		        <configuration>
-		          <doclint>none</doclint> <!-- Temp, ignore (numerous) missing docs -->
-		          <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
-		        </configuration>
-		        <reportSets>
-		          <reportSet>
-		            <id>aggregate</id>
-		            <inherited>false</inherited>        
-		            <reports>
-		              <report>aggregate</report>
-		            </reports>
-		          </reportSet>
-		          <reportSet>
-		            <id>default</id>
-		            <reports>
-		            <!-- Temp
-		              <report>javadoc</report>
-		               -->
-		            </reports>
-		          </reportSet>
-		        </reportSets>
-		      </plugin>
-
-			<plugin>
+				<inherited>true</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 				<configuration>
 					<aggregate>true</aggregate>
+					<alwaysGenerateFailsafeReport>true</alwaysGenerateFailsafeReport>
+					<alwaysGenerateSurefireReport>true</alwaysGenerateSurefireReport>
 				</configuration>
 			</plugin>
-		      
-		    </plugins>
-  	      </reporting>
-  		
-		  <build>
-		  	<plugins>
-		  		<plugin>
-					<groupId>org.asciidoctor</groupId>
-					<artifactId>asciidoctor-maven-plugin</artifactId>
-					<!--<version>2.1.0</version>-->
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>3.4.2</version>
+			</plugin>
+		</plugins>
+	</reporting>
+	<!-- **** PROFILES **** -->
 
-		     			       	<!-- Tried:
-				            	sudo apt install ruby
-				            	sudo gem install asciidoctor-diagram
-				            	 -->
-		     		<configuration>
-		     			<requires>
-		     				<require>asciidoctor-diagram</require>
-		     			</requires>
-		     		</configuration>
-		     		
-		     		<dependencies>
-		                 <dependency>
-		                    <groupId>org.asciidoctor</groupId>
-		                    <artifactId>asciidoctor-maven-plugin</artifactId>
-		                    <version>2.2.3</version>
-		                </dependency>
-		                
-		                <dependency>
-				            <groupId>org.asciidoctor</groupId>
-				            <artifactId>asciidoctorj-diagram</artifactId>
-		                    <version>2.2.7</version>
-				        </dependency>
-		     		</dependencies>
-		 			
-		     		<executions>
-		     			<execution>
-		     				<id>generate-html-doc</id>
-		     				<phase>generate-resources</phase>
-		     				<goals>
-		     					<goal>process-asciidoc</goal>
-		     				</goals>
-		     				<configuration>
-		      					<backend>html5</backend>   
-		     
-		     					<outputDirectory>target/site/mydocs</outputDirectory>
-		     					<attributes>
-					                <source-highlighter>coderay</source-highlighter>
-					                <coderay-css>style</coderay-css>
-		      					</attributes>
-		      					<preserveDirectories>true</preserveDirectories>
-		     				</configuration>
-		     			</execution>
-		     		</executions>
+	<profiles>
 
-				</plugin>
-			</plugins>
-		  </build>  		
-  		
-  		
-  	</profile>
-  	
-  </profiles>
+	</profiles>
 </project>
