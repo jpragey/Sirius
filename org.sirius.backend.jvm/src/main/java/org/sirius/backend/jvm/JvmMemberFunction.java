@@ -60,9 +60,7 @@ public class JvmMemberFunction {
 
 	/** simulate "return ;"
 	 *  
-	 * @param classWriter
 	 * @param mv
-	 * @param statement
 	 */
 	public void writeDummyDefaultReturn(MethodVisitor mv) {	// TODO: refactor 'return' usage
 

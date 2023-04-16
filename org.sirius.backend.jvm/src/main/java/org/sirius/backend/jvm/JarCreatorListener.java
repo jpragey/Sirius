@@ -165,7 +165,7 @@ public class JarCreatorListener implements ClassWriterListener {
 	 * 
 	 * @param reporter
 	 * @param modulePath   module directory path, as given by '--module' option
-	 * @param moduleQName
+	 * @param classDir
 	 */
 	public static JarCreatorListener createAsFile(Reporter reporter, String modulePath, Optional<String> classDir) {
 		JvmOutputWriter ow = new JvmFileOutputWriter(reporter, modulePath, classDir);

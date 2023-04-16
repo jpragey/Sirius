@@ -84,7 +84,7 @@ public class InMemoryClassWriterListener implements ClassWriterListener {
 		// Nothing to do
 	}
 	
-	/** Return map <dot-separated class name> -> <class bytecode>
+	/** Return map (dot-separated class name) -> (class bytecode)
 	 * @return
 	 */
 	public HashMap<String, Bytecode> getByteCodesMap() {
