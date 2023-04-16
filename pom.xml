@@ -215,6 +215,7 @@ in <Sirius>/target/staging/
 					<aggregate>true</aggregate>
 					<alwaysGenerateFailsafeReport>true</alwaysGenerateFailsafeReport>
 					<alwaysGenerateSurefireReport>true</alwaysGenerateSurefireReport>
+					<linkXRef>false</linkXRef>
 				</configuration>
 			</plugin>
 			<plugin>
