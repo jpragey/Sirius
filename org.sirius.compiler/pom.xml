@@ -1,250 +1,263 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>org.sirius.compiler</artifactId>
- 
-  <parent>
-    <groupId>org.sirius</groupId>
-    <artifactId>parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>org.sirius.compiler</artifactId>
 
-  <packaging>jar</packaging>
+	<parent>
+		<groupId>org.sirius</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<packaging>jar</packaging>
 
 	<properties>
-<!-- 		<dist.lib>${${project.basedir}project.build.directory}/lib</dist.lib> -->
+		<!--
+		<dist.lib>${${project.basedir}project.build.directory}/lib</dist.lib> -->
 		<dist.lib>${project.basedir}/../dist/lib</dist.lib>
 	</properties>
 
-  <build>
-  	<resources>
-  		<resource>
-  			<directory>src/main/resources</directory>
-  			<filtering>true</filtering>
-  		</resource>
-  	</resources>
-  
-    <plugins>
-    
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.1.2</version>
-        <configuration>
-          <archive>
-            <index>true</index>
-            <manifest>
-              <addClasspath>true</addClasspath>
-              <!-- <classpathLayoutType>repository</classpathLayoutType> -->
-              <mainClass>org.sirius.compiler.core.Main</mainClass>
-            </manifest>
-            <manifestEntries>
-              <mode>development</mode>
-              <url>${project.url}</url>
-              <key>value</key>
-            </manifestEntries>
-          </archive>
-        </configuration>
-        
-      </plugin>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 
-	<plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-resources-plugin</artifactId>
-		<version>3.1.0</version>
-		<configuration>
-			<!-- specify UTF-8, ISO-8859-1 or any other file encoding -->
-			<encoding>UTF-8</encoding>
-		</configuration>
-	</plugin>
-      
-    
-      
-      
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.1.1</version>
-        <executions>
-          <execution>
-            <id>copy</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <artifactItems>
+		<plugins>
 
-            <artifactItem>
-              <groupId>org.antlr</groupId>
-              <artifactId>antlr4-runtime</artifactId>
-              <version>${libs.antlr4.version}</version>
-              <type>jar</type>
-              <overWrite>false</overWrite>
-              <outputDirectory>${dist.lib}</outputDirectory>
-            </artifactItem>
-            
-            <artifactItem>
-              <groupId>org.ow2.asm</groupId>
-              <artifactId>asm</artifactId>
-              <version>7.1</version>
-              <type>jar</type>
-              <overWrite>false</overWrite>
-              <outputDirectory>${dist.lib}</outputDirectory>
-            </artifactItem>
-          
-            <artifactItem>
-		      <groupId>com.google.guava</groupId>
-		      <artifactId>guava</artifactId>
-		      <version>29.0-jre</version>
-              <type>jar</type>
-              <overWrite>false</overWrite>
-              <outputDirectory>${dist.lib}</outputDirectory>
-            </artifactItem>
-          
-            <artifactItem>
-              <groupId>org.sirius</groupId>
-              <artifactId>org.sirius.common</artifactId>
-              <version>${sirius.version}</version>
-              <type>jar</type>
-              <overWrite>false</overWrite>
-              <outputDirectory>${dist.lib}</outputDirectory>
-              <!-- <destFileName>common.jar</destFileName> -->
-            </artifactItem>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.2</version>
+				<configuration>
+					<archive>
+						<index>true</index>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<!--
+							<classpathLayoutType>repository</classpathLayoutType> -->
+							<mainClass>org.sirius.compiler.core.Main</mainClass>
+						</manifest>
+						<manifestEntries>
+							<mode>development</mode>
+							<url>${project.url}</url>
+							<key>value</key>
+						</manifestEntries>
+					</archive>
+				</configuration>
 
-            <artifactItem>
-              <groupId>org.sirius</groupId>
-              <artifactId>org.sirius.sdk</artifactId>
-              <version>${sirius.version}</version>
-              <type>jar</type>
-              <overWrite>false</overWrite>
-              <outputDirectory>${dist.lib}</outputDirectory>
-              <!-- <destFileName>backend.jvm.jar</destFileName> -->
-            </artifactItem>
-            
-            <artifactItem>
-              <groupId>org.sirius</groupId>
-              <artifactId>org.sirius.compiler</artifactId>
-              <version>${sirius.version}</version>
-              <type>jar</type>
-              <overWrite>false</overWrite>
-              <outputDirectory>${dist.lib}</outputDirectory>
-              <!-- <destFileName>compiler.jar</destFileName> -->
-            </artifactItem>
-            
-            <artifactItem>
-              <groupId>org.sirius</groupId>
-              <artifactId>org.sirius.frontend</artifactId>
-              <version>${sirius.version}</version>
-              <type>jar</type>
-              <overWrite>false</overWrite>
-              <outputDirectory>${dist.lib}</outputDirectory>
-              <!-- <destFileName>frontend.jar</destFileName> -->
-            </artifactItem>
-            
-            <artifactItem>
-              <groupId>org.sirius</groupId>
-              <artifactId>org.sirius.backend.core</artifactId>
-              <version>${sirius.version}</version>
-              <type>jar</type>
-              <overWrite>false</overWrite>
-              <outputDirectory>${dist.lib}</outputDirectory>
-              <!-- <destFileName>backend.core.jar</destFileName> -->
-            </artifactItem>
-            
-            <artifactItem>
-              <groupId>org.sirius</groupId>
-              <artifactId>org.sirius.backend.jvm</artifactId>
-              <version>${sirius.version}</version>
-              <type>jar</type>
-              <overWrite>false</overWrite>
-              <outputDirectory>${dist.lib}</outputDirectory>
-              <!-- <destFileName>backend.jvm.jar</destFileName> -->
-            </artifactItem>
-            
-            <artifactItem>
-              <groupId>org.sirius</groupId>
-              <artifactId>org.sirius.runtime</artifactId>
-              <version>${sirius.version}</version>
-              <type>jar</type>
-              <overWrite>false</overWrite>
-              <outputDirectory>${dist.lib}</outputDirectory>
-              <!-- <destFileName>backend.jvm.jar</destFileName> -->
-            </artifactItem>
-            
-            
-            
-            
-          </artifactItems>
-          <outputDirectory>${project.build.directory}/wars</outputDirectory>
-          <overWriteReleases>false</overWriteReleases>
-          <overWriteSnapshots>true</overWriteSnapshots>
-        </configuration>
-      </plugin>
-      
-    </plugins>
-  </build>
-  
-  <dependencies>
-  	<dependency>
-	    <groupId>org.sirius</groupId>
-	    <artifactId>org.sirius.common</artifactId>
-		<version>${project.version}</version>
-  	</dependency>
-  
-  	<dependency>
-	    <groupId>org.sirius</groupId>
-	    <artifactId>org.sirius.frontend</artifactId>
-		<version>${project.version}</version>
-  	</dependency>
-  
-  	<dependency>
-	    <groupId>org.sirius</groupId>
-	    <artifactId>org.sirius.backend.core</artifactId>
-		<version>${project.version}</version>
-  	</dependency>
+			</plugin>
 
-	<dependency>
-		<groupId>org.sirius</groupId>
-		<artifactId>org.sirius.backend.jvm</artifactId>
-		<version>${project.version}</version>
-	</dependency>
-  
-  	<dependency>
-	    <groupId>org.sirius</groupId>
-	    <artifactId>org.sirius.runtime</artifactId>
-		<version>${project.version}</version>
-	</dependency>
-  
-   	<dependency>
-		<groupId>org.junit.jupiter</groupId>
-		<artifactId>junit-jupiter-api</artifactId>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<!-- specify UTF-8, ISO-8859-1 or any other file encoding -->
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.1</version>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<artifactItems>
+
+						<artifactItem>
+							<groupId>org.antlr</groupId>
+							<artifactId>antlr4-runtime</artifactId>
+							<version>${libs.antlr4.version}</version>
+							<type>jar</type>
+							<overWrite>false</overWrite>
+							<outputDirectory>${dist.lib}</outputDirectory>
+						</artifactItem>
+
+						<artifactItem>
+							<groupId>org.ow2.asm</groupId>
+							<artifactId>asm</artifactId>
+							<version>7.1</version>
+							<type>jar</type>
+							<overWrite>false</overWrite>
+							<outputDirectory>${dist.lib}</outputDirectory>
+						</artifactItem>
+
+						<artifactItem>
+							<groupId>com.google.guava</groupId>
+							<artifactId>guava</artifactId>
+							<version>29.0-jre</version>
+							<type>jar</type>
+							<overWrite>false</overWrite>
+							<outputDirectory>${dist.lib}</outputDirectory>
+						</artifactItem>
+
+						<artifactItem>
+							<groupId>org.sirius</groupId>
+							<artifactId>org.sirius.common</artifactId>
+							<version>${sirius.version}</version>
+							<type>jar</type>
+							<overWrite>false</overWrite>
+							<outputDirectory>${dist.lib}</outputDirectory>
+							<!-- <destFileName>common.jar</destFileName> -->
+						</artifactItem>
+
+						<artifactItem>
+							<groupId>org.sirius</groupId>
+							<artifactId>org.sirius.sdk</artifactId>
+							<version>${sirius.version}</version>
+							<type>jar</type>
+							<overWrite>false</overWrite>
+							<outputDirectory>${dist.lib}</outputDirectory>
+							<!-- <destFileName>backend.jvm.jar</destFileName> -->
+						</artifactItem>
+
+						<artifactItem>
+							<groupId>org.sirius</groupId>
+							<artifactId>org.sirius.compiler</artifactId>
+							<version>${sirius.version}</version>
+							<type>jar</type>
+							<overWrite>false</overWrite>
+							<outputDirectory>${dist.lib}</outputDirectory>
+							<!-- <destFileName>compiler.jar</destFileName> -->
+						</artifactItem>
+
+						<artifactItem>
+							<groupId>org.sirius</groupId>
+							<artifactId>org.sirius.frontend</artifactId>
+							<version>${sirius.version}</version>
+							<type>jar</type>
+							<overWrite>false</overWrite>
+							<outputDirectory>${dist.lib}</outputDirectory>
+							<!-- <destFileName>frontend.jar</destFileName> -->
+						</artifactItem>
+
+						<artifactItem>
+							<groupId>org.sirius</groupId>
+							<artifactId>org.sirius.backend.core</artifactId>
+							<version>${sirius.version}</version>
+							<type>jar</type>
+							<overWrite>false</overWrite>
+							<outputDirectory>${dist.lib}</outputDirectory>
+							<!-- <destFileName>backend.core.jar</destFileName> -->
+						</artifactItem>
+
+						<artifactItem>
+							<groupId>org.sirius</groupId>
+							<artifactId>org.sirius.backend.jvm</artifactId>
+							<version>${sirius.version}</version>
+							<type>jar</type>
+							<overWrite>false</overWrite>
+							<outputDirectory>${dist.lib}</outputDirectory>
+							<!-- <destFileName>backend.jvm.jar</destFileName> -->
+						</artifactItem>
+
+						<artifactItem>
+							<groupId>org.sirius</groupId>
+							<artifactId>org.sirius.runtime</artifactId>
+							<version>${sirius.version}</version>
+							<type>jar</type>
+							<overWrite>false</overWrite>
+							<outputDirectory>${dist.lib}</outputDirectory>
+							<!-- <destFileName>backend.jvm.jar</destFileName> -->
+						</artifactItem>
+
+
+					</artifactItems>
+					<outputDirectory>${project.build.directory}/wars</outputDirectory>
+					<overWriteReleases>false</overWriteReleases>
+					<overWriteSnapshots>true</overWriteSnapshots>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.sirius</groupId>
+			<artifactId>org.sirius.common</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-	<dependency>
-		<groupId>org.junit.jupiter</groupId>
-		<artifactId>junit-jupiter-params</artifactId>
+
+		<dependency>
+			<groupId>org.sirius</groupId>
+			<artifactId>org.sirius.frontend</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-	<dependency>
-		<groupId>org.mockito</groupId>
-		<artifactId>mockito-core</artifactId>
+
+		<dependency>
+			<groupId>org.sirius</groupId>
+			<artifactId>org.sirius.backend.core</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-	<dependency>
-		<groupId>org.mockito</groupId>
-		<artifactId>mockito-junit-jupiter</artifactId>
+
+		<dependency>
+			<groupId>org.sirius</groupId>
+			<artifactId>org.sirius.backend.jvm</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-	
-    <dependency>
-		<groupId>org.hamcrest</groupId>
-		<artifactId>hamcrest</artifactId>
-		<scope>test</scope>
+
+		<dependency>
+			<groupId>org.sirius</groupId>
+			<artifactId>org.sirius.runtime</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 		<!--     <dependency>
       <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
+		<artifactId>testng</artifactId>
       <scope>test</scope>
     </dependency>
- -->    
-  </dependencies>
+ -->
+	</dependencies>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<configuration>
+					<aggregate>false</aggregate>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+
 </project>
