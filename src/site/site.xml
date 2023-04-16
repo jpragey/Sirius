@@ -8,6 +8,13 @@
 	<body>
 	<menu ref="modules"/>
 	<menu ref="parent"/>
+	
+	<menu name="Overview">
+		<item name="Compiler docs" href="mydocs/index.html" />
+		<!--<item name="FAQ" href="faq.html" />-->
+		<item name="Drafts" href="mydocs/draft/draft_index.html" />
+	</menu>
+	
 	<menu ref="reports"/>
 	
 	<footer><![CDATA[J.P.Ragey, tous droits réservés.]]></footer>
