@@ -1,47 +1,49 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>org.sirius.sdk</artifactId>
-  
-  <parent>
-    <groupId>org.sirius</groupId>
-    <artifactId>parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
-        
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>org.sirius.sdk</artifactId>
 
-  <dependencies>
-  
-<!--     <dependency>
-      <groupId>org.sirius</groupId>
-      <artifactId>org.sirius.common</artifactId>
-    </dependency>
- -->
-<!--
-  	<dependency>
-	    <groupId>org.sirius</groupId>
-	    <artifactId>org.sirius.runtime</artifactId>
-  	</dependency>
-  -->
-   	<dependency>
-		<groupId>org.junit.jupiter</groupId>
-		<artifactId>junit-jupiter-api</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>org.junit.jupiter</groupId>
-		<artifactId>junit-jupiter-params</artifactId>
-	</dependency>
-    <dependency>
-		<groupId>org.hamcrest</groupId>
-		<artifactId>hamcrest</artifactId>
-		<scope>test</scope>
-	</dependency>
-  
-  </dependencies>
-  
-  <build>
-    <resources>
-    </resources>
-    
-  </build>
+	<parent>
+		<groupId>org.sirius</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+<!--		<relativePath>../pom.xml</relativePath>-->
+	</parent>
+
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<resources>
+		</resources>
+	</build>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<configuration>
+					<aggregate>false</aggregate>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>

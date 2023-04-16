@@ -114,6 +114,12 @@ in <Sirius>/target/staging/
 		<pluginManagement>
 			<plugins>
 				<plugin>
+					<groupId>org.antlr</groupId>
+					<artifactId>antlr4-maven-plugin</artifactId>
+					<version>4.10.1</version>
+				</plugin>
+
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
 					<version>4.0.0-M7</version>
@@ -173,19 +179,6 @@ in <Sirius>/target/staging/
 				</configuration>
 			</plugin>
 
-<!--			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
--->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
@@ -247,11 +240,12 @@ in <Sirius>/target/staging/
 						<version>2.2.3</version>
 						
 						<configuration>
-									     			<requires>	<!-- TODO : needed ??? -->
-		     				<require>asciidoctor-diagram</require>
+							<!-- needed for diagram generation -->
+							<requires>	
+		     					<require>asciidoctor-diagram</require>
 		     				</requires>
-
 						</configuration>
+						
 						<dependencies>
 							<dependency>
 								<groupId>org.asciidoctor</groupId>
