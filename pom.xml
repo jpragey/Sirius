@@ -2,7 +2,7 @@
 
   Site creation:
   ==============
-  	mvn install site site:stage
+  	mvn install site site:stage -P Site
   	
   	Result
 in <Sirius>/target/staging/
