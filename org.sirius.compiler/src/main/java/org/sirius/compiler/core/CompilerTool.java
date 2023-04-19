@@ -46,7 +46,6 @@ public class CompilerTool {
 	private JvmBackend createJvmBackend() {
 		BackendOptions options = new BackendOptions(reporter, compileOptions.getJvmMain());
 		JvmBackend backend = new JvmBackend(reporter, 
-				compileOptions.isVerboseAst(),
 				options);
 		
 		compileOptions.getModuleDir().ifPresent(moduleDir -> backend.addFileOutput(moduleDir, compileOptions.getClassDir()));

@@ -103,6 +103,7 @@ public class CompileOptionsValues {
 
 	}
 
+	/** TODO : not used any more ??? */
 	public boolean isVerboseAst() {
 		return verboseAst;
 	}

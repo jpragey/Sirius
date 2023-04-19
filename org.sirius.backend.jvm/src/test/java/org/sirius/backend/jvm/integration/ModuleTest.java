@@ -5,14 +5,10 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.BackendOptions;
@@ -44,7 +40,7 @@ public class ModuleTest {
 		+ "Integer main() {Integer a = 10; return a;}";
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
-		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
+		JvmBackend backend = new JvmBackend(reporter, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
 		
 		HashMap<QName, Bytecode> bytecodeMap = new HashMap<QName, Bytecode>();
 		backend.addInMemoryMapOutput(bytecodeMap);

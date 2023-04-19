@@ -39,7 +39,7 @@ public class IfElseStatementTest {
 				+ "Integer main() {" + ifThenExpr + " return 100;}";
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
-		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
+		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
 		InMemoryClassWriterListener l = backend.addInMemoryOutput();
 		
 		backend.process(session);

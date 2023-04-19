@@ -54,7 +54,7 @@ public class JvmMainOptionTest {
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
 		BackendOptions backendOptions = new BackendOptions(reporter, Optional.of("jvmMain") /* jvmMain option*/);
-		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, backendOptions);
+		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ backendOptions);
 		InMemoryClassWriterListener l = backend.addInMemoryOutput();
 		
 		backend.process(session);
@@ -96,7 +96,7 @@ public class JvmMainOptionTest {
 
 		ScriptSession session = CompileTools.compileScript(script, reporter);
 		BackendOptions backendOptions = new BackendOptions(checkingReporter, Optional.of("boom") /* jvmMain option*/);
-		JvmBackend backend = new JvmBackend(reporter, false /*verboseAst*/, backendOptions);
+		JvmBackend backend = new JvmBackend(reporter, backendOptions);
 //		InMemoryClassWriterListener l = backend.addInMemoryOutput();
 		
 		backend.process(session);

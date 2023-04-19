@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.sirius.backend.core.Backend;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
@@ -13,20 +15,19 @@ import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Session;
 
 public class JvmBackend implements Backend {
-
+	private static Logger logger = LogManager.getLogger(JvmBackend.class);
 	private Reporter reporter;
 
 	private List<ClassWriterListener> listeners = new ArrayList<>();
 
 	// '--verbose' cli option has the 'ast' flag
-	private boolean verboseAst = false;
+//	private boolean verboseAst = false;
 	
 	private BackendOptions backendOptions;
 	
-	public JvmBackend(Reporter reporter, boolean verboseAst, BackendOptions backendOptions) {
+	public JvmBackend(Reporter reporter, BackendOptions backendOptions) {
 		super();
 		this.reporter = reporter;
-		this.verboseAst = verboseAst;
 		this.backendOptions = backendOptions;
 	}
 
@@ -56,19 +57,13 @@ public class JvmBackend implements Backend {
 		return Constants.BACKEND_ID;
 	}
 
-	private void printIfVerbose(String s) {
-		if(verboseAst)
-			System.out.println(s);
-	}
-	
 	@Override
 	public void process(Session session) {
 		List<JvmModule> ignored = jvmProcess(session);
 		
 	}
 	public List<JvmModule> jvmProcess(Session session) {
-//		processSDK();
-		printIfVerbose("JVM: starting session, nb of modules: " + session.getModuleDeclarations().size());
+		logger.debug("JVM: starting session, {} modules", () -> session.getModuleDeclarations().size());
 		List<JvmModule> modules = session.getModuleDeclarations().stream().map(this::processModule).collect(Collectors.toList());
 		
 		backendOptions.checkAllJvmMainBytecodeWritten();
@@ -77,10 +72,9 @@ public class JvmBackend implements Backend {
 	}
 	
 	private JvmModule processModule(ModuleDeclaration moduleDeclaration) {
-		printIfVerbose("Jvm: processing module " + moduleDeclaration);
-
+		logger.debug("Jvm (debug) : processing module {}", () -> moduleDeclaration.toString());
+		
 		listeners.forEach(l ->  l.start(moduleDeclaration) );
-
 
 		CodeTreeBuilder codeTreeBuilder = new CodeTreeBuilder(reporter, backendOptions);
 		moduleDeclaration.visitMe(codeTreeBuilder);

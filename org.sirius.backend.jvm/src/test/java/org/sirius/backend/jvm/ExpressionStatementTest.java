@@ -67,8 +67,7 @@ public class ExpressionStatementTest {
 		assertEquals(func.bodyStatements().size(), 1);
 		ExpressionStatement statement = (ExpressionStatement)func.bodyStatements().get(0);
 		
-		JvmBackend backend = new JvmBackend(reporter, false /*verboseAst*/
-				, new BackendOptions(reporter, Optional.empty() /* jvmMain */));
+		JvmBackend backend = new JvmBackend(reporter, new BackendOptions(reporter, Optional.empty() /* jvmMain */));
 		backend.process(session);
 		
 	}

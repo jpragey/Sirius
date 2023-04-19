@@ -43,7 +43,7 @@ public class ImplicitTypeCast {
 	public Object compileRunAndReturn(String script) throws Exception {
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
-		JvmBackend backend = new JvmBackend(reporter, false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
+		JvmBackend backend = new JvmBackend(reporter, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
 		InMemoryClassWriterListener l = backend.addInMemoryOutput();
 		
 		backend.process(session);

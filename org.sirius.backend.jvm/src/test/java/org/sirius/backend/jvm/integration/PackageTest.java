@@ -48,7 +48,7 @@ public class PackageTest {
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
 		BackendOptions backendOptions = new BackendOptions(reporter, Optional.of("a.b.c.jvmMain") /* jvmMain option*/);
-		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ false /*verboseAst*/, backendOptions);
+		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ backendOptions);
 
 		JarCreatorListener jarOutput = backend.addFileOutput("modules" /*modulePath*/, Optional.empty() /* <String> classDir*/);
 		

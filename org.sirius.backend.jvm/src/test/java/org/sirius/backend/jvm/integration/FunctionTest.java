@@ -42,7 +42,7 @@ public class FunctionTest {
 		
 		ScriptSession session =
 		CompileTools.compileScript(script, reporter);
-		JvmBackend backend = new JvmBackend(reporter, false /*verboseAst*/, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
+		JvmBackend backend = new JvmBackend(reporter, new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
 
 //		backend.addFileOutput("/tmp/siriusTmp2", Optional.of("jvmTest/classes"));
 		InMemoryClassWriterListener l = backend.addInMemoryOutput();
