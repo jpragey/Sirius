@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.BackendOptions;
 import org.sirius.backend.jvm.Bytecode;
@@ -60,7 +61,8 @@ public class TopLevelFunctionCall {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = Util.jvmPackageClassName; 
+//		String mainClassQName = Util.jvmPackageClassName; 
+		String mainClassQName = Util.jvmPackageClassQName.dotSeparated(); 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 		Object helloObj = cls.getDeclaredConstructor().newInstance();
@@ -84,6 +86,49 @@ public class TopLevelFunctionCall {
 		
 	}
 
+	
+	@Test
+//	@Disabled("temp.")
+	@DisplayName("A top-level function can call another top-level function")
+	public void whenATopLevelFunctionCallsAnotherTopLevelFunction_noExceptionIsThrown() throws Exception {
+		
+		String script = "#!\n "
+			+ "Integer doNothing() {return 42;}"
+			+ "Integer main() {doNothing(); return 42;}"
+				;
+		
+		ScriptSession session = CompileTools.compileScript(script, reporter);
+		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ new BackendOptions(reporter, Optional.empty() /*jvmMain*/));
+		InMemoryClassWriterListener l = backend.addInMemoryOutput();
+
+		backend.addFileOutput("/tmp/siriusTmp/module", Optional.of("/tmp/siriusTmp/classes"));
+		
+		backend.process(session);
+		
+		HashMap<String, Bytecode> map = l.getByteCodesMap();
+//		System.out.println(map.keySet());
+
+		ClassLoader classLoader = l.getClassLoader();
+		
+		String mainClassQName = Util.jvmPackageClassQName.dotSeparated() /* "$package$"*/; 
+
+		Class<?> cls = classLoader.loadClass(mainClassQName);
+		Object helloObj = cls.getDeclaredConstructor().newInstance();
+
+//		for(Method m: helloObj.getClass().getDeclaredMethods())
+//			System.out.println("Method: " + m);
+
+		Method main = cls.getMethod("main", new Class[] {});
+		System.out.println("Main: " + main);
+		
+		sirius.lang.Integer result = (sirius.lang.Integer)main.invoke(null, new Object[] {}/*args*/);
+		System.out.println("Result: " + result.getValue());
+		assertThat(result.getValue(), is(42));
+		
+	}
+
+	
+	
 	@Test
 //	@Disabled("temp.")
 	public void callUserDefinedFunctionTest() throws Exception {
@@ -113,8 +158,10 @@ public class TopLevelFunctionCall {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = Util.jvmPackageClassName; 
-		
+//		String mainClassQName = Util.jvmPackageClassName; 
+//		String mainClassQName = Util.topLevelClassName; 
+		String mainClassQName = Util.jvmPackageClassQName.dotSeparated() /* "$package$"*/; 
+
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 		Object helloObj = cls.getDeclaredConstructor().newInstance();
 

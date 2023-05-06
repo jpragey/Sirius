@@ -23,7 +23,7 @@ import org.sirius.frontend.symbols.Scope;
  */
 public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 
-	private QName qname = new QName();
+	private Optional<QName> qname = Optional.empty();
 	
 	private Reporter reporter;
 
@@ -41,14 +41,17 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 
 	private PackageDeclaration packageDeclaration = null;
 
-	public AstPackageDeclaration(Reporter reporter, QName qname, 
+	public AstPackageDeclaration(Reporter reporter, Optional<QName> qname, 
 			List<FunctionDefinition> functionDeclarations, List<AstClassDeclaration> classDeclarations, 
 			List<AstInterfaceDeclaration> interfaceDeclarations, List<AstMemberValueDeclaration> valueDeclarations) {
 		super();
 		this.reporter = reporter;
 		this.qname = qname;
 		
-		functionDeclarations.forEach (fct -> {this.functionDeclarations.add(fct);	this.visitables.add(fct);});
+		functionDeclarations.forEach (fct -> {
+			this.functionDeclarations.add(fct);	
+			this.visitables.add(fct);
+			});
 		classDeclarations.forEach	 (cd  -> {
 			cd.setPackageQName(qname);
 			this.classDeclarations.add(cd);		
@@ -56,7 +59,7 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 			this.visitables.add(cd);
 			});
 		interfaceDeclarations.forEach(id  -> {
-			id.setPackageQName(qname);
+			id.setPackageQName(qname.get() /* ??? */);
 			this.interfaceDeclarations.add(id);
 			interfaceDeclarationByQname.put(id.getQName(), id);
 			this.visitables.add(id);
@@ -75,11 +78,15 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 		verifyCachedObjectNotNull(packageDeclaration, "AstPackageDeclaration.packageDeclaration (API) ", featureFlags);
 	}
 
+	/** Get a String representing the package qname, the elements being separated by dots ('.'), or an empty string if ther's no qname.
+	 * 
+	 * @return
+	 */
 	public String getQnameString() {
-		return qname.dotSeparated();
+		return qname.map(QName::dotSeparated).orElse("");
 	}
 
-	public QName getQname() {
+	public Optional<QName> getQname() {
 		return qname;
 	}
 

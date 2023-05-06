@@ -1,6 +1,7 @@
 package org.sirius.frontend.api;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.core.PhysicalPath;
@@ -15,14 +16,15 @@ public interface ModuleDeclaration {
 
 	List<PackageDeclaration> packageDeclarations();
 	
-	QName qName();
+	Optional<QName> qName();
 	
 	String version();
 
 	PhysicalPath physicalPath();
 
 	default String getQNameString() {
-		return qName().dotSeparated();
+//		return qName().dotSeparated();
+		return qName().map(qn -> qn.dotSeparated()).orElse("");
 	}
 	
 	

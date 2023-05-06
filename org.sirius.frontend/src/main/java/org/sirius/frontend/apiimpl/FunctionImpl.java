@@ -21,7 +21,7 @@ import org.sirius.frontend.ast.AstFunctionParameter;
  */
 public record FunctionImpl(
 		List<Annotation> annotations,
-		QName qName,
+		Optional<QName> qName,
 		List<FunctionParameter> parameters,
 		Type returnType,
 		List<Statement> bodyStatements,
@@ -30,30 +30,47 @@ public record FunctionImpl(
 {
 	@Override
 	public String toString() {
-		return "API function " + qName.dotSeparated() + "(" + parameters.size() + " args)";
+		return "API function " + qName.map(QName::dotSeparated).orElse("<unnamed>") + "(" + parameters.size() + " args)";
 	}
 	
-	@Override
-	public Optional<QName> getClassOrInterfaceContainerQName() {
-		return  member? qName.parent() : Optional.empty();
-	}
+//	@Override
+//	public Optional<QName> getClassOrInterfaceContainerQName() {
+//		if(member) {
+//			return Optional.of(qName.get().parent());
+//		} else {
+//			return Optional.empty();
+//		}
+////		return member ?
+////				qName.map(qn -> qn.parent()):
+//////				qName.parent() : 
+////					Optional.empty();
+//	}
 	
 	public static class Builder {
 		private List<org.sirius.frontend.api.Annotation> annotations = new ArrayList<org.sirius.frontend.api.Annotation>();
 		private List<FunctionParameter> parameters = new ArrayList<FunctionParameter>();
 		private org.sirius.frontend.api.Type returnType = org.sirius.frontend.api.Type.voidType;
 		private boolean member = false;
-		private QName qName = QName.empty;// ???
+//		private Optional<QName> qName = QName.empty;// ???
+		private Optional<QName> qName = Optional.empty();// ???
 		private List<org.sirius.frontend.api.Statement> bodyStatements = new ArrayList<org.sirius.frontend.api.Statement>();
 		
-		public Builder() {
-			super();
-		}
+//		public Builder() {
+//			super();
+//			this.qName = QName.empty;// ???
+//		}
 		public Builder(QName qName) {
 			super();
-			this.qName = qName;
+			assert(qName != null);
+			this.qName = Optional.of(qName);
 		}
 		public Builder(org.sirius.frontend.api.Type returnType, QName qName) {
+			super();
+			this.qName = Optional.of(qName);
+//			this.qName = qName;
+			this.returnType = returnType;
+		}
+		public Builder(org.sirius.frontend.api.Type returnType, Optional<QName> qName) {
 			super();
 			this.qName = qName;
 			this.returnType = returnType;
@@ -85,10 +102,11 @@ public record FunctionImpl(
 			this.member = member;
 			return this;
 		}
-		public Builder withQName(QName qName) {
-			this.qName = qName;
-			return this;
-		}
+//		public Builder withQName(QName qName) {
+//			assert(qName != null);
+//			this.qName = qName;
+//			return this;
+//		}
 		public Builder withBodyStatements(List<org.sirius.frontend.api.Statement> bodyStatements) {
 			this.bodyStatements = bodyStatements;
 			return this;

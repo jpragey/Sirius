@@ -1,5 +1,7 @@
 package org.sirius.frontend.core;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
@@ -20,7 +22,8 @@ public class ScriptSessionTest {
 		ScriptSession session = Compiler.compileScript("#!\n module a.b \"1.0\" {} ");
 
 		assertEquals(session.getModuleDeclarations().size(), 1);
-		assertEquals(session.getModuleDeclarations().get(0).qName().toString(), "a.b");
+//		assertEquals(session.getModuleDeclarations().get(0).qName().toString(), "a.b");
+		assertThat(session.getModuleDeclarations().get(0).qName().get(), is(QName.of("a", "b")));
 		
 	}
 	
@@ -30,7 +33,8 @@ public class ScriptSessionTest {
 		ScriptSession session = Compiler.compileScript("#!\n package p.k; ");
 
 		assertEquals(session.getModuleDeclarations().size(), 1);
-		assertEquals(session.getModuleDeclarations().get(0).qName().toString(), "");
+//		assertEquals(session.getModuleDeclarations().get(0).qName().toString(), "");
+		assertThat(session.getModuleDeclarations().get(0).qName().get().toString(), is("sirius.default"));
 	}
 	
 	@Test
@@ -51,14 +55,14 @@ public class ScriptSessionTest {
 		assertEquals(packDecls.size(), 1);
 
 		PackageDeclaration pack = md.packageDeclarations().get(0);
-		assertEquals(pack.qName().dotSeparated(), "p.k");
+		assertEquals(pack.qName().get().dotSeparated(), "p.k");
 		
 		
 		ClassType cd = pack.getClasses().get(0);
 		assertEquals(cd.qName(), new QName("p", "k", "C"));
 		
 		AbstractFunction func = cd.memberFunctions().get(0);
-		assertEquals(func.qName(), new QName("p", "k", "C", "f"));
+		assertThat(func.qName().get(), is(new QName("p", "k", "C", "f")));
 		
 	}
 	

@@ -19,7 +19,7 @@ import org.sirius.frontend.api.Type;
 
 public record ClassExecutorFunction(QName classQName, List<Statement> body, Type returnType) {
 
-	public static String functionSName = Constants.SIRIUS_EXECCLASS_EXEC_FUNC_NAME;
+	public static String functionSName = JvmConstants.SIRIUS_EXECCLASS_EXEC_FUNC_NAME;
 	
 	public void writeBytecode(ClassWriter classWriter, Reporter reporter, DescriptorFactory descriptorFactory) {
 		boolean isStatic = false; // TODO ???

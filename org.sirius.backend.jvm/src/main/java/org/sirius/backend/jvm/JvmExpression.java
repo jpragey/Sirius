@@ -11,6 +11,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.common.error.UnimplementedException;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.BinaryOpExpression;
 import org.sirius.frontend.api.BooleanConstantExpression;
@@ -251,17 +252,21 @@ public class JvmExpression {
 	}
 
 	private void processFunctionCall(MethodVisitor mv, FunctionCall call, JvmScope scope) {
+		
+		JvmFunctionCall jvmFunctionCall = new JvmFunctionCall(call);
+
 		String funcName = call.nameToken().getText();
 
 		AbstractFunction func = call.getDeclaration().get();	// TODO: check for absence
-			if(func.getClassOrInterfaceContainerQName().isPresent()) {
-			}
-			int invokeOpcode;
-			if(call.thisExpression().isPresent()) {
-				invokeOpcode = INVOKEVIRTUAL;
-			} else {
-				invokeOpcode = INVOKESTATIC;
-			}
+//			if(func.getClassOrInterfaceContainerQName().isPresent()) {
+//			}
+
+		int invokeOpcode = jvmFunctionCall.asmOpCode();
+//			if(call.thisExpression().isPresent()) {
+//				invokeOpcode = INVOKEVIRTUAL;
+//			} else {
+//				invokeOpcode = INVOKESTATIC;
+//			}
 			
 			for(Expression expr: call.arguments()) {
 				JvmExpression jvmExpr = new JvmExpression(reporter, descriptorFactory, expr);
@@ -270,17 +275,23 @@ public class JvmExpression {
 
 			Optional<AbstractFunction> topLevelFunc = call.getDeclaration();
 			if(topLevelFunc.isPresent()) {
+
 				String methodDescriptor = descriptorFactory.methodDescriptor(topLevelFunc.get());
-				Optional<QName> optContainerQName = func.getClassOrInterfaceContainerQName();
+//				Optional<QName> optContainerQName = func.getClassOrInterfaceContainerQName();
+				boolean containerIsPresent = false;
 				
 				String owner;	// eg "org/sirius/backend/jvm/bridge/TopLevel"
-				if(optContainerQName.isPresent()) {
+				if(containerIsPresent /*optContainerQName.isPresent()*/) {
+					throw new UnimplementedException("member functions not implemented yet (AbstractFunction has no container).");
+					/***
 					QName containerQName = optContainerQName.get();
 					owner = containerQName.getStringElements().stream().collect(Collectors.joining("/"));
+					*/
 					
 				} else {
 
-					owner = Util.jvmPackageClassName;					// returning int: this line alone is OK
+//					owner = Util.topLevelClassName;					// returning int: this line alone is OK
+					owner = jvmFunctionCall.getOwner();		// '/' separated function owner
 					
 					if(funcName.equals("println")) { // TODO: ARGHHH !!!
 

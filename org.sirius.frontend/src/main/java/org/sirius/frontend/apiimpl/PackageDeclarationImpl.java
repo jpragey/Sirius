@@ -1,6 +1,7 @@
 package org.sirius.frontend.apiimpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
@@ -8,7 +9,7 @@ import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.PackageDeclaration;
 
 public record PackageDeclarationImpl(
-		QName qName, 
+		Optional<QName> qName, 
 		List<ClassType> classDeclarations,
 		List<ClassType> interfaceDeclarations, 
 		List<AbstractFunction> functions

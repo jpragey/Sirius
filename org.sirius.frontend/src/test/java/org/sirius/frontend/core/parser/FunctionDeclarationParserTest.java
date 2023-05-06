@@ -84,7 +84,7 @@ public class FunctionDeclarationParserTest {
 	public void simplestFunction() {
 		FunctionDefinition fd = parseTypeDefinition("void f() {}" /*, new QName("a", "b", "c")*/);
 		assertEquals(fd.getNameString(), "f");
-		assertEquals(fd.getqName().dotSeparated(), "f");
+		assertEquals(fd.getqName().dotSeparated(), "sirius.default.f");
 	}
 
 	@Test

@@ -18,7 +18,7 @@ public class QName {
 
 	private String cachedDotSeparatedString = null;
 	
-	public static final QName empty = new QName();
+//	public static final QName empty = new QName();
 	
 	public QName(List<String> elements) {
 		super();
@@ -26,6 +26,7 @@ public class QName {
 	}
 	public QName(String... elements) {
 		super();
+		assert(elements.length > 0);
 		this.elements = Arrays.asList(elements);
 	}
 	private QName(List<String> elements0, List<String> elements1) {
@@ -34,6 +35,10 @@ public class QName {
 		this.elements = new ArrayList<String>(elements0.size() + elements1.size());
 		this.elements.addAll(elements0);
 		this.elements.addAll(elements1);
+		assert(this.elements.size() > 0);
+	}
+	public static QName of(String... elements) {
+		return new QName(elements);
 	}
 	private QName(List<String> elements0, String child) {
 		super();

@@ -11,38 +11,21 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.*;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.common.error.UnimplementedException;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 
 
 public class JvmModule {
-	private Reporter reporter;
+//	private Reporter reporter;
 	private ModuleDeclaration moduleDeclaration;
 	private ArrayList<JvmPackage> jvmPackages = new ArrayList<JvmPackage>();
 	private BackendOptions backendOptions;
 	
-	private class JvmModuleExport {
-		private QName packageQName;
-		private List<QName> toClause;
-		public JvmModuleExport(QName packageQName, List<QName> toClause) {
-			super();
-			this.packageQName = packageQName;
-			this.toClause = toClause;
-		}
-		public JvmModuleExport(QName packageQName) {
-			this(packageQName, List.of());
-		}
-		public QName getPackageQName() {
-			return packageQName;
-		}
-		public List<QName> getToClause() {
-			return toClause;
-		}
-	}
+	private record JvmModuleExport(QName packageQName /*TODO: , List<QName> toClause*/) {}
 	
 	public JvmModule(Reporter reporter, ModuleDeclaration moduleDeclaration, BackendOptions backendOptions) {
 		super();
-		this.reporter = reporter;
 		this.moduleDeclaration = moduleDeclaration;
 		this.backendOptions = backendOptions;
 		
@@ -53,7 +36,10 @@ public class JvmModule {
 	
 	private void writeModuleDeclaratorBytecode(List<ClassWriterListener> listeners) {
 		QName classQname = new QName("module-info");
-		String moduleQname = moduleDeclaration.qName().dotSeparated();
+		
+		if(moduleDeclaration.qName().isEmpty())
+			throw new UnimplementedException("Unnamed module declaration not supported yet (???)");
+		QName moduleQname = moduleDeclaration.qName().get();
 		
 		ClassWriter classWriter = new ClassWriter(
 				ClassWriter.COMPUTE_FRAMES | // No need to 
@@ -72,21 +58,22 @@ public class JvmModule {
 		String moduleVersion = moduleDeclaration.version();
 //		System.out.println("Module qname: '" + moduleQname + "', version: '" + moduleVersion + "'.");
 
-		ModuleVisitor mv = classWriter.visitModule(moduleQname, moduleAccess, moduleVersion);
+		ModuleVisitor mv = classWriter.visitModule(moduleQname.dotSeparated(), moduleAccess, moduleVersion);
 
 		mv.visitRequire("java.base", ACC_MANDATED, null);
-		mv.visitRequire("org.sirius.runtime", ACC_TRANSITIVE, Constants.SIRIUS_RUNTIME_VERSION /* "0.0.1-SNAPSHOT"*/);
-		mv.visitRequire("org.sirius.sdk", ACC_TRANSITIVE, Constants.SIRIUS_SDK_VERSION /* "0.0.1-SNAPSHOT"*/);
+		mv.visitRequire("org.sirius.runtime", ACC_TRANSITIVE, JvmConstants.SIRIUS_RUNTIME_VERSION /* "0.0.1-SNAPSHOT"*/);
+		mv.visitRequire("org.sirius.sdk", ACC_TRANSITIVE, JvmConstants.SIRIUS_SDK_VERSION /* "0.0.1-SNAPSHOT"*/);
 		
 		// -- exports
 		List<JvmModuleExport> jvmModuleExports = List.of(
-				new JvmModuleExport(moduleDeclaration.qName())
+				new JvmModuleExport(moduleQname)
 				);
 		for(JvmModuleExport me: jvmModuleExports) {
 			int flags = ACC_MANDATED;// valid values are among ACC_SYNTHETIC and ACC_MANDATED.
-			String packaze = Util.classInternalName(me.getPackageQName());
+			String packaze = Util.classInternalName(me.packageQName());
 			
-			String[] toClause = me.getToClause().stream().map(qn -> qn.dotSeparated()).toArray(String[]::new);
+//			String[] toClause = me.getToClause().stream().map(qn -> qn.dotSeparated()).toArray(String[]::new);
+			String[] toClause = new String[]{};
 			mv.visitExport(packaze, flags, toClause /*, null modules */);
 		}
 		
@@ -106,8 +93,8 @@ public class JvmModule {
 
 		writeModuleDeclaratorBytecode(listeners);
 
-		for(JvmPackage pd: jvmPackages) {
-			pd.createByteCode(listeners);
+		for(JvmPackage jvmPackage: jvmPackages) {
+			jvmPackage.createByteCode(listeners);
 		}
 
 		listeners.forEach(l -> l.end());
@@ -116,10 +103,6 @@ public class JvmModule {
 	
 	public List<JvmPackage> getJvmPackages() {
 		return jvmPackages;
-	}
-
-	public void setJvmPackages(ArrayList<JvmPackage> jvmPackages) {
-		this.jvmPackages = jvmPackages;
 	}
 
 	@Override

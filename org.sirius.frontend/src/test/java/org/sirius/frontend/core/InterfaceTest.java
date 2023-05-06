@@ -1,6 +1,8 @@
 package org.sirius.frontend.core;
 
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
@@ -30,21 +32,21 @@ public class InterfaceTest {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration pack = md.packageDeclarations().get(0);
-		assertEquals(pack.qName().dotSeparated(), "p.k");
+		assertEquals(pack.qName().get().dotSeparated(), "p.k");
 		
 		// -- check interface
 		ClassType cd = pack.getInterfaces().get(0);
 		assertEquals(cd.qName(), new QName("p", "k", "I"));
 		
 		AbstractFunction func = cd.memberFunctions().get(0);
-		assertEquals(func.qName(), new QName("p", "k", "I", "f"));
+		assertThat(func.qName().get(), is(new QName("p", "k", "I", "f")));
 		
 		// -- check implementation
 		ClassType implClass = pack.getClasses().get(0);
 		assertEquals(implClass.qName(), new QName("p", "k", "C"));
 		
 		AbstractFunction inheritedFunc = implClass.memberFunctions().get(0);
-		assertEquals(inheritedFunc.qName(), new QName("p", "k", "I", "f"));
+		assertThat(inheritedFunc.qName().get(), is(new QName("p", "k", "I", "f")));
 		
 	}
 
@@ -61,7 +63,7 @@ public class InterfaceTest {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration pack = md.packageDeclarations().get(0);
-		assertEquals(pack.qName().dotSeparated(), "p.k");
+		assertEquals(pack.qName().get().dotSeparated(), "p.k");
 		
 		// -- check interface
 		assertEquals(pack.getInterfaces().size(), 3);
@@ -85,7 +87,7 @@ public class InterfaceTest {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration pack = md.packageDeclarations().get(0);
-		assertEquals(pack.qName().dotSeparated(), "p.k");
+		assertEquals(pack.qName().get().dotSeparated(), "p.k");
 		
 		// -- check interface
 		assertEquals(pack.getInterfaces().size(), 4);
@@ -162,7 +164,7 @@ public class InterfaceTest {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration pack = md.packageDeclarations().get(0);
-		assertEquals(pack.qName().dotSeparated(), "p.k");
+		assertEquals(pack.qName().get().dotSeparated(), "p.k");
 		
 		// -- check interface
 //		assertEquals(pack.getInterfaces().size(), 3);

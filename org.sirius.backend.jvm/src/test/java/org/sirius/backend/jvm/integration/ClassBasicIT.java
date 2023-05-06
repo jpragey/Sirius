@@ -26,7 +26,7 @@ import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.core.ScriptSession;
 
-public class ClassBasicTest {
+public class ClassBasicIT {
 
 	private Reporter reporter;
 
@@ -53,7 +53,8 @@ public class ClassBasicTest {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = Util.jvmPackageClassName; 
+//		String mainClassQName = Util.jvmPackageClassName; 
+		String mainClassQName = Util.jvmPackageClassQName.dotSeparated(); 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 
@@ -65,7 +66,7 @@ public class ClassBasicTest {
 		
 		Object result = main.invoke(null, argTypes /*, args*/);
 		
-		assertEquals(result.getClass().getName(), "A");
+		assertEquals(result.getClass().getName(), "sirius.default.A");
 
 	}
 	
@@ -84,8 +85,9 @@ public class ClassBasicTest {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = Util.jvmPackageClassName; 
+//		String mainClassQName = Util.jvmPackageClassName; 
 //		String mainClassQName = "A"; 
+		String mainClassQName = Util.jvmPackageClassQName.dotSeparated(); 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 
@@ -116,8 +118,9 @@ public class ClassBasicTest {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = Util.jvmPackageClassName /* "$package$"*/; 
+//		String mainClassQName = Util.jvmPackageClassName /* "$package$"*/; 
 //		String mainClassQName = "A"; 
+		String mainClassQName = Util.jvmPackageClassQName.dotSeparated(); 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 
@@ -154,8 +157,9 @@ public class ClassBasicTest {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = Util.jvmPackageClassName /* "$package$"*/; 
+//		String mainClassQName = Util.jvmPackageClassName /* "$package$"*/; 
 //		String mainClassQName = "A"; 
+		String mainClassQName = Util.jvmPackageClassQName.dotSeparated(); 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 
@@ -197,7 +201,8 @@ public class ClassBasicTest {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = Util.jvmPackageClassName; 
+//		String mainClassQName = Util.jvmPackageClassName; 
+		String mainClassQName = Util.jvmPackageClassQName.dotSeparated(); 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 
@@ -242,7 +247,8 @@ public class ClassBasicTest {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = Util.jvmPackageClassName; 
+//		String mainClassQName = Util.jvmPackageClassName; 
+		String mainClassQName = Util.jvmPackageClassQName.dotSeparated(); 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 

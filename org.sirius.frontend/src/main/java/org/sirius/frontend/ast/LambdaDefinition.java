@@ -118,7 +118,7 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 //		FunctionImpl functionImpl = new FunctionImpl(lambdaQName, args, resolvedReturnType, apiStatements, member);
 		List<FunctionParameter> fctApiParams = args.stream().map(astFctParam -> astFctParam.toAPI(lambdaQName)).toList();
 		List<Annotation> apiAnnos = List.of();	// TODO: ???
-		FunctionImpl functionImpl = new FunctionImpl(apiAnnos, lambdaQName,fctApiParams, resolvedReturnType, apiStatements, member);
+		FunctionImpl functionImpl = new FunctionImpl(apiAnnos, Optional.of(lambdaQName),fctApiParams, resolvedReturnType, apiStatements, member);
 		assert(functionImpl.parameters().size() == args.size());
 
 		return functionImpl;
@@ -153,7 +153,8 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 
 	@Override
 	public String asString() {
-		return "<lambda>" + qName.orElse(QName.empty).toString() + "{}";
+//		return "<lambda>" + qName.orElse(QName.empty).toString() + "{}";
+		return "<lambda>" + qName.map(QName::toString).orElse("") + "{}";
 	}
 	
 	public Scope createScope(Scope parent) {

@@ -31,14 +31,24 @@ public class JvmMemberFunction {
 //	private JvmScope containerScope;
 	private ScopeManager scopeManager;
 
-	public JvmMemberFunction(Reporter reporter, BackendOptions backendOptions, DescriptorFactory descriptorFactory, AbstractFunction memberFunction,
-			/*JvmScope containerScope,*/ boolean isStatic) {
+	public JvmMemberFunction(Reporter reporter, BackendOptions backendOptions, DescriptorFactory descriptorFactory, 
+			AbstractFunction memberFunction, QName classQName,
+			boolean isStatic) {
 		super();
 		this.reporter = reporter;
 		this.backendOptions = backendOptions;
 		this.descriptorFactory = descriptorFactory;
 		this.memberFunction = memberFunction;
-		this.functionQName = memberFunction.qName();
+		
+		// Funcion QName
+		// It may differ from memberFunction.qName() (sirius point of view) as top-level functions
+		// may be reallocated when adapted to JVM backend
+//		Optional<QName> optFctQn = memberFunction.qName();
+//		assert(optFctQn.isPresent());	// All member function must have a QName !!!	
+//		this.functionQName = optFctQn.get();
+		String funcSimpleName = memberFunction.qName().get().getLast();
+		this.functionQName = classQName.child(funcSimpleName);
+		
 //		this.containerScope = containerScope;
 		this.isStatic = isStatic;
 
@@ -116,7 +126,8 @@ public class JvmMemberFunction {
 					.parent();
 			assert(parentQName.isPresent());
 			String owner = parentQName.get()
-					.child(Util.jvmPackageClassName /* "$package$"*/)
+//					.child(Util.jvmPackageClassName /* "$package$"*/)
+					.child(Util.topLevelClassName /* "$package$"*/)
 					.getStringElements().stream()
 					
 					.collect(Collectors.joining("/", "",""));
@@ -129,7 +140,11 @@ public class JvmMemberFunction {
 					);
 
 		} else {
-			reporter.error("Error creating JVM main(){}: the function " + memberFunction.qName().dotSeparated() + " has arguments (not supported yet).");
+			String functionQn = memberFunction.qName()
+					.map(qn -> qn.dotSeparated())
+					.orElse("<top-level>")
+					;
+			reporter.error("Error creating JVM main(){}: the function " + functionQn + " has arguments (not supported yet).");
 		}
 		
 		

@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterEach;
@@ -60,7 +61,7 @@ public class SymbolExportVisitorTest {
 	}
 	
 	private AstModuleDeclaration buildModule(QName moduleQName, List<AstPackageDeclaration> packageDeclarations) {
-		AstModuleDeclaration md = new AstModuleDeclaration(reporter, moduleQName, 
+		AstModuleDeclaration md = new AstModuleDeclaration(reporter, Optional.of(moduleQName), 
 				AstToken.internal("1.0"), 
 				new ModuleImportEquivalents(), 
 				Collections.emptyList() /*moduleImports*/,
@@ -88,7 +89,7 @@ public class SymbolExportVisitorTest {
 	private AstPackageDeclaration newPackage(QName qname, 
 			List<FunctionDefinition> functionDeclarations, List<AstClassDeclaration> classDeclarations, 
 			List<AstInterfaceDeclaration> interfaceDeclarations, List<AstMemberValueDeclaration> valueDeclarations) {
-		return new AstPackageDeclaration(reporter, qname, 
+		return new AstPackageDeclaration(reporter, Optional.of(qname), 
 				functionDeclarations, classDeclarations, 
 				interfaceDeclarations, valueDeclarations);
 	}

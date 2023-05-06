@@ -58,7 +58,7 @@ public class FunctionTest {
 
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = Util.jvmPackageClassName /* "$package$"*/; 
+		String mainClassQName = Util.jvmPackageClassQName.dotSeparated() /* "$package$"*/; 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 		Object helloObj = cls.getDeclaredConstructor().newInstance();
@@ -102,7 +102,7 @@ public class FunctionTest {
 		InMemoryClassWriterListener l = compileToBytecode(script);
 
 		HashMap<String, Bytecode> bytecodeMap = l.getByteCodesMap();
-		Bytecode bc = bytecodeMap.get(Util.jvmPackageClassName);
+		Bytecode bc = bytecodeMap.get(Util.jvmPackageClassQName.dotSeparated());
 		
 		Utils.ModuleInfo mi = Utils.parseModuleBytecode(bc.getBytes());
 		

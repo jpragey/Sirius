@@ -7,13 +7,17 @@ import org.sirius.common.core.QName;
 
 public interface AbstractFunction {
 
-	QName qName();
+	/** Empty for top-level functions
+	 * 
+	 * @return
+	 */
+	Optional<QName> qName();
 
 	/** for member function only
 	 * 
 	 * @return
 	 */
-	Optional<QName> getClassOrInterfaceContainerQName();
+//	Optional<QName> getClassOrInterfaceContainerQName();
 	
 	/** Arguments declarations. For instance methods, the first arg must be 'this'.
 	 * 

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Stack;
 
+import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstBlock;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
@@ -36,10 +37,11 @@ public class ScopeSetterVisitor implements AstVisitor {
 			this.content = content;
 		}
 		public STableNameElement(AstModuleDeclaration declaration) {
-			this("$m{", "}", declaration.getqName().dotSeparated());
+			this("$m{", "}", declaration.getqName().get() /** TODO ??? */.dotSeparated());
 		}
 		public STableNameElement(AstPackageDeclaration declaration) {
-			this("$p{", "}", declaration.getQname().dotSeparated());
+//			this("$p{", "}", declaration.getQname().dotSeparated());
+			this("$p{", "}", declaration.getQname().map(QName::dotSeparated).orElse("") );
 		}
 		public STableNameElement(AstClassDeclaration declaration) {
 			this("$c{", "}", declaration.getQName().dotSeparated());

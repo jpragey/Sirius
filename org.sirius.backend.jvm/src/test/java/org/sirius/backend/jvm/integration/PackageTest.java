@@ -19,11 +19,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.backend.jvm.BackendOptions;
-import org.sirius.backend.jvm.InMemoryClassWriterListener;
-import org.sirius.backend.jvm.JarCreatorListener;
 import org.sirius.backend.jvm.JvmBackend;
 import org.sirius.common.error.AccumulatingReporter;
-import org.sirius.common.error.Reporter;
 import org.sirius.frontend.core.ScriptSession;
 
 public class PackageTest {
@@ -47,10 +44,15 @@ public class PackageTest {
 		
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
-		BackendOptions backendOptions = new BackendOptions(reporter, Optional.of("a.b.c.jvmMain") /* jvmMain option*/);
+		
+		BackendOptions backendOptions = new BackendOptions(reporter, Optional.of("a.b.c.Global.jvmMain") /* jvmMain option*/);
+		
+//		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ backendOptions);
 		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ backendOptions);
-
-		JarCreatorListener jarOutput = backend.addFileOutput("modules" /*modulePath*/, Optional.empty() /* <String> classDir*/);
+//				.addFileOutput("modules" /*modulePath*/, Optional.empty() /* <String> classDir*/);
+				
+		backend.addFileOutput("modules" /*modulePath*/, Optional.empty() /* <String> classDir*/);
+//		JarCreatorListener jarOutput = backend.addFileOutput("modules" /*modulePath*/, Optional.empty() /* <String> classDir*/);
 		
 		backend.process(session);
 		

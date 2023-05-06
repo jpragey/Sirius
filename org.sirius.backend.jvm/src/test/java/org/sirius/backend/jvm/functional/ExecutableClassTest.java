@@ -18,7 +18,7 @@ import org.mockito.Mockito;
 import org.sirius.backend.jvm.BackendOptions;
 import org.sirius.backend.jvm.Bytecode;
 import org.sirius.backend.jvm.ClassExecutorFunction;
-import org.sirius.backend.jvm.Constants;
+import org.sirius.backend.jvm.JvmConstants;
 import org.sirius.backend.jvm.DescriptorFactory;
 import org.sirius.backend.jvm.InMemoryClassWriterListener;
 import org.sirius.backend.jvm.JvmClass;
@@ -91,7 +91,7 @@ public class ExecutableClassTest {
 		});
 		
 		assertThat(ClassExecutorFunction.functionSName, is("$sir$execute$"));
-		Method main = cls.getMethod(Constants.SIRIUS_EXECCLASS_EXEC_FUNC_NAME, new Class[] { /* String[].class */});
+		Method main = cls.getMethod(JvmConstants.SIRIUS_EXECCLASS_EXEC_FUNC_NAME, new Class[] { /* String[].class */});
 		
 		Object[] argTypes = new Object[] {};
 		

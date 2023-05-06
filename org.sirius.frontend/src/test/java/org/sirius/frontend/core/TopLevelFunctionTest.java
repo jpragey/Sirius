@@ -50,7 +50,7 @@ public class TopLevelFunctionTest {
 		assertEquals(pd.getFunctions().size(), 1);
 		AbstractFunction fd = pd.getFunctions().get(0);
 		
-		assertEquals(fd.qName().getLast(), "f");
+		assertEquals(fd.qName().get().getLast(), "f");
 		
 		// -- As API
 		assertEquals(md.packageDeclarations().size(), 1);
@@ -59,7 +59,7 @@ public class TopLevelFunctionTest {
 		assertEquals(apiPd.getFunctions().size(), 1);
 		AbstractFunction tlf = apiPd.getFunctions().get(0);
 		
-		assertEquals(tlf.qName().dotSeparated(), "a.b.f");
+		assertEquals(tlf.qName().get().dotSeparated(), "a.b.f");
 	}
 
 	@Test

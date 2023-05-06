@@ -84,8 +84,8 @@ public class ScopeTest {
 //		assertThat(astModule.getModuleDeclaration().getQNameString(), equalTo(""));
 //		assertThat(astModule.getQnameString(), equalTo(""));
 
-		AstModuleDeclaration astModule = getModule(0, session, decl -> {assertThat(decl.getQnameString(), equalTo(""));});
-		AstPackageDeclaration astPackage = getPackage(0, astModule, decl -> {assertThat(decl.getQnameString(), equalTo(""));});
+		AstModuleDeclaration astModule = getModule(0, session, decl -> {assertThat(decl.getQnameString(), equalTo("sirius.default"));});
+		AstPackageDeclaration astPackage = getPackage(0, astModule, decl -> {assertThat(decl.getQnameString(), equalTo("sirius.default"));});
 
 		assertThat(astPackage.getClassDeclarations().size(), equalTo(0));	// Not really useful
 
@@ -126,8 +126,10 @@ public class ScopeTest {
 		ScriptSession session = frontEnd.createScriptSession(provider);
 		assertTrue(reporter.ok());
 		
-		AstModuleDeclaration astModule = getModule(0, session, decl -> {assertThat(decl.getQnameString(), equalTo(""));});
-		AstPackageDeclaration astPackage = getPackage(0, astModule, decl -> {assertThat(decl.getQnameString(), equalTo(""));});
+		AstModuleDeclaration astModule = getModule(0, session, 
+				decl -> {assertThat(decl.getQnameString(), equalTo("sirius.default"));});
+		AstPackageDeclaration astPackage = getPackage(0, astModule, 
+				decl -> {assertThat(decl.getQnameString(), equalTo("sirius.default"));});
 
 		assertThat(astPackage.getClassDeclarations().size(), equalTo(0));	// Not really useful
 

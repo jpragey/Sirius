@@ -136,7 +136,7 @@ public class ModuleDeclarationParserTest {
 	@DisplayName("Simplest module declaration")
 	public void simplestModuleDeclarations() {
 		simplestModuleCheck("module a.b.c \" 1.0 \" {}", md-> {
-			assertThat(md.getqName().dotSeparated(), equalTo("a.b.c"));
+			assertThat(md.getQnameString(), equalTo("a.b.c"));
 			assertThat(md.getVersion().getText(), equalTo("\" 1.0 \""));
 			assertThat(md.getVersionString(), equalTo("1.0"));
 		});
@@ -146,7 +146,7 @@ public class ModuleDeclarationParserTest {
 	@DisplayName("Module declaration comments are correctly parsed")
 	public void moduleDeclarationsCommentsAreParsed() {
 		simplestModuleCheck("/*Some*/ /*module*/ module a.b.c \" 1.0 \" {}", md-> {
-			assertThat(md.getqName().dotSeparated(), equalTo("a.b.c"));
+			assertThat(md.getQnameString(), equalTo("a.b.c"));
 			assertThat(md.getVersion().getText(), equalTo("\" 1.0 \""));
 			assertThat(md.getVersionString(), equalTo("1.0"));
 

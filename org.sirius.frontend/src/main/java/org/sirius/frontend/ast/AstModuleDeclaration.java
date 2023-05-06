@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.Token;
+import org.sirius.common.core.Constants;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
@@ -17,7 +18,8 @@ import org.sirius.frontend.core.PhysicalPath;
 
 public class AstModuleDeclaration implements Visitable, Verifiable {
 
-	private QName qName = new QName();
+//	private QName qName = new QName();
+	private Optional<QName> qName;
 	private AstToken version = new AstToken(0,0,0,0,"","");
 	
 	private Reporter reporter; 
@@ -37,15 +39,18 @@ public class AstModuleDeclaration implements Visitable, Verifiable {
 	private ModuleDeclaration cachedModuleDeclaration = null;
 	private List<AstToken> comments;
 
-	public AstModuleDeclaration(Reporter reporter, QName qualifiedName, AstToken version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports,
+	public AstModuleDeclaration(Reporter reporter, Optional<QName> qualifiedName, AstToken version, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports,
 			List<AstPackageDeclaration> packageDeclarations, List<AstToken> comments) {
 		super();
 		this.reporter = reporter;
 
 		this.qName = qualifiedName;
-		PhysicalPath pp = new PhysicalPath(qName/*.toQName()*/.getStringElements());
-		this.modulePPath = Optional.of(pp);
+		
+//		PhysicalPath pp = new PhysicalPath(qName/*.toQName()*/.getStringElements());
+//		this.modulePPath = Optional.of(pp);
+		this.modulePPath = qName.map(qn -> new PhysicalPath(qn.getStringElements()));
 
+		
 		this.version = version;
 		
 		this.equiv = equiv;
@@ -63,7 +68,8 @@ public class AstModuleDeclaration implements Visitable, Verifiable {
 	public static AstModuleDeclaration createUnnamed(Reporter reporter, ModuleImportEquivalents equiv, List<ModuleImport> moduleImports, 
 			List<AstPackageDeclaration> packageDeclarations) 
 	{
-		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, new QName(), new AstToken(0,0,0,0,"\"\"",""), equiv, moduleImports, packageDeclarations,
+		Optional<QName> moduleQName = Optional.of(Constants.topLevelModuleQName);
+		AstModuleDeclaration mod = new AstModuleDeclaration(reporter, moduleQName, new AstToken(0,0,0,0,"\"\"",""), equiv, moduleImports, packageDeclarations,
 				List.<AstToken>of() /*comments*/);
 		return mod;
 	}
@@ -105,12 +111,14 @@ public class AstModuleDeclaration implements Visitable, Verifiable {
 		return version;
 	}
 
-	public QName getqName() {
+	public Optional<QName> getqName() {
 		return qName;
 	}
 	
 	public String getQnameString() {
-		return qName.dotSeparated();
+		return qName
+				.map(qn -> qn.dotSeparated())
+				.orElse("");
 	}
 
 
@@ -140,7 +148,9 @@ public class AstModuleDeclaration implements Visitable, Verifiable {
  
 	public void addPackageDeclaration(AstPackageDeclaration pd) {
 		this.packageDeclarations.add(pd);
-		this.packageDeclarationByQName.put(pd.getQname(), pd);
+		QName pkgQname = pd.getQname()
+				.orElse(new QName("" /** TODO : ??? */));
+		this.packageDeclarationByQName.put(pkgQname, pd);
 	}
 	
 	public AstPackageDeclaration getPackage(QName qname) {

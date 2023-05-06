@@ -1,6 +1,7 @@
 package org.sirius.frontend.apiimpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.ModuleDeclaration;
@@ -9,7 +10,7 @@ import org.sirius.frontend.core.PhysicalPath;
 
 
 public record ModuleDeclarationImpl(
-		QName qName, 
+		Optional<QName> qName, 
 		String version, 
 		PhysicalPath physicalPath, 
 		List<PackageDeclaration> packageDeclarations) 

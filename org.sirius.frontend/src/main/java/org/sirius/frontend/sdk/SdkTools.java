@@ -57,8 +57,9 @@ public class SdkTools {
 		this.sdkModule = parseSdk(scope);
 				
 		this.sdkModule.getPackageDeclarations().forEach(pkg->{
-			QName pkgQName = pkg.getQname();
-			packagesMap.put(pkgQName, pkg);
+			Optional<QName> pkgQName = pkg.getQname();
+			assert(pkgQName.isPresent());	// all SDK modules must be named
+			packagesMap.put(pkgQName.get(), pkg);
 		});
 		this.sdkContent = new SdkContent(this.sdkModule);
 	}
@@ -97,7 +98,7 @@ public class SdkTools {
 			}
 		}
 		
-		AstPackageDeclaration pd = new AstPackageDeclaration(reporter, siriusLangQName /* QName.empty*/, 
+		AstPackageDeclaration pd = new AstPackageDeclaration(reporter, Optional.of(siriusLangQName), 
 				allFunctionDefs,		//functionDeclarations, 
 				classDeclarations, 
 				interfaceDeclarations, 
@@ -106,7 +107,7 @@ public class SdkTools {
 		
 		ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO: check
 		List<ModuleImport> moduleImports = Collections.emptyList();
-		AstModuleDeclaration md = new AstModuleDeclaration(reporter, siriusLangQName, versionToken, equivalents, moduleImports, List.of(pd)
+		AstModuleDeclaration md = new AstModuleDeclaration(reporter, Optional.of(siriusLangQName), versionToken, equivalents, moduleImports, List.of(pd)
 				, List.<AstToken>of(/*TODO: ??? module comments expected*/));
 
 		ScriptCompilationUnit compilationUnit = new ScriptCompilationUnit(

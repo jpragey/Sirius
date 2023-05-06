@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.BufferedTokenStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
+import org.sirius.common.core.Constants;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
@@ -202,20 +203,24 @@ public class ModuleDeclarationParser {
 				if(packageDeclarations.isEmpty()) {
 					// -- Create default package
 					QName pkgQName = mdBuilder.getQualifiedName();	// use module qname as package qname
-					AstPackageDeclaration defaultPackageDeclaration = new AstPackageDeclaration(reporter, pkgQName, packageElements.functiondefinitions, packageElements.classDeclarations, 
-									packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/);
+					AstPackageDeclaration defaultPackageDeclaration = new AstPackageDeclaration(reporter, 
+							Optional.of(pkgQName), 
+							packageElements.functiondefinitions, 
+							packageElements.classDeclarations, 
+							packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/);
 					pds = List.of(defaultPackageDeclaration);
 				} else {
 					pds = packageDeclarations;
 				}
 				
 				result = mdBuilder.build(pds);
-			} else {								// Unnamed module
+			} else {								// Top-level module
 				ModuleImportEquivalents equiv = new ModuleImportEquivalents();
 				List<ModuleImport> moduleImports = List.of();
+				Optional<QName> qname = Optional.of(Constants.topLevelModuleQName);
 				
 				if(!packageElements.isEmpty()) { // package elements before first package declaration => prepend unnamed package
-					AstPackageDeclaration unnamedPackage = new AstPackageDeclaration(reporter, QName.empty, 
+					AstPackageDeclaration unnamedPackage = new AstPackageDeclaration(reporter, qname, 
 							packageElements.functiondefinitions, packageElements.classDeclarations, packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/);
 					
 					packageDeclarations.addFirst(unnamedPackage);
@@ -250,7 +255,7 @@ public class ModuleDeclarationParser {
 			return qualifiedName;
 		}
 		public AstModuleDeclaration build(List<AstPackageDeclaration> packageDeclarations) {
-			return new AstModuleDeclaration(reporter, qualifiedName, version, equivalents, moduleImports, packageDeclarations, comments);
+			return new AstModuleDeclaration(reporter, Optional.of(qualifiedName), version, equivalents, moduleImports, packageDeclarations, comments);
 		}
 	}
 	

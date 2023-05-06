@@ -49,12 +49,13 @@ public class ImplicitTypeCast {
 		backend.process(session);
 		
 		HashMap<String, Bytecode> map = l.getByteCodesMap();
-		System.out.println(map.keySet());
+//		System.out.println(map.keySet());
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = Util.jvmPackageClassName /* "$package$"*/; 
-		
+//		String mainClassQName = Util.topLevelClassName /* "$package$"*/; 
+		String mainClassQName = Util.jvmPackageClassQName.dotSeparated() /* "$package$"*/; 
+
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 		Object helloObj = cls.getDeclaredConstructor().newInstance();
 		Method[] methods = helloObj.getClass().getDeclaredMethods();

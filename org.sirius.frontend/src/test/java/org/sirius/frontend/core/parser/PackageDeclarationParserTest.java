@@ -50,7 +50,7 @@ public class PackageDeclarationParserTest {
 	@DisplayName("Simplest package declarations")
 	public void simplestPackageDeclarations() {
 		simplestPackageCheck("package a.b.c;", pkg -> {
-			assertEquals(pkg.getQname().getStringElements(), List.of("a", "b", "c"));
+			assertEquals(pkg.getQname().get().getStringElements(), List.of("a", "b", "c"));
 		});
 	}
 	
@@ -58,7 +58,7 @@ public class PackageDeclarationParserTest {
 	@DisplayName("Package with top-level functions")
 	public void packageWithTLFunctions() {
 			simplestPackageCheck("package a.b.c; void f(){} void g(){} void h(){} ", pkg -> {
-			assertEquals(pkg.getQname().getStringElements(), List.of("a", "b", "c"));
+			assertEquals(pkg.getQname().get().getStringElements(), List.of("a", "b", "c"));
 			assertThat(pkg.getFunctionDeclarations().size(), equalTo(3));
 			assertThat(pkg.getFunctionDeclarations().get(0).getNameString(), equalTo("f"));
 			assertThat(pkg.getFunctionDeclarations().get(1).getNameString(), equalTo("g"));

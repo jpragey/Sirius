@@ -169,9 +169,12 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		put(SdkContent.siriusLangFloatQName, Type.floatType);
 	}};
 	
-	public void setPackageQName(QName packageQName) {
-		
-		this.qName = packageQName.child(this.name.getText());
+	public void setPackageQName(Optional<QName> packageQName) {
+		String simpleName = this.name.getText();
+		this.qName = packageQName
+				.map(pqn -> pqn.child(simpleName))
+				.orElse(new QName(simpleName));
+//		this.qName = packageQName.child();
 		
 		this.sdkType = Optional.ofNullable(sdkTypeByQName.get(this.qName));
 	}

@@ -1,6 +1,8 @@
 package org.sirius.backend.jvm;
 
-public interface Constants {
+import org.sirius.common.core.QName;
+
+public interface JvmConstants {
 
 	/** JVM backend ID - used to differentiate backends 
 	 * @see org.sirius.backend.jvm.JvmBackend#getBackendId()
@@ -15,4 +17,7 @@ public interface Constants {
 
 	/** Executable class execute() function name */
 	public static String SIRIUS_EXECCLASS_EXEC_FUNC_NAME = "$sir$execute$";
+	
+	/**  */
+//	public static QName SIRIUS_DEFAULT_MODULE_QNAME = new QName("sirius", "default");
 }

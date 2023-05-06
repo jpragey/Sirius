@@ -179,7 +179,7 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 			ctx.packageElement().forEach(mcContext -> mcVisitor.visit(mcContext));
 			
 			
-			return new AstPackageDeclaration(reporter, packageQName,
+			return new AstPackageDeclaration(reporter, Optional.of(packageQName) /* Optional: empty is for root package */,
 					packageElements.functiondefinitions, 
 					packageElements.classDeclarations, 
 					packageElements.interfaceDeclarations, 

@@ -3,6 +3,7 @@ package org.sirius.frontend.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public class BooleanExpressionTest {
 		assertEquals(pd.getFunctions().size(), 1);
 		AbstractFunction fd = pd.getFunctions().get(0);
 		
-		assertEquals(fd.qName().getLast(), "f");
+		assertEquals(fd.qName().get().getLast(), "f");
 		assertEquals(fd.bodyStatements().size(), 1);
 		LocalVariableStatement localVarST = (LocalVariableStatement)fd.bodyStatements().get(0); 
 //		assertEquals(localVarST.getName().getText(), "b");
@@ -83,7 +84,7 @@ public class BooleanExpressionTest {
 		assertEquals(apiPd.getFunctions().size(), 1);
 		AbstractFunction tlf = apiPd.getFunctions().get(0);
 		
-		assertEquals(tlf.qName().dotSeparated(), "f");
+		assertThat(tlf.qName().get().dotSeparated(), is("sirius.default.f"));
 	}
 
 }

@@ -57,7 +57,7 @@ public class JvmClass {
 		this.memberValues = memberValues;
 		this.classExecutorFunctions = classExecutorFunctions.stream()
 				.map((FunctionClass fc)-> {
-					QName fctQName = fc.qName();
+//					QName fctQName = fc.qName();
 					List<Statement> body = fc.bodyStatements();
 					Type returnType = fc.returnType();
 //					List<Statement> body = List.<Statement>of();
@@ -70,7 +70,7 @@ public class JvmClass {
 	public JvmClass(Reporter reporter, ClassType cd, BackendOptions backendOptions, DescriptorFactory descriptorFactory) {
 		this(reporter, cd.qName(), backendOptions, descriptorFactory,
 				cd.memberFunctions().stream()
-					.map(mf -> new JvmMemberFunction(reporter, backendOptions,  descriptorFactory, mf, false /*isStatic*/))
+					.map(mf -> new JvmMemberFunction(reporter, backendOptions,  descriptorFactory, mf, cd.qName(), false /*isStatic*/))
 					.collect(Collectors.toUnmodifiableList()), 
 				cd.memberValues().stream()
 					.map((mv) -> new JvmMemberValue(mv, descriptorFactory, reporter))
@@ -79,13 +79,47 @@ public class JvmClass {
 				List.of() // class executor functions
 				);
 	}
-	
+	/** Create class for package top-level stuff (eg top-level functions <b>inside</b> a package)
+	 * 
+	 * @param reporter
+	 * @param pd
+	 * @param backendOptions
+	 * @param descriptorFactory
+	 * @param packageFuncs
+	 * @return
+	 */
 	public static JvmClass createPackageClass(Reporter reporter, PackageDeclaration pd, BackendOptions backendOptions, DescriptorFactory descriptorFactory,
-			Collection<AbstractFunction> packageFuncs) {
-		return new JvmClass(reporter, pd.qName().child(Util.jvmPackageClassName), backendOptions, descriptorFactory,
-				packageFuncs.stream()
-					.map(func->new JvmMemberFunction(reporter, backendOptions,descriptorFactory,func, true /*isStatic*/))
-					.collect(Collectors.toUnmodifiableList()), 
+			Collection<AbstractFunction> packageFuncs) 
+	{
+//		QName topLevelQName = pd.qName()
+//				.map(qn -> qn.child(Util.jvmPackageClassName))
+//				.orElse(new QName(Util.jvmPackageClassName)); /* Root package top-level function (must be empty ???)*/
+		QName topLevelQName;
+		Optional<QName> pdQName = pd.qName();
+		if(pdQName.isPresent()) {
+			topLevelQName = pdQName.get().child(Util.topLevelClassName); // currently <custom_package>.Global
+		} else {
+			topLevelQName = Util.jvmPackageClassQName; /* Root package top-level function (must be currently sirius.default.Global)*/
+		}
+//		topLevelQName = pd.qName()
+// 				.map(qn -> {
+//					return qn.child(Util.topLevelClassName /*Util.jvmPackageClassName*/);
+//					} // currently <custom_package>.Global
+//				)
+//				.orElse(Util.jvmPackageClassQName /*new QName(Util.jvmPackageClassName)*/); /* Root package top-level function (must be currently sirius.default.Global)*/
+		
+		List<JvmMemberFunction> memberFuns = packageFuncs.stream()
+				
+				.map( (func) ->	{
+					return new JvmMemberFunction(reporter, backendOptions,descriptorFactory,func, topLevelQName, true /*isStatic*/);
+				})
+				.collect(Collectors.toUnmodifiableList());
+		
+		return new JvmClass(reporter,
+				topLevelQName,
+//				pd.qName().child(Util.jvmPackageClassName), 
+				backendOptions, descriptorFactory,
+				memberFuns, 
 					List.<JvmMemberValue>of(),
 					List.<FunctionClass>of() // class executor functions
 					);

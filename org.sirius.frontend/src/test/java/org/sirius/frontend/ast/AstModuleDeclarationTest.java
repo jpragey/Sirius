@@ -18,10 +18,10 @@ public class AstModuleDeclarationTest {
 		QName pkgQName = new QName("org", "sirius", "demo", "p", "k");
 		
 		AstModuleDeclaration md = session.getAstModules().get(0);
-		assertThat(md.getqName(), is(new QName("org", "sirius", "demo")));
+		assertThat(md.getqName().get(), is(new QName("org", "sirius", "demo")));
 		
 		AstPackageDeclaration pd0 = md.getPackageDeclarations().get(0);
-		assertThat(pd0.getQname(), is(pkgQName));
+		assertThat(pd0.getQname().get(), is(pkgQName));
 
 		assertThat(md.getPackage(pkgQName), is(notNullValue()));
 		assertThat(md.getPackage(pkgQName).getFunctionDeclarations(), hasSize(1));
@@ -33,10 +33,10 @@ public class AstModuleDeclarationTest {
 		ScriptSession session = Compiler.compileScript("#!\n module org.sirius.demo \"1.0.0\" {} void f(){}");
 		
 		AstModuleDeclaration md = session.getAstModules().get(0);
-		assertThat(md.getqName(), is(moduleQName));
+		assertThat(md.getqName().get(), is(moduleQName));
 		
 		AstPackageDeclaration pd0 = md.getPackageDeclarations().get(0);
-		assertThat(pd0.getQname(), is(moduleQName));
+		assertThat(pd0.getQname().get(), is(moduleQName));
 
 		assertThat(md.getPackage(moduleQName), is(notNullValue()));
 		assertThat(md.getPackage(moduleQName).getFunctionDeclarations(), hasSize(1));

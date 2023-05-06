@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -67,11 +68,10 @@ public class ModuleTest {
 		assertThat(mi.exports.get(0).packaze, is("a/b/c"));
 		assertThat(mi.exports.get(0).modules.length, is(0));
 
-		assertThat(mi.requires.size(), is(3));
-		assertThat(mi.requires.get(0).module, is("java.base"));
-		assertThat(mi.requires.get(1).module, is("org.sirius.runtime"));
-		assertThat(mi.requires.get(2).module, is("org.sirius.sdk"));
-
+		
+		assertThat(mi.requires.stream().map(require -> require.module).toList(), 
+				is(List.of("java.base", "org.sirius.runtime", "org.sirius.sdk")));
+		
 	}
 	
 }

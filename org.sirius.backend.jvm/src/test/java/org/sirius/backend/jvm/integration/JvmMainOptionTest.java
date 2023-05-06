@@ -3,6 +3,7 @@ package org.sirius.backend.jvm.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -53,7 +54,8 @@ public class JvmMainOptionTest {
 		
 		
 		ScriptSession session = CompileTools.compileScript(script, reporter);
-		BackendOptions backendOptions = new BackendOptions(reporter, Optional.of("jvmMain") /* jvmMain option*/);
+		BackendOptions backendOptions = new BackendOptions(reporter, 
+				Optional.of("sirius.default.Global.jvmMain") /* jvmMain option*/);
 		JvmBackend backend = new JvmBackend(reporter, /*classDir, moduleDir, */ backendOptions);
 		InMemoryClassWriterListener l = backend.addInMemoryOutput();
 		
@@ -61,7 +63,8 @@ public class JvmMainOptionTest {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = Util.jvmPackageClassName /* "$package$"*/; 
+//		String mainClassQName = Util.topLevelClassName /* "$package$"*/; 
+		String mainClassQName = Util.jvmPackageClassQName.dotSeparated() /* "$package$"*/; 
 		
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 
@@ -69,15 +72,16 @@ public class JvmMainOptionTest {
 		Method[] methods = helloObj.getClass().getDeclaredMethods();
 		
 //		Method main = cls.getMethod("jvmMain", new Class[] { String[].class });
-		Method main = cls.getMethod("main", new Class[] { String[].class });
+		Method main = cls.getMethod("jvmMain", new Class[] { /*String[].class */ });
 		Object[] args = new Object[] {
-				new String[] {}
+//				new String[] {}
 		};
 		
 		Object result = main.invoke(null, args);
 		assertThat(result, nullValue());
 //		assertEquals(result.getClass().getName(), "A");
 
+		reporter.rethrowFirst();
 		assertThat(reporter.ok(), is(true));
 
 	}
@@ -97,7 +101,7 @@ public class JvmMainOptionTest {
 		ScriptSession session = CompileTools.compileScript(script, reporter);
 		BackendOptions backendOptions = new BackendOptions(checkingReporter, Optional.of("boom") /* jvmMain option*/);
 		JvmBackend backend = new JvmBackend(reporter, backendOptions);
-//		InMemoryClassWriterListener l = backend.addInMemoryOutput();
+		InMemoryClassWriterListener l = backend.addInMemoryOutput();
 		
 		backend.process(session);
 		

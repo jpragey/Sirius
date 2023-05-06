@@ -33,7 +33,7 @@ public class IfElseTest {
 		AstPackageDeclaration pd = md.getPackageDeclarations().get(0);
 		assertEquals(pd.getFunctionDeclarations().size(), 1);
 		FunctionDefinition fd = pd.getFunctionDeclarations().get(0);
-		assertEquals(fd.getqName().dotSeparated(), "main");
+		assertEquals(fd.getqName().dotSeparated(), "sirius.default.main");
 
 		AstIfElseStatement ifElse = (AstIfElseStatement) fd.getBody().getStatement(0);
 		AstExpression ifExpr = ifElse.getIfExpression();

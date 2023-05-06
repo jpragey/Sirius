@@ -49,7 +49,7 @@ public class PackageDescriptorCompilationUnitTest {
 	@DisplayName("Simplest package compilation unit")
 	public void simplestPackageCU() {
 		moduleImportCheck("package a.b.c;", cu-> {
-			assertThat(cu.getPackageDeclaration().getQname().dotSeparated(), equalTo("a.b.c"));
+			assertThat(cu.getPackageDeclaration().getQname().get().dotSeparated(), equalTo("a.b.c"));
 		});
 	}
 	

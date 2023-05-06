@@ -1,17 +1,20 @@
 package org.sirius.frontend.core.parser;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.function.Consumer;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
@@ -80,17 +83,18 @@ public class ScriptCompilationUnitTest {
 	public void scriptCUWithModules() {
 		scriptCUCheck("#!\n module a.b.c \"42\" {} module a.b.d \"42\" {}", cu-> {
 			assertThat(cu.getModuleDeclarations().size(), equalTo(2));
-			assertThat(cu.getModuleDeclarations().get(0).getqName().dotSeparated(), equalTo("a.b.c"));
-			assertThat(cu.getModuleDeclarations().get(1).getqName().dotSeparated(), equalTo("a.b.d"));
+			assertThat(cu.getModuleDeclarations().get(0).getqName().get().dotSeparated(), equalTo("a.b.c"));
+			assertThat(cu.getModuleDeclarations().get(1).getqName().get().dotSeparated(), equalTo("a.b.d"));
 		});
 	}
 	
 	@Test
-	@DisplayName("Script compilation with a top-level func must have un (unnamed) module")
+	@DisplayName("Script compilation with a top-level func must have an sirius.default module")
 	public void scriptWithTLFuncHasAModule() {
 		scriptCUCheck("#!\n void f(){}", cu-> {
 			assertThat(cu.getModuleDeclarations().size(), equalTo(1));
-			assertThat(cu.getModuleDeclarations().get(0).getqName().dotSeparated(), equalTo(""));
+//			assertThat(cu.getModuleDeclarations().get(0).getqName().dotSeparated(), equalTo(""));
+			assertThat(cu.getModuleDeclarations().get(0).getqName().get(), is(QName.of("sirius", "default")));
 		});
 	}
 	
@@ -122,7 +126,7 @@ public class ScriptCompilationUnitTest {
 		});
 		concreteModuleCheck("package a.b.c;", cu-> {
 			assertThat(cu.getPackageDeclarations().size(), equalTo(1));
-			assertThat(cu.getPackageDeclarations().get(0).getPackageDeclaration().qName().dotSeparated(), equalTo("a.b.c"));
+			assertThat(cu.getPackageDeclarations().get(0).getPackageDeclaration().qName().get().dotSeparated(), equalTo("a.b.c"));
 		});
 		concreteModuleCheck("class C() {}", cu-> {
 			assertThat(cu.getPackageDeclarations().size(), equalTo(1));

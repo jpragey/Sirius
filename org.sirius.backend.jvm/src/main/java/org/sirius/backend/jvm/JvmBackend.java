@@ -25,10 +25,60 @@ public class JvmBackend implements Backend {
 	
 	private BackendOptions backendOptions;
 	
-	public JvmBackend(Reporter reporter, BackendOptions backendOptions) {
+//	public static class Builder {
+//		private List<ClassWriterListener> listeners = new ArrayList<>();
+//		private Reporter reporter;
+//		private BackendOptions backendOptions;
+//
+//		public Builder(Reporter reporter, BackendOptions backendOptions) {
+//			super();
+//			this.reporter = reporter;
+//			this.backendOptions = backendOptions;
+//		}
+//		public Builder(Reporter reporter) {
+//			this(reporter, new BackendOptions(reporter, Optional.empty() /* optJvmMainOption */));
+//		}
+//
+//		public Builder addFileOutput(String moduleDir, Optional<String> classDir) {
+//			JarCreatorListener listener = JarCreatorListener.createAsFile(reporter, moduleDir, classDir);
+//			listeners.add(listener);
+//			return this;
+//		}
+//
+//		public Builder addInMemoryMapOutput(HashMap<QName /*class QName */, Bytecode> bytecodeMap) {
+//			JarCreatorListener listener = JarCreatorListener.createInMemoryMap(reporter, bytecodeMap);
+//			listeners.add(listener);
+//			return this;
+//		}
+//		
+//		public Builder addInMemoryOutput() {
+//			InMemoryClassWriterListener l = new InMemoryClassWriterListener();
+//			listeners.add(l);
+//			return this;
+//		}
+//		public JvmBackend create() {
+//			return new JvmBackend(reporter, backendOptions, listeners);
+//		}
+//		
+//	}
+	
+	public JvmBackend(Reporter reporter, BackendOptions backendOptions, List<ClassWriterListener> listeners) {
 		super();
 		this.reporter = reporter;
 		this.backendOptions = backendOptions;
+		this.listeners = listeners;
+	}
+	/** Create a JvmBackend without any output - add one later if needed
+	 * 
+	 * @param reporter
+	 * @param backendOptions
+	 */
+	public JvmBackend(Reporter reporter, BackendOptions backendOptions) {
+		this(reporter, backendOptions, new ArrayList<>());
+	}
+
+	public JvmBackend(Reporter reporter) {
+		this(reporter, new BackendOptions(reporter, Optional.empty() /* optJvmMainOption */));
 	}
 
 	public JarCreatorListener addFileOutput(String moduleDir, Optional<String> classDir) {
@@ -50,11 +100,11 @@ public class JvmBackend implements Backend {
 	}
 	
 	/**
-	 * @return {@link Constants#BACKEND_ID} 
+	 * @return {@link JvmConstants#BACKEND_ID} 
 	 */
 	@Override
 	public String getBackendId() {
-		return Constants.BACKEND_ID;
+		return JvmConstants.BACKEND_ID;
 	}
 
 	@Override

@@ -27,7 +27,7 @@ public class LocalVariablesTest {
 		
 		List<PackageDeclaration> packages = md.packageDeclarations();
 		PackageDeclaration pack = packages.get(0);
-		assertEquals(pack.qName().dotSeparated(), "p.k");
+		assertEquals(pack.qName().get().dotSeparated(), "p.k");
 		
 		
 		ClassType cd = pack.getClasses().get(0);
@@ -53,7 +53,7 @@ public class LocalVariablesTest {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration pack = md.packageDeclarations().get(0);
-		assertEquals(pack.qName().dotSeparated(), "p.k");
+		assertEquals(pack.qName().get().dotSeparated(), "p.k");
 		
 		
 		ClassType cd = pack.getClasses().get(0);

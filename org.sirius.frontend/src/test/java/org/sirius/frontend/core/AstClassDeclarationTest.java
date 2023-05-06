@@ -2,6 +2,8 @@ package org.sirius.frontend.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Optional;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
@@ -44,8 +46,8 @@ public class AstClassDeclarationTest {
 		AstClassDeclaration child = new AstClassDeclaration(reporter, AstToken.internal("child"));
 		
 		QName pkgQName = new QName("some", "pkg");
-		ancestor.setPackageQName(pkgQName);
-		child.setPackageQName(pkgQName);
+		ancestor.setPackageQName(Optional.of(pkgQName));
+		child.setPackageQName(Optional.of(pkgQName));
 		
 		
 		child.addAncestor(ancestor.getName());

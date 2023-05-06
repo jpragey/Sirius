@@ -1,12 +1,13 @@
 package org.sirius.frontend.api;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.sirius.common.core.QName;
 
 public interface PackageDeclaration {
 
-	QName qName(); 
+	Optional<QName> qName(); 
 
 	List<ClassType> getClasses();
 	List<ClassType> getInterfaces();

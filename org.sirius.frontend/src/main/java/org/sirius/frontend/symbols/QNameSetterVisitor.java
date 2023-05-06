@@ -1,5 +1,6 @@
 package org.sirius.frontend.symbols;
 
+import java.util.Optional;
 import java.util.Stack;
 
 import org.sirius.common.core.QName;
@@ -24,19 +25,28 @@ import org.sirius.frontend.ast.TypeParameter;
 public class QNameSetterVisitor implements AstVisitor {
 
 	private Stack<QName> qnameStack = new Stack<>();
-	
+
+	public final QName TOPLEVEL_MODULE_QNAME = new QName("sirius", "default");
 
 	public QNameSetterVisitor() {
 		super();
-		this.qnameStack.push(new QName()); // TODO: ??? 
+//		this.qnameStack.push(new QName()); // TODO: ??? 
+		this.qnameStack.push(TOPLEVEL_MODULE_QNAME); 
 	}
 
+	private Optional<QName> peek() {
+		if(qnameStack.empty())
+			return Optional.empty();
+		else
+			return Optional.of(qnameStack.peek());
+	}
 
 	@Override
 	public void startPackageDeclaration(AstPackageDeclaration declaration) {
-		QName moduleQName = qnameStack.peek();
-		QName pkgQName = declaration.getQname();
-		qnameStack.push(pkgQName);
+//		QName moduleQName = qnameStack.peek();
+		Optional<QName> pkgQName = declaration.getQname();
+		pkgQName.ifPresent(qn -> qnameStack.push(qn));
+//		qnameStack.push(pkgQName);
 	}
 	@Override
 	public void endPackageDeclaration(AstPackageDeclaration declaration) {
@@ -46,8 +56,10 @@ public class QNameSetterVisitor implements AstVisitor {
 	@Override
 	public void startClassDeclaration(AstClassDeclaration classDeclaration) {
 
-		QName packageQName = qnameStack.lastElement();
-		classDeclaration.setPackageQName(packageQName);
+//		QName packageQName = qnameStack.lastElement();
+//		classDeclaration.setPackageQName(packageQName);
+		Optional<QName> currentPkgQname = peek();
+		classDeclaration.setPackageQName(currentPkgQname);
 		
 		QName classQName = classDeclaration.getQName();
 		qnameStack.push(classQName);
@@ -81,7 +93,9 @@ public class QNameSetterVisitor implements AstVisitor {
 	
 	@Override
 	public void startModuleDeclaration(AstModuleDeclaration declaration) {
-		QName moduleQName = declaration.getqName();
+		Optional<QName> optModuleQName = declaration.getqName();
+		assert(optModuleQName.isPresent()); // TODO: ???
+		QName moduleQName = optModuleQName.get();
 		qnameStack.push(moduleQName);
 	}
 	@Override

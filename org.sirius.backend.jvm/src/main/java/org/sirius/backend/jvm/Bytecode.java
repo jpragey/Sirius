@@ -59,8 +59,14 @@ public class Bytecode {
 		return bcn;
 	}
 
-	/** */
-	public void createClassFiles(Reporter reporter, String classDir, QName classQName) {
+	/**
+	 * 
+	 * @param reporter
+	 * @param classDir class directory, where '.class' file will be created (that is, 'a.b.C' class will be created 
+	 * 				in &lt;classDir&gt;/a/b/C.class file;
+	 * @param classQName
+	 */
+	public void createClassFiles(Reporter reporter, String /*TODO: use Path*/ classDir, QName classQName) {
 
 		Path classFilePath = Paths.get(classDir, classQName.toArray());
 		

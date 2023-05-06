@@ -1,5 +1,7 @@
 package org.sirius.backend.jvm;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -55,19 +57,20 @@ public class ExpressionStatementTest {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration pack = md.packageDeclarations().get(0);
-		assertEquals(pack.qName().dotSeparated(), "p.k");
+		assertEquals(pack.qName().get().dotSeparated(), "p.k");
 		
 		
 		ClassType cd = pack.getClasses().get(0);
 		assertEquals(cd.qName(), new QName("p", "k", "C"));
 		
 		AbstractFunction func = cd.memberFunctions().get(0);
-		assertEquals(func.qName(), new QName("p", "k", "C", "f"));
+		assertThat(func.qName().get(), is(new QName("p", "k", "C", "f")));
 
 		assertEquals(func.bodyStatements().size(), 1);
 		ExpressionStatement statement = (ExpressionStatement)func.bodyStatements().get(0);
 		
-		JvmBackend backend = new JvmBackend(reporter, new BackendOptions(reporter, Optional.empty() /* jvmMain */));
+//		JvmBackend backend = new JvmBackend(reporter, new BackendOptions(reporter, Optional.empty() /* jvmMain */));
+		JvmBackend backend = new JvmBackend(reporter);
 		backend.process(session);
 		
 	}

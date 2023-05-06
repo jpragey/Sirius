@@ -18,6 +18,7 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
+import org.sirius.common.core.Constants;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
@@ -64,7 +65,7 @@ public class JarCreatorListener implements ClassWriterListener {
 		@Override
 		public void writeClassFile(Bytecode bytecode) {
 			QName classQName = bytecode.getClassQName();
-			classDir.ifPresent(cdir -> bytecode.createClassFiles(reporter, cdir, classQName));
+			this.classDir.ifPresent(cdir -> bytecode.createClassFiles(reporter, cdir, classQName));
 		}
 		@Override
 		public String getJarPathString() {
@@ -81,7 +82,8 @@ public class JarCreatorListener implements ClassWriterListener {
 			File jarFile = jarPath.toFile();
 			this.jarPathString = jarPath.toAbsolutePath().toString();
 
-			QName manifestMainClassQName = moduleQName.child(Util.jvmPackageClassName);
+//			QName manifestMainClassQName = moduleQName.child(Util.jvmPackageClassName);
+			QName manifestMainClassQName = moduleQName.child(Util.topLevelClassName);
 			try {
 				File parentDir = jarFile.getParentFile();
 				if(parentDir!= null) {
@@ -179,7 +181,9 @@ public class JarCreatorListener implements ClassWriterListener {
 	@Override
 	public void start(ModuleDeclaration moduleDeclaration) {
 //		System.out.println(" ++ Start module creation in " + modulePath + " for module '" + moduleQName + "'");
-		QName moduleQName = moduleDeclaration.qName();
+		QName moduleQName = moduleDeclaration
+				.qName()
+				.orElse(Constants.topLevelModuleQName);
 		outputWriter.open(moduleQName);
 	}
 

@@ -15,6 +15,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.sirius.common.core.Constants;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
@@ -78,7 +79,7 @@ public class MethodTests {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration pack = md.packageDeclarations().get(0);
-		assertEquals(pack.qName().dotSeparated(), "p.k");
+		assertEquals(pack.qName().get().dotSeparated(), "p.k");
 		
 		
 		ClassType cd = pack.getClasses().get(0);
@@ -115,17 +116,18 @@ public class MethodTests {
 		
 		List<PackageDeclaration> packages = md.packageDeclarations();
 		PackageDeclaration pack = packages.get(0);
-		assertEquals(pack.qName().dotSeparated(), "");
+//		assertEquals(pack.qName().get().dotSeparated(), "");
+		assertThat(pack.qName().get().dotSeparated(), is("sirius.default"));
 		
 		List<ClassType> classes = pack.getClasses();
 		ClassType cd = classes.get(0);
-		assertEquals(cd.qName(), new QName("A"));
+		assertEquals(cd.qName(), new QName("sirius","default", "A"));
 		
 //		ClassDeclaration packCd = pack.getClasses().get(1);
 //		assertEquals(cd.getQName(), new QName("A"));
 		List<AbstractFunction> tlFuncs = pack.getFunctions();
 		AbstractFunction mainFunc = tlFuncs.get(0);
-		assertEquals(mainFunc.qName().dotSeparated(), "main");
+		assertEquals(mainFunc.qName().get().dotSeparated(), "sirius.default.main");
 		
 		List<Statement> body = mainFunc.bodyStatements();
 		assertEquals(body.size(), 2);
@@ -177,7 +179,7 @@ public class MethodTests {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration pack = md.packageDeclarations().get(0);
-		assertEquals(pack.qName().dotSeparated(), "p.k");
+		assertEquals(pack.qName().get().dotSeparated(), "p.k");
 		
 		
 		ClassType cd = pack.getClasses().get(0);
@@ -185,7 +187,7 @@ public class MethodTests {
 		
 		// -- function local value
 		AbstractFunction func = cd.memberFunctions().get(0);
-		assertEquals(func.qName(), new QName("p", "k", "C", "f"));
+		assertThat(func.qName().get(), is(new QName("p", "k", "C", "f")));
 
 		assertEquals(func.bodyStatements().size(), 1);
 		LocalVariableStatement funcLvs = (LocalVariableStatement)func.bodyStatements().get(0);
@@ -217,7 +219,7 @@ public class MethodTests {
 		// -- class method
 		assertEquals(cd.memberFunctions().size(), 1);
 		AbstractFunction apiMethod = cd.memberFunctions().get(0);
-		assertThat(apiMethod.qName().dotSeparated(), is("p.k.C.f"));
+		assertThat(apiMethod.qName().get().dotSeparated(), is("p.k.C.f"));
 
 	}
 	
@@ -240,9 +242,12 @@ public class MethodTests {
 		
 		AstModuleDeclaration module = session.getAstModules().get(0);
 		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
-		assertEquals(pack.getQname().dotSeparated(), "");
+//		assertEquals(pack.getQname().dotSeparated(), "");
+//		assertThat(pack.getQname().isEmpty(), is(true));
+		assertThat(pack.getQname().get(), is(Constants.topLevelPackageQName));
+		
 		FunctionDefinition func = pack.getFunctionDeclarations().get(0);
-		assertEquals(func.getqName().dotSeparated(), "add");
+		assertEquals(func.getqName().dotSeparated(), "sirius.default.add");
 		
 		assertEquals(func.getPartials().size(), 4);
 		Partial partial0 = func.getPartials().get(0);
@@ -272,9 +277,11 @@ public class MethodTests {
 		
 		AstModuleDeclaration module = session.getAstModules().get(0);
 		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
-		assertEquals(pack.getQname().dotSeparated(), "");
+//		assertEquals(pack.getQname().dotSeparated(), "");
+//		assertThat(pack.getQname().isEmpty(), is(true));
+		assertThat(pack.getQname().get(), is(QName.of("sirius", "default")));
 		FunctionDefinition func = pack.getFunctionDeclarations().get(0);
-		assertEquals(func.getqName().dotSeparated(), "add");
+		assertEquals(func.getqName().dotSeparated(), "sirius.default.add");
 		
 		//func.getSymbolTable().dump();
 		
@@ -306,10 +313,10 @@ public class MethodTests {
 		ModuleDeclaration md = session.getModuleDeclarations().get(0);
 		
 		PackageDeclaration apiPack = md.packageDeclarations().get(0);
-		assertEquals(apiPack.qName().dotSeparated(), "");
+		assertThat(apiPack.qName().get(), is(Constants.topLevelPackageQName));
 		
 		AbstractFunction apiAddFunc = apiPack.getFunctions().get(2);
-		assertEquals(apiAddFunc.qName().dotSeparated(), "add");
+		assertThat(apiAddFunc.qName().get().dotSeparated(), is("sirius.default.add"));
 		assertEquals(apiAddFunc.parameters().size(), 2);
 
 		
@@ -343,12 +350,13 @@ public class MethodTests {
 		
 		AstModuleDeclaration module = session.getAstModules().get(0);
 		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
-		assertEquals(pack.getQname().dotSeparated(), "");
+//		assertEquals(pack.getQname().dotSeparated(), "");
+		assertThat(pack.getQname().get(), is(Constants.topLevelPackageQName));
 		FunctionDefinition func = pack.getFunctionDeclarations().get(0);
-		assertEquals(func.getqName().dotSeparated(), "add");
+		assertThat(func.getqName(), is(Constants.topLevelPackageQName.child("add")));
 
 		FunctionDefinition funcMain = pack.getFunctionDeclarations().get(1);
-		assertEquals(funcMain.getqName().dotSeparated(), "main");
+		assertThat(funcMain.getqName().dotSeparated(), is("sirius.default.main"));
 		
 		Partial mainPartial = funcMain.byArgCount(0).get();
 //		mainPartial.getSymbolTable().dump();
@@ -364,9 +372,10 @@ public class MethodTests {
 		
 		AstModuleDeclaration module = session.getAstModules().get(0);
 		AstPackageDeclaration pack = module.getPackageDeclarations().get(0);
-		assertEquals(pack.getQname().dotSeparated(), "");
+//		assertEquals(pack.getQname().dotSeparated(), "");
+		assertThat(pack.getQname().get(), is(Constants.topLevelPackageQName));
 		FunctionDefinition func = pack.getFunctionDeclarations().get(0);
-		assertEquals(func.getqName().dotSeparated(), "add");
+		assertEquals(func.getqName().dotSeparated(), "sirius.default.add");
 
 		Partial partial0 = func.getPartials().get(0);
 		FunctionImpl partial0Api = partial0.toAPI();

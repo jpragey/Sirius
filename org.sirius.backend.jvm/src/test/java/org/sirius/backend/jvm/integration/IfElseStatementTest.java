@@ -46,8 +46,9 @@ public class IfElseStatementTest {
 		
 		ClassLoader classLoader = l.getClassLoader();
 		
-		String mainClassQName = Util.jvmPackageClassName; 
-		
+//		String mainClassQName = Util.topLevelClassName; 
+		String mainClassQName = Util.jvmPackageClassQName.dotSeparated() /* "$package$"*/; 
+
 		Class<?> cls = classLoader.loadClass(mainClassQName);
 
 		Method main = cls.getMethod("main", new Class[] { /* String[].class */});
