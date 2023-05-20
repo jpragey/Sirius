@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionParameter;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
@@ -68,12 +67,6 @@ public class SymbolTableImpl implements SymbolTable {
 	
 	
 	public void addClass(AstClassDeclaration classDeclaration) {
-		AstToken simpleName = classDeclaration.getName();
-		QName classQName = classDeclaration.getQName();
-		addSymbol(classQName, new Symbol(simpleName, classDeclaration));
-	}
-	
-	public void addInterface(AstInterfaceDeclaration classDeclaration) {
 		AstToken simpleName = classDeclaration.getName();
 		QName classQName = classDeclaration.getQName();
 		addSymbol(classQName, new Symbol(simpleName, classDeclaration));
@@ -205,21 +198,8 @@ public class SymbolTableImpl implements SymbolTable {
 		return symbol.getLocalVariableStatement();
 	}
 	
-	public Optional<AstInterfaceDeclaration> lookupInterfaceDeclaration(String simpleName) {
-		Symbol symbol = symbolsBySimpleName.get(simpleName);
-
-		if(symbol == null && parent.isPresent()) {
-			return parent.get().lookupInterfaceDeclaration(simpleName);
-		}
-		if(symbol == null) {
-			return Optional.empty();
-		}
-		
-		return symbol.getInterfaceDeclaration();
-	}
-
 	public void forEach( BiConsumer<QName, Symbol> action) {
-		symbols.forEach(action);;
+		symbols.forEach(action);
 	}
 
 	

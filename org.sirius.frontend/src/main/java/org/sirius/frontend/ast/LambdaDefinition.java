@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.sirius.common.core.MapOfList;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.Annotation;
@@ -19,7 +18,6 @@ import org.sirius.frontend.apiimpl.ClassDeclarationImpl;
 import org.sirius.frontend.apiimpl.FunctionImpl;
 import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTable;
-import org.sirius.frontend.symbols.SymbolTableImpl;
 
 public class LambdaDefinition implements AstExpression, Verifiable, Visitable, Scoped {
 
@@ -93,9 +91,8 @@ public class LambdaDefinition implements AstExpression, Verifiable, Visitable, S
 //		MapOfList<QName, FunctionDefinition> allFctMap = new MapOfList<>(); 	// TODO
 		List<AbstractFunction> allFct = List.of(); // TODO
 		List<MemberValue> valueDeclarations = List.of();	// TODO
-		List<AstInterfaceDeclaration> interfaces = List.of();	// TODO
 		Optional<ExecutionEnvironment> execEnv = Optional.empty();	// TODO ???
-		ClassDeclarationImpl classImpl = new ClassDeclarationImpl(lambdaClassQName, allFct, valueDeclarations, interfaces, execEnv);
+		ClassDeclarationImpl classImpl = new ClassDeclarationImpl(lambdaClassQName, allFct, valueDeclarations, execEnv);
 
 		return classImpl;
 	}

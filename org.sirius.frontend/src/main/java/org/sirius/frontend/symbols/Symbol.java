@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionParameter;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
@@ -16,7 +15,6 @@ public class Symbol {
 	private AstToken name;
 
 	private Optional<AstClassDeclaration> classDeclaration = Optional.empty();
-	private Optional<AstInterfaceDeclaration> interfaceDeclaration = Optional.empty();
 	private Optional<TypeParameter> formalParameterDeclaration = Optional.empty();
 	private Optional<FunctionDefinition> functionDeclaration = Optional.empty();
 	private Optional<AstFunctionParameter> functionArgument = Optional.empty();
@@ -31,13 +29,6 @@ public class Symbol {
 		assert(name != null);
 		this.name = name;
 		this.classDeclaration = Optional.of(classDeclaration);
-	}
-	
-	public Symbol(AstToken name, AstInterfaceDeclaration interfaceDeclaration) {
-		super();
-		assert(name != null);
-		this.name = name;
-		this.interfaceDeclaration = Optional.of(interfaceDeclaration);
 	}
 	
 	public Symbol(AstToken name, TypeParameter declaration) {
@@ -89,10 +80,6 @@ public class Symbol {
 		return classDeclaration;
 	}
 
-	public Optional<AstInterfaceDeclaration> getInterfaceDeclaration() {
-		return interfaceDeclaration;
-	}
-
 	public Optional<TypeParameter> getFormalParameterDeclaration() {
 		return formalParameterDeclaration;
 	}
@@ -122,7 +109,6 @@ public class Symbol {
 		
 		return name.getText() + ":" + 
 				(classDeclaration.isPresent() 			? classDeclaration.get().toString() : "") +
-				(interfaceDeclaration.isPresent() 		? interfaceDeclaration.get().toString() : "") +
 				(formalParameterDeclaration.isPresent() ? formalParameterDeclaration.get().toString() : "") +
 				(functionDeclaration.isPresent() 		? functionDeclaration.get().getName().getText() : "") +
 				(functionArgument.isPresent() 			? functionArgument.toString() : "") +

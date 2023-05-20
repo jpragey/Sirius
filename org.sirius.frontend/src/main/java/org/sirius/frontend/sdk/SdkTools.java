@@ -16,7 +16,7 @@ import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstClassOrInterface;
 import org.sirius.frontend.ast.AstFunctionParameter;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
+import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
@@ -28,6 +28,7 @@ import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.QNameRefType;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
+import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 import org.sirius.sdk.tooling.Inherit;
@@ -76,7 +77,6 @@ public class SdkTools {
 		List<FunctionDefinition> allFunctionDefs = new ArrayList<>();
 		SymbolTableImpl symbolTable = scope.getSymbolTable();
 		List<AstClassDeclaration> classDeclarations = new ArrayList<>();
-		List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
 		
 		for(Class<?> clss: sdkClasses) {
 			
@@ -88,9 +88,6 @@ public class SdkTools {
 				classOrInterfaces.add(classOrIntf);
 				if(classOrIntf instanceof AstClassDeclaration)
 					classDeclarations.add((AstClassDeclaration)classOrIntf);
-				if(classOrIntf instanceof AstInterfaceDeclaration)
-					interfaceDeclarations.add((AstInterfaceDeclaration)classOrIntf);
-				
 			}
 			if(topLevelmethodsAnno != null) {
 				List<FunctionDefinition> partialLists = parseTopLevel(clss, topLevelmethodsAnno, scope.getSymbolTable() /* symbolTable*/);
@@ -98,11 +95,11 @@ public class SdkTools {
 			}
 		}
 		
-		AstPackageDeclaration pd = new AstPackageDeclaration(reporter, Optional.of(siriusLangQName), 
+		AstPackageDeclaration pd = new AstPackageDeclaration(reporter, 
+				Optional.of(siriusLangQName), 
 				allFunctionDefs,		//functionDeclarations, 
 				classDeclarations, 
-				interfaceDeclarations, 
-				List.of()	//valueDeclarations
+				List.<AstMemberValueDeclaration>of()	//valueDeclarations
 				);
 		
 		ModuleImportEquivalents equivalents = new ModuleImportEquivalents(); // TODO: check
@@ -111,12 +108,11 @@ public class SdkTools {
 				, List.<AstToken>of(/*TODO: ??? module comments expected*/));
 
 		ScriptCompilationUnit compilationUnit = new ScriptCompilationUnit(
-				
-				reporter, scope, 
-				Optional.empty() /* Optional<ShebangDeclaration> shebangDeclaration*/,
+				reporter, 
+				scope, 
+				Optional.<ShebangDeclaration>empty(),
 				List.<ImportDeclaration>of(),
-				List.<AstModuleDeclaration>of(md)
-				);
+				List.<AstModuleDeclaration>of(md));
 
 		// -- Transforms
 		StdAstTransforms.setQNames(compilationUnit);
@@ -124,14 +120,10 @@ public class SdkTools {
 		// -- Set scopes
 		StdAstTransforms.setScopes(compilationUnit, scope);
 
-		StdAstTransforms.linkClassesToInterfaces(reporter, compilationUnit);
-		
 		StdAstTransforms.fillSymbolTables(compilationUnit, scope);
 		
 		classDeclarations.forEach(cd -> {scope.getSymbolTable().addClass(cd);});
-		interfaceDeclarations.forEach(id-> {
-			scope.getSymbolTable().addInterface(id);
-			});
+
 		allFunctionDefs.forEach(pl ->  {scope.getSymbolTable().addFunction(pl);});
 		
 		return md;
@@ -141,16 +133,11 @@ public class SdkTools {
 		String name = topLevelClassAnno.name();
 		
 		AstClassOrInterface classOrIntf;
-		if(clss.isInterface()) {
-			classOrIntf = new AstInterfaceDeclaration(reporter, AstToken.internal(name));
-		} else {
-			classOrIntf = new AstClassDeclaration(reporter, AstToken.internal(name));
-		}
+		classOrIntf = new AstClassDeclaration(reporter, AstToken.internal(name));
 		
 		// -- ancestors/implemented interfaces
 		Inherit [] annos = clss.getAnnotationsByType(Inherit.class);
 		for(Inherit inherit: annos ) {
-//			QName pkg = QName.parseDotSeparated(inherit.packageQName());
 			QName pkg = QName.parseAndValidate(inherit.packageQName(), reporter).get() /* TODO: check */;
 			
 			QName inheritName = pkg.child(inherit.name());

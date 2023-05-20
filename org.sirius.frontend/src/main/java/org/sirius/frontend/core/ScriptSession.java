@@ -60,8 +60,6 @@ public class ScriptSession implements Session {
 		// -- Set scopes
 		StdAstTransforms.setScopes(compilationUnit, globalScope);
 		
-		StdAstTransforms.linkClassesToInterfaces(reporter, compilationUnit);
-			
 		// -- Set symbol tables (thus create the ST tree), add symbols to tables
 		StdAstTransforms.fillSymbolTables(compilationUnit, globalScope);
 	}

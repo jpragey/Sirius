@@ -8,7 +8,6 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
 import org.sirius.frontend.ast.AstFunctionParameter;
 import org.sirius.frontend.ast.AstIntegerConstantExpression;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberAccessExpression;
 import org.sirius.frontend.ast.AstPackageDeclaration;
@@ -79,32 +78,9 @@ public class SymbolTableFillingVisitor implements AstVisitor {
 	}
 
 	@Override
-	public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
-		SymbolTableImpl parentSymbolTable = symbolTableStack.lastElement();
-		
-		SymbolTableImpl symbolTable = new SymbolTableImpl(Optional.of(parentSymbolTable), interfaceDeclaration.getName().getText());
-		symbolTableStack.push(symbolTable);
-		
-		for(TypeParameter formalParameter: interfaceDeclaration.getTypeParameters()) {
-			interfaceDeclaration.getSymbolTable().addFormalParameter(interfaceDeclaration.getQName(), formalParameter);
-		}
-		
-		interfaceDeclaration.getScope().addInterface(interfaceDeclaration);
-		
-		parentSymbolTable.addInterface(interfaceDeclaration);
-	}
-	
-	
-	
-	@Override
 	public void endClassDeclaration(AstClassDeclaration classDeclaration) {
 		symbolTableStack.pop();
 	}
-
-	@Override
-	public void endInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
-		symbolTableStack.pop();
-	}	
 
 	@Override
 	public void startPartial (Partial partial) {

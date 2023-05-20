@@ -3,7 +3,6 @@ package org.sirius.frontend.symbols;
 import java.util.Optional;
 
 import org.sirius.frontend.ast.AstFunctionParameter;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
@@ -50,11 +49,6 @@ public class Scope {
 	public void addFunctionArgument(AstFunctionParameter functionArgument) {
 		symbolTable.addFunctionArgument(functionArgument);
 	}
-	
-	public void addInterface(AstInterfaceDeclaration interfaceDeclaration) {
-		symbolTable.addInterface(interfaceDeclaration);
-	}
-	
 	
 	
 	public Optional<FunctionDefinition> getFunction(String simpleName) {

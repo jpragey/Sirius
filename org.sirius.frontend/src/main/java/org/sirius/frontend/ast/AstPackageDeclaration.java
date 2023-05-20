@@ -33,17 +33,17 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 	private List<AstClassDeclaration> classDeclarations = new ArrayList<>();
 	private Map<QName, AstClassDeclaration> classDeclarationByQname = new HashMap<>();
 	
-	private List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
-	private Map<QName,AstInterfaceDeclaration> interfaceDeclarationByQname = new HashMap<>();
 	private List<AstMemberValueDeclaration> valueDeclarations = new ArrayList<>();
 	
 	private Scope scope = null;
 
 	private PackageDeclaration packageDeclaration = null;
 
-	public AstPackageDeclaration(Reporter reporter, Optional<QName> qname, 
-			List<FunctionDefinition> functionDeclarations, List<AstClassDeclaration> classDeclarations, 
-			List<AstInterfaceDeclaration> interfaceDeclarations, List<AstMemberValueDeclaration> valueDeclarations) {
+	public AstPackageDeclaration(Reporter reporter, 
+			Optional<QName> qname, 
+			List<FunctionDefinition> functionDeclarations, 
+			List<AstClassDeclaration> classDeclarations, 
+			List<AstMemberValueDeclaration> valueDeclarations) {
 		super();
 		this.reporter = reporter;
 		this.qname = qname;
@@ -58,12 +58,6 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 			classDeclarationByQname.put(cd.getQName(), cd); 
 			this.visitables.add(cd);
 			});
-		interfaceDeclarations.forEach(id  -> {
-			id.setPackageQName(qname.get() /* ??? */);
-			this.interfaceDeclarations.add(id);
-			interfaceDeclarationByQname.put(id.getQName(), id);
-			this.visitables.add(id);
-			});
 		valueDeclarations.forEach    (vd  -> {this.valueDeclarations.add(vd);		this.visitables.add(vd);});
 	}
 
@@ -72,7 +66,6 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 
 		verifyList(functionDeclarations, featureFlags);
 		verifyList(classDeclarations, featureFlags);
-		verifyList(interfaceDeclarations, featureFlags);
 		verifyList(valueDeclarations, featureFlags);
 
 		verifyCachedObjectNotNull(packageDeclaration, "AstPackageDeclaration.packageDeclaration (API) ", featureFlags);
@@ -119,9 +112,6 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 			List<ClassType> apiClassDeclarations = classDeclarations.stream()
 					.map(cd -> cd.getClassDeclaration( /*qname*/ ))
 					.collect(Collectors.toList());
-			List<ClassType> apiInterfaceDeclarations = interfaceDeclarations.stream()
-					.map(cd -> cd.getInterfaceDeclaration())
-					.collect(Collectors.toList());
 
 			List<AbstractFunction> apiFunctions = new ArrayList<>();
 			for(FunctionDefinition fdBuilder: functionDeclarations) {
@@ -131,7 +121,7 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 				}
 			}
 			
-			packageDeclaration = new PackageDeclarationImpl(qname, apiClassDeclarations, apiInterfaceDeclarations, apiFunctions);
+			packageDeclaration = new PackageDeclarationImpl(qname, apiClassDeclarations, apiFunctions);
 
 		}
 		return packageDeclaration;
@@ -145,20 +135,11 @@ public class AstPackageDeclaration implements Scoped, Visitable, Verifiable {
 		return Optional.ofNullable(cd);
 	}
 	
-	public List<AstInterfaceDeclaration> getInterfaceDeclarations() {
-		return interfaceDeclarations;
-	}
-	
-	public Optional<AstInterfaceDeclaration> getInterfaceDeclaration(QName interfaceQName) {
-		AstInterfaceDeclaration id = interfaceDeclarationByQname.get(interfaceQName);
-		return Optional.ofNullable(id);
-	}
 	
 	public boolean isEmpty() {
 		boolean empty = 
 				functionDeclarations.isEmpty() &&
 				classDeclarations.isEmpty() &&
-				interfaceDeclarations.isEmpty() &&
 				valueDeclarations.isEmpty();
 		return empty;
 	}

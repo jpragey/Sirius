@@ -21,7 +21,8 @@ import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.Symbol;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 
-public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParametric<AstClassDeclaration>, AstClassOrInterface, Named, Verifiable {
+public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParametric<AstClassDeclaration>, 
+	AstClassOrInterface, Named, Verifiable {
 
 	private AstToken name;
 	public static final String undefQName = "<not_set>";
@@ -37,13 +38,9 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 
 	private Scope scope = null;
 	
-	/** True for annotation classes (ConstrainedAnnotation subtypes, ie OptionalAnnotation or SequencedAnnotation) */
-	private boolean annotationType0 = false; 
 	
 	private List<AstToken> ancestors = new ArrayList<>();
 	
-	private List<AstInterfaceDeclaration> interfaces = new ArrayList<>();
-
 	private SymbolTableImpl symbolTable; 
 	
 	private ClassDeclarationImpl classDeclarationImpl = null;
@@ -180,11 +177,6 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 	}
 	
 	@Override
-	public List<AstInterfaceDeclaration> getInterfaces() {
-		return interfaces;
-	}
-
-	@Override
 	public QName getQName() {
 		assert(this.qName != null);
 		return this.qName;
@@ -292,7 +284,10 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 					.collect(Collectors.toList());
 			Optional<ExecutionEnvironment> execEnv = Optional.empty();	// TODO ???
 			
-			classDeclarationImpl =  new ClassDeclarationImpl(qName, getAllApiMemberFunctions() /* getAllFunctions()*/, memberValues, interfaces, execEnv);
+			classDeclarationImpl =  new ClassDeclarationImpl(qName, 
+					getAllApiMemberFunctions() /* getAllFunctions()*/, 
+					memberValues, 
+					execEnv);
 		}
 		return classDeclarationImpl;
 	}
@@ -364,18 +359,6 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		// TODO
 	}
 
-	public void resolveAncestors(HashMap<String, AstInterfaceDeclaration> interfacesByName) {
-		for(AstToken ancTk: ancestors) {
-			String name = ancTk.getText();
-			AstInterfaceDeclaration intDecl = interfacesByName.get(name);
-			if(intDecl == null) {
-				reporter.error("Class " + getQName() + " implements an undefined interface: " + name, ancTk);
-			} else {
-				this.interfaces.add(intDecl);
-			}
-		}
-	}
-
 	private Type type = null;
 	
 	@Override
@@ -421,7 +404,6 @@ public class AstClassDeclaration implements AstType, Scoped, Visitable, AstParam
 		verifyList(valueDeclarations, featureFlags);
 		verifyList(anonConstructorArguments, featureFlags); 
 
-		verifyList(interfaces, featureFlags);
 
 	}
 	

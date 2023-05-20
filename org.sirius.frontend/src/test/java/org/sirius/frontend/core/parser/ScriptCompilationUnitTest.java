@@ -133,11 +133,6 @@ public class ScriptCompilationUnitTest {
 			assertThat(cu.getPackageDeclarations().get(0).getClassDeclarations().size(), equalTo(1));
 			assertThat(cu.getPackageDeclarations().get(0).getClassDeclarations().get(0).getName().getText(), equalTo("C"));
 		});
-		concreteModuleCheck("interface I {}", cu-> {
-			assertThat(cu.getPackageDeclarations().size(), equalTo(1));
-			assertThat(cu.getPackageDeclarations().get(0).getInterfaceDeclarations().size(), equalTo(1));
-			assertThat(cu.getPackageDeclarations().get(0).getInterfaceDeclarations().get(0).getName().getText(), equalTo("I"));
-		});
 	}
 	
 	public AstModuleDeclaration concreteModuleCheck(String inputText, Consumer<AstModuleDeclaration> verify) {

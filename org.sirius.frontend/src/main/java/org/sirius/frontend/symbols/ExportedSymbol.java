@@ -19,21 +19,6 @@ public interface ExportedSymbol {
 			return qname.toString();
 		}
 	}
-	public static class ExportedInterface implements ExportedSymbol {
-		private QName qname;
-
-		public ExportedInterface(QName qname) {
-			super();
-			this.qname = qname;
-		}	
-		public QName getQname() {
-			return qname;
-		}
-		@Override
-		public String toString() {
-			return qname.toString();
-		}
-	}
 	public static class ExportedFunction implements ExportedSymbol {
 		private QName qname;
 		public ExportedFunction(QName qname) {

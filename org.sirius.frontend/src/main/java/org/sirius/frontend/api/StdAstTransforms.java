@@ -1,11 +1,8 @@
 package org.sirius.frontend.api;
 
-import java.util.HashMap;
 import java.util.Stack;
 
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
@@ -25,30 +22,6 @@ public class StdAstTransforms {
 			}
 		}
 	}
-
-	public static void linkClassesToInterfaces(Reporter reporter, ScriptCompilationUnit compilationUnit) {
-		HashMap<String, AstInterfaceDeclaration> interfacesByName = new HashMap<>();
-
-		AstVisitor interfaceCollectingVisitor = new AstVisitor() {
-			@Override public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
-				interfacesByName.put(interfaceDeclaration.getNameString(), interfaceDeclaration);
-			}
-		};
-		applyVisitors(reporter, compilationUnit, interfaceCollectingVisitor);
-
-		AstVisitor interfaceResolutionVisitor = new AstVisitor() {
-			@Override public void startClassDeclaration (AstClassDeclaration classDeclaration) {
-				classDeclaration.resolveAncestors(interfacesByName);
-			}
-			@Override
-			public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
-				interfaceDeclaration.resolveAncestors(interfacesByName);
-			}
-		};
-
-		applyVisitors(reporter, compilationUnit, interfaceResolutionVisitor);
-	}
-	
 	public static void insertPackagesInModules(Reporter reporter, ScriptCompilationUnit compilationUnit) {
 
 		AstVisitor insertPackageInModulesVisitor = new AstVisitor() {

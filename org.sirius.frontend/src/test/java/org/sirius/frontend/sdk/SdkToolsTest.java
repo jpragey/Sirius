@@ -16,13 +16,11 @@ import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionParameter;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.Partial;
 import org.sirius.frontend.ast.QNameRefType;
-import org.sirius.frontend.symbols.SymbolTableImpl;
-import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.Symbol;
+import org.sirius.frontend.symbols.SymbolTableImpl;
 
 
 public class SdkToolsTest {
@@ -65,16 +63,9 @@ public class SdkToolsTest {
 		AstClassDeclaration slStringClassDecl = sdkContent.getSiriusLangStringASTCD();
 		assertThat(slStringClassDecl.getQName(), is(new QName("sirius", "lang", "String")));
 
-		AstInterfaceDeclaration slFunctionInterfaceDecl = sdkContent.getSiriusLangFunctionASTCD();
-		assertThat(slFunctionInterfaceDecl.getQName(), is(new QName("sirius", "lang", "Function")));
-
-		checkSymbolTableContainsInterface(symbolTable, new QName("sirius", "lang", "Stringifiable"));
 		checkSymbolTableContainsClass    (symbolTable, new QName("sirius", "lang", "String"));
-		checkSymbolTableContainsInterface(symbolTable, new QName("sirius", "lang", "Addable"));
 		checkSymbolTableContainsClass	 (symbolTable, new QName("sirius", "lang", "Integer"));
 		checkSymbolTableContainsClass	 (symbolTable, new QName("sirius", "lang", "Boolean"));
-		checkSymbolTableContainsInterface(symbolTable, new QName("sirius", "lang", "Function"));
-		
 	}
 	
 	private void checkSymbolTableContainsClass(SymbolTableImpl symbolTable, QName symbolQName) {
@@ -83,14 +74,6 @@ public class SdkToolsTest {
 		
 		assertSame(symbol.getClassDeclaration().get(), symbol.getClassDeclaration().get());
 		AstClassDeclaration stringCD = symbol.getClassDeclaration().get();
-	}
-	
-	private void checkSymbolTableContainsInterface(SymbolTableImpl symbolTable, QName symbolQName) {
-		
-		Symbol symbol = symbolTable.lookupByQName(symbolQName).get();
-		
-		assertSame(symbol.getInterfaceDeclaration().get(), symbol.getInterfaceDeclaration().get());
-		AstInterfaceDeclaration stringCD = symbol.getInterfaceDeclaration().get();
 	}
 	
 	@Test
@@ -128,18 +111,4 @@ public class SdkToolsTest {
 		assertEquals(arg0Type.getqName(), new QName("sirius","lang","String"));
 		
 	}
-
-	@Test
-	public void checkIntegerIsStringifiable() {
-		SymbolTableImpl symbolTable = this.sdkTools.getScope().getSymbolTable();
-
-		AstClassDeclaration intCD = symbolTable.lookupByQName(new QName("sirius", "lang", "Integer")).get().getClassDeclaration().get();
-//		AstClassDeclaration stringifiableCD = symbolTable.lookup(new QName("sirius", "lang", "Stringifiable")).get().getClassDeclaration().get();
-		AstInterfaceDeclaration stringifiableCD = symbolTable.lookupByQName(new QName("sirius", "lang", "Stringifiable")).get().getInterfaceDeclaration().get();
-		
-		assertTrue(stringifiableCD.isAncestorOrSameAs(intCD));
-		
-	}
-	
-	
 }

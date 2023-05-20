@@ -8,7 +8,6 @@ import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstBlock;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionCallExpression;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
@@ -135,17 +134,6 @@ public class ScopeSetterVisitor implements AstVisitor {
 		popScope();
 		nameElementsStack.removeLast();
 	}
-	
-	@Override
-	public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
-		Scope scope = pushNewScope("Interface " + interfaceDeclaration.getNameString());
-		interfaceDeclaration.setScope2(scope);
-	}
-	@Override
-	public void endInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
-		popScope();
-	}
-	
 	
 	@Override
 	public void startSimpleReferenceExpression(SimpleReferenceExpression expression) {

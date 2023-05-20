@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +18,6 @@ import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
@@ -27,10 +25,6 @@ import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
-import org.sirius.frontend.core.parser.InterfaceDeclarationParser;
-import org.sirius.frontend.core.parser.ParserBuilder;
-import org.sirius.frontend.core.parser.ParserUtil;
-import org.sirius.frontend.parser.Sirius;
 
 public class SymbolExportVisitorTest {
 
@@ -45,21 +39,7 @@ public class SymbolExportVisitorTest {
 	public void tearDown() {
 		assert(this.reporter.ok());
 	}
-	
-	
-	private AstInterfaceDeclaration parseInterfaceDeclaration(String inputText) {
 		
-//		Sirius parser = ParserUtil.createParser(reporter, inputText);
-		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
-
-		ParseTree tree = parser.interfaceDeclaration();
-				
-		InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser(reporter, parserFactory.tokenStream()).new InterfaceDeclarationVisitor();
-		AstInterfaceDeclaration interfaceDeclaration = visitor.visit(tree);
-		return interfaceDeclaration;
-	}
-	
 	private AstModuleDeclaration buildModule(QName moduleQName, List<AstPackageDeclaration> packageDeclarations) {
 		AstModuleDeclaration md = new AstModuleDeclaration(reporter, Optional.of(moduleQName), 
 				AstToken.internal("1.0"), 
@@ -81,17 +61,14 @@ public class SymbolExportVisitorTest {
 		return cd;
 	}
 
-	private	AstInterfaceDeclaration newInterface(String simpleName) {
-		AstInterfaceDeclaration cd = AstInterfaceDeclaration.newInterface(reporter, AstToken.internal(simpleName));
-		return cd;
-	}
-
 	private AstPackageDeclaration newPackage(QName qname, 
-			List<FunctionDefinition> functionDeclarations, List<AstClassDeclaration> classDeclarations, 
-			List<AstInterfaceDeclaration> interfaceDeclarations, List<AstMemberValueDeclaration> valueDeclarations) {
+			List<FunctionDefinition> functionDeclarations, 
+			List<AstClassDeclaration> classDeclarations, 
+			List<AstMemberValueDeclaration> valueDeclarations
+			) {
 		return new AstPackageDeclaration(reporter, Optional.of(qname), 
 				functionDeclarations, classDeclarations, 
-				interfaceDeclarations, valueDeclarations);
+				valueDeclarations);
 	}
 
 	private FunctionDefinition newFunctionDefinition(String nameStr) {
@@ -114,7 +91,7 @@ public class SymbolExportVisitorTest {
 			newPackage(new QName("a","b"), 
 					List.of(newFunctionDefinition("fct")), //<FunctionDefinition>, 
 					List.of(newClass("C", List.of(newFunctionDefinition("mfct")))), 
-					List.of(newInterface("I")), 	//Arrays.asList<AstInterfaceDeclaration>(),
+//					List.of(newInterface("I")), 	//Arrays.asList<AstInterfaceDeclaration>(),
 					List.of() 						//Arrays.asList<AstMemberValueDeclaration>() 
 					)
 			));
@@ -129,7 +106,7 @@ public class SymbolExportVisitorTest {
 		assertThat(xsTable.getExportedClass    (new QName(/*"ma", "mb", */"a", "b", "C")).isPresent(), equalTo(true));
 		assertThat(xsTable.getExportedFunction (new QName(/*"ma", "mb", */"a", "b", "fct")).isPresent(), equalTo(true));
 		assertThat(xsTable.getExportedFunction (new QName(/*"ma", "mb", */"a", "b", "C", "mfct")).isPresent(), equalTo(true));
-		assertThat(xsTable.getExportedInterface(new QName(/*"ma", "mb", */"a", "b", "I")).isPresent(), equalTo(true));
+//		assertThat(xsTable.getExportedInterface(new QName(/*"ma", "mb", */"a", "b", "I")).isPresent(), equalTo(true));
 	}
 
 }

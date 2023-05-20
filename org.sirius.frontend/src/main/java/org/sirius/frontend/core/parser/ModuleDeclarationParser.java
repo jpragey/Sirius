@@ -15,7 +15,6 @@ import org.sirius.common.core.Constants;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.AstToken;
@@ -153,23 +152,13 @@ public class ModuleDeclarationParser {
 			this.packageElements.classDeclarations.add(cd);
 			return null;
 		}
-		@Override
-		public Void visitInterfaceDeclaration(InterfaceDeclarationContext ctx) {
-			InterfaceDeclarationParser.InterfaceDeclarationVisitor visitor = new InterfaceDeclarationParser(reporter, tokens).new InterfaceDeclarationVisitor();
-
-			AstInterfaceDeclaration id = visitor.visit(ctx);
-			this.packageElements.interfaceDeclarations.add(id);
-			return null;
-		}
 	}
 	
 	public static class PackageElements {
-		public List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
 		public List<AstClassDeclaration> classDeclarations = new ArrayList<>();
 		public List<FunctionDefinition> functiondefinitions = new ArrayList<>();
 		public boolean isEmpty() {
-			return interfaceDeclarations.isEmpty() && 
-					classDeclarations.isEmpty() &&
+			return classDeclarations.isEmpty() &&
 					functiondefinitions.isEmpty();
 		}
 	}
@@ -207,7 +196,7 @@ public class ModuleDeclarationParser {
 							Optional.of(pkgQName), 
 							packageElements.functiondefinitions, 
 							packageElements.classDeclarations, 
-							packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/);
+							List.of() /*valueDeclarations*/);
 					pds = List.of(defaultPackageDeclaration);
 				} else {
 					pds = packageDeclarations;
@@ -221,7 +210,9 @@ public class ModuleDeclarationParser {
 				
 				if(!packageElements.isEmpty()) { // package elements before first package declaration => prepend unnamed package
 					AstPackageDeclaration unnamedPackage = new AstPackageDeclaration(reporter, qname, 
-							packageElements.functiondefinitions, packageElements.classDeclarations, packageElements.interfaceDeclarations, List.of() /*valueDeclarations*/);
+							packageElements.functiondefinitions, 
+							packageElements.classDeclarations, 
+							List.of());
 					
 					packageDeclarations.addFirst(unnamedPackage);
 				}

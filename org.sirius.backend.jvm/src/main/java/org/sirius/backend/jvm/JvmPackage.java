@@ -11,7 +11,6 @@ import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.PackageDeclaration;
 
 public class JvmPackage {
-//	private Reporter reporter;
 	private PackageDeclaration packageDeclaration;
 	private ArrayList<JvmClass> jvmClasses = new ArrayList<JvmClass>();
 	private JvmClass packageClass;
@@ -19,7 +18,6 @@ public class JvmPackage {
 	
 	public JvmPackage(Reporter reporter, PackageDeclaration packageDeclaration, BackendOptions backendOptions) {
 		super();
-//		this.reporter = reporter;
 		this.packageDeclaration = packageDeclaration;
 		DescriptorFactory descriptorFactory = new DescriptorFactory(reporter);
 		
@@ -33,9 +31,6 @@ public class JvmPackage {
 		this.jvmClasses.add(this.packageClass);
 		for(ClassType cd: packageDeclaration.getClasses()) {
 			jvmClasses.add(new JvmClass(reporter, cd, backendOptions, descriptorFactory));
-		}
-		for(ClassType id: packageDeclaration.getInterfaces()) {
-			jvmClasses.add(new JvmClass(reporter, id, backendOptions, descriptorFactory));
 		}
 	}
 
@@ -51,7 +46,6 @@ public class JvmPackage {
 			String name = func.qName()
 					.map(qn -> qn.getLast())
 					.orElse("");
-//					.getLast();
 			map.put(name, func);
 		}
 		return map.values();

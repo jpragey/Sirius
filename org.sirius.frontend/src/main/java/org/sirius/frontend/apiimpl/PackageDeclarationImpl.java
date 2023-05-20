@@ -11,7 +11,6 @@ import org.sirius.frontend.api.PackageDeclaration;
 public record PackageDeclarationImpl(
 		Optional<QName> qName, 
 		List<ClassType> classDeclarations,
-		List<ClassType> interfaceDeclarations, 
 		List<AbstractFunction> functions
 ) implements PackageDeclaration 
 {
@@ -21,10 +20,6 @@ public record PackageDeclarationImpl(
 		return classDeclarations;
 	}
 
-	@Override
-	public List<ClassType> getInterfaces() {
-		return interfaceDeclarations;
-	}
 
 	@Override
 	public List<AbstractFunction> getFunctions() {

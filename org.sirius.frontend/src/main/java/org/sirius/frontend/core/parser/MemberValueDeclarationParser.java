@@ -6,13 +6,12 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstExpression;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.Sirius.ExpressionContext;
 import org.sirius.frontend.parser.Sirius.MemberValueDeclarationContext;
+import org.sirius.frontend.parser.SiriusBaseVisitor;
 
 public class MemberValueDeclarationParser {
 

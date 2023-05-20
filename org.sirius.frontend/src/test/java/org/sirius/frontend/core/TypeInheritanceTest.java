@@ -13,7 +13,6 @@ import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.parser.Compiler;
@@ -30,7 +29,6 @@ public class TypeInheritanceTest {
 	 */
 	public class ParseDualClassSource {
 		List<AstClassDeclaration> astClasses;
-		List<AstInterfaceDeclaration> astInterfaces;
 		
 		public ParseDualClassSource(String sourceCode) {
 			ScriptSession session = Compiler.compileScript(sourceCode);
@@ -44,15 +42,6 @@ public class TypeInheritanceTest {
 			assertEquals(classes.size(), 1);
 			ClassType classD = classes.get(0);
 			assertEquals(classD.qName().dotSeparated(), "p.a.C");
-//			assertEquals(classA.isInterface(), true);
-			
-			List<ClassType> interfaces = pd.getInterfaces();
-			assertEquals(interfaces.size(), 1);
-
-			ClassType classA = interfaces.get(0);
-			assertEquals(classA.qName().dotSeparated(), "p.a.I");
-			
-			////assertTrue(classA.isAncestorOrSame(classD));
 			
 			List<AstModuleDeclaration> astModules = session.getAstModules();
 			List<AstPackageDeclaration> astPackages = astModules.get(0).getPackageDeclarations();
@@ -60,7 +49,6 @@ public class TypeInheritanceTest {
 			
 			this.astClasses = astPack.getClassDeclarations();
 			assertEquals(astClasses.size(), 1);
-			this.astInterfaces = astPack.getInterfaceDeclarations();
 			assertEquals(astClasses.size(), 1);
 			
 		}
@@ -71,7 +59,6 @@ public class TypeInheritanceTest {
 	public void checkAstClassInheritanceWithAncestorEarlyDeclared() {
 		TypeInheritanceTest.ParseDualClassSource code = new TypeInheritanceTest.ParseDualClassSource("#!\n "
 				+ "package p.a;"
-				+ "interface I{}"	// TODO: interface
 				+ "class C () implements I {}"
 				);
 		
@@ -80,19 +67,10 @@ public class TypeInheritanceTest {
 		
 		assertEquals(astClassC.getAncestors().get(0).getText(), "I");
 
-		AstInterfaceDeclaration astClassI = code.astInterfaces. get(0);
-		assertEquals(astClassI.getAncestors().size(), 0);
 		
 		// -- Check API 
 		ClassType apiC = astClassC.getClassDeclaration();
 		assertThat(apiC.qName().dotSeparated(), is("p.a.C"));
-
-		ClassType apiI = astClassI.getInterfaceDeclaration();
-		assertThat(apiI.qName().dotSeparated(), is("p.a.I"));
-		
-		assertThat(astClassC.getInterfaces(), hasSize(1));
-//		assertThat(apiC.getInterface(), hasSize(1));
-		assertThat(astClassC.getInterfaces().get(0).getQName().dotSeparated(), is("p.a.I"));
 	}
 
 	@Test
@@ -101,7 +79,6 @@ public class TypeInheritanceTest {
 		TypeInheritanceTest.ParseDualClassSource code = new TypeInheritanceTest.ParseDualClassSource("#!\n "
 				+ "package p.a;"
 				+ "class C () implements I {}"
-				+ "interface I {}"
 				);
 		
 		AstClassDeclaration astClassC = code.astClasses. get(0);
@@ -109,8 +86,6 @@ public class TypeInheritanceTest {
 		
 		assertEquals(astClassC.getAncestors().get(0).getText(), "I");
 
-		AstInterfaceDeclaration astClassI = code.astInterfaces. get(0);
-		assertEquals(astClassI.getAncestors().size(), 0);
 	}
 
 }

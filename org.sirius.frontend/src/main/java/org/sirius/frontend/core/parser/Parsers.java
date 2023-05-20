@@ -182,7 +182,6 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 			return new AstPackageDeclaration(reporter, Optional.of(packageQName) /* Optional: empty is for root package */,
 					packageElements.functiondefinitions, 
 					packageElements.classDeclarations, 
-					packageElements.interfaceDeclarations, 
 					List.of()// <AstMemberValueDeclaration> valueDeclarations
 					);
 		}

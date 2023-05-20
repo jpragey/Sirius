@@ -1,40 +1,23 @@
 package org.sirius.frontend.core.parser;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.hamcrest.collection.IsEmptyCollection;
-import org.hamcrest.collection.IsIterableWithSize;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.sirius.common.core.QName;
-import org.sirius.common.error.AccumulatingReporter;
-import org.sirius.common.error.Reporter;
-import org.sirius.common.error.ShellReporter;
-import org.sirius.frontend.api.FunctionDeclaration;
-import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
-import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.ast.AstType;
-import org.sirius.frontend.ast.FunctionDefinition;
-import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.ast.TypeParameter;
-import org.sirius.frontend.ast.Variance;
-import org.sirius.frontend.core.parser.TypeParameterParser.TypeParameterVisitor;
-import org.sirius.frontend.parser.Sirius;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.sirius.common.error.AccumulatingReporter;
+import org.sirius.common.error.Reporter;
+import org.sirius.frontend.ast.AstClassDeclaration;
+import org.sirius.frontend.ast.AstToken;
+import org.sirius.frontend.ast.FunctionDefinition;
+import org.sirius.frontend.ast.TypeParameter;
+import org.sirius.frontend.parser.Sirius;
 
 public class ClassDeclarationParserTest {
 

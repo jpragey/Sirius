@@ -8,12 +8,10 @@ import org.sirius.frontend.api.AbstractFunction;
 import org.sirius.frontend.api.ClassType;
 import org.sirius.frontend.api.ExecutionEnvironment;
 import org.sirius.frontend.api.MemberValue;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 
 public record ClassDeclarationImpl(QName qName, 
 		List<AbstractFunction> memberFunctions,
 		List<MemberValue> memberValues,
-		List<AstInterfaceDeclaration> interfaces, 
 		Optional<ExecutionEnvironment> executionEnvironment
 		) implements ClassType 
 {

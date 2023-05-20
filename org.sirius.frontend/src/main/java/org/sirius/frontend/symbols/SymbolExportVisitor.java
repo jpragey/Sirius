@@ -1,7 +1,6 @@
 package org.sirius.frontend.symbols;
 
 import org.sirius.frontend.ast.AstClassDeclaration;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstVisitor;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
@@ -26,11 +25,6 @@ public class SymbolExportVisitor implements AstVisitor {
 	
 	public ExportedSymbolTable getTableToFill() {
 		return tableToFill;
-	}
-	
-	@Override
-	public void startInterfaceDeclaration(AstInterfaceDeclaration interfaceDeclaration) {
-		tableToFill.addInterface(interfaceDeclaration);
 	}
 	
 	@Override

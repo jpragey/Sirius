@@ -91,9 +91,6 @@ public class JvmClass {
 	public static JvmClass createPackageClass(Reporter reporter, PackageDeclaration pd, BackendOptions backendOptions, DescriptorFactory descriptorFactory,
 			Collection<AbstractFunction> packageFuncs) 
 	{
-//		QName topLevelQName = pd.qName()
-//				.map(qn -> qn.child(Util.jvmPackageClassName))
-//				.orElse(new QName(Util.jvmPackageClassName)); /* Root package top-level function (must be empty ???)*/
 		QName topLevelQName;
 		Optional<QName> pdQName = pd.qName();
 		if(pdQName.isPresent()) {
@@ -101,12 +98,6 @@ public class JvmClass {
 		} else {
 			topLevelQName = Util.jvmPackageClassQName; /* Root package top-level function (must be currently sirius.default.Global)*/
 		}
-//		topLevelQName = pd.qName()
-// 				.map(qn -> {
-//					return qn.child(Util.topLevelClassName /*Util.jvmPackageClassName*/);
-//					} // currently <custom_package>.Global
-//				)
-//				.orElse(Util.jvmPackageClassQName /*new QName(Util.jvmPackageClassName)*/); /* Root package top-level function (must be currently sirius.default.Global)*/
 		
 		List<JvmMemberFunction> memberFuns = packageFuncs.stream()
 				
@@ -117,7 +108,6 @@ public class JvmClass {
 		
 		return new JvmClass(reporter,
 				topLevelQName,
-//				pd.qName().child(Util.jvmPackageClassName), 
 				backendOptions, descriptorFactory,
 				memberFuns, 
 					List.<JvmMemberValue>of(),

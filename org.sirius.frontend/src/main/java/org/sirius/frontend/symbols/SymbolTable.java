@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 import org.sirius.common.core.QName;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstFunctionParameter;
-import org.sirius.frontend.ast.AstInterfaceDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
@@ -24,8 +23,6 @@ public interface SymbolTable {
 	Optional<FunctionDefinition> lookupPartialList(String simpleName);	// TODO:rename
 	
 	Optional<AstLocalVariableStatement> lookupLocalVariable(String simpleName);
-
-	Optional<AstInterfaceDeclaration> lookupInterfaceDeclaration(String simpleName);
 
 	Optional<AstMemberValueDeclaration> lookupValue(String simpleName);
 
