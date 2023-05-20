@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Session;
+import org.sirius.frontend.api.StdAstTransforms;
 import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
 import org.sirius.frontend.ast.ShebangDeclaration;
@@ -48,13 +49,30 @@ public class ScriptSession implements Session {
 		return compilationUnit;
 	}
 	
+	private void stdTransform(InputTextProvider input, ScriptCompilationUnit compilationUnit) {
+		org.sirius.frontend.symbols.Scope globalScope = compilationUnit.getScope();
+		
+		StdAstTransforms.insertPackagesInModules(reporter, compilationUnit);
+		
+		// -- Set qualified names 
+		StdAstTransforms.setQNames(compilationUnit);
+		
+		// -- Set scopes
+		StdAstTransforms.setScopes(compilationUnit, globalScope);
+		
+		StdAstTransforms.linkClassesToInterfaces(reporter, compilationUnit);
+			
+		// -- Set symbol tables (thus create the ST tree), add symbols to tables
+		StdAstTransforms.fillSymbolTables(compilationUnit, globalScope);
+	}
+
 	private void addInput(InputTextProvider input) {
 		SdkTools sdkTools = new SdkTools(reporter);
 
 		Scope sdkScope = sdkTools.getScope();
 		this.compilationUnit = parseScriptInput(input, sdkScope);
 
-		stdTransform(reporter, input, compilationUnit);
+		stdTransform(input, this.compilationUnit);
 
 		this.shebang = compilationUnit.getShebangDeclaration();
 

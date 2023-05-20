@@ -9,7 +9,7 @@ import org.sirius.frontend.api.Visitor;
 
 class CodeTreeBuilder implements Visitor {
 	private Reporter reporter;
-	private JvmModule nodeModule;
+	private JvmModule moduleNode;
 	private BackendOptions backendOptions;
 
 	public CodeTreeBuilder(Reporter reporter, BackendOptions backendOptions) {
@@ -21,12 +21,12 @@ class CodeTreeBuilder implements Visitor {
 
 	@Override
 	public void start(ModuleDeclaration declaration) {
-		this.nodeModule = new JvmModule(reporter, declaration, backendOptions);
+		this.moduleNode = new JvmModule(reporter, declaration, backendOptions);
 	}
 
 	public JvmModule createByteCode(List<ClassWriterListener> listeners) {
-		nodeModule.createByteCode(listeners);
-		return nodeModule;
+		moduleNode.createByteCode(listeners);
+		return moduleNode;
 	}
 
 	@Override

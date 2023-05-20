@@ -16,33 +16,5 @@ public interface Session {
 	List<ModuleDeclaration> getModuleDeclarations();
 
 	Reporter getReporter();
-
-
-	default void applyVisitors(Reporter reporter, ScriptCompilationUnit compilationUnit, AstVisitor... visitors) {
-		for(AstVisitor v: visitors) {
-			compilationUnit.visit(v);
-			if(reporter.hasErrors()) {
-				return;
-			}
-		}
-	}
-	
-
-	default void stdTransform(Reporter reporter, InputTextProvider input, ScriptCompilationUnit compilationUnit) {
-		org.sirius.frontend.symbols.Scope globalScope = compilationUnit.getScope();
-		
-		StdAstTransforms.insertPackagesInModules(reporter, compilationUnit);
-		
-		// -- Set qualified names 
-		StdAstTransforms.setQNames(compilationUnit);
-		
-		// -- Set scopes
-		StdAstTransforms.setScopes(compilationUnit, globalScope);
-		
-		StdAstTransforms.linkClassesToInterfaces(reporter, compilationUnit);
-			
-		// -- Set symbol tables (thus create the ST tree), add symbols to tables
-		StdAstTransforms.fillSymbolTables(compilationUnit, globalScope);
-	}
 	
 }

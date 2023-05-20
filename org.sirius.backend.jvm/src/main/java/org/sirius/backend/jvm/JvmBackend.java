@@ -11,8 +11,10 @@ import org.apache.logging.log4j.Logger;
 import org.sirius.backend.core.Backend;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
+import org.sirius.frontend.api.FunctionParameter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Session;
+import org.sirius.frontend.api.Visitor;
 
 public class JvmBackend implements Backend {
 	private static Logger logger = LogManager.getLogger(JvmBackend.class);
@@ -114,7 +116,9 @@ public class JvmBackend implements Backend {
 	}
 	public List<JvmModule> jvmProcess(Session session) {
 		logger.debug("JVM: starting session, {} modules", () -> session.getModuleDeclarations().size());
-		List<JvmModule> modules = session.getModuleDeclarations().stream().map(this::processModule).collect(Collectors.toList());
+		List<JvmModule> modules = session.getModuleDeclarations().stream()
+				.map( moduleDeclaration -> processModule(moduleDeclaration))
+				.collect(Collectors.toList());
 		
 		backendOptions.checkAllJvmMainBytecodeWritten();
 		
@@ -125,7 +129,7 @@ public class JvmBackend implements Backend {
 		logger.debug("Jvm (debug) : processing module {}", () -> moduleDeclaration.toString());
 		
 		listeners.forEach(l ->  l.start(moduleDeclaration) );
-
+		
 		CodeTreeBuilder codeTreeBuilder = new CodeTreeBuilder(reporter, backendOptions);
 		moduleDeclaration.visitMe(codeTreeBuilder);
 		JvmModule jvmModule = codeTreeBuilder.createByteCode(listeners);
