@@ -20,7 +20,6 @@ import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionParameterVisitor;
 import org.sirius.frontend.core.parser.ModuleDeclarationParser.PackageElements;
-import org.sirius.frontend.core.parser.Parsers.NewModuleDeclaration;
 import org.sirius.frontend.parser.Sirius.AnnotationContext;
 import org.sirius.frontend.parser.Sirius.AnnotationListContext;
 import org.sirius.frontend.parser.Sirius.FunctionDeclarationContext;
@@ -30,10 +29,8 @@ import org.sirius.frontend.parser.Sirius.ModuleHeaderContext;
 import org.sirius.frontend.parser.Sirius.NewCompilationUnitContext;
 import org.sirius.frontend.parser.Sirius.NewModuleDeclarationContext;
 import org.sirius.frontend.parser.Sirius.PackageDeclarationContext;
-import org.sirius.frontend.parser.Sirius.PackageTopLevelDeclarationsContext;
 import org.sirius.frontend.parser.Sirius.QnameContext;
 import org.sirius.frontend.parser.Sirius.TypeContext;
-//import org.sirius.frontend.core.parser.AnnotationListParser.AnnotationVisitor;
 import org.sirius.frontend.parser.SiriusBaseVisitor;
 
 
@@ -167,15 +164,11 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 			QName packageQName = ctx.qname().accept(visitor);
 			
 			List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
-//			List<AstInterfaceDeclaration> interfaceDeclarations = new ArrayList<>();
-//			List<AstClassDeclaration> classDeclarations = new ArrayList<>();
-//			List<PartialList> partialLists = new ArrayList<>();
 			
 			PackageElements packageElements = new PackageElements();
 
 			ModuleDeclarationParser.PackageElementVisitor mcVisitor = new ModuleDeclarationParser(reporter, tokens) .new PackageElementVisitor(//reporter, 
 					packageDeclarations, packageElements /*interfaceDeclarations, classDeclarations, partialLists*/);
-//			ctx.packageElement().forEach(mcContext -> mcContext.accept(mcVisitor));
 			ctx.packageElement().forEach(mcContext -> mcVisitor.visit(mcContext));
 			
 			
@@ -195,7 +188,6 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 	public static record NewModuleDeclaration(ModuleHeader moduleHeader) {}
 	public static record CompilationUnit(Optional<ShebangDeclaration> shebangDeclaration, List<ModuleHeader> modules) {}
 
-//	public static SiriusBaseVisitor<ModuleHeader> moduleHeaderVisitor = new SiriusBaseVisitor<ModuleHeader>() {
 	public static class ModuleHeaderVisitor extends SiriusBaseVisitor<ModuleHeader> {
 
 		@Override
@@ -213,7 +205,6 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 	};
 	
 	public static class CompilationUnitVisitor extends SiriusBaseVisitor<CompilationUnit> {
-//		public static SiriusBaseVisitor<CompilationUnit> compilationUnitVisitor = new SiriusBaseVisitor<CompilationUnit>() {
 		ModuleHeaderVisitor moduleHeaderVisitor = new ModuleHeaderVisitor();
 		
 		public CompilationUnit visitNewCompilationUnit(NewCompilationUnitContext ctx) {

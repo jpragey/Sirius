@@ -53,7 +53,6 @@ public class MemberValueDeclarationParserTest {
 	}
 
 	private AstMemberValueDeclaration parseMemberValue(String inputText, Consumer<AstMemberValueDeclaration> verify) {
-//		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 		Sirius parser = parserFactory.create();
 

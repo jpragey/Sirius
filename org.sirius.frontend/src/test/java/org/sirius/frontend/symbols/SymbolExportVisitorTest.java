@@ -91,7 +91,6 @@ public class SymbolExportVisitorTest {
 			newPackage(new QName("a","b"), 
 					List.of(newFunctionDefinition("fct")), //<FunctionDefinition>, 
 					List.of(newClass("C", List.of(newFunctionDefinition("mfct")))), 
-//					List.of(newInterface("I")), 	//Arrays.asList<AstInterfaceDeclaration>(),
 					List.of() 						//Arrays.asList<AstMemberValueDeclaration>() 
 					)
 			));
@@ -103,10 +102,9 @@ public class SymbolExportVisitorTest {
 		SymbolExportVisitor v = new SymbolExportVisitor(xsTable);
 		md.visit(v);
 		
-		assertThat(xsTable.getExportedClass    (new QName(/*"ma", "mb", */"a", "b", "C")).isPresent(), equalTo(true));
-		assertThat(xsTable.getExportedFunction (new QName(/*"ma", "mb", */"a", "b", "fct")).isPresent(), equalTo(true));
-		assertThat(xsTable.getExportedFunction (new QName(/*"ma", "mb", */"a", "b", "C", "mfct")).isPresent(), equalTo(true));
-//		assertThat(xsTable.getExportedInterface(new QName(/*"ma", "mb", */"a", "b", "I")).isPresent(), equalTo(true));
+		assertThat(xsTable.getExportedClass    (new QName("a", "b", "C")).isPresent(), equalTo(true));
+		assertThat(xsTable.getExportedFunction (new QName("a", "b", "fct")).isPresent(), equalTo(true));
+		assertThat(xsTable.getExportedFunction (new QName("a", "b", "C", "mfct")).isPresent(), equalTo(true));
 	}
 
 }
