@@ -1,8 +1,5 @@
 package org.sirius.frontend.core.parser;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,18 +8,14 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
-import org.sirius.frontend.core.parser.ClassDeclarationParser.ClassDeclarationVisitor;
 import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionDefinitionVisitor;
-import org.sirius.frontend.core.parser.Parsers.CompilationUnit;
 import org.sirius.frontend.parser.Sirius;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.Sirius.ClassDeclarationContext;
 import org.sirius.frontend.parser.Sirius.FunctionDeclarationContext;
 import org.sirius.frontend.parser.Sirius.FunctionDefinitionContext;
-import org.sirius.frontend.parser.Sirius.InterfaceDeclarationContext;
-import org.sirius.frontend.parser.Sirius.NewCompilationUnitContext;
 import org.sirius.frontend.parser.Sirius.PackageTopLevelDeclarationContext;
 import org.sirius.frontend.parser.Sirius.PackageTopLevelDeclarationsContext;
+import org.sirius.frontend.parser.SiriusBaseVisitor;
 
 public class PackageTopLevelDeclarationTest {
 
@@ -69,7 +62,7 @@ public class PackageTopLevelDeclarationTest {
 			FunctionDeclarationContext fdeclCtx = ctx.functionDeclaration();
 			FunctionDefinitionContext fdefCtx = ctx.functionDefinition();
 			ClassDeclarationContext clsDdeclCtx = ctx.classDeclaration();
-			InterfaceDeclarationContext intfCtx = ctx.interfaceDeclaration();
+//			InterfaceDeclarationContext intfCtx = ctx.interfaceDeclaration();
 			
 			if(fdeclCtx != null) {
 				FunctionDeclaration fd = parsers.new FunctionDeclarationVisitor().visit(fdeclCtx);

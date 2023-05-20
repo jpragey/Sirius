@@ -7,10 +7,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.BufferedTokenStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenStream;
 import org.sirius.common.core.Constants;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
@@ -23,19 +21,16 @@ import org.sirius.frontend.ast.ModuleImport;
 import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionDefinitionVisitor;
-import org.sirius.frontend.core.parser.Parsers;
-import org.sirius.frontend.core.parser.Parsers.QualifiedNameVisitor;
 import org.sirius.frontend.parser.SLexer;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
 import org.sirius.frontend.parser.Sirius.ClassDeclarationContext;
 import org.sirius.frontend.parser.Sirius.ConcreteModuleContext;
 import org.sirius.frontend.parser.Sirius.FunctionDeclarationContext;
 import org.sirius.frontend.parser.Sirius.FunctionDefinitionContext;
-import org.sirius.frontend.parser.Sirius.InterfaceDeclarationContext;
 import org.sirius.frontend.parser.Sirius.ModuleDeclarationContext;
 import org.sirius.frontend.parser.Sirius.ModuleImportContext;
 import org.sirius.frontend.parser.Sirius.ModuleVersionEquivalentContext;
 import org.sirius.frontend.parser.Sirius.PackageDeclarationContext;
+import org.sirius.frontend.parser.SiriusBaseVisitor;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 

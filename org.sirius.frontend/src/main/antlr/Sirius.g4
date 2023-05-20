@@ -53,7 +53,6 @@ packageTopLevelDeclaration :
     	  functionDeclaration
     	| functionDefinition 	
     	| classDeclaration 		
-    	| interfaceDeclaration	
 	;
 
 /////////////////
@@ -61,7 +60,6 @@ packageContent :
     	  functionDeclaration
     	| functionDefinition 	
     	| classDeclaration 		
-    	| interfaceDeclaration	
 	;
 
 /** CompilationUnit from script */
@@ -84,7 +82,7 @@ packageElement
 	| functionDeclaration 		
 	| functionDefinition 		
 	| classDeclaration 			
-	| interfaceDeclaration		
+//	| interfaceDeclaration		
 	; 
 
 packageDescriptorCompilationUnit 
@@ -417,7 +415,8 @@ implementedInterfaces :	 // 'implements' clause, for classes and interfaces
 	  IMPLEMENTS TYPE_ID
 	  	(COMA TYPE_ID)*
 ;
-	
+
+	/*
 interfaceDeclaration 
 	: 
 	  INTERFACE	
@@ -434,6 +433,7 @@ interfaceDeclaration
 	  )*
 	  '}'
 	;
+*/
 
 typeParameterDeclaration 
 	:
