@@ -7,12 +7,12 @@ import org.sirius.common.error.Reporter;
 import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.Visitor;
 
-class CodeTreeBuilder implements Visitor {
+class JvmModuleBuilderVisitor implements Visitor {
 	private Reporter reporter;
 	private JvmModule moduleNode;
 	private BackendOptions backendOptions;
 
-	public CodeTreeBuilder(Reporter reporter, BackendOptions backendOptions) {
+	public JvmModuleBuilderVisitor(Reporter reporter, BackendOptions backendOptions) {
 		super();
 		this.reporter = reporter;
 		this.backendOptions = backendOptions;

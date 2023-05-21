@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import org.objectweb.asm.ClassWriter;
 import org.sirius.common.core.QName;
@@ -39,7 +40,12 @@ public class Bytecode {
 	
 	@Override
 	public String toString() {
-		return bytes.toString();
+		int MAX_TO_PRINT = 100;
+		String contentString = bytes.length > MAX_TO_PRINT ?
+				Arrays.copyOf(bytes, MAX_TO_PRINT).toString() + "..."
+				: Arrays.copyOf(bytes, bytes.length).toString();
+		
+		return classQName.dotSeparated() + ":[" + contentString + "]";
 	}
 	
 	

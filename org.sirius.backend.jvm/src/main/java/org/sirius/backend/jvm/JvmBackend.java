@@ -3,6 +3,7 @@ package org.sirius.backend.jvm;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,47 +23,7 @@ public class JvmBackend implements Backend {
 
 	private List<ClassWriterListener> listeners = new ArrayList<>();
 
-	// '--verbose' cli option has the 'ast' flag
-//	private boolean verboseAst = false;
-	
 	private BackendOptions backendOptions;
-	
-//	public static class Builder {
-//		private List<ClassWriterListener> listeners = new ArrayList<>();
-//		private Reporter reporter;
-//		private BackendOptions backendOptions;
-//
-//		public Builder(Reporter reporter, BackendOptions backendOptions) {
-//			super();
-//			this.reporter = reporter;
-//			this.backendOptions = backendOptions;
-//		}
-//		public Builder(Reporter reporter) {
-//			this(reporter, new BackendOptions(reporter, Optional.empty() /* optJvmMainOption */));
-//		}
-//
-//		public Builder addFileOutput(String moduleDir, Optional<String> classDir) {
-//			JarCreatorListener listener = JarCreatorListener.createAsFile(reporter, moduleDir, classDir);
-//			listeners.add(listener);
-//			return this;
-//		}
-//
-//		public Builder addInMemoryMapOutput(HashMap<QName /*class QName */, Bytecode> bytecodeMap) {
-//			JarCreatorListener listener = JarCreatorListener.createInMemoryMap(reporter, bytecodeMap);
-//			listeners.add(listener);
-//			return this;
-//		}
-//		
-//		public Builder addInMemoryOutput() {
-//			InMemoryClassWriterListener l = new InMemoryClassWriterListener();
-//			listeners.add(l);
-//			return this;
-//		}
-//		public JvmBackend create() {
-//			return new JvmBackend(reporter, backendOptions, listeners);
-//		}
-//		
-//	}
 	
 	public JvmBackend(Reporter reporter, BackendOptions backendOptions, List<ClassWriterListener> listeners) {
 		super();
@@ -83,16 +44,49 @@ public class JvmBackend implements Backend {
 		this(reporter, new BackendOptions(reporter, Optional.empty() /* optJvmMainOption */));
 	}
 
+	public static class Builder {
+		private Reporter reporter;
+		private Optional<BackendOptions> backendOptions;
+		private List<ClassWriterListener> listeners;
+		
+		public Builder(Reporter reporter) {
+			super();
+			this.reporter = reporter;
+			this.listeners = new ArrayList<>();
+			this.backendOptions = Optional.empty();
+		}
+		public Builder backendOptions(BackendOptions backendOptions) {
+			this.backendOptions = Optional.of(backendOptions); 
+			return this;
+		}
+		public Builder addClassWriterListener(ClassWriterListener listener) {
+			this.listeners.add(listener); 
+			return this;
+		}
+		public JvmBackend build() {
+			return new JvmBackend(reporter, 
+					backendOptions.orElse(new BackendOptions(reporter, Optional.empty() /* jvmMain */)), 
+					listeners);
+		}
+		
+	}
+	
 	public JarCreatorListener addFileOutput(String moduleDir, Optional<String> classDir) {
 		JarCreatorListener listener = JarCreatorListener.createAsFile(reporter, moduleDir, classDir);
 		listeners.add(listener);
 		return listener;
 	}
 
-	public JarCreatorListener addInMemoryMapOutput(HashMap<QName /*class QName */, Bytecode> bytecodeMap) {
+	public JarCreatorListener addInMemoryMapOutput(Map<QName /*class QName */, Bytecode> bytecodeMap) {
 		JarCreatorListener listener = JarCreatorListener.createInMemoryMap(reporter, bytecodeMap);
 		listeners.add(listener);
 		return listener;
+	}
+	public HashMap<QName /*class QName */, Bytecode> addInMemoryMapOutput() {
+		HashMap<QName, Bytecode> bytecodeMap = new HashMap<>();
+		JarCreatorListener listener = JarCreatorListener.createInMemoryMap(reporter, bytecodeMap);
+		listeners.add(listener);
+		return bytecodeMap;
 	}
 	
 	public InMemoryClassWriterListener addInMemoryOutput() {
@@ -130,9 +124,9 @@ public class JvmBackend implements Backend {
 		
 		listeners.forEach(l ->  l.start(moduleDeclaration) );
 		
-		CodeTreeBuilder codeTreeBuilder = new CodeTreeBuilder(reporter, backendOptions);
-		moduleDeclaration.visitMe(codeTreeBuilder);
-		JvmModule jvmModule = codeTreeBuilder.createByteCode(listeners);
+		JvmModuleBuilderVisitor jvmModuleBuilder = new JvmModuleBuilderVisitor(reporter, backendOptions);
+		moduleDeclaration.visitMe(jvmModuleBuilder);
+		JvmModule jvmModule = jvmModuleBuilder.createByteCode(listeners);
 		
 		listeners.forEach(ClassWriterListener::end);
 		return jvmModule;

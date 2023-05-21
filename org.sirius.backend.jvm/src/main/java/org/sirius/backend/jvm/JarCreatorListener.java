@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -123,9 +124,9 @@ public class JarCreatorListener implements ClassWriterListener {
 	}
 	public static class JvmByteOutputStreamWriter implements JvmOutputWriter {
 		private Reporter reporter;
-		private HashMap<QName /*class QName */, Bytecode> bytecodeMap;
+		private Map<QName /*class QName */, Bytecode> bytecodeMap;
 
-		public JvmByteOutputStreamWriter(Reporter reporter, HashMap<QName /*class QName */, Bytecode> bytecodeMap) {
+		public JvmByteOutputStreamWriter(Reporter reporter, Map<QName /*class QName */, Bytecode> bytecodeMap) {
 			super();
 			this.reporter = reporter;
 			this.bytecodeMap = bytecodeMap;
@@ -173,7 +174,7 @@ public class JarCreatorListener implements ClassWriterListener {
 		JvmOutputWriter ow = new JvmFileOutputWriter(reporter, modulePath, classDir);
 		return new JarCreatorListener(reporter, ow);
 	}
-	public static JarCreatorListener createInMemoryMap(Reporter reporter, HashMap<QName /*class QName */, Bytecode> bytecodeMap) {
+	public static JarCreatorListener createInMemoryMap(Reporter reporter, Map<QName /*class QName */, Bytecode> bytecodeMap) {
 		JvmOutputWriter ow = new JvmByteOutputStreamWriter(reporter, bytecodeMap);
 		return new JarCreatorListener(reporter, ow);
 	}

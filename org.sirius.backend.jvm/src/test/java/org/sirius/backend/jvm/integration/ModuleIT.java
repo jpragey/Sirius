@@ -1,12 +1,10 @@
 package org.sirius.backend.jvm.integration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,15 +21,9 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
-import org.sirius.frontend.api.ModuleDeclaration;
-import org.sirius.frontend.api.PackageDeclaration;
-import org.sirius.frontend.api.Session;
-import org.sirius.frontend.apiimpl.ModuleDeclarationImpl;
-import org.sirius.frontend.apiimpl.SessionImpl;
-import org.sirius.frontend.core.PhysicalPath;
 import org.sirius.frontend.core.ScriptSession;
 
-public class ModuleTest {
+public class ModuleIT {
 
 	private Reporter reporter;
 
@@ -43,29 +35,24 @@ public class ModuleTest {
 
 	@Test
 	@DisplayName("Happy path for JVM module creation")
-	public void givenAnEmptyModuleDeclaration_whenModuleDescriptorIsCreated_theBytecodeIsOkTest() throws Exception {
+	public void moduleDescriptorCreationHappyPathTest() throws Exception {
+		String script = "#!\n "
+				+ "module a.b.c \"1.0\" {}\n"
+				+ "class A(){}\n"
+		+ "Integer main() {Integer a = 10; return a;}";
 		
-		// Given
-		ModuleDeclaration moduleDeclaration = new ModuleDeclarationImpl.Builder()
-				.qName(QName.of("a","b","c"))
-				.version("1.0")
-				.physicalPath(PhysicalPath.empty)
-				.create();
+		ScriptSession session = CompileTools.compileScript(script, reporter);
 		
-		Session session = new SessionImpl(reporter, List.of(moduleDeclaration));
-
-		// When
 		JvmBackend backend = new JvmBackend.Builder(reporter).build();
-		// Map JVM class qname -> bytecode
+		
 		HashMap<QName, Bytecode> bytecodeMap = backend.addInMemoryMapOutput();
 		backend.process(session);
-
-		// Then
+		
 //		bytecodeMap.forEach((qn, bc) -> { System.out.println("Class: " + qn + " -> " + bc); });
 		
-		Bytecode moduleDescriptorByteCode = bytecodeMap.get(QName.of("module-info"));
-		assertThat(moduleDescriptorByteCode, notNullValue());
-		byte [] bytes = moduleDescriptorByteCode.getBytes();
+		Bytecode moduleInfoBytecode = bytecodeMap.get(new QName("module-info"));
+		assertThat(moduleInfoBytecode, notNullValue());
+		byte [] bytes = moduleInfoBytecode.getBytes();
 		
 		Utils.ModuleInfo mi = Utils.parseModuleBytecode(bytes);
 

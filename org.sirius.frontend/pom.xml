@@ -19,64 +19,75 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.sirius</groupId>
+			<groupId>
+				org.sirius</groupId>
 			<artifactId>org.sirius.sdk</artifactId>
-			<version>${project.version}</version>
+			<version>
+				${project.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
+			<groupId>
+				org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
+			<groupId>
+				org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-params</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.hamcrest</groupId>
+			<groupId>
+				org.hamcrest</groupId>
 			<artifactId>hamcrest</artifactId>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>org.mockito</groupId>
+			<groupId>
+				org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>org.mockito</groupId>
+			<groupId>
+				org.mockito</groupId>
 			<artifactId>mockito-junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>org.antlr</groupId>
+			<groupId>
+				org.antlr</groupId>
 			<artifactId>antlr4-runtime</artifactId>
-			<version>${libs.antlr4.version}</version>
+			<version>
+				${libs.antlr4.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.ow2.asm/asm -->
 		<dependency>
 			<groupId>org.ow2.asm</groupId>
-			<artifactId>asm</artifactId>
+			<artifactId>
+				asm</artifactId>
 			<version>${libs.asm.version}</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>
 
 		<resources>
 			<resource>
-				<directory>build/generated-sources/antlr4</directory>
+				<directory>
+					build/generated-sources/antlr4</directory>
 				<!-- <directory>target/generated-sources/antlr4</directory> -->
 				<excludes>
 					<exclude>**/*.java</exclude>
 				</excludes>
 			</resource>
 			<resource>
-				<directory>src/main/grammar</directory>
+				<directory>
+					src/main/grammar</directory>
 				<excludes>
 					<exclude>**/*.java</exclude>
 				</excludes>
@@ -92,13 +103,15 @@
 			-Ddetail=true
            -->
 			<plugin>
-				<groupId>org.antlr</groupId>
+				<groupId>
+					org.antlr</groupId>
 				<artifactId>antlr4-maven-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>antlr</id>
 						<goals>
-							<goal>antlr4</goal>
+							<goal>
+								antlr4</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -108,21 +121,24 @@
 					<outputDirectory>target/generated-sources/antlr4/</outputDirectory> -->
 					<!--
 					<outputDirectory>build/generated-source/antlr4/org/sirius/frontend/parser</outputDirectory> -->
-					<outputDirectory>target/generated-sources/antlr4/org/sirius/frontend/parser</outputDirectory>
+					<outputDirectory>
+						target/generated-sources/antlr4/org/sirius/frontend/parser</outputDirectory>
 
 
 					<!--
 					<sourceDirectory>src/main/antlr/org/sirius/frontend/parser</sourceDirectory> -->
-					<sourceDirectory>src/main/antlr</sourceDirectory>
+					<sourceDirectory>
+						src/main/antlr</sourceDirectory>
 					<!--        	<libDirectory>src/main/antlr/imports</libDirectory>-->
 					<libDirectory>src/main/antlr</libDirectory>
 
 					<!--        	<libDirectory>src/main/antlr</libDirectory>-->
 
-					<visitor>true</visitor>
+					<visitor>
+						true</visitor>
 				</configuration>
 			</plugin>
-
+			
 		</plugins>
 	</build>
 	
@@ -130,8 +146,10 @@
 		<plugins>
 		
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
+				<groupId>
+					org.apache.maven.plugins</groupId>
+				<artifactId>
+					maven-surefire-report-plugin</artifactId>
 				<configuration>
 					<aggregate>false</aggregate>
 				</configuration>
