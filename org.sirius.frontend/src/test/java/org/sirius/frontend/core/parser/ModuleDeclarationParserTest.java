@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
@@ -35,7 +36,7 @@ public class ModuleDeclarationParserTest {
 	}
 	@AfterEach
 	public void tearDown() {
-		assert(this.reporter.ok());
+		assertTrue(this.reporter.ok());
 	}
 	
 	// -- Test of Module import
@@ -145,14 +146,18 @@ public class ModuleDeclarationParserTest {
 	@Test
 	@DisplayName("Module declaration comments are correctly parsed")
 	public void moduleDeclarationsCommentsAreParsed() {
-		simplestModuleCheck("/*Some*/ /*module*/ module a.b.c \" 1.0 \" {}", md-> {
+		String inputText = "/* comment 1 */ /*comment 2*/ module a.b.c \" 1.0 \" {}";
+		
+		
+		simplestModuleCheck(inputText, md-> {
 			assertThat(md.getQnameString(), equalTo("a.b.c"));
 			assertThat(md.getVersion().getText(), equalTo("\" 1.0 \""));
 			assertThat(md.getVersionString(), equalTo("1.0"));
 
-//			assertThat(md.getComments(), hasSize(2));
+			List<String> comments = md.getComments().stream()
+					.map(tk->tk.getText()).toList();
 			
-			assertThat  (md.getComments().stream().map(tk->tk.getText()).toList(), contains("/*Some*/", "/*module*/"));
+			assertThat(comments, contains("/* comment 1 */", "/*comment 2*/"));
 		});
 	}
 	

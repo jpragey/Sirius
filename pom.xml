@@ -20,31 +20,26 @@ in <Sirius>/target/staging/
 	<url>https://github.com/jpragey/Sirius</url>
 
 	<properties>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
-		<maven.compiler.compilerVersion>17</maven.compiler.compilerVersion>
+		<java.version>17</java.version>
+<!--		<maven.compiler.source>17</maven.compiler.source>-->
+<!--		<maven.compiler.target>17</maven.compiler.target>-->
+<!--		<maven.compiler.compilerVersion>17</maven.compiler.compilerVersion>-->
 
 		<sirius.version>0.0.1-SNAPSHOT</sirius.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<!--
-		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>-->
-		<!--
-		<maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>-->
-		<!--    <junit-jupiter.version>5.9.1</junit-jupiter.version> -->
 		<junit-jupiter.version>5.9.2</junit-jupiter.version>
 
 		<additionalparam>-Xdoclint:none</additionalparam>
 
-		<libs.antlr4.version>4.10.1</libs.antlr4.version>
-		<libs.asm.version>9.1</libs.asm.version>
-
+		<libs.antlr4.version>4.13.0</libs.antlr4.version>
+		<libs.asm.version>9.4</libs.asm.version>
+		<lombok-version>1.18.26</lombok-version>
 	</properties>
 
 	<modules>
 
 		<module>org.sirius.common</module>
-
 		<module>org.sirius.sdk</module>
 		<module>org.sirius.runtime</module>
 		<module>org.sirius.frontend</module>
@@ -52,7 +47,6 @@ in <Sirius>/target/staging/
 		<module>org.sirius.backend.core</module>
 		<module>org.sirius.backend.jvm</module>
 
-<!--		<module>deleteMe</module>-->
 	</modules>
 
 	<dependencyManagement>
@@ -109,7 +103,11 @@ in <Sirius>/target/staging/
 				<artifactId>log4j-api</artifactId>
 				<version>2.20.0</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok-version}</version>
+			</dependency>
 			
 		</dependencies>
 	</dependencyManagement>
@@ -128,7 +126,7 @@ in <Sirius>/target/staging/
 				<plugin>
 					<groupId>org.antlr</groupId>
 					<artifactId>antlr4-maven-plugin</artifactId>
-					<version>4.10.1</version>
+					<version>${libs.antlr4.version}</version>
 				</plugin>
 
 				<plugin>
@@ -166,15 +164,22 @@ in <Sirius>/target/staging/
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.11.0</version>
 				<configuration>
-					<source>${maven.compiler.source}</source>
-					<target>${maven.compiler.target}</target>
-					<compilerVersion>${maven.compiler.compilerVersion}15</compilerVersion>
+					<release>${java.version}</release>
+					<compilerVersion>${maven.compiler.compilerVersion}</compilerVersion>
 
 					<compilerArgs>
 						<arg>-parameters</arg>
 					</compilerArgs>
+					
+					<annotationProcessorPaths>
+						<annotationProcessorPath>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok-version}</version>
+						</annotationProcessorPath>
+					</annotationProcessorPaths>
 
 				</configuration>
 			</plugin>

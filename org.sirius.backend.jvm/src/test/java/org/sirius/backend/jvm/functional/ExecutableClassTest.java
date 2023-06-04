@@ -34,6 +34,9 @@ import org.sirius.frontend.api.IntegerConstantExpression;
 import org.sirius.frontend.api.ReturnStatement;
 import org.sirius.frontend.api.Statement;
 import org.sirius.frontend.api.Type;
+import org.sirius.frontend.apiimpl.FunctionClassImpl;
+import org.sirius.frontend.apiimpl.IntegerConstantExpressionImpl;
+import org.sirius.frontend.apiimpl.ReturnStatementImpl;
 
 
 public class ExecutableClassTest {
@@ -60,13 +63,13 @@ public class ExecutableClassTest {
 		QName qName = new QName("a", "b","MainClass");
 
 		// -- Create intermediate code
-		record ConstExpressionStub(Type type, int value) implements IntegerConstantExpression  {}
-		record ReturnStatementStub(Expression expression) implements ReturnStatement {}
-		record FunctionClassStub(QName qName, Type returnType, List<Statement> bodyStatements) implements FunctionClass {}
-
-		FunctionClass functionClass = new FunctionClassStub(qName,Type.integerType, 
-				List.of(new ReturnStatementStub(
-						new ConstExpressionStub(Type.integerType, 42))));
+//		record ConstExpressionStub(Type type, int value) implements IntegerConstantExpression  {}
+//		record ReturnStatementStub(Expression expression) implements ReturnStatement {}
+//		record FunctionClassStub(QName qName, Type returnType, List<Statement> bodyStatements) implements FunctionClass {}
+		
+		FunctionClass functionClass = new FunctionClassImpl(qName,Type.integerType, 
+				List.of(new ReturnStatementImpl(
+						new IntegerConstantExpressionImpl(42))));
 
 		BackendOptions backendOptions = new BackendOptions(reporter, Optional.of("TODO") /*TODO*/);
 		DescriptorFactory descriptorFactory = new DescriptorFactory(reporter);

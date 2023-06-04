@@ -264,7 +264,7 @@ public class ModuleDeclarationParser {
 			Token semi = ctx.getStart(); // start = comment on first ModuleDeclaration token ('module')
 			int i = semi.getTokenIndex();
 //			List<Token> cmtChannel = tokens.getHiddenTokensToRight(i, SLexer.CommentChannel);
-			List<Token> cmtChannel = tokens.getHiddenTokensToLeft(i, SLexer.CommentChannel);
+			List<Token> cmtChannel = tokens.getHiddenTokensToLeft(i, SLexer.COMMENTS_CHANNEL /* CommentChannel*/);
 			List<AstToken> commentTokens;
 			if(cmtChannel != null) {
 				String allComments = cmtChannel.stream().map(token -> token.getText()).collect(Collectors.joining());

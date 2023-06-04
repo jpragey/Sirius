@@ -58,11 +58,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>
-				org.antlr</groupId>
+			<groupId>org.antlr</groupId>
 			<artifactId>antlr4-runtime</artifactId>
-			<version>
-				${libs.antlr4.version}</version>
+			<version>${libs.antlr4.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.ow2.asm/asm -->
@@ -103,15 +101,13 @@
 			-Ddetail=true
            -->
 			<plugin>
-				<groupId>
-					org.antlr</groupId>
+				<groupId>org.antlr</groupId>
 				<artifactId>antlr4-maven-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>antlr</id>
 						<goals>
-							<goal>
-								antlr4</goal>
+							<goal>antlr4</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -121,8 +117,7 @@
 					<outputDirectory>target/generated-sources/antlr4/</outputDirectory> -->
 					<!--
 					<outputDirectory>build/generated-source/antlr4/org/sirius/frontend/parser</outputDirectory> -->
-					<outputDirectory>
-						target/generated-sources/antlr4/org/sirius/frontend/parser</outputDirectory>
+					<outputDirectory>target/generated-sources/antlr4/org/sirius/frontend/parser</outputDirectory>
 
 
 					<!--
@@ -138,13 +133,13 @@
 						true</visitor>
 				</configuration>
 			</plugin>
-			
+
 		</plugins>
 	</build>
-	
+
 	<reporting>
 		<plugins>
-		
+
 			<plugin>
 				<groupId>
 					org.apache.maven.plugins</groupId>

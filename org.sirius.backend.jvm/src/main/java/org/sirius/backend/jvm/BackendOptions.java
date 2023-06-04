@@ -6,6 +6,9 @@ import java.util.Optional;
 import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 
+//import lombok.Getter;
+
+
 /** This backend options (stateful class).
  * Stores:
  * <ul>
@@ -14,12 +17,13 @@ import org.sirius.common.error.Reporter;
  * It also marks/checks if the main function QName has been written to bytecode (with {@link #markJvmMainAsWritten(QName)}
  * and {@link #checkAllJvmMainBytecodeWritten()}).
  */
+//@Getter
 public class BackendOptions {
-	private Reporter reporter;
+	private final Reporter reporter;
 
-	private Optional<QName> jvmMainFunctionQName;
+	private final Optional<QName> jvmMainFunctionQName;
 
-	private HashSet<QName> writtenJvmMain = new HashSet<>();
+	private final HashSet<QName> writtenJvmMain = new HashSet<>();
 
 	public BackendOptions(Reporter reporter, Optional<String> optJvmMainOption) {
 		super();

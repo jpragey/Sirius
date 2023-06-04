@@ -1,0 +1,9 @@
+<project>
+	
+	<body>
+		<menu ref="modules"/>
+		<menu ref="parent"/>
+		<menu ref="reports"/>
+	</body>
+  
+</project>
