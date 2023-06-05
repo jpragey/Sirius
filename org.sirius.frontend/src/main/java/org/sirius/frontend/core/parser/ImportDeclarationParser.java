@@ -13,11 +13,11 @@ import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ImportDeclarationElement;
 import org.sirius.frontend.ast.QualifiedName;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.Sirius.ImportDeclarationContext;
-import org.sirius.frontend.parser.Sirius.ImportDeclarationElementContext;
-import org.sirius.frontend.parser.Sirius.PackageDeclarationContext;
-import org.sirius.frontend.parser.Sirius.QnameContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
+import org.sirius.frontend.parser.SParser.ImportDeclarationContext;
+import org.sirius.frontend.parser.SParser.ImportDeclarationElementContext;
+import org.sirius.frontend.parser.SParser.PackageDeclarationContext;
+import org.sirius.frontend.parser.SParser.QnameContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
@@ -33,7 +33,7 @@ public class ImportDeclarationParser {
 		this.tokens = tokens;
 	}
 
-	public static class ImportDeclarationElementVisitor extends SiriusBaseVisitor<ImportDeclarationElement> {
+	public static class ImportDeclarationElementVisitor extends SParserBaseVisitor<ImportDeclarationElement> {
 		@Override
 		public ImportDeclarationElement visitImportDeclarationElement(ImportDeclarationElementContext ctx) {
 			
@@ -48,7 +48,7 @@ public class ImportDeclarationParser {
 		}
 	}
 
-	public class ImportDeclarationVisitor extends SiriusBaseVisitor<ImportDeclaration> {
+	public class ImportDeclarationVisitor extends SParserBaseVisitor<ImportDeclaration> {
 		private Reporter reporter;
 
 		public ImportDeclarationVisitor(Reporter reporter) {

@@ -1,6 +1,9 @@
 package org.sirius.frontend.core.parser;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -8,7 +11,6 @@ import java.util.function.Consumer;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.common.core.QName;
@@ -16,14 +18,8 @@ import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.AstModuleDeclaration;
-import org.sirius.frontend.ast.AstPackageDeclaration;
-import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ModuleImport;
-import org.sirius.frontend.parser.Sirius;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import org.sirius.frontend.parser.SParser;
 
 
 public class ModuleDeclarationParserTest {
@@ -42,7 +38,7 @@ public class ModuleDeclarationParserTest {
 	// -- Test of Module import
 	private ModuleImport parseModuleImport(String inputText) {
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 
 		ParseTree tree = parser.moduleImport();
 				
@@ -125,7 +121,7 @@ public class ModuleDeclarationParserTest {
 	private AstModuleDeclaration parseModuleDeclaration(String inputText) {
 		
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 		ParseTree tree = parser.moduleDeclaration();
 				
 		ModuleDeclarationParser.ModuleDeclarationVisitor visitor = new ModuleDeclarationParser.ModuleDeclarationVisitor(reporter, parserFactory.tokenStream());

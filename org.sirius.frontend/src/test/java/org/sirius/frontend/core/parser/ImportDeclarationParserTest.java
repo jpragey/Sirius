@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,7 @@ import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.ImportDeclaration;
 import org.sirius.frontend.ast.ImportDeclarationElement;
-import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.SParser;
 
 public class ImportDeclarationParserTest {
 
@@ -38,7 +37,7 @@ public class ImportDeclarationParserTest {
 	
 	private ImportDeclaration parseImportDeclaration(String inputText) {
 		
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		SParser parser = ParserUtil.createParser(reporter, inputText);
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
 
 		ParseTree tree = parser.importDeclaration();

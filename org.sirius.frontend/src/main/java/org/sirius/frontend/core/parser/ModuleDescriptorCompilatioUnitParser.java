@@ -5,8 +5,8 @@ import java.util.List;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstModuleDeclaration;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.Sirius.ModuleDescriptorCompilationUnitContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
+import org.sirius.frontend.parser.SParser.ModuleDescriptorCompilationUnitContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
@@ -15,7 +15,7 @@ import org.sirius.frontend.parser.Sirius.ModuleDescriptorCompilationUnitContext;
  */
 public class ModuleDescriptorCompilatioUnitParser {
 
-	public static class PackageDescriptorCompilationUnitVisitor extends SiriusBaseVisitor<AstModuleDeclaration> {
+	public static class PackageDescriptorCompilationUnitVisitor extends SParserBaseVisitor<AstModuleDeclaration> {
 		private Reporter reporter;
 		private CommonTokenStream tokens;
 

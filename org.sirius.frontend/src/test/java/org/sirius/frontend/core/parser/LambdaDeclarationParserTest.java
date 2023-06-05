@@ -1,30 +1,20 @@
 package org.sirius.frontend.core.parser;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
+import static org.hamcrest.Matchers.hasSize;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
-import org.sirius.frontend.ast.AstStatement;
-import org.sirius.frontend.ast.AstType;
-import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.LambdaDeclaration;
-import org.sirius.frontend.ast.LambdaDefinition;
-import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.SParser;
 
 public class LambdaDeclarationParserTest {
 
@@ -42,7 +32,7 @@ public class LambdaDeclarationParserTest {
 	
 	private LambdaDeclaration parseLambdaDeclaration(String inputText) {
 		
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		SParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.lambdaDeclaration();
 				
 		LambdaDeclarationParser.LambdaDeclarationVisitor typeVisitor = new LambdaDeclarationParser.LambdaDeclarationVisitor(reporter);

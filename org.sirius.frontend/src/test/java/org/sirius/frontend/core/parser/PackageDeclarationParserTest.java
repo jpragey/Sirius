@@ -1,6 +1,8 @@
 package org.sirius.frontend.core.parser;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -13,11 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
-import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
-import org.sirius.frontend.parser.Sirius;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.sirius.frontend.parser.SParser;
 
 
 public class PackageDeclarationParserTest {
@@ -37,7 +36,7 @@ public class PackageDeclarationParserTest {
 		
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 
 		ParseTree tree = parser.packageDeclaration();
 				

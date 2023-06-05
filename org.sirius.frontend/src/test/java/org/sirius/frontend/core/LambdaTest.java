@@ -1,17 +1,10 @@
 package org.sirius.frontend.core;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.pattern.ParseTreePatternMatcher.CannotInvokeStartRule;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -26,16 +19,13 @@ import org.sirius.frontend.api.ModuleDeclaration;
 import org.sirius.frontend.api.PackageDeclaration;
 import org.sirius.frontend.ast.AstLocalVariableStatement;
 import org.sirius.frontend.ast.AstStatement;
-import org.sirius.frontend.ast.AstType;
-import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.LambdaDeclaration;
 import org.sirius.frontend.ast.LambdaDefinition;
-import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.core.parser.ParserBuilder;
 import org.sirius.frontend.core.parser.ParserUtil;
 import org.sirius.frontend.core.parser.StatementParser;
 import org.sirius.frontend.parser.Compiler;
-import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.SParser;
 
 public class LambdaTest {
 
@@ -55,7 +45,7 @@ public class LambdaTest {
 		
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 		
 		ParseTree tree = parser.localVariableStatement();
 				

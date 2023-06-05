@@ -27,7 +27,7 @@ import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.SParser;
 
 public class StatementParserTest {
 
@@ -60,7 +60,7 @@ public class StatementParserTest {
 	private AstReturnStatement parseReturnStatement(String inputText, Consumer<AstReturnStatement> verify) {
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 
 		ParseTree tree = parser.returnStatement();
 		
@@ -90,7 +90,7 @@ public class StatementParserTest {
 	private AstExpressionStatement parseExpressionStatement(String inputText, Consumer<AstExpressionStatement> verify) {
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 
 		ParseTree tree = parser.statement();
 		
@@ -125,7 +125,7 @@ public class StatementParserTest {
 	private AstLocalVariableStatement parseLocalVariableStatement(String inputText, Consumer<AstLocalVariableStatement> verify) {
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 
 		ParseTree tree = parser.statement();
 		
@@ -157,7 +157,7 @@ public class StatementParserTest {
 	private AstIfElseStatement parseIfElseStatement(String inputText, Consumer<AstIfElseStatement> verify) {
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 
 		ParseTree tree = parser.statement();
 		

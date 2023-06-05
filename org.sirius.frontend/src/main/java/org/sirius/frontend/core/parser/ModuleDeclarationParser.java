@@ -22,15 +22,15 @@ import org.sirius.frontend.ast.ModuleImportEquivalents;
 import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionDefinitionVisitor;
 import org.sirius.frontend.parser.SLexer;
-import org.sirius.frontend.parser.Sirius.ClassDeclarationContext;
-import org.sirius.frontend.parser.Sirius.ConcreteModuleContext;
-import org.sirius.frontend.parser.Sirius.FunctionDeclarationContext;
-import org.sirius.frontend.parser.Sirius.FunctionDefinitionContext;
-import org.sirius.frontend.parser.Sirius.ModuleDeclarationContext;
-import org.sirius.frontend.parser.Sirius.ModuleImportContext;
-import org.sirius.frontend.parser.Sirius.ModuleVersionEquivalentContext;
-import org.sirius.frontend.parser.Sirius.PackageDeclarationContext;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
+import org.sirius.frontend.parser.SParser.ClassDeclarationContext;
+import org.sirius.frontend.parser.SParser.ConcreteModuleContext;
+import org.sirius.frontend.parser.SParser.FunctionDeclarationContext;
+import org.sirius.frontend.parser.SParser.FunctionDefinitionContext;
+import org.sirius.frontend.parser.SParser.ModuleDeclarationContext;
+import org.sirius.frontend.parser.SParser.ModuleImportContext;
+import org.sirius.frontend.parser.SParser.ModuleVersionEquivalentContext;
+import org.sirius.frontend.parser.SParser.PackageDeclarationContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
 
 /**
  * Visitor-based parser for the 'typeParameterDeclaration' rule.
@@ -49,7 +49,7 @@ public class ModuleDeclarationParser {
 		this.tokens = tokens;
 	}
 
-	public class ModuleImportVisitor extends SiriusBaseVisitor<ModuleImport> {
+	public class ModuleImportVisitor extends SParserBaseVisitor<ModuleImport> {
 		@Override
 		public ModuleImport visitModuleImport(ModuleImportContext ctx) {
 
@@ -84,7 +84,7 @@ public class ModuleDeclarationParser {
 		}
 	}
 
-	public static class ImportEquivalentVisitor extends SiriusBaseVisitor<Void> {
+	public static class ImportEquivalentVisitor extends SParserBaseVisitor<Void> {
 		ModuleImportEquivalents equivalents;
 
 		public ImportEquivalentVisitor(ModuleImportEquivalents equivalents) {
@@ -102,7 +102,7 @@ public class ModuleDeclarationParser {
 		}
 	}
 
-	public class PackageElementVisitor extends SiriusBaseVisitor<Void> {
+	public class PackageElementVisitor extends SParserBaseVisitor<Void> {
 		private List<AstPackageDeclaration> packageDeclarations = new ArrayList<>();
 		private PackageElements packageElements;
 
@@ -160,7 +160,7 @@ public class ModuleDeclarationParser {
 		}
 	}
 
-	public class ConcreteModuleVisitor extends SiriusBaseVisitor<AstModuleDeclaration> {
+	public class ConcreteModuleVisitor extends SParserBaseVisitor<AstModuleDeclaration> {
 //		CommonTokenStream tokens;
 		public ConcreteModuleVisitor(/* CommonTokenStream tokens */) {
 			super();
@@ -247,7 +247,7 @@ public class ModuleDeclarationParser {
 		}
 	}
 
-	public static class ModuleDeclarationVisitor extends SiriusBaseVisitor<AstModuleDeclarationBuilder> {
+	public static class ModuleDeclarationVisitor extends SParserBaseVisitor<AstModuleDeclarationBuilder> {
 		private Reporter reporter;
 		private Parsers parsers;
 		private CommonTokenStream tokens;

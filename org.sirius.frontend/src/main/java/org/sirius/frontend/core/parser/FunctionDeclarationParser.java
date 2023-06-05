@@ -13,12 +13,12 @@ import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.AstVoidType;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.TypeParameter;
-import org.sirius.frontend.parser.Sirius.FunctionBodyContext;
-import org.sirius.frontend.parser.Sirius.FunctionDefinitionContext;
-import org.sirius.frontend.parser.Sirius.FunctionDefinitionParameterContext;
-import org.sirius.frontend.parser.Sirius.TypeContext;
-import org.sirius.frontend.parser.Sirius.TypeParameterDeclarationListContext;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
+import org.sirius.frontend.parser.SParser.FunctionBodyContext;
+import org.sirius.frontend.parser.SParser.FunctionDefinitionContext;
+import org.sirius.frontend.parser.SParser.FunctionDefinitionParameterContext;
+import org.sirius.frontend.parser.SParser.TypeContext;
+import org.sirius.frontend.parser.SParser.TypeParameterDeclarationListContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
@@ -37,7 +37,7 @@ public class FunctionDeclarationParser {
 		this.tokens = tokens;
 	}
 
-	public static class FunctionParameterVisitor extends SiriusBaseVisitor<AstFunctionParameter> {
+	public static class FunctionParameterVisitor extends SParserBaseVisitor<AstFunctionParameter> {
 		private Reporter reporter;
 		
 		public FunctionParameterVisitor(Reporter reporter) {
@@ -57,7 +57,7 @@ public class FunctionDeclarationParser {
 		}
 	}
 
-	public class FunctionBodyVisitor extends SiriusBaseVisitor<List<AstStatement> > {
+	public class FunctionBodyVisitor extends SParserBaseVisitor<List<AstStatement> > {
 		private Reporter reporter;
 		
 		public FunctionBodyVisitor(Reporter reporter) {
@@ -77,7 +77,7 @@ public class FunctionDeclarationParser {
 		}
 	}
 
-	public static class TypeParameterListVisitor extends SiriusBaseVisitor< List<TypeParameter> > {
+	public static class TypeParameterListVisitor extends SParserBaseVisitor< List<TypeParameter> > {
 		private Reporter reporter;
 		
 		public TypeParameterListVisitor(Reporter reporter) {
@@ -97,7 +97,7 @@ public class FunctionDeclarationParser {
 		}
 	}
 	
-//	public class FunctionDeclarationVisitor extends SiriusBaseVisitor<FunctionDeclaration> {
+//	public class FunctionDeclarationVisitor extends SParserBaseVisitor<FunctionDeclaration> {
 //		private Reporter reporter;
 //
 //		public FunctionDeclarationVisitor(Reporter reporter) {
@@ -132,7 +132,7 @@ public class FunctionDeclarationParser {
 //			return new FunctionDeclaration(annoList, functionParams, returnType, member, name) ;
 //		}
 //	}
-	public class FunctionDefinitionVisitor extends SiriusBaseVisitor<FunctionDefinition> {
+	public class FunctionDefinitionVisitor extends SParserBaseVisitor<FunctionDefinition> {
 //		private Reporter reporter;
 
 		public FunctionDefinitionVisitor(/*Reporter reporter*/) {

@@ -4,5 +4,8 @@
 **/.gitignore
 **/.settings
 **/test-output
+**/.factorypath
+*/target
+target
 org.sirius.backend.jvm/jvmTest
-
+dist/

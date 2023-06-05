@@ -16,13 +16,13 @@ import org.sirius.frontend.ast.AstReturnStatement;
 import org.sirius.frontend.ast.AstStatement;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.Sirius.BlockStatementContext;
-import org.sirius.frontend.parser.Sirius.ExpressionContext;
-import org.sirius.frontend.parser.Sirius.IfElseStatementContext;
-import org.sirius.frontend.parser.Sirius.IsExpressionStatementContext;
-import org.sirius.frontend.parser.Sirius.LocalVariableStatementContext;
-import org.sirius.frontend.parser.Sirius.ReturnStatementContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
+import org.sirius.frontend.parser.SParser.BlockStatementContext;
+import org.sirius.frontend.parser.SParser.ExpressionContext;
+import org.sirius.frontend.parser.SParser.IfElseStatementContext;
+import org.sirius.frontend.parser.SParser.IsExpressionStatementContext;
+import org.sirius.frontend.parser.SParser.LocalVariableStatementContext;
+import org.sirius.frontend.parser.SParser.ReturnStatementContext;
 import org.sirius.frontend.symbols.SymbolTable;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 
@@ -51,7 +51,7 @@ public class StatementParser {
 		this.tokens = tokens;
 	}
 
-	public class StatementVisitor extends SiriusBaseVisitor<AstStatement> {
+	public class StatementVisitor extends SParserBaseVisitor<AstStatement> {
 		
 		public StatementVisitor() {
 			super();

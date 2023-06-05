@@ -20,20 +20,21 @@ import org.sirius.frontend.ast.ConstructorCallExpression;
 import org.sirius.frontend.ast.LambdaDefinition;
 import org.sirius.frontend.ast.SimpleReferenceExpression;
 import org.sirius.frontend.core.parser.LambdaDeclarationParser.LambdaDefinitionVisitor;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.Sirius.ClassInstanciationExpressionContext;
-import org.sirius.frontend.parser.Sirius.ConstantExpressionContext;
-import org.sirius.frontend.parser.Sirius.ExpressionContext;
-import org.sirius.frontend.parser.Sirius.FunctionCallExpressionContext;
-import org.sirius.frontend.parser.Sirius.IsBinaryExpressionContext;
-import org.sirius.frontend.parser.Sirius.IsConstructorCallExpressionContext;
-import org.sirius.frontend.parser.Sirius.IsFieldAccessExpressionContext;
-import org.sirius.frontend.parser.Sirius.IsMethodCallExpressionContext;
-import org.sirius.frontend.parser.Sirius.IsVariableRefExpressionContext;
-import org.sirius.frontend.parser.Sirius.LambdaDefinitionContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
+import org.sirius.frontend.parser.SParser.ClassInstanciationExpressionContext;
+import org.sirius.frontend.parser.SParser.ConstantExpressionContext;
+import org.sirius.frontend.parser.SParser.ExpressionContext;
+import org.sirius.frontend.parser.SParser.FunctionCallExpressionContext;
+import org.sirius.frontend.parser.SParser.IsBinaryExpressionContext;
+import org.sirius.frontend.parser.SParser.IsConstructorCallExpressionContext;
+import org.sirius.frontend.parser.SParser.IsFieldAccessExpressionContext;
+import org.sirius.frontend.parser.SParser.IsMethodCallExpressionContext;
+import org.sirius.frontend.parser.SParser.IsVariableRefExpressionContext;
+import org.sirius.frontend.parser.SParser.LambdaDefinitionContext;
 import org.sirius.frontend.symbols.Scope;
 
-/** Visitor-based parser for the 'typeParameterDeclaration' rule.
+/**
+ * Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
  * @author jpragey
  *
@@ -42,6 +43,7 @@ public class ExpressionParser {
 	private Reporter reporter;
 	private LambdaDeclarationParser lambdaDeclarationParser;
 	private CommonTokenStream tokens;
+
 	public ExpressionParser(Reporter reporter, CommonTokenStream tokens) {
 		super();
 		this.reporter = reporter;
@@ -49,45 +51,41 @@ public class ExpressionParser {
 		this.tokens = tokens;
 	}
 
-	public class ExpressionVisitor extends SiriusBaseVisitor<AstExpression> {
-		
+	public class ExpressionVisitor extends SParserBaseVisitor<AstExpression> {
+
 		public ExpressionVisitor() {
 			super();
 		}
-		
-		
 
 		@Override
 		public AstExpression visitIsBinaryExpression(IsBinaryExpressionContext ctx) {
 			AstExpression left = visit(ctx.left);
 			AstExpression right = visit(ctx.right);
 			AstToken opToken = new AstToken(ctx.op);
-			
+
 			return new AstBinaryOpExpression(left, right, opToken);
 		}
 
-
-
 		@Override
 		public AstExpression visitConstantExpression(ConstantExpressionContext ctx) {
-			
+
 			TerminalNode stringNode = ctx.STRING();
 			TerminalNode booleanNode = ctx.BOOLEAN();
 			TerminalNode integerNode = ctx.INTEGER();
 			TerminalNode floatNode = ctx.FLOAT();
-			
-			if(stringNode != null)
+
+			if (stringNode != null)
 				return new AstStringConstantExpression(new AstToken(stringNode.getSymbol()));
-			
-			if(integerNode != null)
+
+			if (integerNode != null)
 				return new AstIntegerConstantExpression(new AstToken(integerNode.getSymbol()), reporter);
-			
-			if(booleanNode != null)
+
+			if (booleanNode != null)
 				return new AstBooleanConstantExpression(new AstToken(booleanNode.getSymbol()));
-			
-			if(floatNode != null)
+
+			if (floatNode != null)
 				return new AstFloatConstantExpression(new AstToken(floatNode.getSymbol()));
-			
+
 			reporter.fatal("Unsupported constant expression type...", new AstToken(ctx.start));
 			AstExpression dummyExpression = new AstIntegerConstantExpression(AstToken.internal("0"), reporter);
 			return dummyExpression;
@@ -96,46 +94,40 @@ public class ExpressionParser {
 		@Override
 		public AstFunctionCallExpression visitFunctionCallExpression(FunctionCallExpressionContext ctx) {
 			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
-			
+
 			ExpressionVisitor argVisitor = new ExpressionVisitor();
-			
-			List<AstExpression> actualArguments = ctx.children.stream()
-					.map(tree -> tree.accept(argVisitor))
-					.filter(tree -> tree!=null)
-					.collect(Collectors.toList());
 
-			Optional<AstExpression> thisExpression = Optional.empty(); /*TODO : ????*/
-			
-			return new AstFunctionCallExpression(reporter, name, actualArguments, thisExpression );
+			List<AstExpression> actualArguments = ctx.children.stream().map(tree -> tree.accept(argVisitor))
+					.filter(tree -> tree != null).collect(Collectors.toList());
+
+			Optional<AstExpression> thisExpression = Optional.empty(); /* TODO : ???? */
+
+			return new AstFunctionCallExpression(reporter, name, actualArguments, thisExpression);
 		}
-
-
 
 		@Override
 		public AstExpression visitIsMethodCallExpression(IsMethodCallExpressionContext ctx) {
 
 			ExpressionVisitor argVisitor = new ExpressionVisitor();
 			AstExpression thisExpr = argVisitor.visit(ctx.thisExpr);
-			assert(thisExpr != null); // TODO: implements all this-expressions...
+			assert (thisExpr != null); // TODO: implements all this-expressions...
 
 			AstFunctionCallExpression fctCallExpr = visitFunctionCallExpression(ctx.functionCallExpression());
-			
+
 			fctCallExpr.setThisExpression(thisExpr);
-			
+
 			return fctCallExpr;
 		}
-
 
 		@Override
 		public AstExpression visitClassInstanciationExpression(ClassInstanciationExpressionContext ctx) {
 			AstToken name = new AstToken(ctx.name);
-			
+
 			ExpressionVisitor argVisitor = new ExpressionVisitor();
-			
+
 			List<AstExpression> actualArguments = ctx.children.stream()
 //					.map(tree -> tree.accept(argVisitor))
-					.map(tree -> argVisitor.visit(tree)/* tree.accept(argVisitor)*/)
-					.filter(express -> express != null)
+					.map(tree -> argVisitor.visit(tree)/* tree.accept(argVisitor) */).filter(express -> express != null)
 					.collect(Collectors.toList());
 
 			return new ConstructorCallExpression(reporter, name, actualArguments);
@@ -143,10 +135,10 @@ public class ExpressionParser {
 
 		@Override
 		public AstExpression visitIsFieldAccessExpression(IsFieldAccessExpressionContext ctx) {
-			
+
 			AstExpression thisExpression = visit(ctx.lhs);
 			AstToken valueName = new AstToken(ctx.LOWER_ID().getSymbol());
-			
+
 			return new AstMemberAccessExpression(reporter, thisExpression, valueName);
 		}
 
@@ -156,15 +148,15 @@ public class ExpressionParser {
 
 			return new SimpleReferenceExpression(reporter, refName);
 		}
-		
+
 		@Override
 		public AstExpression visitLambdaDefinition(LambdaDefinitionContext ctx) {
 			LambdaDefinitionVisitor v = lambdaDeclarationParser.new LambdaDefinitionVisitor();
 			LambdaDefinition ld = v.visit(ctx);
-			
+
 			return ld;
 		}
-		
+
 	}
 
 }

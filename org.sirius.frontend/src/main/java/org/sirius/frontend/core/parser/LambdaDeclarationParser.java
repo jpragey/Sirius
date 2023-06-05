@@ -13,11 +13,11 @@ import org.sirius.frontend.ast.FunctionBody;
 import org.sirius.frontend.ast.LambdaClosure;
 import org.sirius.frontend.ast.LambdaDeclaration;
 import org.sirius.frontend.ast.LambdaDefinition;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.Sirius.FunctionBodyContext;
-import org.sirius.frontend.parser.Sirius.LambdaDeclarationContext;
-import org.sirius.frontend.parser.Sirius.LambdaDefinitionContext;
-import org.sirius.frontend.parser.Sirius.TypeContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
+import org.sirius.frontend.parser.SParser.FunctionBodyContext;
+import org.sirius.frontend.parser.SParser.LambdaDeclarationContext;
+import org.sirius.frontend.parser.SParser.LambdaDefinitionContext;
+import org.sirius.frontend.parser.SParser.TypeContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
@@ -34,7 +34,7 @@ public class LambdaDeclarationParser {
 		this.tokens = tokens;
 	}
 
-	public class FunctionBodyVisitor extends SiriusBaseVisitor<List<AstStatement> > {
+	public class FunctionBodyVisitor extends SParserBaseVisitor<List<AstStatement> > {
 		private Reporter reporter;
 		
 		public FunctionBodyVisitor(Reporter reporter) {
@@ -54,7 +54,7 @@ public class LambdaDeclarationParser {
 		}
 	}
 
-	public static class LambdaDeclarationVisitor extends SiriusBaseVisitor<LambdaDeclaration> {
+	public static class LambdaDeclarationVisitor extends SParserBaseVisitor<LambdaDeclaration> {
 		private Reporter reporter;
 
 		public LambdaDeclarationVisitor(Reporter reporter) {
@@ -81,7 +81,7 @@ public class LambdaDeclarationParser {
 		}
 	}
 
-	public class LambdaDefinitionVisitor extends SiriusBaseVisitor<LambdaDefinition> {
+	public class LambdaDefinitionVisitor extends SParserBaseVisitor<LambdaDefinition> {
 		private Parsers parsers;
 
 		public LambdaDefinitionVisitor() {

@@ -20,18 +20,18 @@ import org.sirius.frontend.ast.QualifiedName;
 import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionParameterVisitor;
 import org.sirius.frontend.core.parser.ModuleDeclarationParser.PackageElements;
-import org.sirius.frontend.parser.Sirius.AnnotationContext;
-import org.sirius.frontend.parser.Sirius.AnnotationListContext;
-import org.sirius.frontend.parser.Sirius.FunctionDeclarationContext;
-import org.sirius.frontend.parser.Sirius.FunctionDefinitionParameterListContext;
-import org.sirius.frontend.parser.Sirius.ImplementedInterfacesContext;
-import org.sirius.frontend.parser.Sirius.ModuleHeaderContext;
-import org.sirius.frontend.parser.Sirius.NewCompilationUnitContext;
-import org.sirius.frontend.parser.Sirius.NewModuleDeclarationContext;
-import org.sirius.frontend.parser.Sirius.PackageDeclarationContext;
-import org.sirius.frontend.parser.Sirius.QnameContext;
-import org.sirius.frontend.parser.Sirius.TypeContext;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
+import org.sirius.frontend.parser.SParser.AnnotationContext;
+import org.sirius.frontend.parser.SParser.AnnotationListContext;
+import org.sirius.frontend.parser.SParser.FunctionDeclarationContext;
+import org.sirius.frontend.parser.SParser.FunctionDefinitionParameterListContext;
+import org.sirius.frontend.parser.SParser.ImplementedInterfacesContext;
+import org.sirius.frontend.parser.SParser.ModuleHeaderContext;
+import org.sirius.frontend.parser.SParser.NewCompilationUnitContext;
+import org.sirius.frontend.parser.SParser.NewModuleDeclarationContext;
+import org.sirius.frontend.parser.SParser.PackageDeclarationContext;
+import org.sirius.frontend.parser.SParser.QnameContext;
+import org.sirius.frontend.parser.SParser.TypeContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
 
 
 public record Parsers(Reporter reporter, CommonTokenStream tokens) {
@@ -41,7 +41,7 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 	/****************************************************************************/
 	
 	/** Qualified name qname with position information (Tokens) */
-	public class QualifiedNameVisitor extends SiriusBaseVisitor<QualifiedName> {
+	public class QualifiedNameVisitor extends SParserBaseVisitor<QualifiedName> {
 		public QualifiedName visitQname(QnameContext ctx) 
 		{
 			List<AstToken> elements = ctx.LOWER_ID().stream()
@@ -54,7 +54,7 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 	}
 	
 	/** Qualified name (raw, no source code position information ) */
-	public static class QNameVisitor extends SiriusBaseVisitor<QName> {	// TODO: should have its own namespace
+	public static class QNameVisitor extends SParserBaseVisitor<QName> {	// TODO: should have its own namespace
 		public QName visitQname(QnameContext ctx) 
 		{
 			List<String> elements = ctx.LOWER_ID().stream()
@@ -70,7 +70,7 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 	/** 							Annotations 								*/
 	/****************************************************************************/
 
-	public static class AnnotationVisitor extends SiriusBaseVisitor<Annotation> {
+	public static class AnnotationVisitor extends SParserBaseVisitor<Annotation> {
 		@Override
 		public Annotation visitAnnotation(AnnotationContext ctx) {
 			AstToken name = new AstToken(ctx.LOWER_ID().getSymbol());
@@ -78,7 +78,7 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 		}
 	}
 
-	public static class AnnotationListVisitor extends SiriusBaseVisitor<AnnotationList> {
+	public static class AnnotationListVisitor extends SParserBaseVisitor<AnnotationList> {
 		@Override
 		public AnnotationList visitAnnotationList(AnnotationListContext ctx) {
 			
@@ -94,7 +94,7 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 	/****************************************************************************/
 	/** 							Functions	 								*/
 	/****************************************************************************/
-	public class FunctionParameterListVisitor extends SiriusBaseVisitor< List<AstFunctionParameter> > {
+	public class FunctionParameterListVisitor extends SParserBaseVisitor< List<AstFunctionParameter> > {
 		
 		@Override
 		public List<AstFunctionParameter> visitFunctionDefinitionParameterList(FunctionDefinitionParameterListContext ctx) {
@@ -114,7 +114,7 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 		}
 	}
 
-	public class FunctionDeclarationVisitor extends SiriusBaseVisitor<FunctionDeclaration> {
+	public class FunctionDeclarationVisitor extends SParserBaseVisitor<FunctionDeclaration> {
 
 		@Override
 		public FunctionDeclaration visitFunctionDeclaration(FunctionDeclarationContext ctx) {
@@ -146,7 +146,7 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 	/****************************************************************************/
 	/** 							Class/interface aux							*/
 	/****************************************************************************/
-	public class ImplementClauseVisitor extends SiriusBaseVisitor<List<AstToken>> {
+	public class ImplementClauseVisitor extends SParserBaseVisitor<List<AstToken>> {
 		@Override
 		public List<AstToken> visitImplementedInterfaces(ImplementedInterfacesContext ctx) {
 			List<AstToken> interfaceNames = ctx.TYPE_ID().stream().map(termNode -> new AstToken(termNode.getSymbol())).toList();
@@ -155,7 +155,7 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 	}
 
 	
-	public class PackageDeclarationVisitor extends SiriusBaseVisitor<AstPackageDeclaration> {
+	public class PackageDeclarationVisitor extends SParserBaseVisitor<AstPackageDeclaration> {
 
 		@Override
 		public AstPackageDeclaration visitPackageDeclaration(PackageDeclarationContext ctx) {
@@ -188,7 +188,7 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 	public static record NewModuleDeclaration(ModuleHeader moduleHeader) {}
 	public static record CompilationUnit(Optional<ShebangDeclaration> shebangDeclaration, List<ModuleHeader> modules) {}
 
-	public static class ModuleHeaderVisitor extends SiriusBaseVisitor<ModuleHeader> {
+	public static class ModuleHeaderVisitor extends SParserBaseVisitor<ModuleHeader> {
 
 		@Override
 		public ModuleHeader visitModuleHeader(ModuleHeaderContext ctx) {
@@ -198,18 +198,18 @@ public record Parsers(Reporter reporter, CommonTokenStream tokens) {
 			ModuleHeader mh = new ModuleHeader(qname);
 			return mh;
 		}
-		public ModuleHeader visitNewModuleDeclaration(org.sirius.frontend.parser.Sirius.NewModuleDeclarationContext ctx) {
+		public ModuleHeader visitNewModuleDeclaration(org.sirius.frontend.parser.SParser.NewModuleDeclarationContext ctx) {
 			return visitModuleHeader(ctx.moduleHeader());
 		};
 		
 	};
 	
-	public static class CompilationUnitVisitor extends SiriusBaseVisitor<CompilationUnit> {
+	public static class CompilationUnitVisitor extends SParserBaseVisitor<CompilationUnit> {
 		ModuleHeaderVisitor moduleHeaderVisitor = new ModuleHeaderVisitor();
 		
 		public CompilationUnit visitNewCompilationUnit(NewCompilationUnitContext ctx) {
 
-			SiriusBaseVisitor<ShebangDeclaration> sbv = new ShebangDeclarationParser.ShebangVisitor();
+			SParserBaseVisitor<ShebangDeclaration> sbv = new ShebangDeclarationParser.ShebangVisitor();
 			
 			List<ModuleHeader> mods  = ctx.newModuleDeclaration().stream()
 					.map((NewModuleDeclarationContext nmdCtx) -> moduleHeaderVisitor.visitNewModuleDeclaration(nmdCtx))

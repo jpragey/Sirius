@@ -1,6 +1,7 @@
 package org.sirius.frontend.core.parser;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterEach;
@@ -15,7 +16,7 @@ import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.ast.Variance;
 import org.sirius.frontend.core.parser.TypeParameterParser.TypeParameterVisitor;
-import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.SParser;
 
 public class TypeParameterParserTest {
 
@@ -33,7 +34,7 @@ public class TypeParameterParserTest {
 	
 	private AstType parseTypeDeclaration(String inputText) {
 		
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		SParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.typeParameterDeclaration();
 				
 		TypeParameterVisitor typeVisitor = new TypeParameterParser(reporter).new TypeParameterVisitor();

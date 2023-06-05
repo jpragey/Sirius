@@ -8,10 +8,10 @@ import org.sirius.common.core.QName;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.Sirius.PackageDeclarationContext;
-import org.sirius.frontend.parser.Sirius.PackageDescriptorCompilationUnitContext;
-import org.sirius.frontend.parser.Sirius.QnameContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
+import org.sirius.frontend.parser.SParser.PackageDeclarationContext;
+import org.sirius.frontend.parser.SParser.PackageDescriptorCompilationUnitContext;
+import org.sirius.frontend.parser.SParser.QnameContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
@@ -22,7 +22,7 @@ public class PackageDescriptorCompilatioUnitParser {
 
 	
 	
-	public static class PackageDescriptorCompilationUnitVisitor extends SiriusBaseVisitor<PackageDescriptorCompilationUnit> {
+	public static class PackageDescriptorCompilationUnitVisitor extends SParserBaseVisitor<PackageDescriptorCompilationUnit> {
 		private Reporter reporter;
 		private CommonTokenStream tokens;
 

@@ -22,7 +22,7 @@ import org.sirius.frontend.ast.AstModuleDeclaration;
 import org.sirius.frontend.ast.AstPackageDeclaration;
 import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
 import org.sirius.frontend.ast.ScriptCompilationUnit;
-import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.SParser;
 import org.sirius.frontend.symbols.Scope;
 import org.sirius.frontend.symbols.SymbolTableImpl;
 
@@ -42,7 +42,7 @@ public class ScriptCompilationUnitTest {
 	
 	private ScriptCompilationUnit parseScriptCU(String inputText) {
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 		ParseTree tree = parser.scriptCompilationUnit();
 				
 		ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor visitor = new ScriptCompilatioUnitParser.ScriptCompilationUnitVisitor(
@@ -107,7 +107,7 @@ public class ScriptCompilationUnitTest {
 	// -- concrete modules
 	private AstModuleDeclaration parseConcreteModule(String inputText) {
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 		ParseTree tree = parser.concreteModule();
 				
 		ModuleDeclarationParser.ConcreteModuleVisitor visitor = new ModuleDeclarationParser(reporter, parserFactory.tokenStream()).new ConcreteModuleVisitor();

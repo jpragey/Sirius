@@ -1,9 +1,7 @@
 package org.sirius.frontend.core.parser;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.Matchers.contains;
 
 import java.util.List;
 
@@ -14,11 +12,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
-import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.Annotation;
 import org.sirius.frontend.ast.AnnotationList;
 import org.sirius.frontend.ast.AstToken;
-import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.SParser;
 
 public class AnnotationListParserTest {
 
@@ -37,7 +34,7 @@ public class AnnotationListParserTest {
 	
 	private AnnotationList parseAnnotationList(String inputText) {
 		
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		SParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.annotationList();
 				
 		Parsers.AnnotationListVisitor typeVisitor = new Parsers.AnnotationListVisitor();

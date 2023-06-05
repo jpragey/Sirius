@@ -12,13 +12,13 @@ import org.sirius.frontend.ast.IntersectionType;
 import org.sirius.frontend.ast.LambdaDeclaration;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.UnionType;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.Sirius.ArrayTypeContext;
-import org.sirius.frontend.parser.Sirius.BracketedTypeContext;
-import org.sirius.frontend.parser.Sirius.IntersectionTypeContext;
-import org.sirius.frontend.parser.Sirius.LambdaDeclarationContext;
-import org.sirius.frontend.parser.Sirius.SimpleType0Context;
-import org.sirius.frontend.parser.Sirius.UnionTypeContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
+import org.sirius.frontend.parser.SParser.ArrayTypeContext;
+import org.sirius.frontend.parser.SParser.BracketedTypeContext;
+import org.sirius.frontend.parser.SParser.IntersectionTypeContext;
+import org.sirius.frontend.parser.SParser.LambdaDeclarationContext;
+import org.sirius.frontend.parser.SParser.SimpleType0Context;
+import org.sirius.frontend.parser.SParser.UnionTypeContext;
 
 /** Visitor-based parser for the 'type' rule.
  * 
@@ -35,7 +35,7 @@ public class TypeParser {
 
 
 
-	public static class TypeVisitor extends SiriusBaseVisitor<AstType> {
+	public static class TypeVisitor extends SParserBaseVisitor<AstType> {
 		private Reporter reporter;
 
 		public TypeVisitor(Reporter reporter) {

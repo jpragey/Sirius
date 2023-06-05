@@ -1,36 +1,22 @@
 package org.sirius.frontend.core.parser.temp;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.CoreMatchers.is;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.sirius.common.core.QName;
 import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
-import org.sirius.frontend.ast.ShebangDeclaration;
 import org.sirius.frontend.core.parser.ParserBuilder;
 import org.sirius.frontend.core.parser.ParserUtil;
 import org.sirius.frontend.core.parser.Parsers;
 import org.sirius.frontend.core.parser.Parsers.CompilationUnit;
-import org.sirius.frontend.core.parser.Parsers.CompilationUnitVisitor;
-import org.sirius.frontend.core.parser.Parsers.ModuleHeader;
-import org.sirius.frontend.core.parser.ShebangDeclarationParser.ShebangVisitor;
-import org.sirius.frontend.parser.SLexer;
-import org.sirius.frontend.parser.Sirius;
-import org.sirius.frontend.parser.Sirius.ModuleHeaderContext;
-import org.sirius.frontend.parser.Sirius.NewCompilationUnitContext;
-import org.sirius.frontend.parser.Sirius.PackageTopLevelDeclarationContext;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
+import org.sirius.frontend.parser.SParser;
+import org.sirius.frontend.parser.SParser.NewCompilationUnitContext;
 
 public class NewCompilationUnitTest {
 
@@ -48,7 +34,7 @@ public class NewCompilationUnitTest {
 		
 		String inputText = "#!/bin/sirius azerty\n module mod1 {} ; module mod2 {} {}";
 		ParserBuilder fact = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius sirius = fact.create();
+		SParser sirius = fact.create();
 		
 		NewCompilationUnitContext ctx = sirius.newCompilationUnit();
 		CompilationUnit res = new Parsers.CompilationUnitVisitor().visit(ctx);
@@ -68,7 +54,7 @@ public class NewCompilationUnitTest {
 		
 		String inputText = "module mod1 {} {} module mod2 {} {}";
 		ParserBuilder fact = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius sirius = fact.create();
+		SParser sirius = fact.create();
 		
 		NewCompilationUnitContext ctx = sirius.newCompilationUnit();
 		CompilationUnit res = new Parsers.CompilationUnitVisitor().visit(ctx);
@@ -84,7 +70,7 @@ public class NewCompilationUnitTest {
 		
 		String inputText = "module mod1 {}; module mod2 {};";
 		ParserBuilder fact = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius sirius = fact.create();
+		SParser sirius = fact.create();
 		
 		NewCompilationUnitContext ctx = sirius.newCompilationUnit();
 		CompilationUnit res = new Parsers.CompilationUnitVisitor().visit(ctx);
@@ -102,7 +88,7 @@ public class NewCompilationUnitTest {
 		
 		String inputText = "";
 		ParserBuilder fact = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius sirius = fact.create();
+		SParser sirius = fact.create();
 		
 		NewCompilationUnitContext ctx = sirius.newCompilationUnit();
 		CompilationUnit res = new Parsers.CompilationUnitVisitor().visit(ctx);
@@ -117,7 +103,7 @@ public class NewCompilationUnitTest {
 		
 		String inputText = "module mod1 {}; module mod2 {};";
 		ParserBuilder fact = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius sirius = fact.create();
+		SParser sirius = fact.create();
 		
 		NewCompilationUnitContext ctx = sirius.newCompilationUnit();
 		CompilationUnit res = new Parsers.CompilationUnitVisitor().visit(ctx);

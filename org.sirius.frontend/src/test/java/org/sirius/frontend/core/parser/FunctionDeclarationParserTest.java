@@ -5,8 +5,8 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 //import static org.hamcrest.Matchers.contains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,7 +30,7 @@ import org.sirius.frontend.ast.ClosureElement;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.SParser;
 import org.sirius.frontend.symbols.QNameSetterVisitor;
 
 public class FunctionDeclarationParserTest {
@@ -52,7 +52,7 @@ public class FunctionDeclarationParserTest {
 		
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 
 		ParseTree tree = parser.functionDeclaration();
 				
@@ -68,7 +68,7 @@ public class FunctionDeclarationParserTest {
 		
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 
 		FunctionDeclarationParser.FunctionDefinitionVisitor fdefinitionVisitor = 
 				new FunctionDeclarationParser(reporter,parserFactory.tokenStream()).new FunctionDefinitionVisitor();

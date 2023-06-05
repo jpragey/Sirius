@@ -9,13 +9,13 @@ import org.sirius.frontend.ast.AstExpression;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
-import org.sirius.frontend.parser.Sirius.ExpressionContext;
-import org.sirius.frontend.parser.Sirius.MemberValueDeclarationContext;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
+import org.sirius.frontend.parser.SParser.ExpressionContext;
+import org.sirius.frontend.parser.SParser.MemberValueDeclarationContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
 
 public class MemberValueDeclarationParser {
 
-	public static class MemberValueVisitor extends SiriusBaseVisitor<AstMemberValueDeclaration> {
+	public static class MemberValueVisitor extends SParserBaseVisitor<AstMemberValueDeclaration> {
 		private Reporter reporter;
 		private ExpressionParser expressionParser;
 

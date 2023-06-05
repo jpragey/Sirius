@@ -17,7 +17,7 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.TypeParameter;
-import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.SParser;
 
 public class ClassDeclarationParserTest {
 
@@ -36,7 +36,7 @@ public class ClassDeclarationParserTest {
 	private AstClassDeclaration parseClassDeclaration(String inputText/*, QName containerQName*/) {
 		
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 		ParseTree tree = parser.classDeclaration();
 				
 		ClassDeclarationParser.ClassDeclarationVisitor visitor = new ClassDeclarationParser(reporter, parserFactory.tokenStream()).new ClassDeclarationVisitor();

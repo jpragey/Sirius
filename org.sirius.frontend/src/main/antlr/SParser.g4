@@ -1,7 +1,7 @@
 /**
  * Define a grammar called Hello
  */
-parser grammar Sirius;
+parser grammar SParser;
 
 
 options {

@@ -14,7 +14,7 @@ import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.PackageDescriptorCompilationUnit;
-import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.SParser;
 
 
 public class PackageDescriptorCompilationUnitTest {
@@ -33,7 +33,7 @@ public class PackageDescriptorCompilationUnitTest {
 	private PackageDescriptorCompilationUnit parseModuleImport(String inputText) {
 //		Sirius parser = ParserUtil.createParser(reporter, inputText);
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 
 		ParseTree tree = parser.packageDescriptorCompilationUnit();
 				

@@ -8,9 +8,9 @@ import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.AstType;
 import org.sirius.frontend.ast.TypeParameter;
 import org.sirius.frontend.ast.Variance;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.Sirius.TypeContext;
-import org.sirius.frontend.parser.Sirius.TypeParameterDeclarationContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
+import org.sirius.frontend.parser.SParser.TypeContext;
+import org.sirius.frontend.parser.SParser.TypeParameterDeclarationContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
@@ -25,7 +25,7 @@ public class TypeParameterParser {
 		this.reporter = reporter;
 	}
 
-	public class TypeParameterVisitor extends SiriusBaseVisitor<TypeParameter> {
+	public class TypeParameterVisitor extends SParserBaseVisitor<TypeParameter> {
 
 		public TypeParameterVisitor() {
 			super();

@@ -12,7 +12,7 @@ import org.sirius.common.error.AccumulatingReporter;
 import org.sirius.common.error.Reporter;
 import org.sirius.common.error.ShellReporter;
 import org.sirius.frontend.ast.ShebangDeclaration;
-import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.SParser;
 
 public class ShebangParserTest {
 
@@ -30,7 +30,7 @@ public class ShebangParserTest {
 	
 	private ShebangDeclaration parseShebang(String inputText) {
 		
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		SParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.shebangDeclaration();
 				
 		ShebangDeclarationParser.ShebangVisitor visitor = new ShebangDeclarationParser.ShebangVisitor();

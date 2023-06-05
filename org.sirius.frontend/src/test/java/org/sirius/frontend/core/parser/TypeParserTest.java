@@ -1,8 +1,9 @@
 package org.sirius.frontend.core.parser;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.AfterEach;
@@ -20,9 +21,7 @@ import org.sirius.frontend.ast.IntersectionType;
 import org.sirius.frontend.ast.SimpleType;
 import org.sirius.frontend.ast.UnionType;
 import org.sirius.frontend.core.parser.TypeParser.TypeVisitor;
-import org.sirius.frontend.parser.Sirius;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.sirius.frontend.parser.SParser;
 
 public class TypeParserTest {
 
@@ -40,7 +39,7 @@ public class TypeParserTest {
 	
 	private AstType parseTypeDeclaration(String inputText) {
 		
-		Sirius parser = ParserUtil.createParser(reporter, inputText);
+		SParser parser = ParserUtil.createParser(reporter, inputText);
 		ParseTree tree = parser.type();
 				
 		TypeVisitor typeVisitor = new TypeVisitor(reporter);

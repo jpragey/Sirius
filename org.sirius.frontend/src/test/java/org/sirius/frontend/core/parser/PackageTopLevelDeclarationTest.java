@@ -9,13 +9,13 @@ import org.sirius.frontend.ast.AstClassDeclaration;
 import org.sirius.frontend.ast.FunctionDeclaration;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.core.parser.FunctionDeclarationParser.FunctionDefinitionVisitor;
-import org.sirius.frontend.parser.Sirius;
-import org.sirius.frontend.parser.Sirius.ClassDeclarationContext;
-import org.sirius.frontend.parser.Sirius.FunctionDeclarationContext;
-import org.sirius.frontend.parser.Sirius.FunctionDefinitionContext;
-import org.sirius.frontend.parser.Sirius.PackageTopLevelDeclarationContext;
-import org.sirius.frontend.parser.Sirius.PackageTopLevelDeclarationsContext;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
+import org.sirius.frontend.parser.SParser;
+import org.sirius.frontend.parser.SParser.ClassDeclarationContext;
+import org.sirius.frontend.parser.SParser.FunctionDeclarationContext;
+import org.sirius.frontend.parser.SParser.FunctionDefinitionContext;
+import org.sirius.frontend.parser.SParser.PackageTopLevelDeclarationContext;
+import org.sirius.frontend.parser.SParser.PackageTopLevelDeclarationsContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
 
 public class PackageTopLevelDeclarationTest {
 
@@ -34,7 +34,7 @@ public class PackageTopLevelDeclarationTest {
     	| interfaceDeclaration	
 	 */
 	public static class PackageTopLevelDeclarationVisitor /* SiriusBaseVisitor<String> packageTopLevelDeclarationVisitor =*/
-		extends SiriusBaseVisitor<String> 
+		extends SParserBaseVisitor<String> 
 	{
 //		private Reporter reporter;
 //		private CommonTokenStream tokens;
@@ -95,7 +95,7 @@ public class PackageTopLevelDeclarationTest {
 		String inputText = "void f() {}";
 		ParserBuilder fact = ParserUtil.createParserBuilder(reporter, inputText);
 		Parsers parsers = new Parsers(reporter, fact.tokenStream());
-		Sirius sirius = fact.create();
+		SParser sirius = fact.create();
 		
 		PackageTopLevelDeclarationsContext ctx = sirius.packageTopLevelDeclarations();
 		String res = new PackageTopLevelDeclarationVisitor(parsers).visit(ctx);

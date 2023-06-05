@@ -14,10 +14,10 @@ import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.AstToken;
 import org.sirius.frontend.ast.FunctionDefinition;
 import org.sirius.frontend.ast.TypeParameter;
-import org.sirius.frontend.parser.SiriusBaseVisitor;
-import org.sirius.frontend.parser.Sirius.ClassDeclarationContext;
-import org.sirius.frontend.parser.Sirius.ImplementedInterfacesContext;
-import org.sirius.frontend.parser.Sirius.TypeParameterDeclarationListContext;
+import org.sirius.frontend.parser.SParserBaseVisitor;
+import org.sirius.frontend.parser.SParser.ClassDeclarationContext;
+import org.sirius.frontend.parser.SParser.ImplementedInterfacesContext;
+import org.sirius.frontend.parser.SParser.TypeParameterDeclarationListContext;
 
 /** Visitor-based parser for the 'typeParameterDeclaration' rule.
  * 
@@ -35,14 +35,14 @@ public class ClassDeclarationParser {
 		this.tokens = tokens;
 	}
 
-//	public class ImplementClauseVisitor extends SiriusBaseVisitor<List<AstToken>> {
+//	public class ImplementClauseVisitor extends SParserBaseVisitor<List<AstToken>> {
 //		@Override
 //		public List<AstToken> visitImplementedInterfaces(ImplementedInterfacesContext ctx) {
 //			List<AstToken> interfaceNames = ctx.TYPE_ID().stream().map(termNode -> new AstToken(termNode.getSymbol())).toList();
 //			return interfaceNames;
 //		}
 //	}
-	public class ClassDeclarationVisitor extends SiriusBaseVisitor<AstClassDeclaration> {
+	public class ClassDeclarationVisitor extends SParserBaseVisitor<AstClassDeclaration> {
 
 		@Override
 		public AstClassDeclaration visitClassDeclaration(ClassDeclarationContext ctx) {

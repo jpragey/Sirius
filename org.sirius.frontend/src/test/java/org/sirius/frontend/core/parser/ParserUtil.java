@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.sirius.common.error.Reporter;
 import org.sirius.frontend.parser.SLexer;
-import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.SParser;
 
 public class ParserUtil {
 	
@@ -18,7 +18,7 @@ public class ParserUtil {
 		return parserBuilder;
 	}
 
-	public static Sirius createParser(Reporter reporter, String inputText) {
+	public static SParser createParser(Reporter reporter, String inputText) {
 		return createParserBuilder(reporter, inputText).create();
 	}
 

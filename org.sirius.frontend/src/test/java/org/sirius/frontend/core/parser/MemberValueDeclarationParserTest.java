@@ -20,7 +20,7 @@ import org.sirius.frontend.ast.AstExpression;
 import org.sirius.frontend.ast.AstIntegerConstantExpression;
 import org.sirius.frontend.ast.AstMemberValueDeclaration;
 import org.sirius.frontend.ast.SimpleType;
-import org.sirius.frontend.parser.Sirius;
+import org.sirius.frontend.parser.SParser;
 
 public class MemberValueDeclarationParserTest {
 
@@ -54,7 +54,7 @@ public class MemberValueDeclarationParserTest {
 
 	private AstMemberValueDeclaration parseMemberValue(String inputText, Consumer<AstMemberValueDeclaration> verify) {
 		ParserBuilder parserFactory = ParserUtil.createParserBuilder(reporter, inputText);
-		Sirius parser = parserFactory.create();
+		SParser parser = parserFactory.create();
 
 		ParseTree tree = parser.memberValueDeclaration();
 		
