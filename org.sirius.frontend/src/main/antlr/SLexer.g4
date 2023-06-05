@@ -3,28 +3,13 @@
  */
 lexer grammar SLexer;
 
-channels { CommentChannel, COMMENTS_CHANNEL }
+channels { CommentChannel }
 
-
-//@members {
-//	public static final int COMMENTS_CHANNEL = 1;
-//}
-@lexer::members {
-//	public static final int COMMENTS_CHANNEL = 1;
-}
-
-@header {
+@lexer::header {
 	package org.sirius.frontend.parser;
-//	package org.sirius.frontend.grammar;
 }
-//@lexer::header {
-//	package org.sirius.frontend.parser;
-////	package org.sirius.frontend.grammar;
-//}
 
-//COMMENT : '/*' .*? '*/' -> channel(CommentChannel);
-COMMENT : '/*' .*? '*/' -> channel(COMMENTS_CHANNEL);
-//COMMENT : '/*' .*? '*/' ;
+COMMENT : '/*' .*? '*/' -> channel(CommentChannel);
 
 MODULE : 'module';
 

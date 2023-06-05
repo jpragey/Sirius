@@ -11,12 +11,6 @@ options {
 @header {
 package org.sirius.frontend.parser;
 }
-//@parser::header {
-////package org.sirius.frontend.parser;
-//package org.sirius.frontend.grammar;
-//
-//// 	import org.sirius.frontend.ast.*;
-//}
 
 @members {
 }
