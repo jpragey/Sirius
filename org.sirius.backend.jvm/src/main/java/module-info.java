@@ -1,13 +1,12 @@
 module org.sirius.backend.jvm {
 	requires org.apache.logging.log4j;
 
-//	requires org.sirius.frontend.apiimpl;
-//	opens org.sirius.frontend.apiimpl;
+	requires transitive org.objectweb.asm;
+
+	requires org.sirius.common;
+	requires org.sirius.frontend;
 
 	requires org.sirius.backend.core;
-
-//	requires static lombok;
-
 	requires org.sirius.sdk;
 
 	exports org.sirius.backend.jvm;
